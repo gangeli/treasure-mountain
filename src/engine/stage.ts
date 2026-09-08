@@ -11,14 +11,12 @@ export interface StageMetrics {
   scale: number
   offsetX: number
   offsetY: number
-  cssW: number
-  cssH: number
 }
 
 export class Stage {
   readonly canvas: HTMLCanvasElement
   readonly ctx: CanvasRenderingContext2D
-  metrics: StageMetrics = { scale: 1, offsetX: 0, offsetY: 0, cssW: LOGICAL_W, cssH: LOGICAL_H }
+  metrics: StageMetrics = { scale: 1, offsetX: 0, offsetY: 0 }
   private dpr = 1
 
   constructor(canvas: HTMLCanvasElement) {
@@ -53,7 +51,7 @@ export class Stage {
     this.canvas.style.top = offsetY + 'px'
     this.canvas.width = Math.round(cssW * this.dpr)
     this.canvas.height = Math.round(cssH * this.dpr)
-    this.metrics = { scale, offsetX, offsetY, cssW, cssH }
+    this.metrics = { scale, offsetX, offsetY }
   }
 
   /** Sets up the context transform so that drawing code works in logical units. */
