@@ -94,9 +94,11 @@ export class AudioEngine {
   sfx(name: SfxName): void {
     if (!this.ctx) return
     switch (name) {
-      // Quietest cue in the game and a softer band: it fires on every footstep, and at vol 0.5 the
-      // walk was a bright click 60% louder than anything else, over and over.
-      case 'step': this.noise(0.055, { vol: 0.22, hp: 500, lp: 2200 }); break
+      // Softer and duller: it fires on every footstep, and at vol 0.5 through a 700-3000Hz band the
+      // walk was a bright click peaking 60% above every other cue, over and over. Peak is down from
+      // 0.158 to about 0.085 and the energy by a third; not so far down that the headless audio
+      // check, whose floor is a 0.05 peak over 8ms, can fail on an unlucky draw of the noise.
+      case 'step': this.noise(0.075, { vol: 0.34, hp: 500, lp: 2200 }); break
       case 'jump': this.tone(300, 0.15, { slide: 700, type: 'square', vol: 0.15 }); break
       case 'land': this.noise(0.09, { vol: 0.3, lp: 900 }); this.tone(150, 0.07, { type: 'triangle', vol: 0.12, slide: 90 }); break
       case 'net': this.noise(0.18, { vol: 0.15, hp: 1500 }); this.tone(900, 0.12, { slide: 300, type: 'triangle', vol: 0.12 }); break
