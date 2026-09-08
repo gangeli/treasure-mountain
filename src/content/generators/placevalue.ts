@@ -1,6 +1,6 @@
 import type { Generator } from '../types'
 import { shuffled, choiceCount } from '../types'
-import { mathRiddle, sayChoices, numDecoys, fmtInt } from './mathutil'
+import { mathRiddle, sayChoices, numDecoys, fmtInt, fmtDec } from './mathutil'
 import type { Rng } from '../../engine/rng'
 
 const PLACE = ['ones', 'tens', 'hundreds', 'thousands', 'ten thousands', 'hundred thousands', 'millions']
@@ -13,9 +13,14 @@ function distinctDigits(rng: Rng, digits: number): number {
   return Number(ds.join(''))
 }
 const digitAt = (v: number, place: number): number => Math.floor(v / Math.pow(10, place)) % 10
+/**
+ * Decoy digits. Ask for exactly the number wanted: `numDecoys` takes its preferred values first,
+ * so the digits that really are in the number are kept instead of being shuffled away by a
+ * later slice, and a child cannot answer by finding the one choice the number contains.
+ */
 const digitDecoys = (rng: Rng, v: number, d: number, count: number): string[] => {
-  const others = [...String(v)].map(Number).filter(x => x !== d)
-  return numDecoys(rng, d, count, others, 4, 0, 9).map(String)
+  const others = [...new Set([...String(v)].map(Number).filter(x => x !== d))]
+  return numDecoys(rng, d, count, rng.shuffle(others), 4, 0, 9).map(String)
 }
 /** Permutations of the digits of v (as numbers, no leading zero, not v). */
 function digitPerms(rng: Rng, v: number, count: number, place: number, d: number): number[] {
@@ -48,13 +53,19 @@ export const placevalue: Generator = {
       type M = 'digit' | 'value' | 'roundTenth' | 'roundWhole' | 'roundHundredth' | 'which' | 'expanded'
       const modes: M[] = tier === 1 ? ['digit', 'value', 'digit'] : tier === 2 ? ['digit', 'value', 'roundTenth', 'roundWhole'] : ['roundHundredth', 'roundTenth', 'which', 'expanded', 'value']
       const mode = rng.pick(modes)
-      const places = tier === 1 ? rng.pick([2, 3]) : 3
+      // Always three decimal places: the whole part plus three digits give four in-number decoys.
+      const places = 3
       const whole = rng.int(0, 9)
       const fracDigits = rng.sample([0, 1, 2, 3, 4, 5, 6, 7, 8, 9].filter(x => x !== whole), places)
-      if (fracDigits[places - 1] === 0) fracDigits[places - 1] = 5
+      if (fracDigits[places - 1] === 0) {
+        // A trailing zero hides the last place, but swapping in a fixed 5 could repeat a digit the
+        // number already shows (5.45 has two 5s, so "the value of the 5" has two right answers).
+        // Take a digit the number does not use, keeping every digit of the number distinct.
+        const used = new Set([whole, ...fracDigits])
+        fracDigits[places - 1] = rng.pick([1, 2, 3, 4, 5, 6, 7, 8, 9].filter(x => !used.has(x)))
+      }
       const units = whole * Math.pow(10, places) + Number(fracDigits.join(''))
       const text = (units / Math.pow(10, places)).toFixed(places)
-      const value = Number(text)
       const metricBase = 75 + places * 4
       if (mode === 'digit') {
         const pl = rng.int(1, places)
@@ -67,6 +78,8 @@ export const placevalue: Generator = {
       if (mode === 'value') {
         const pl = rng.pick(fracDigits.map((d, i) => d === 0 ? -1 : i + 1).filter(i => i > 0))
         const d = fracDigits[pl - 1]
+        // Guard: never name a digit that the number shows twice — both copies would be right.
+        if ([...text].filter(c => c === String(d)).length !== 1) return placevalue.make(grade, tier, rng)
         const val = (d / Math.pow(10, pl)).toFixed(pl)
         const decoys = [d / 10, d / 100, d / 1000, d, d * 10].map((v, i) => i === 3 || i === 4 ? String(v) : v.toFixed(i === 0 ? 1 : i === 1 ? 2 : 3)).filter(s => s !== val)
         const { choices, answer } = shuffled(rng, val, rng.shuffle(decoys), n)
@@ -91,19 +104,25 @@ export const placevalue: Generator = {
         const prompt = [`Which shows ${text} in expanded form?`]
         return mathRiddle({ family: 'placevalue', skill, prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: metricBase + 6, grade, tier }, `num:${text}`)
       }
-      // rounding decimals
+      // Rounding decimals, worked in whole thousandths. Floats get exact ties wrong:
+      // Math.round(1.025 * 100) / 100 is 1.02 because 1.025 * 100 lands just under 102.5, while
+      // every grade-5 textbook rounds a half up to 1.03. Integers make the tie exact.
       const to = mode === 'roundTenth' ? 1 : mode === 'roundHundredth' ? 2 : 0
-      const f = Math.pow(10, to)
-      const rounded = Math.round(value * f) / f
-      const ans = rounded.toFixed(to)
-      const down = (Math.floor(value * f) / f).toFixed(to), up = (Math.ceil(value * f) / f).toFixed(to)
-      const otherPlace = to === 0 ? (Math.round(value * 10) / 10).toFixed(1) : to === 1 ? (Math.round(value * 100) / 100).toFixed(2) : (Math.round(value * 10) / 10).toFixed(1)
-      const off = ((Math.round(value * f) + 1) / f).toFixed(to), off2 = ((Math.round(value * f) - 1) / f).toFixed(to)
-      const cand = [down, up, otherPlace, off, off2, text].filter(s => Number(s) !== rounded)
+      const roundUnits = (u: number, step: number): number => { const q = Math.floor(u / step), rem = u - q * step; return rem * 2 >= step ? q + 1 : q }
+      const step = Math.pow(10, places - to)
+      const ansUnits = roundUnits(units, step)
+      const ans = fmtDec(ansUnits, to)
+      const downU = Math.floor(units / step)
+      const cand = [
+        fmtDec(downU, to), fmtDec(units % step === 0 ? downU : downU + 1, to),
+        fmtDec(ansUnits + 1, to), fmtDec(ansUnits - 1, to),
+        ...[0, 1, 2].filter(o => o !== to).map(o => fmtDec(roundUnits(units, Math.pow(10, places - o)), o)),
+        text,
+      ].filter(s => Number(s) >= 0 && Number(s) !== Number(ans))
       const { choices, answer } = shuffled(rng, ans, rng.shuffle([...new Set(cand)]), n)
       const label = to === 0 ? 'whole number' : to === 1 ? 'tenth' : 'hundredth'
       const prompt = [`Round ${text} to the nearest ${label}.`]
-      return mathRiddle({ family: 'placevalue', skill: 'math: rounding decimals', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: metricBase + 8 + to * 2, grade, tier }, `num:round(${text}*${f})/${f}`)
+      return mathRiddle({ family: 'placevalue', skill: 'math: rounding decimals', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: metricBase + 8 + to * 2, grade, tier }, `roundu:${units},${places},${to}`)
     }
 
     // Whole numbers, grades 1-4.
@@ -115,7 +134,8 @@ export const placevalue: Generator = {
           : (tier === 1 ? ['digit', 'value', 'round'] : tier === 2 ? ['value', 'round', 'expandedFrom', 'digit'] : ['round', 'expandedFrom', 'which', 'value'])
     const mode = rng.pick(modes)
     const v = grade === 1 ? (tier === 1 ? rng.int(11, 50) : rng.int(11, 99)) : distinctDigits(rng, digits)
-    const fmt = (x: number) => grade >= 3 ? fmtInt(x) : String(x)
+    // Four-digit choices carry a thousands separator at every grade: grade-2 texts write 1,000 too.
+    const fmt = (x: number) => x >= 1000 || grade >= 3 ? fmtInt(x) : String(x)
     const metricBase = 10 * digits
     const ds = [...String(v)].map(Number)
 
@@ -134,13 +154,16 @@ export const placevalue: Generator = {
       const ans = mode === 'tensCount' ? t : o
       const decoys = numDecoys(rng, ans, n - 1, [mode === 'tensCount' ? o : t, t + o, ans + 1, ans - 1], 3, 0, 20).map(String)
       const { choices, answer } = shuffled(rng, String(ans), decoys, n)
-      const prompt = [`How many ${mode === 'tensCount' ? 'tens' : 'ones'} are in ${v}?`]
-      return mathRiddle({ family: 'placevalue', skill, prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: metricBase + 2, grade, tier }, mode === 'tensCount' ? `num:floor(${v}/10)` : `num:${v}%10`)
+      // "How many ones are in 84?" is literally 84; say which digit is meant instead.
+      const prompt = mode === 'tensCount' ? [`How many tens are in ${v}?`] : [`${v} = ${t} tens and ? ones`]
+      return mathRiddle({ family: 'placevalue', skill, prompt, choices, answer, spoken: mode === 'tensCount' ? `How many tens are in ${v}? ${sayChoices(choices)}?` : `${v} is ${t} tens and how many ones? ${sayChoices(choices)}?`, metric: metricBase + 2, grade, tier }, mode === 'tensCount' ? `num:floor(${v}/10)` : `num:${v}%10`)
     }
     if (mode === 'digit') {
-      const place = rng.int(0, digits - 1)
+      // Reading the ones digit is a grade-2 skill: grade 3 asks tens and up, grade 4 hundreds and up.
+      const minPlace = Math.min(grade >= 4 ? 2 : grade === 3 ? 1 : 0, digits - 1)
+      const place = rng.int(minPlace, digits - 1)
       const d = digitAt(v, place)
-      const { choices, answer } = shuffled(rng, String(d), digitDecoys(rng, v, d, n + 2), n)
+      const { choices, answer } = shuffled(rng, String(d), digitDecoys(rng, v, d, n - 1), n)
       const prompt = digits <= 4 ? [`Which digit is in the ${PLACE[place]}`, `place of ${fmt(v)}?`] : [`Which digit is in the`, `${PLACE[place]} place of ${fmt(v)}?`]
       return mathRiddle({ family: 'placevalue', skill, prompt, choices, answer, spoken: `Which digit is in the ${PLACE[place]} place of ${fmt(v)}? ${sayChoices(choices)}?`, metric: metricBase + 2 + place, grade, tier }, `digitof:${v},${place}`)
     }
@@ -200,6 +223,9 @@ export const placevalue: Generator = {
     // round
     const place = grade === 3 ? (tier === 2 ? 1 : rng.pick([1, 2])) : (tier === 1 ? 3 : tier === 2 ? rng.pick([3, 4]) : rng.pick([4, 5, 6]))
     const p = Math.pow(10, place)
+    // A number that is already a multiple of the place rounds to itself, and the floor/ceil decoys
+    // collapse onto the answer; draw another number instead.
+    if (v % p === 0) return placevalue.make(grade, tier, rng)
     const rounded = Math.round(v / p) * p
     const decoys = numDecoys(rng, rounded, n - 1, [Math.floor(v / p) * p, Math.ceil(v / p) * p, Math.round(v / (p * 10)) * p * 10, Math.round(v / (p / 10)) * (p / 10), rounded + p, rounded - p], p, 0).map(fmt)
     const { choices, answer } = shuffled(rng, fmt(rounded), decoys, n)

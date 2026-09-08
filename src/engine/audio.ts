@@ -28,17 +28,22 @@ export class AudioEngine {
 
   get unlocked(): boolean { return !!this.ctx && this.ctx.state === 'running' }
 
+  /** Builds the gain graph on a context. Shared by unlock() and by attach() in the audio test. */
+  attach(ctx: BaseAudioContext): void {
+    this.ctx = ctx as AudioContext
+    this.master = ctx.createGain(); this.master.gain.value = 0.5; this.master.connect(ctx.destination)
+    this.musicGain = ctx.createGain(); this.musicGain.gain.value = this.musicOn ? 0.55 : 0; this.musicGain.connect(this.master)
+    this.sfxGain = ctx.createGain(); this.sfxGain.gain.value = this.soundOn ? 1 : 0; this.sfxGain.connect(this.master)
+  }
+
   unlock(): void {
     if (!this.ctx) {
       try {
         const AC = window.AudioContext || (window as any).webkitAudioContext
-        this.ctx = new AC()
-        this.master = this.ctx.createGain(); this.master.gain.value = 0.5; this.master.connect(this.ctx.destination)
-        this.musicGain = this.ctx.createGain(); this.musicGain.gain.value = this.musicOn ? 0.55 : 0; this.musicGain.connect(this.master)
-        this.sfxGain = this.ctx.createGain(); this.sfxGain.gain.value = this.soundOn ? 1 : 0; this.sfxGain.connect(this.master)
+        this.attach(new AC())
       } catch { return }
     }
-    if (this.ctx.state !== 'running') this.ctx.resume().catch(() => {})
+    if (this.ctx!.state !== 'running') this.ctx!.resume().catch(() => {})
     if (this.current !== 'none' && this.seqTimer === 0) this.startSequencer()
   }
 
@@ -89,27 +94,27 @@ export class AudioEngine {
   sfx(name: SfxName): void {
     if (!this.ctx) return
     switch (name) {
-      case 'step': this.noise(0.04, { vol: 0.06, hp: 800, lp: 3000 }); break
+      case 'step': this.noise(0.055, { vol: 0.5, hp: 700, lp: 3000 }); break
       case 'jump': this.tone(300, 0.15, { slide: 700, type: 'square', vol: 0.15 }); break
-      case 'land': this.noise(0.06, { vol: 0.12, lp: 900 }); break
+      case 'land': this.noise(0.09, { vol: 0.3, lp: 900 }); this.tone(150, 0.07, { type: 'triangle', vol: 0.12, slide: 90 }); break
       case 'net': this.noise(0.18, { vol: 0.15, hp: 1500 }); this.tone(900, 0.12, { slide: 300, type: 'triangle', vol: 0.12 }); break
       case 'catch':
         this.tone(523, 0.08, { vol: 0.2 }); this.tone(659, 0.08, { at: 0.08, vol: 0.2 }); this.tone(784, 0.16, { at: 0.16, vol: 0.2 }); break
       case 'miss': this.tone(220, 0.2, { slide: 110, type: 'sawtooth', vol: 0.12 }); break
       case 'elfLaugh':
-        for (let i = 0; i < 4; i++) this.tone(900 + i * 60, 0.06, { at: i * 0.075, type: 'square', vol: 0.08, slide: 700 }); break
-      case 'scroll': this.noise(0.25, { vol: 0.08, hp: 400, lp: 2500 }); this.tone(660, 0.08, { at: 0.2, type: 'triangle', vol: 0.1 }); break
+        for (let i = 0; i < 4; i++) this.tone(900 + i * 60, 0.07, { at: i * 0.075, type: 'square', vol: 0.18, slide: 700 }); break
+      case 'scroll': this.noise(0.28, { vol: 0.3, hp: 400, lp: 2500 }); this.tone(660, 0.1, { at: 0.22, type: 'triangle', vol: 0.2 }); break
       case 'right':
         [523, 659, 784, 1047].forEach((f, i) => this.tone(f, 0.12, { at: i * 0.09, type: 'square', vol: 0.18 })); break
       case 'wrong': this.tone(200, 0.25, { type: 'sawtooth', vol: 0.12, slide: 150 }); this.tone(150, 0.3, { at: 0.2, type: 'sawtooth', vol: 0.12, slide: 100 }); break
       case 'coin': this.tone(1200, 0.05, { type: 'square', vol: 0.15 }); this.tone(1800, 0.18, { at: 0.05, type: 'square', vol: 0.15 }); break
       case 'clue': [784, 988, 1175].forEach((f, i) => this.tone(f, 0.15, { at: i * 0.12, type: 'triangle', vol: 0.2 })); break
-      case 'dig': this.noise(0.12, { vol: 0.18, lp: 700 }); this.noise(0.12, { vol: 0.14, lp: 600, at: 0.15 }); break
+      case 'dig': this.noise(0.16, { vol: 0.75, lp: 800 }); this.noise(0.16, { vol: 0.6, lp: 650, at: 0.17 }); break
       case 'nothing': this.tone(330, 0.15, { type: 'triangle', vol: 0.12, slide: 250 }); break
       case 'treasure':
         [523, 659, 784, 1047, 1319, 1568].forEach((f, i) => this.tone(f, 0.2, { at: i * 0.07, type: 'square', vol: 0.16 }))
         this.tone(2093, 0.6, { at: 0.45, type: 'triangle', vol: 0.15, decay: 0.3 }); break
-      case 'ladder': this.tone(400, 0.05, { type: 'triangle', vol: 0.1 }); this.tone(500, 0.05, { at: 0.08, type: 'triangle', vol: 0.1 }); break
+      case 'ladder': this.tone(400, 0.06, { type: 'triangle', vol: 0.22 }); this.tone(500, 0.06, { at: 0.09, type: 'triangle', vol: 0.22 }); break
       case 'gate': this.noise(0.5, { vol: 0.12, lp: 500 }); this.tone(196, 0.5, { type: 'triangle', vol: 0.12, slide: 262 }); break
       case 'fanfare':
         [[392, 0], [392, 0.12], [392, 0.24], [523, 0.36], [659, 0.6], [523, 0.75], [659, 0.9]].forEach(([f, at]) => this.tone(f, 0.18, { at, vol: 0.18 }))
@@ -117,8 +122,8 @@ export class AudioEngine {
       case 'crown':
         [523, 659, 784, 1047, 784, 1047, 1319, 1568, 2093].forEach((f, i) => this.tone(f, 0.16, { at: i * 0.1, type: 'triangle', vol: 0.2 }))
         this.tone(2093, 1.2, { at: 0.95, type: 'square', vol: 0.12, decay: 0.5 }); break
-      case 'click': this.tone(700, 0.04, { type: 'square', vol: 0.08 }); break
-      case 'tick': this.tone(1000, 0.03, { type: 'square', vol: 0.05 }); break
+      case 'click': this.tone(760, 0.05, { type: 'square', vol: 0.22 }); break
+      case 'tick': this.tone(1000, 0.04, { type: 'square', vol: 0.14 }); break
       case 'lose': [392, 370, 349, 330].forEach((f, i) => this.tone(f, 0.25, { at: i * 0.22, type: 'triangle', vol: 0.15 })); break
     }
   }
@@ -128,7 +133,39 @@ export class AudioEngine {
     if (name === this.current) return
     this.current = name
     this.stopSequencer()
-    if (name !== 'none' && this.ctx) this.startSequencer()
+    if (name === 'none' || !this.ctx) return
+    const song = SONGS[name]
+    if (!song) return
+    // Prime the sequencer state; startSequencer also schedules the first window and the interval.
+    this.seqNotes = song.tracks
+    this.seqLoopLen = song.length
+    this.seqStart = this.ctx.currentTime + 0.05
+    this.seqPos = 0
+    this.startSequencer()
+  }
+
+  /** Schedules every note that starts before `horizon` (an absolute context time). */
+  private scheduleUntil(horizon: number): void {
+    const song = SONGS[this.current]
+    if (!song || !this.ctx) return
+    const stepSec = 1 / (song.bpm / 60) / 4 // sixteenth notes
+    while (this.seqStart + this.seqPos * stepSec < horizon) {
+      const stepInLoop = this.seqPos % this.seqLoopLen
+      for (const track of this.seqNotes) {
+        for (const note of track.notes) {
+          if (note.t === stepInLoop && note.n !== null) {
+            this.voice(track.voice, note.n, this.seqStart + this.seqPos * stepSec, note.d * stepSec, note.v ?? 1)
+          }
+        }
+      }
+      this.seqPos++
+    }
+  }
+
+  /** Schedules `seconds` of the current song in one go (offline rendering in the audio test). */
+  renderAhead(seconds: number): void {
+    if (!this.ctx) return
+    this.scheduleUntil(this.ctx.currentTime + seconds)
   }
 
   private startSequencer(): void {
@@ -139,25 +176,8 @@ export class AudioEngine {
     this.seqLoopLen = song.length
     this.seqStart = this.ctx.currentTime + 0.05
     this.seqPos = 0
-    const bps = song.bpm / 60
-    const stepSec = 1 / bps / 4 // sixteenth notes
-    const schedule = () => {
-      if (!this.ctx) return
-      const horizon = this.ctx.currentTime + 0.35
-      while (this.seqStart + this.seqPos * stepSec < horizon) {
-        const stepInLoop = this.seqPos % this.seqLoopLen
-        for (const track of this.seqNotes) {
-          for (const note of track.notes) {
-            if (note.t === stepInLoop && note.n !== null) {
-              this.voice(track.voice, note.n, this.seqStart + this.seqPos * stepSec, note.d * stepSec, note.v ?? 1)
-            }
-          }
-        }
-        this.seqPos++
-      }
-    }
-    schedule()
-    this.seqTimer = window.setInterval(schedule, 120)
+    this.scheduleUntil(this.ctx.currentTime + 0.35)
+    this.seqTimer = window.setInterval(() => { if (this.ctx) this.scheduleUntil(this.ctx.currentTime + 0.35) }, 120)
   }
 
   private stopSequencer(): void {

@@ -15,6 +15,7 @@ import { riddle, nearbyNumbers } from '../types'
  *   parity:even|odd, prime, composite, multiple:n, factor:n, gcf:a,b, lcm:a,b
  *   period:p       pattern visual: the next item is items[items.length - p]
  *   rule           first prompt line is a number sequence; the answer is the rule that fits
+ *   roundu:u,p,t   u * 10^-p rounded half-up to t decimal places (exact: no float ties)
  *   angle          the answer names the angle type of the prompt's angle visual
  *   barmax / barmin  bar-chart visual: the answer label has the largest / smallest value
  *   (empty)        answer validated by construction (e.g. names of shapes)
@@ -27,16 +28,23 @@ export function mathRiddle(base: Omit<Riddle, 'key' | 'spoken'> & { spoken?: str
 /** Reads the text choices out loud: "3, 5, 7". */
 export const sayChoices = (choices: Choice[]): string => choices.map(c => c.text ?? '').filter(Boolean).join(', ')
 
+const digitCount = (v: number): number => String(Math.abs(Math.round(v))).length
+
 /**
  * Distinct numeric decoys: preferred near-miss candidates first (wrong operation, off-by-one...),
  * then filled up from a spread around the answer. Never contains the answer.
+ *
+ * `sameSize` drops preferred candidates that are more than one order of magnitude below the answer
+ * (3 offered against 300): a child rules those out on sight, so they waste a choice.
  */
-export function numDecoys(rng: Rng, answer: number, count: number, preferred: number[], spread: number, min = 0, max = Number.MAX_SAFE_INTEGER): number[] {
+export function numDecoys(rng: Rng, answer: number, count: number, preferred: number[], spread: number, min = 0, max = Number.MAX_SAFE_INTEGER, sameSize = false): number[] {
   const out: number[] = []
   const seen = new Set<number>([answer])
   const wantInt = Number.isInteger(answer)
+  const minDigits = sameSize ? digitCount(answer) - 1 : 0
   for (const p of rng.shuffle(preferred)) {
     if (!Number.isFinite(p) || seen.has(p) || p < min || p > max || (wantInt && !Number.isInteger(p))) continue
+    if (digitCount(p) < minDigits) continue
     seen.add(p); out.push(p)
     if (out.length >= count) break
   }

@@ -29,6 +29,58 @@ const natDec = (units: number, places: number): string => {
 
 const FRACS: [number, number][] = []
 for (let d = 2; d <= 10; d++) for (let a = 1; a < d; a++) if (gcd(a, d) === 1) FRACS.push([a, d])
+/** Every entry is in lowest terms, so no two entries share a value. */
+const FRAC_SORTED = [...FRACS].sort((p, q) => p[0] / p[1] - q[0] / q[1])
+const fval = (f: [number, number]) => f[0] / f[1]
+const fracText = (f: [number, number]) => `${f[0]}/${f[1]}`
+
+/**
+ * (target, runner-up) index pairs in `FRAC_SORTED` whose value gap lies in [minGap, maxGap] and
+ * that leave `rest` further-away fractions on the far side of the runner-up. Cached per band.
+ */
+const fracBands = new Map<string, [number, number][]>()
+function fracBand(most: boolean, rest: number, minGap: number, maxGap: number): [number, number][] {
+  const key = `${most}|${rest}|${minGap}|${maxGap}`
+  const hit = fracBands.get(key)
+  if (hit) return hit
+  const V = FRAC_SORTED.map(fval)
+  const out: [number, number][] = []
+  for (let i = 0; i < V.length; i++) {
+    for (let j = 0; j < V.length; j++) {
+      if (i === j) continue
+      const g = Math.abs(V[i] - V[j])
+      if (g < minGap || g > maxGap) continue
+      if (most ? (j < i && j >= rest) : (j > i && V.length - 1 - j >= rest)) out.push([i, j])
+    }
+  }
+  fracBands.set(key, out)
+  return out
+}
+
+/**
+ * `n` distinct fractions where the greatest (or least) beats its nearest rival by a gap inside
+ * [minGap, maxGap]. That gap is what makes the comparison easy or hard, so tiers gate on it.
+ */
+function fracSet(rng: Rng, n: number, most: boolean, minGap: number, maxGap: number): { answer: string; decoys: string[]; gap: number } {
+  const cands = fracBand(most, n - 2, minGap, maxGap)
+  let idxs: number[]
+  if (cands.length) {
+    const [i, j] = rng.pick(cands)
+    const pool = most ? Array.from({ length: j }, (_, k) => k) : Array.from({ length: FRAC_SORTED.length - 1 - j }, (_, k) => j + 1 + k)
+    idxs = [i, j, ...rng.sample(pool, n - 2)]
+  } else {
+    const all = rng.sample(Array.from({ length: FRAC_SORTED.length }, (_, k) => k), n)
+    const vs = all.map(k => fval(FRAC_SORTED[k]))
+    const ti = vs.indexOf(most ? Math.max(...vs) : Math.min(...vs))
+    idxs = [all[ti], ...all.filter((_, k) => k !== ti)]
+  }
+  const tv = fval(FRAC_SORTED[idxs[0]])
+  const gap = Math.min(...idxs.slice(1).map(k => Math.abs(fval(FRAC_SORTED[k]) - tv)))
+  return { answer: fracText(FRAC_SORTED[idxs[0]]), decoys: idxs.slice(1).map(k => fracText(FRAC_SORTED[k])), gap }
+}
+
+/** Comparing two fractions is hard in proportion to how close they are. */
+const gapMetric = (gap: number) => 78 + Math.min(30, 1.6 / Math.max(gap, 0.01))
 
 export const compare: Generator = {
   id: 'compare',
@@ -40,8 +92,9 @@ export const compare: Generator = {
     const n = choiceCount(grade)
     type Mode = 'groups' | 'biggest' | 'smallest' | 'between' | 'stmt' | 'fracLike' | 'decimal' | 'fracUnlike' | 'order'
     const table: Record<number, Mode[][]> = {
+      // 'groups' (counting two pictured piles) is a K skill, so grade 1 starts at numerals.
       0: [['groups', 'groups', 'biggest'], ['groups', 'biggest', 'smallest'], ['groups', 'biggest', 'smallest', 'between']],
-      1: [['groups', 'biggest', 'smallest'], ['biggest', 'smallest', 'between'], ['biggest', 'smallest', 'between']],
+      1: [['biggest', 'smallest'], ['biggest', 'smallest', 'between'], ['biggest', 'smallest', 'between']],
       2: [['biggest', 'smallest', 'between'], ['biggest', 'smallest', 'between'], ['biggest', 'smallest', 'between', 'stmt']],
       3: [['biggest', 'smallest', 'stmt'], ['biggest', 'smallest', 'stmt', 'between'], ['biggest', 'smallest', 'stmt', 'between']],
       4: [['fracLike', 'decimal'], ['fracLike', 'decimal', 'stmt'], ['fracLike', 'decimal', 'stmt']],
@@ -67,26 +120,35 @@ export const compare: Generator = {
     }
 
     if (mode === 'biggest' || mode === 'smallest' || mode === 'between') {
+      // Grade 2 tier 1 starts on *close* two-digit numbers so it is not easier than grade 1 tier 3.
       const range: [number, number, number] = grade === 0 ? (tier === 1 ? [1, 5, 0] : tier === 2 ? [1, 10, 0] : [1, 20, 0])
         : grade === 1 ? (tier === 1 ? [1, 20, 0] : tier === 2 ? [10, 50, 0] : [10, 99, 1])
-        : grade === 2 ? (tier === 1 ? [10, 99, 0] : tier === 2 ? [100, 499, 0] : [100, 999, 1])
-        : (tier === 1 ? [1000, 4999, 0] : tier === 2 ? [1000, 9999, 1] : [1000, 9999, 2])
+          : grade === 2 ? (tier === 1 ? [10, 99, 1] : tier === 2 ? [100, 499, 0] : [100, 999, 1])
+            : (tier === 1 ? [1000, 4999, 0] : tier === 2 ? [1000, 9999, 1] : [1000, 9999, 2])
       const [lo, hi, share] = range
       const fmt = (v: number) => grade >= 3 ? fmtInt(v) : String(v)
       const metric = 10 + Math.log2(hi) * 3 + share * 2
       if (mode === 'between') {
-        // Pick two bounds and one number strictly inside, decoys outside.
+        // Pick two bounds and one number strictly inside. Children hear "between 1 and 10" used
+        // inclusively all the time, so no decoy may be an endpoint or sit right beside one.
         const span = Math.max(4, Math.floor((hi - lo) / 6))
         const a = rng.int(lo, hi - span)
         const b = a + span
         const inside = rng.int(a + 1, b - 1)
+        const lowHi = a - 2, lowLo = Math.max(0, a - span - 2)
+        const highLo = b + 2, highHi = b + span + 2
         const outs = new Set<number>()
         let tries = 0
-        while (outs.size < n + 2 && tries++ < 200) {
-          const v = rng.bool() ? rng.int(Math.max(0, a - span), a) : rng.int(b, Math.min(hi + span, b + span))
-          if (v <= a || v >= b) outs.add(v)
+        while (outs.size < n + 2 && tries++ < 300) {
+          const useLow = lowHi >= lowLo && rng.bool()
+          const v = useLow ? rng.int(lowLo, lowHi) : rng.int(highLo, highHi)
+          if (v <= lowHi || v >= highLo) outs.add(v)
         }
-        const { choices, answer } = shuffled(rng, fmt(inside), [...outs].map(fmt), n)
+        for (let k = 0; outs.size < n + 2 && k < 200; k++) {
+          if (lowHi - k >= 0) outs.add(lowHi - k)
+          outs.add(highLo + k)
+        }
+        const { choices, answer } = shuffled(rng, fmt(inside), rng.shuffle([...outs]).map(fmt), n)
         const prompt = [`Which number is between ${fmt(a)} and ${fmt(b)}?`]
         return mathRiddle({ family: 'compare', skill: 'math: comparing numbers', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: metric + 2, grade, tier }, `between:${a},${b}`)
       }
@@ -113,55 +175,73 @@ export const compare: Generator = {
         av = a / d; bv = b / d; aT = `${a}/${d}`; bT = `${b}/${d}`; metric = 62 + d
       } else if (grade === 5 && rng.bool(0.5)) {
         const [f1, f2] = rng.sample(FRACS, 2)
-        av = f1[0] / f1[1]; bv = f2[0] / f2[1]; aT = `${f1[0]}/${f1[1]}`; bT = `${f2[0]}/${f2[1]}`
-        if (av === bv) { bv = 0.5; bT = '1/2' }
-        if (av === bv) { bv = 1 / 3; bT = '1/3' }
+        av = fval(f1); bv = fval(f2); aT = fracText(f1); bT = fracText(f2)
         metric = 82 + f1[1] + f2[1]
       } else {
         const places = grade === 4 ? (tier === 1 ? 1 : 2) : (tier === 1 ? 2 : 3)
         const p = Math.pow(10, places)
-        const a = rng.int(1, p * 2 - 1)
-        let b = rng.int(1, p * 2 - 1)
-        if (b === a) b = a + 1
-        av = a / p; bv = b / p; aT = natDec(a, places); bT = natDec(b, places); metric = 60 + grade * 5 + places * 4
+        // At tier 3 the two decimals share a whole part and a leading decimal digit, so the child
+        // has to read past the first digit instead of comparing 0.29 with 1.01.
+        let a: number, b: number
+        if (tier === 3) {
+          const whole = rng.int(0, 9) * p
+          const shared = Math.floor(rng.int(1, p - 1) / 10) * 10
+          a = whole + shared + rng.int(0, 9)
+          b = whole + shared + rng.int(0, 9)
+          if (b === a) b = a + (a % 10 === 9 ? -1 : 1)
+        } else {
+          a = rng.int(1, p * 2 - 1)
+          b = rng.int(1, p * 2 - 1)
+          if (b === a) b = a + 1
+        }
+        av = a / p; bv = b / p; aT = natDec(a, places); bT = natDec(b, places)
+        metric = 60 + grade * 5 + places * 4 + (tier === 3 ? 8 : 0)
       }
       const stmts = [`${aT} < ${bT}`, `${aT} > ${bT}`, `${aT} = ${bT}`, `${bT} < ${aT}`, `${bT} > ${aT}`]
       const truth = [av < bv, av > bv, av === bv, bv < av, bv > av]
       const ans = stmts[truth.indexOf(true)]
       const decoys = stmts.filter((_, i) => !truth[i])
       const { choices, answer } = shuffled(rng, ans, rng.shuffle(decoys), n)
-      const prompt = [rng.pick(['Which sign makes it true?', 'Which of these is true?', 'Which statement is correct?']), `${aT} __ ${bT}`]
+      // The choices are whole statements, so never ask for "the sign that fills the blank".
+      const prompt = [rng.pick(['Which of these is true?', 'Which statement is correct?']), `Compare ${aT} and ${bT}.`]
       return mathRiddle({ family: 'compare', skill: 'math: comparison symbols', prompt, choices, answer, spoken: `Which is true? ${sayChoices(choices)}?`, metric, grade, tier }, 'stmt')
     }
 
     if (mode === 'fracLike') {
-      const d = tier === 1 ? rng.int(5, 8) : rng.int(6, 12)
-      const nums = rng.sample(Array.from({ length: d - 1 }, (_, i) => i + 1), n)
+      // Grade 4 fraction ladder: same denominator (3.NF.A.3d) -> same numerator -> unlike both
+      // numerator and denominator (4.NF.A.2).
       const most = rng.bool(0.6)
-      const target = most ? Math.max(...nums) : Math.min(...nums)
-      const { choices, answer } = shuffled(rng, `${target}/${d}`, nums.filter(v => v !== target).map(v => `${v}/${d}`), n)
       const prompt = [`Which fraction is the ${most ? 'greatest' : 'least'}?`]
-      return mathRiddle({ family: 'compare', skill: 'math: comparing fractions', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: 60 + d, grade, tier }, most ? 'max' : 'min')
+      const say = (choices: Choice[]) => `${prompt[0]} ${sayChoices(choices)}?`
+      if (tier === 1) {
+        const d = rng.int(5, 9)
+        const nums = rng.sample(Array.from({ length: d - 1 }, (_, i) => i + 1), n)
+        const target = most ? Math.max(...nums) : Math.min(...nums)
+        const { choices, answer } = shuffled(rng, `${target}/${d}`, nums.filter(v => v !== target).map(v => `${v}/${d}`), n)
+        return mathRiddle({ family: 'compare', skill: 'math: comparing fractions', prompt, choices, answer, spoken: say(choices), metric: 60 + d, grade, tier }, most ? 'max' : 'min')
+      }
+      if (tier === 2) {
+        // Same numerator: more pieces means smaller pieces.
+        const k = rng.int(1, 4)
+        const dens = rng.sample(Array.from({ length: 12 - k }, (_, i) => k + 1 + i).filter(d => gcd(k, d) === 1), n)
+        const target = most ? Math.min(...dens) : Math.max(...dens)
+        const { choices, answer } = shuffled(rng, `${k}/${target}`, dens.filter(v => v !== target).map(v => `${k}/${v}`), n)
+        return mathRiddle({ family: 'compare', skill: 'math: comparing fractions', prompt, choices, answer, spoken: say(choices), metric: 68 + Math.max(...dens), grade, tier }, most ? 'max' : 'min')
+      }
+      const { answer: ansT, decoys, gap } = fracSet(rng, n, most, 0.08, 0.5)
+      const { choices, answer } = shuffled(rng, ansT, decoys, n)
+      return mathRiddle({ family: 'compare', skill: 'math: comparing fractions', prompt, choices, answer, spoken: say(choices), metric: gapMetric(gap), grade, tier }, most ? 'max' : 'min')
     }
 
     if (mode === 'fracUnlike') {
-      // Distinct values, unlike denominators.
-      const picked: [number, number][] = []
-      const vals = new Set<number>()
-      for (const f of rng.shuffle(FRACS)) {
-        const v = f[0] / f[1]
-        if (vals.has(v)) continue
-        vals.add(v); picked.push(f)
-        if (picked.length >= n) break
-      }
+      // Unlike denominators, gated by how close the answer is to its nearest rival: tier 1 is a
+      // clear win, tier 2 needs a benchmark, tier 3 needs a common denominator (7/8 vs 5/6).
       const most = rng.bool(0.6)
-      const values = picked.map(f => f[0] / f[1])
-      const idx = values.indexOf(most ? Math.max(...values) : Math.min(...values))
-      const txt = (f: [number, number]) => `${f[0]}/${f[1]}`
-      const { choices, answer } = shuffled(rng, txt(picked[idx]), picked.filter((_, i) => i !== idx).map(txt), n)
+      const [minGap, maxGap] = tier === 1 ? [0.2, 1] : tier === 2 ? [0.08, 0.2] : [0, 0.05]
+      const { answer: ansT, decoys, gap } = fracSet(rng, n, most, minGap, maxGap)
+      const { choices, answer } = shuffled(rng, ansT, decoys, n)
       const prompt = [`Which fraction is the ${most ? 'greatest' : 'least'}?`]
-      const dens = picked.reduce((s, f) => s + f[1], 0)
-      return mathRiddle({ family: 'compare', skill: 'math: comparing fractions', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: 80 + dens, grade, tier }, most ? 'max' : 'min')
+      return mathRiddle({ family: 'compare', skill: 'math: comparing fractions', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: gapMetric(gap), grade, tier }, most ? 'max' : 'min')
     }
 
     if (mode === 'decimal') {
@@ -194,7 +274,7 @@ export const compare: Generator = {
     let items: { v: number; t: string }[]
     if (useFrac) {
       const fs = rng.sample(FRACS, 3)
-      items = fs.map(f => ({ v: f[0] / f[1], t: `${f[0]}/${f[1]}` }))
+      items = fs.map(f => ({ v: fval(f), t: fracText(f) }))
       if (rng.bool()) items[1] = { v: 0.5, t: '0.5' }
     } else {
       const shared = Math.floor(rng.int(1, p - 1) / 10) * 10

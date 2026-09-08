@@ -8,6 +8,9 @@ const natDec = (units: number, places: number): string => {
   return s
 }
 
+/** A division is harder when the dividend is bigger and when the divisor is bigger. */
+const divMetric = (total: number, divisor: number) => Math.log2(Math.max(2, total)) * 8 + Math.log2(Math.max(2, divisor)) * 2
+
 /** Sharing (2), facts (3), 3-digit by 1-digit with remainders (4), 2-digit divisors and decimals (5). */
 export const divide: Generator = {
   id: 'divide',
@@ -19,8 +22,12 @@ export const divide: Generator = {
     const n = choiceCount(grade)
 
     if (grade === 2) {
-      const d = rng.int(2, tier === 1 ? 3 : tier === 2 ? 4 : 5)
-      const q = rng.int(tier === 1 ? 1 : 2, tier === 1 ? 5 : tier === 2 ? 6 : 8)
+      // Disjoint dividend bands per tier, all inside the grade-2 array range (2.OA.4), and a
+      // quotient of at least 2 so "3 cookies in 3 equal rows" never happens.
+      const [dLo, dHi] = tier === 1 ? [2, 3] : tier === 2 ? [2, 4] : [3, 5]
+      const [tLo, tHi] = tier === 1 ? [4, 12] : tier === 2 ? [12, 24] : [15, 25]
+      const d = rng.int(dLo, dHi)
+      const q = rng.int(Math.max(2, Math.ceil(tLo / d)), Math.floor(tHi / d))
       const t = d * q
       const item = rng.pick(COUNTER_ITEMS)
       const items = plural(item, 2)
@@ -28,7 +35,9 @@ export const divide: Generator = {
       const { choices, answer } = shuffled(rng, String(q), decoys.map(String), n)
       const symbolic = tier === 3 && rng.bool(0.35)
       const name = rng.pick(NAMES)
-      const prompt = symbolic ? [`${t} ÷ ${d} = ?`] : rng.pick([
+      // The bare "÷" is a grade-3 notation, so at grade 2 it always comes with the words that
+      // explain it.
+      const prompt = symbolic ? [`${t} ÷ ${d} = ?`, `Put ${t} ${items} in ${d} equal groups.`] : rng.pick([
         [`${d} friends share ${t} ${items} equally.`, 'How many does each friend get?'],
         [`${t} ${items} go into ${d} bags equally.`, 'How many in each bag?'],
         [`${name} puts ${t} ${items} in ${d} equal rows.`, 'How many in each row?'],
@@ -37,12 +46,12 @@ export const divide: Generator = {
       return mathRiddle({
         family: 'divide', skill: 'math: sharing equally', prompt,
         visual: { kind: 'counters', item, count: t, groups: tier === 1 ? d : undefined },
-        choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: Math.log2(t) * 8, grade, tier,
+        choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: divMetric(t, d), grade, tier,
       }, `num:${t}/${d}`)
     }
 
     if (grade === 3) {
-      const [dLo, dHi, qLo, qHi] = tier === 1 ? [2, 5, 1, 10] : tier === 2 ? [2, 9, 2, 10] : [6, 10, 6, 12]
+      const [dLo, dHi, qLo, qHi] = tier === 1 ? [2, 5, 2, 10] : tier === 2 ? [2, 9, 2, 10] : [6, 10, 6, 12]
       const d = rng.int(dLo, dHi), q = rng.int(qLo, qHi)
       const t = d * q
       const missing = tier >= 2 && rng.bool(0.3)
@@ -50,13 +59,13 @@ export const divide: Generator = {
         const decoys = numDecoys(rng, d, n - 1, [d - 1, d + 1, q, t - q, d + 2], 3, 1)
         const { choices, answer } = shuffled(rng, String(d), decoys.map(String), n)
         const prompt = [`${t} ÷ ? = ${q}`, 'What is the missing number?']
-        return mathRiddle({ family: 'divide', skill: 'math: division facts', prompt, choices, answer, spoken: `${t} divided by what equals ${q}? ${sayChoices(choices)}?`, metric: Math.log2(t) * 8 + 3, grade, tier }, `num:${t}/${q}`)
+        return mathRiddle({ family: 'divide', skill: 'math: division facts', prompt, choices, answer, spoken: `${t} divided by what equals ${q}? ${sayChoices(choices)}?`, metric: divMetric(t, d) + 3, grade, tier }, `num:${t}/${q}`)
       }
       const related = [d - 1, d + 1].filter(x => x > 1 && t % x === 0).map(x => t / x)
       const decoys = numDecoys(rng, q, n - 1, [q - 1, q + 1, d, t - d, ...related, q + 2], 3, 0)
       const { choices, answer } = shuffled(rng, String(q), decoys.map(String), n)
       const prompt = [`${t} ÷ ${d} = ?`]
-      return mathRiddle({ family: 'divide', skill: 'math: division facts', prompt, choices, answer, spoken: `What is ${t} divided by ${d}? ${sayChoices(choices)}?`, metric: Math.log2(t) * 8, grade, tier }, `num:${t}/${d}`)
+      return mathRiddle({ family: 'divide', skill: 'math: division facts', prompt, choices, answer, spoken: `What is ${t} divided by ${d}? ${sayChoices(choices)}?`, metric: divMetric(t, d), grade, tier }, `num:${t}/${d}`)
     }
 
     if (grade === 4) {
@@ -71,17 +80,17 @@ export const divide: Generator = {
           const decoys = numDecoys(rng, r, n - 1, [r + 1, r - 1, d - r, d, q % 10, 0], 2, 0, Math.max(d, r + 2))
           const { choices, answer } = shuffled(rng, String(r), decoys.map(String), n)
           const prompt = [`${t} ÷ ${d}`, 'What is the remainder?']
-          return mathRiddle({ family: 'divide', skill: 'math: division with remainders', prompt, choices, answer, spoken: `${t} divided by ${d}. What is the remainder? ${sayChoices(choices)}?`, metric: Math.log2(t) * 8 + 10, grade, tier }, `num:${t}%${d}`)
+          return mathRiddle({ family: 'divide', skill: 'math: division with remainders', prompt, choices, answer, spoken: `${t} divided by ${d}. What is the remainder? ${sayChoices(choices)}?`, metric: divMetric(t, d) + 10, grade, tier }, `num:${t}%${d}`)
         }
         const decoys = numDecoys(rng, q, n - 1, [q + 1, q - 1, q + 10, q - 10, Math.floor(t / (d + 1)), Math.floor(t / (d - 1))], 4, 1)
         const { choices, answer } = shuffled(rng, String(q), decoys.map(String), n)
         const prompt = [`${t} ÷ ${d}`, 'What is the quotient?', '(Ignore the remainder.)']
-        return mathRiddle({ family: 'divide', skill: 'math: division with remainders', prompt, choices, answer, spoken: `${t} divided by ${d}. What is the quotient, ignoring the remainder? ${sayChoices(choices)}?`, metric: Math.log2(t) * 8 + 10, grade, tier }, `num:floor(${t}/${d})`)
+        return mathRiddle({ family: 'divide', skill: 'math: division with remainders', prompt, choices, answer, spoken: `${t} divided by ${d}. What is the quotient, ignoring the remainder? ${sayChoices(choices)}?`, metric: divMetric(t, d) + 10, grade, tier }, `num:floor(${t}/${d})`)
       }
       const decoys = numDecoys(rng, q, n - 1, [q + 1, q - 1, q + 10, q - 10, t - d, Math.floor(t / (d + 1))], 4, 1)
       const { choices, answer } = shuffled(rng, String(q), decoys.map(String), n)
       const prompt = [`${t} ÷ ${d} = ?`]
-      return mathRiddle({ family: 'divide', skill: 'math: long division', prompt, choices, answer, spoken: `What is ${t} divided by ${d}? ${sayChoices(choices)}?`, metric: Math.log2(t) * 8, grade, tier }, `num:${t}/${d}`)
+      return mathRiddle({ family: 'divide', skill: 'math: long division', prompt, choices, answer, spoken: `What is ${t} divided by ${d}? ${sayChoices(choices)}?`, metric: divMetric(t, d), grade, tier }, `num:${t}/${d}`)
     }
 
     // grade 5
@@ -89,13 +98,14 @@ export const divide: Generator = {
     if (kind === 'decimal') {
       const places = tier === 2 ? 1 : rng.pick([1, 2])
       const d = rng.int(2, 9)
-      const qu = rng.int(2, places === 1 ? 99 : 399)
+      // At least two significant digits in the quotient: "0.4 ÷ 2" is a single basic fact.
+      const qu = rng.int(places === 1 ? 11 : 105, places === 1 ? 99 : 399)
       const tu = qu * d
       const decoys = numDecoys(rng, qu, n - 1, [qu * 10, Math.round(qu / 10), qu + d, qu - d, qu + 1, qu - 1], Math.max(3, Math.round(qu * 0.1)), 1)
       const tT = natDec(tu, places)
       const { choices, answer } = shuffled(rng, natDec(qu, places), decoys.map(v => natDec(v, places)), n)
       const prompt = [`${tT} ÷ ${d} = ?`]
-      return mathRiddle({ family: 'divide', skill: 'math: dividing decimals', prompt, choices, answer, spoken: `What is ${tT} divided by ${d}? ${sayChoices(choices)}?`, metric: Math.log2(tu) * 8 + places * 15, grade, tier }, `num:${tT}/${d}`)
+      return mathRiddle({ family: 'divide', skill: 'math: dividing decimals', prompt, choices, answer, spoken: `What is ${tT} divided by ${d}? ${sayChoices(choices)}?`, metric: divMetric(tu, d) + places * 15, grade, tier }, `num:${tT}/${d}`)
     }
     const d = rng.int(11, tier === 1 ? 20 : 40)
     const q = rng.int(tier === 1 ? 5 : 10, tier === 1 ? 30 : 60)
@@ -105,12 +115,12 @@ export const divide: Generator = {
       const decoys = numDecoys(rng, r, n - 1, [r + 1, r - 1, d - r, r + 10, r - 10, q], 4, 0, d + 5)
       const { choices, answer } = shuffled(rng, String(r), decoys.map(String), n)
       const prompt = [`${t} ÷ ${d}`, 'What is the remainder?']
-      return mathRiddle({ family: 'divide', skill: 'math: two-digit divisors', prompt, choices, answer, spoken: `${t} divided by ${d}. What is the remainder? ${sayChoices(choices)}?`, metric: Math.log2(t) * 8 + 10, grade, tier }, `num:${t}%${d}`)
+      return mathRiddle({ family: 'divide', skill: 'math: two-digit divisors', prompt, choices, answer, spoken: `${t} divided by ${d}. What is the remainder? ${sayChoices(choices)}?`, metric: divMetric(t, d) + 10, grade, tier }, `num:${t}%${d}`)
     }
     const t = q * d
     const decoys = numDecoys(rng, q, n - 1, [q + 1, q - 1, q + 2, q - 2, d, Math.floor(t / (d + 1)), Math.floor(t / (d - 1))], 3, 1)
     const { choices, answer } = shuffled(rng, String(q), decoys.map(String), n)
     const prompt = [`${t} ÷ ${d} = ?`]
-    return mathRiddle({ family: 'divide', skill: 'math: two-digit divisors', prompt, choices, answer, spoken: `What is ${t} divided by ${d}? ${sayChoices(choices)}?`, metric: Math.log2(t) * 8, grade, tier }, `num:${t}/${d}`)
+    return mathRiddle({ family: 'divide', skill: 'math: two-digit divisors', prompt, choices, answer, spoken: `What is ${t} divided by ${d}? ${sayChoices(choices)}?`, metric: divMetric(t, d), grade, tier }, `num:${t}/${d}`)
   },
 }

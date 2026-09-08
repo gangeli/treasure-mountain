@@ -84,6 +84,7 @@ if (testMode) {
   window.__tm = {
     ready: true,
     game,
+    AudioEngine,
     shots: () => shots,
     show(name: string) {
       const g = game

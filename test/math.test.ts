@@ -226,6 +226,16 @@ function verify(r: Riddle): string | null {
       if (a !== expected) return `answer ${a} != digit ${expected} of ${vS} at place ${placeS}`
       return ds.includes(expected) ? 'decoy equals answer' : ''
     }
+    case 'roundu': {
+      // Exact half-up rounding, recomputed in whole units so a .5 tie is never a float accident.
+      const [units, places, to] = arg.split(',').map(Number)
+      const step = Math.pow(10, places - to)
+      const q = Math.floor(units / step), rem = units - q * step
+      const expected = (rem * 2 >= step ? q + 1 : q) / Math.pow(10, to)
+      const { a, ds } = numericAll()
+      if (!close(a, expected)) return `answer ${ans.text} != ${expected} (round ${units}e-${places} to ${to} places)`
+      return ds.some(d => close(d, expected)) ? 'decoy equals answer' : ''
+    }
     case 'digit': {
       const [place, d] = arg.split(',').map(Number)
       const { a, ds } = numericAll()
