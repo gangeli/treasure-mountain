@@ -609,15 +609,15 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| 3 | 1 | 22.0 | 9.6 | 0 | 0% | A noun is a person, place or thing. / Which word is a noun? [describe / unless / though / *feather] |
-| 3 | 2 | 28.2 | 10.2 | 0 | 0% | A noun is a person, place or thing. / Which word is a noun? [speak / wander / fluffy / *garden] |
-| 3 | 3 | 34.8 | 10.4 | 0 | 0% | "The shiny car stopped near the park." / Which word is a verb? [near / *stopped / shiny / The] |
-| 4 | 1 | 44.2 | 9.5 | 0 | 0% | "The enormous whale swam gracefully." / Which word is an adjective? [*enormous / whale / The / gracefully] |
-| 4 | 2 | 45.4 | 9.8 | 0 | 0% | "The golden leaves fell gently." / Which word is an adjective? [gently / *golden / leaves / fell] |
-| 4 | 3 | 51.6 | 10.1 | 0 | 0% | An adverb is a word that tells how or when. / Which word is an adverb? [whether / chair / munch / *rarely] |
-| 5 | 1 | 53.3 | 10.4 | 0 | 0% | "They laughed happily at the silly clown." / Which word is a pronoun? [laughed / happily / silly / *They] |
-| 5 | 2 | 61.9 | 10.2 | 0 | 0% | Which word is a conjunction? [teach / tiny / never / *yet] |
-| 5 | 3 | 63.5 | 10.2 | 0 | 0% | Which word is a conjunction? [*after / wander / sadly / sour] |
+| 3 | 1 | 22.1 | 11.4 | 0 | 0% | A noun is a person, place or thing. / Which word is a noun? [loudly / because / *feather / purple] |
+| 3 | 2 | 28.6 | 9.9 | 0 | 0% | Which word is a noun? [speak / wander / *garden / fluffy] |
+| 3 | 3 | 34.8 | 9.9 | 0 | 0% | A verb is an action word. / Which word is a verb? [wildly / tiger / *decide / gloomy] |
+| 4 | 1 | 44.0 | 9.7 | 0 | 0% | "He suddenly dropped the wet towel." / Which word is an adjective? [*wet / suddenly / He / towel] |
+| 4 | 2 | 46.5 | 9.4 | 0 | 0% | What part of speech is "timid"? [pronoun / *adjective / verb / adverb] |
+| 4 | 3 | 52.1 | 10.1 | 0 | 0% | "The proud rooster crowed early." / Which word is an adverb? [crowed / proud / rooster / *early] |
+| 5 | 1 | 53.3 | 9.9 | 0 | 0% | "We carefully carried the fragile vase." / Which word is a pronoun? [carefully / carried / fragile / *We] |
+| 5 | 2 | 62.4 | 11.1 | 0 | 0% | "You can play outside until dinner is ready." / Which word is a conjunction? [ready / outside / *until / dinner] |
+| 5 | 3 | 64.4 | 10.9 | 0 | 0% | "Sam painted the fence while I raked leaves." / Which word is a conjunction? [leaves / Sam / *while / raked] |
 
 ### Vocabulary (`vocabulary`, reading)
 
@@ -637,7 +637,7 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 2.0 | 8.6 | 0 | 100% | Which one is a different color? [picture / picture / *picture] |
+| K | 1 | 2.0 | 8.7 | 0 | 100% | Which one is a different color? [picture / picture / *picture] |
 | K | 2 | 4.0 | 8.5 | 0 | 100% | Which one is a different shape? [picture / *picture / picture] |
 | K | 3 | 6.0 | 7.6 | 0 | 100% | Count each group. / Which group has a different number? [picture / *picture / picture] |
 | 1 | 1 | 12.5 | 13.4 | 0 | 0% | Two of these go together. / Which one is the odd one out? / Hint: most of these are animals. [cow / pig / *car] |
