@@ -74,14 +74,44 @@ export class Game {
   }
 
   // ------------------------------------------------------------------ persistence
+  /**
+   * Reads a save back. Everything here comes from localStorage, which a browser extension, a
+   * half-finished write or an older build of the game can leave in any shape at all, so nothing is
+   * trusted: a bad field falls back to its default rather than crashing the child's whole game.
+   */
   loadSave(save: SaveData): void {
-    this.settings = { ...this.settings, ...save.settings }
-    const p = save.profiles as Record<number, Profile> | undefined
-    if (p) this.profiles = p
-    if (save.grade !== null && save.grade !== undefined) this.grade = save.grade as Grade
-    const run = (save.lastRun as any) as { run: Run; grade: Grade; screen: Screen } | null
-    if (run && run.run) { this.run = run.run; this.grade = run.grade; this.savedRunGrade = run.grade }
-    this.firstRun = !p || Object.keys(p).length === 0
+    const isObj = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v)
+    const isGrade = (v: unknown): v is Grade => typeof v === 'number' && Number.isInteger(v) && v >= 0 && v <= 5
+    const num = (v: unknown, max: number): number => (typeof v === 'number' && Number.isFinite(v) ? Math.max(0, Math.min(max, Math.floor(v))) : 0)
+    const strs = (v: unknown): string[] => (Array.isArray(v) ? v.filter(x => typeof x === 'string') : [])
+
+    if (isObj(save.settings)) this.settings = { sound: save.settings.sound !== false, music: save.settings.music !== false }
+    const saved = isObj(save.profiles) ? save.profiles : {}
+    let count = 0
+    for (const [k, v] of Object.entries(saved)) {
+      const grade = Number(k)
+      if (!isGrade(grade) || !isObj(v)) continue
+      this.profiles[grade] = { grade, total: num(v.total, 1e6), prizes: strs(v.prizes), ascents: num(v.ascents, 1e6), crown: v.crown === true }
+      count++
+    }
+    if (isGrade(save.grade)) this.grade = save.grade
+    const last = save.lastRun as { run?: unknown; grade?: unknown } | null
+    if (isObj(last) && isObj(last.run) && isGrade(last.grade) && this.validRun(last.run)) {
+      this.run = last.run as unknown as Run
+      this.grade = last.grade
+      this.savedRunGrade = last.grade
+    }
+    this.firstRun = count === 0
+  }
+
+  /** A resumable climb: every field the level and castle code reads, in the shape it expects. */
+  private validRun(r: Record<string, unknown>): boolean {
+    const fin = (v: unknown): boolean => typeof v === 'number' && Number.isFinite(v)
+    const strArr = (v: unknown): boolean => Array.isArray(v) && v.every(x => typeof x === 'string')
+    return [1, 2, 3].includes(r.levelNo as number) && fin(r.seed) && fin(r.coins) && (r.coins as number) >= 0 &&
+      fin(r.nets) && (r.nets as number) >= 0 && strArr(r.treasures) && !!r.clues && typeof r.clues === 'object' &&
+      typeof r.hasKey === 'boolean' && Array.isArray(r.searched) && r.searched.every(fin) &&
+      typeof r.secretUsed === 'boolean' && fin(r.groundCoinsSpawned) && strArr(r.seen) && strArr(r.recentAreas) && fin(r.playerX)
   }
 
   toSave(): SaveData {
