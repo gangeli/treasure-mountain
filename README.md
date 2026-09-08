@@ -53,8 +53,10 @@ node e2e/playtest.mjs                  # plays a full ascent at every grade thro
 cd android && ./gradlew :app:assembleRelease   # signed APK in app/build/outputs/apk/release/
 ```
 
-The release keystore in `android/app/release.keystore` is intentionally committed: it only exists
-so that new builds install over old ones on a sideloaded tablet.
+The release keystore in `android/app/release.keystore` is intentionally committed, and so is its
+password: it exists only so that new builds install over old ones on a sideloaded tablet, and it
+signs nothing that is distributed through a store. `TM_KEYSTORE_PASSWORD` and `TM_KEY_PASSWORD`
+override it if you want to sign with your own key.
 
 ## Documents
 
