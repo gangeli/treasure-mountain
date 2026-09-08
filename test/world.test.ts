@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { generateLevel, treasuresForStars, starsForTotal, KINDS } from '../src/game/world'
+import { generateLevel, treasuresForStars, starsForTotal, groupLabel, KINDS } from '../src/game/world'
 import { GRADES } from '../src/content/types'
 import { loopDist } from '../src/game/layout'
 
@@ -47,9 +47,15 @@ describe('level generation', () => {
             expect(kindsHere.has(a) && kindsHere.has(b), `${a} + ${b} at grade ${grade}`).toBe(false)
           }
         }
-        // Words
+        // Words. All three, and in agreement: a clue that reads "one big stumps" would send a
+        // child looking for a group that does not exist.
         expect(lv.clueWords.number).toBeTruthy()
+        expect(lv.clueWords.descriptor).toBeTruthy()
         expect(lv.clueWords.object).toBeTruthy()
+        const single = lv.clueWords.number === 'one'
+        const tk = KINDS.find(k => k.kind === lv.target.kind)!
+        expect(lv.clueWords.object, `"${lv.clueWords.number} ${lv.clueWords.object}"`).toBe(single ? tk.kind : tk.plural)
+        expect(groupLabel(lv.target)).toBe(`${lv.clueWords.number} ${lv.clueWords.descriptor} ${lv.clueWords.object}`)
       }
     })
   }
