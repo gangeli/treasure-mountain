@@ -103,6 +103,16 @@ export function generateLevel(no: LevelNo, seed: number, grade: Grade, treasures
     const lv = tryGenerate(no, seed, grade, treasures, stars, attempt)
     if (lv) return lv
   }
+  // Every one of 57,600 (level, grade, rank, seed) draws lays out inside those 30 attempts, so this
+  // is unreachable today. It is here because the alternative to laying out one treasure fewer is an
+  // exception thrown in the middle of a child's climb, and a level with four treasures instead of
+  // five is a thing nothing on screen can even name.
+  for (let fewer = treasures - 1; fewer >= 1; fewer--) {
+    for (let attempt = 0; attempt < 30; attempt++) {
+      const lv = tryGenerate(no, seed, grade, fewer, stars, attempt + 100)
+      if (lv) return lv
+    }
+  }
   throw new Error(`could not lay out level ${no} seed ${seed}`)
 }
 

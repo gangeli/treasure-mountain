@@ -69,3 +69,25 @@ describe('level generation', () => {
     expect([0, 1, 2, 3, 4, 5, 6, 7].map(treasuresForStars)).toEqual([2, 2, 3, 3, 4, 4, 5, 5])
   })
 })
+
+/**
+ * A level that cannot be laid out throws, and a throw in the middle of a climb is the end of that
+ * climb. This walks every (level, grade, rank) the game can ask for against 400 seeds each - 57,600
+ * layouts - and none of them needs the fallback, let alone the throw behind it.
+ */
+describe('every level the game can ask for can be built', () => {
+  it('57,600 layouts, no failures', () => {
+    let built = 0
+    for (let stars = 0; stars <= 7; stars++) {
+      const treasures = treasuresForStars(stars)
+      for (const grade of [0, 1, 2, 3, 4, 5] as const) for (const no of [1, 2, 3] as const) {
+        for (let seed = 1; seed <= 400; seed++) {
+          const lv = generateLevel(no, seed * 7919 + stars * 13, grade, treasures, stars)
+          expect(lv.treasures, `level ${no} grade ${grade} stars ${stars} seed ${seed} lost a treasure`).toBe(treasures)
+          built++
+        }
+      }
+    }
+    expect(built).toBe(57600)
+  })
+})
