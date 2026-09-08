@@ -309,14 +309,16 @@ function riddle(ctx: Ctx, g: Game, clueMode = false): void {
 }
 
 function bigBubble(ctx: Ctx, lines: string[], word?: string, wordLine = lines.length): void {
-  const w = 760, h = 260, x = W / 2 - w / 2, y = 90
+  // Sits above the answer buttons (which start at y 258), so the child can still see which choice
+  // was the right one while the bubble congratulates them.
+  const w = 760, h = 214, x = W / 2 - w / 2, y = 34
   ctx.save(); ctx.globalAlpha = 0.98
-  scallop(ctx, x + w / 2, y + h / 2, w / 2 - 30, h / 2 - 20, 16)
+  scallop(ctx, x + w / 2, y + h / 2, w / 2 - 30, h / 2 - 14, 16)
   fillStroke(ctx, P.white, P.ink, 3)
   ctx.restore()
   const filtered = lines.filter((l, i) => l !== '' || i === wordLine - 1)
-  filtered.forEach((l, i) => text(ctx, l, W / 2, y + 62 + i * 40, { size: 30, align: 'center', color: P.ink, weight: 800 }))
-  if (word) text(ctx, word, W / 2, y + 62 + Math.min(wordLine, filtered.length) * 40 + (wordLine >= lines.length ? 6 : 0), { size: 40, align: 'center', color: P.redDark, weight: 900, font: DISPLAY })
+  filtered.forEach((l, i) => text(ctx, l, W / 2, y + 46 + i * 36, { size: 28, align: 'center', color: P.ink, weight: 800 }))
+  if (word) text(ctx, word, W / 2, y + 48 + Math.min(wordLine, filtered.length) * 36, { size: 38, align: 'center', color: P.redDark, weight: 900, font: DISPLAY })
 }
 
 // ------------------------------------------------------------------ castle
@@ -544,12 +546,15 @@ function about(ctx: Ctx, g: Game): void {
     'for kindergarten through 5th grade, in reading, math, science and',
     'thinking, and get harder as you earn stars.',
     '',
-    'Everything is drawn and synthesised in code, so the whole game is a',
+    'Everything is drawn and synthesized in code, so the whole game is a',
     'few hundred kilobytes and works offline. Nothing leaves your device.',
     '',
     'Not affiliated with The Learning Company. MIT licensed.',
   ]
-  lines.forEach((l, i) => text(ctx, l, W / 2, 120 + i * 34, { size: 22, align: 'center', color: P.white, weight: 700 }))
+  // On a card: the sky gradient is at its palest behind the last paragraph, where white text was
+  // down to about 2:1.
+  roundRect(ctx, 120, 96, W - 240, lines.length * 34 + 28, 20, 'rgba(12,28,58,0.72)', P.blueDark, 3)
+  lines.forEach((l, i) => text(ctx, l, W / 2, 124 + i * 34, { size: 22, align: 'center', color: P.white, weight: 700 }))
   drawElf(ctx, 200, 640, 1, 'dance', g.time, 0, 'scroll'); drawElf(ctx, 1080, 640, -1, 'dance', g.time + 1, 2, 'balloon')
 }
 
