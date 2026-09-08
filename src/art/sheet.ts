@@ -30,8 +30,11 @@ export function drawSheet(ctx: Ctx, name: string, t: number): void {
     case 'sheet-scenery1': case 'sheet-scenery2': case 'sheet-scenery3': {
       const no = parseInt(name.slice(-1)) as LevelNo
       const th = THEMES[no]
-      ctx.fillStyle = th.ground; ctx.fillRect(0, 0, W, H)
-      text(ctx, `Scenery, level ${no}: every kind x descriptor`, 20, 24, { size: 22, weight: 900, color: P.white, outline: P.ink, outlineWidth: 4 })
+      // Neutral page with a strip of the level's own ground under each row: on a full green page
+      // the green bushes and trees were invisible.
+      ctx.fillStyle = '#e8edf7'; ctx.fillRect(0, 0, W, H)
+      for (const gy of [215, 380, 545, 710]) { ctx.fillStyle = th.ground; ctx.fillRect(0, gy - 4, W, 30); ctx.fillStyle = th.groundDark; ctx.fillRect(0, gy - 4, W, 4) }
+      text(ctx, `Scenery, level ${no}: every kind x descriptor`, 20, 24, { size: 22, weight: 900, color: P.ink, outline: P.white, outlineWidth: 4 })
       const kinds = KINDS.filter(k => k.levels.includes(no))
       let x = 60, y = 215
       for (const k of kinds) {

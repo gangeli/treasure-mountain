@@ -155,12 +155,16 @@ function stump(ctx: Ctx, x: number, y: number, s: number): void {
 
 function fern(ctx: Ctx, x: number, y: number, s: number, t: number, r: number): void {
   ctx.strokeStyle = P.ink; ctx.lineWidth = 2
-  for (let i = 0; i < 5; i++) {
-    const a = -Math.PI / 2 + (i - 2) * 0.42 + Math.sin(t + i + r * 6) * 0.04
-    const len = (40 + (i === 2 ? 14 : 0)) * s
+  // A small fern gets three fronds, not five: at this size five overlapped into a dark scribble.
+  const fronds = s < 0.8 ? 3 : 5
+  for (let i = 0; i < fronds; i++) {
+    const a = -Math.PI / 2 + (i - (fronds - 1) / 2) * 0.42 + Math.sin(t + i + r * 6) * 0.04
+    const len = (40 + (i === (fronds - 1) / 2 ? 14 : 0)) * s
     const ex = x + Math.cos(a) * len, ey = y + Math.sin(a) * len
-    ctx.beginPath(); ctx.moveTo(x, y); ctx.quadraticCurveTo(x + Math.cos(a) * len * 0.5 - 4, y + Math.sin(a) * len * 0.5, ex, ey); ctx.lineWidth = 4; ctx.strokeStyle = P.ink; ctx.stroke(); ctx.lineWidth = 2; ctx.strokeStyle = P.greenDark; ctx.stroke()
-    for (let k = 1; k <= 4; k++) { const f = k / 5; const px = x + Math.cos(a) * len * f, py = y + Math.sin(a) * len * f; leaf(ctx, px, py, 6 * s, a - 1.2, P.greenLight); leaf(ctx, px, py, 6 * s, a + 1.2 + Math.PI, P.green) }
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.quadraticCurveTo(x + Math.cos(a) * len * 0.5 - 4, y + Math.sin(a) * len * 0.5, ex, ey); ctx.lineWidth = Math.max(2.5, 4 * s); ctx.strokeStyle = P.ink; ctx.stroke(); ctx.lineWidth = Math.max(1.5, 2 * s); ctx.strokeStyle = P.greenDark; ctx.stroke()
+    // Fewer, bigger leaflets on a small fern: at 6*s they merged into a dark scribble.
+    const leaves = s < 0.8 ? 3 : 4
+    for (let k = 1; k <= leaves; k++) { const f = k / (leaves + 1); const px = x + Math.cos(a) * len * f, py = y + Math.sin(a) * len * f; const ls = Math.max(5, 6 * s); leaf(ctx, px, py, ls, a - 1.2, P.greenLight); leaf(ctx, px, py, ls, a + 1.2 + Math.PI, P.green) }
   }
 }
 
