@@ -63,7 +63,8 @@ function tunnel(ctx: Ctx, x: number, y: number, no: LevelNo): void {
     ctx.fillStyle = P.purpleDark; ctx.fillRect(x - w / 2 + 12, y - h + 32, w - 24, h - 40)
     roundRect(ctx, x - w / 2 - 12, y - h, w + 24, 22, 3, P.wood)
     roundRect(ctx, x - w / 2 - 12, y - h + 10, 18, h - 10, 3, P.wood); roundRect(ctx, x + w / 2 - 6, y - h + 10, 18, h - 10, 3, P.wood)
-    roundRect(ctx, x - 60, y - h - 34, 120, 34, 5, P.cream)
+    // 120px was narrower than the words, so the last letter sat outside the plate.
+    roundRect(ctx, x - 74, y - h - 34, 148, 34, 5, P.cream)
     text(ctx, 'MINE TUNNEL', x, y - h - 17, { size: 18, align: 'center', color: P.purpleDark, weight: 800 })
     // lantern
     line(ctx, x + w / 2 - 20, y - h + 22, x + w / 2 - 20, y - h + 40, P.ink, 2)
