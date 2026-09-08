@@ -75,23 +75,25 @@ function drawSequence(rng: Rng, grade: number, tier: number): { rule: Rule; term
   if (grade === 1) {
     // Tier 3 has its own pool: counting back, odd +2 runs and +5/+10 off the round numbers.
     if (tier === 3) {
+      // Counting back, odd +2 runs and +5/+10 that do not start on a round number: none of these
+      // can also come out of tier 1 or tier 2, so the hardest tier never repeats the easiest.
       const opt = rng.int(0, 6)
       const k = [-1, -2, -5, -10, 2, 5, 10][opt]
       rule = { kind: 'add', k }
       const start = opt === 0 ? rng.int(12, 40) : opt === 1 ? rng.int(15, 45) : opt === 2 ? offGrid(rng, 41, 99, 5)
-        : opt === 3 ? offGrid(rng, 51, 99, 10) : opt === 4 ? rng.int(3, 18) * 2 + 1 : opt === 5 ? offGrid(rng, 3, 60, 5) : offGrid(rng, 3, 55, 10)
+        : opt === 3 ? offGrid(rng, 51, 99, 10) : opt === 4 ? rng.int(16, 30) * 2 + 1 : opt === 5 ? offGrid(rng, 3, 60, 5) : offGrid(rng, 3, 55, 10)
       terms = [start]
     } else {
       const ks = tier === 1 ? [1, 1, 2] : [2, 5, 10]
       const k = rng.pick(ks)
       rule = { kind: 'add', k }
       // Count-by-1 starts at 6 or above: 1, 2, 3, 4 is pre-K, and its decoys are all on the scroll.
-      const start = k === 1 ? rng.int(6, 27) : k === 2 ? rng.int(1, 30) : k === 5 ? rng.int(0, 12) * 5 : rng.int(0, 5) * 10
+      const start = k === 1 ? rng.int(6, 27) : k === 2 ? (tier === 1 ? rng.int(0, 15) : rng.int(16, 30)) * 2 : k === 5 ? rng.int(0, 12) * 5 : rng.int(0, 5) * 10
       terms = [start]
     }
   } else if (grade === 2) {
     // Tier 3 keeps +/-3, +/-4, +/-6 and +25; the easy +/-5 and +/-10 runs stay in tiers 1-2.
-    const ks = tier === 1 ? [5, 10, 2] : tier === 2 ? [-5, -10, 3, 4] : [-3, -4, -6, 4, 6, 25]
+    const ks = tier === 1 ? [5, 10, 2] : tier === 2 ? [-5, -10, 3, 4] : [-3, -4, -6, 6, 25]
     const k = rng.pick(ks)
     rule = { kind: 'add', k }
     const start = k < 0 ? rng.int(40, 100) : k === 25 ? rng.int(0, 4) * 25 : rng.int(3, 50)
@@ -100,18 +102,18 @@ function drawSequence(rng: Rng, grade: number, tier: number): { rule: Rule; term
     // Doubling from small starts is tier 1-2; tripling, halving and big doubles are tier 3.
     if (tier === 3) {
       const pick = rng.int(0, 5)
-      if (pick === 0) { rule = { kind: 'mul', m: 2 }; terms = [rng.int(6, 14)] }
+      if (pick === 0) { rule = { kind: 'mul', m: 2 }; terms = [rng.int(10, 14)] }
       else if (pick === 1) { rule = { kind: 'mul', m: 3 }; terms = [rng.int(1, 4)] }
       else if (pick === 2) { rule = { kind: 'div', m: 2 }; terms = [rng.int(3, 20) * 16] }
       else { const k = [-7, -9, 12][pick - 3]; rule = { kind: 'add', k }; terms = [k < 0 ? rng.int(100, 300) : rng.int(100, 300)] }
     } else if (tier === 2) {
       const opts: Rule[] = [{ kind: 'add', k: -9 }, { kind: 'add', k: 8 }, { kind: 'add', k: 11 }, { kind: 'add', k: 12 }, { kind: 'mul', m: 2 }]
       rule = rng.pick(opts)
-      terms = [rule.kind === 'mul' ? rng.int(1, 6) : rule.kind === 'add' && rule.k < 0 ? rng.int(60, 140) : rng.int(20, 90)]
+      terms = [rule.kind === 'mul' ? rng.int(6, 9) : rule.kind === 'add' && rule.k < 0 ? rng.int(60, 140) : rng.int(20, 90)]
     } else {
       const opts: Rule[] = [{ kind: 'add', k: 7 }, { kind: 'add', k: 9 }, { kind: 'add', k: -7 }, { kind: 'mul', m: 2 }]
       rule = rng.pick(opts)
-      terms = [rule.kind === 'mul' ? rng.int(1, 5) : rule.kind === 'add' && rule.k < 0 ? rng.int(40, 100) : rng.int(1, 50)]
+      terms = [rule.kind === 'mul' ? rng.int(1, 5) : rule.kind === 'add' && rule.k < 0 ? rng.int(40, 99) : rng.int(1, 50)]
     }
   } else if (grade === 4) {
     // Tier 1 is single-step with 2-3 digit numbers; tier 2 doubles +/- k; tier 3 triples +/- k.
@@ -130,21 +132,21 @@ function drawSequence(rng: Rng, grade: number, tier: number): { rule: Rule; term
     // Grade 5: every tier draws from its own pool so the hardest tier never repeats the easiest.
     if (tier === 1) {
       const kind = rng.weighted(['square', 'tri', 'two'] as const, [3, 3, 2])
-      if (kind === 'square') { const s = rng.int(1, 5); for (let i = 0; i < 5; i++) terms.push((s + i) * (s + i)); rule = { kind: 'square' }; expr = `${s + 4}*${s + 4}` }
+      if (kind === 'square') { const s = rng.int(1, 4); for (let i = 0; i < 5; i++) terms.push((s + i) * (s + i)); rule = { kind: 'square' }; expr = `${s + 4}*${s + 4}` }
       else if (kind === 'tri') { const s = rng.int(1, 4); for (let i = 0; i < 5; i++) { const j = s + i; terms.push(j * (j + 1) / 2) } rule = { kind: 'tri' }; expr = `${s + 4}*(${s + 4}+1)/2` }
       else { rule = { kind: 'two', m: 2, k: -1 }; terms = [twoStart(rng, 2, -1, 7)] }
     } else if (tier === 2) {
       const kind = rng.weighted(['square', 'tri', 'fib', 'two'] as const, [3, 2, 3, 2])
       if (kind === 'square') { const s = rng.int(5, 9); for (let i = 0; i < 5; i++) terms.push((s + i) * (s + i)); rule = { kind: 'square' }; expr = `${s + 4}*${s + 4}` }
       else if (kind === 'tri') { const s = rng.int(5, 9); for (let i = 0; i < 5; i++) { const j = s + i; terms.push(j * (j + 1) / 2) } rule = { kind: 'tri' }; expr = `${s + 4}*(${s + 4}+1)/2` }
-      else if (kind === 'fib') { rule = { kind: 'fib' }; terms = fibTerms(rng, 1, 9, 16); expr = `${terms[3]}+${terms[2]}` }
+      else if (kind === 'fib') { rule = { kind: 'fib' }; terms = fibTerms(rng, 1, 7, 14); expr = `${terms[3]}+${terms[2]}` }
       else { rule = { kind: 'two', m: 3, k: 1 }; terms = [twoStart(rng, 3, 1, 7)] }
     } else {
       const kind = rng.weighted(['fib', 'square', 'tri', 'two', 'cube'] as const, [3, 3, 2, 3, 1])
-      if (kind === 'square') { const s = rng.int(9, 14); for (let i = 0; i < 5; i++) terms.push((s + i) * (s + i)); rule = { kind: 'square' }; expr = `${s + 4}*${s + 4}` }
+      if (kind === 'square') { const s = rng.int(10, 15); for (let i = 0; i < 5; i++) terms.push((s + i) * (s + i)); rule = { kind: 'square' }; expr = `${s + 4}*${s + 4}` }
       else if (kind === 'tri') { const s = rng.int(10, 16); for (let i = 0; i < 5; i++) { const j = s + i; terms.push(j * (j + 1) / 2) } rule = { kind: 'tri' }; expr = `${s + 4}*(${s + 4}+1)/2` }
       else if (kind === 'cube') { const s = rng.int(1, 4); for (let i = 0; i < 5; i++) terms.push(Math.pow(s + i, 3)); rule = { kind: 'cube' }; expr = `${s + 4}*${s + 4}*${s + 4}` }
-      else if (kind === 'fib') { rule = { kind: 'fib' }; terms = fibTerms(rng, 6, 20, 30); expr = `${terms[3]}+${terms[2]}` }
+      else if (kind === 'fib') { rule = { kind: 'fib' }; terms = fibTerms(rng, 8, 20, 30); expr = `${terms[3]}+${terms[2]}` }
       else { const { m, k } = rng.pick([{ m: 2, k: -3 }, { m: 3, k: 2 }, { m: 3, k: -2 }]); rule = { kind: 'two', m, k }; terms = [twoStart(rng, m, k, m === 2 ? 9 : 5)] }
     }
   }

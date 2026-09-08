@@ -190,6 +190,8 @@ function estimateQ(grade: Grade, tier: Tier, level: Grade, rng: Rng): Riddle {
     const answer = fmt(v)
     const shown = measure(answer)
     if (shown === null) continue
+    // Grade 3 has not met decimals yet, so its estimates are whole numbers of a sensible unit.
+    if (level <= 3 && answer.includes('.')) continue
     // Every decoy is a wrong power of ten: at least EST_MARGIN times away from the answer, so no
     // real-world variation in the thing itself can make a decoy defensible.
     const factors = [10, 0.1, rng.bool() ? 100 : 0.01, 1000, 0.001, 20, 0.05]
@@ -197,7 +199,7 @@ function estimateQ(grade: Grade, tier: Tier, level: Grade, rng: Rng): Riddle {
     for (const f of factors) {
       const text = fmt(v * f)
       const m = measure(text)
-      if (m === null || text === answer || decoys.includes(text)) continue
+      if (m === null || text === answer || decoys.includes(text) || text.startsWith('0.0')) continue
       if (Math.max(m, shown) / Math.min(m, shown) < EST_MARGIN) continue
       decoys.push(text)
       if (decoys.length >= n) break
@@ -227,8 +229,8 @@ function quantityQ(grade: Grade, tier: Tier, rng: Rng): Riddle {
       const k = rng.pick([2, 3, 4, 5, 10, 20, 50, 100])
       const lots = k * light.mass!
       const r = Math.max(heavy.mass!, lots) / Math.min(heavy.mass!, lots)
-      // Below QTY_MARGIN the answer is a coin flip; above 25 no multiplying is needed to see it.
-      if (r < QTY_MARGIN || r > 25) continue
+      // Below QTY_MARGIN the answer is a coin flip; far above it no multiplying is needed at all.
+      if (r < QTY_MARGIN || r > 15) continue
       const one = `one ${heavy.n.replace(/^an? /, '')}`
       const many = `${numberWord(k)} ${light.plural}`
       const line = `${one} or ${many}?`
@@ -315,8 +317,9 @@ function unitQ(grade: Grade, tier: Tier, rng: Rng): Riddle {
     const A = hard && u.f >= 1000 && rng.bool(0.5) ? rng.pick([1.5, 2.5, 3.5, 4.5]) : rng.int(2, 9)
     const total = Math.round(A * u.f)
     const answer = String(total)
-    const decoys = [String(total * 10), String(Math.round(total / 10)), String(Math.round(total + A)), String(Math.round(A + u.f)), String(total * 100)]
-      .filter(d => d !== answer && d.length <= 26)
+    // Wrong power of ten, forgetting to multiply, off by one, and dropping the decimal part.
+    const decoys = [total * 10, Math.round(total / 10), total * 100, u.f, Math.floor(A) * u.f, (Math.floor(A) + 1) * u.f]
+      .map(String).filter(d => d !== answer && d !== '0' && d.length <= 26)
     const { choices, answer: idx } = shuffled(rng, answer, decoys, n)
     const q = `How many ${plural(u.small, u.smallWord)} are in ${amount(A, u.big, u.bigWord)}?`
     return riddle({

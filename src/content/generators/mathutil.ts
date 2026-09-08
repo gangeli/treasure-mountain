@@ -130,6 +130,19 @@ export const NAMES = ['Sam', 'Ava', 'Leo', 'Mia', 'Max', 'Zoe', 'Eli', 'Ivy', 'B
 /** Two different names. */
 export const twoNames = (rng: Rng): [string, string] => { const [a, b] = rng.sample(NAMES, 2); return [a, b] }
 
+/** True when the spoken form of n starts with a vowel sound: eight, eleven, eighteen, eighty-... */
+const vowelNumber = (n: number): boolean => n >= 100 ? vowelNumber(Math.floor(n / 100)) : n === 8 || n === 11 || n === 18 || (n >= 80 && n <= 89)
+/**
+ * "a" or "an" for the word (or amount) that follows: "an apple", "an eraser", "an 87¢ marble",
+ * "an $18.00 kite". Amounts go by how the number is said, not by its first character.
+ */
+export function article(s: string): string {
+  const t = s.trim()
+  const m = /^\$?(\d+)/.exec(t)
+  if (m) return vowelNumber(Number(m[1])) ? 'an' : 'a'
+  return /^[aeiou]/i.test(t) ? 'an' : 'a'
+}
+
 export const plural = (word: string, n: number): string => {
   if (n === 1) return word
   if (word === 'fish' || word === 'sheep') return word

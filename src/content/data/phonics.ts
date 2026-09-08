@@ -39,7 +39,6 @@ export const FAMILIES: Family[] = [
   { end: 'ot', words: ['pot', 'hot', 'dot', 'cot', 'lot', 'not', 'got', 'rot'], level: 1, group: 'o' },
   { end: 'op', words: ['top', 'mop', 'hop', 'pop', 'cop', 'stop', 'drop'], level: 1, group: 'o' },
   { end: 'og', words: ['dog', 'log', 'fog', 'hog', 'jog', 'frog', 'bog'], level: 1, group: 'o' },
-  { end: 'ox', words: ['fox', 'box', 'ox'], level: 1, group: 'o' },
   { end: 'ug', words: ['bug', 'mug', 'rug', 'hug', 'jug', 'tug', 'dug'], level: 1, group: 'o' },
   { end: 'un', words: ['sun', 'fun', 'run', 'bun', 'nun', 'spun'], level: 1, group: 'o' },
   { end: 'ut', words: ['nut', 'hut', 'cut', 'but', 'rut', 'shut'], level: 1, group: 'o' },
@@ -119,6 +118,8 @@ export const FAMILIES: Family[] = [
   { end: 'ection', words: ['collection', 'direction', 'protection', 'connection', 'election', 'infection'], level: 5 },
   { end: 'astic', words: ['fantastic', 'elastic', 'plastic', 'drastic'], level: 5 },
   { end: 'ility', words: ['ability', 'agility', 'humility', 'fragility', 'stability'], level: 5 },
+  { end: 'icious', words: ['delicious', 'suspicious', 'ambitious', 'nutritious', 'superstitious'], level: 5 },
+  { end: 'ision', words: ['television', 'decision', 'division', 'collision', 'vision'], level: 5 },
   // --- level 6: same sound, different spelling (match by ear) ---------------------------------
   { end: 'eight', cls: 'ate', varied: true, words: ['great', 'straight', 'weight', 'eight', 'freight', 'wait', 'plate', 'skate'], level: 6 },
   { end: 'oh', cls: 'oh', varied: true, words: ['though', 'toe', 'sew', 'go', 'snow', 'dough', 'hoe', 'slow'], level: 6 },
@@ -127,6 +128,9 @@ export const FAMILIES: Family[] = [
   { end: 'igh', cls: 'iLong', varied: true, words: ['butterfly', 'dragonfly', 'firefly', 'multiply', 'satisfy', 'goodbye'], level: 6 },
   { end: 'air', cls: 'air', varied: true, words: ['bear', 'hair', 'there', 'share', 'chair', 'stare', 'pear', 'where'], level: 6 },
   { end: 'oo', cls: 'oo', varied: true, words: ['blue', 'shoe', 'through', 'two', 'chew', 'grew', 'glue', 'true'], level: 6 },
+  { end: 'ear', cls: 'eer', varied: true, words: ['here', 'hear', 'deer', 'cheer', 'clear', 'near', 'year'], level: 6 },
+  { end: 'ore', cls: 'or', varied: true, words: ['four', 'door', 'more', 'store', 'floor', 'roar', 'pour', 'shore'], level: 6 },
+  { end: 'uff', cls: 'uff', varied: true, words: ['rough', 'tough', 'enough', 'stuff', 'puff', 'fluff'], level: 6 },
 ]
 
 /** Rhyme sound classes so decoys never accidentally rhyme (e.g. -ain vs -ane, -eat vs -eet). */
@@ -208,7 +212,8 @@ export const DIGRAPHS: Record<string, string[]> = {
 /** The same digraphs at the END of a word: harder, so grade 1 tier 3. */
 export const ENDING_DIGRAPHS: Record<string, string[]> = {
   sh: ['fish', 'dish', 'wish', 'push', 'brush', 'crash', 'flash', 'trash'],
-  ch: ['much', 'such', 'beach', 'lunch', 'bench', 'peach', 'teach', 'watch'],
+  ch: ['much', 'such', 'beach', 'lunch', 'bench', 'peach', 'teach', 'reach'],
+  tch: ['watch', 'catch', 'match', 'patch', 'witch', 'pitch', 'ditch', 'hatch'],
   th: ['bath', 'math', 'path', 'with', 'teeth', 'tooth', 'both', 'mouth'],
   ng: ['ring', 'king', 'song', 'wing', 'long', 'strong', 'swing', 'thing'],
   ck: ['duck', 'sock', 'black', 'stick', 'truck', 'clock', 'snack', 'brick'],
@@ -273,7 +278,7 @@ export function endSoundOf(w: string): string {
 }
 
 /** The sound a riddle means when it asks for words ending with `key` ('ss' -> s, 'ck' -> k). */
-export const endKeySound = (key: string): string => (key === 'ss' ? 's' : key === 'll' ? 'l' : key === 'ck' ? 'k' : key)
+export const endKeySound = (key: string): string => (key === 'ss' ? 's' : key === 'll' ? 'l' : key === 'ck' ? 'k' : key === 'x' ? 'ks' : key)
 
 /** The sound a word begins with: c and k are the same sound, so they never decoy for each other. */
 export const beginSoundOf = (key: string): string => (key === 'c' ? 'k' : key)

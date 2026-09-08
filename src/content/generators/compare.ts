@@ -58,17 +58,33 @@ function fracBand(most: boolean, rest: number, minGap: number, maxGap: number): 
 }
 
 /**
+ * Rejects sets that hand the answer over on looks alone: everything sharing one numerator (that is
+ * the tier-2 skill, not this one), and sets where the answer is the only fraction of its kind
+ * ("1/7, 1/9, 1/8 and 3/10" answers itself). `idxs[0]` is the answer.
+ */
+function variedFracs(idxs: number[]): boolean {
+  const odd = (vals: number[]) => new Set(vals).size < 2 || (new Set(vals).size === 2 && vals.filter(v => v === vals[0]).length === 1)
+  return !odd(idxs.map(k => FRAC_SORTED[k][0])) && !odd(idxs.map(k => FRAC_SORTED[k][1]))
+}
+
+/**
  * `n` distinct fractions where the greatest (or least) beats its nearest rival by a gap inside
  * [minGap, maxGap]. That gap is what makes the comparison easy or hard, so tiers gate on it.
  */
 function fracSet(rng: Rng, n: number, most: boolean, minGap: number, maxGap: number): { answer: string; decoys: string[]; gap: number } {
   const cands = fracBand(most, n - 2, minGap, maxGap)
-  let idxs: number[]
-  if (cands.length) {
+  // Fillers sit on the far side of the runner-up, but near it, so no choice is a throwaway.
+  const window = 12
+  let idxs: number[] | null = null
+  for (let attempt = 0; attempt < 30 && cands.length; attempt++) {
     const [i, j] = rng.pick(cands)
-    const pool = most ? Array.from({ length: j }, (_, k) => k) : Array.from({ length: FRAC_SORTED.length - 1 - j }, (_, k) => j + 1 + k)
-    idxs = [i, j, ...rng.sample(pool, n - 2)]
-  } else {
+    const pool = most ? Array.from({ length: Math.min(j, window) }, (_, k) => j - 1 - k)
+      : Array.from({ length: Math.min(FRAC_SORTED.length - 1 - j, window) }, (_, k) => j + 1 + k)
+    const tryIdxs = [i, j, ...rng.sample(pool, n - 2)]
+    if (!idxs) idxs = tryIdxs
+    if (variedFracs(tryIdxs)) { idxs = tryIdxs; break }
+  }
+  if (!idxs) {
     const all = rng.sample(Array.from({ length: FRAC_SORTED.length }, (_, k) => k), n)
     const vs = all.map(k => fval(FRAC_SORTED[k]))
     const ti = vs.indexOf(most ? Math.max(...vs) : Math.min(...vs))

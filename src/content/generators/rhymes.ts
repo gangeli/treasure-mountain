@@ -1,24 +1,81 @@
 import type { Generator, Grade, Tier } from '../types'
 import { riddle, shuffled, choiceCount, cap } from '../types'
-import { FAMILIES, rhymeClass, type Family } from '../data/phonics'
+import { FAMILIES, familyClass, classesOf, PROMPT_ONLY, isCvc, type Family } from '../data/phonics'
 
-/** Rhyme families available to a grade/tier. */
-function familyLevels(grade: Grade, tier: Tier): number[] {
-  const table: Record<Grade, number[][]> = {
-    0: [[1], [1], [1, 2]],
-    1: [[1, 2], [2], [2, 3]],
-    2: [[2, 3], [3], [3, 4]],
-    3: [[3], [3, 4], [4]],
-    4: [[3, 4], [4], [4]],
-    5: [[4], [4], [4]],
-  }
-  return table[grade][tier - 1]
+/** Which families a grade/tier draws from, and how hard its decoys may be. */
+interface Plan {
+  /** Family pool: [level] or [level, group] selectors. */
+  pick: [number, ('a' | 'i' | 'o')?][]
+  /** Levels the decoys come from (K never sees vowel teams; tier 1 of K never sees blends). */
+  decoyLevels: number[]
+  /** K tier 1 shows and offers plain CVC words only. */
+  cvcOnly?: boolean
 }
 
-const VERSES = [
-  (ws: string[]) => [`${cap(ws[0])}, ${ws[1]}, ${ws[2]}`, 'Please help me out this time.', `${cap(ws[3])}, ${ws[4]}, ${ws[5]}`, 'And pick a word to rhyme.'],
-  (ws: string[]) => [`${cap(ws[0])}, ${ws[1]}, ${ws[2]}, ${ws[3]}`, 'All these words rhyme, you see.', 'Find one more that rhymes', 'And give it to me!'],
-  (ws: string[]) => [`${cap(ws[0])} and ${ws[1]}, ${ws[2]} and ${ws[3]}`, 'Sound the same at the end.', 'Which word rhymes with them?', 'Tell me, my friend!'],
+/**
+ * The ramp. K walks short a/i -> short o/u/e -> blends; grade 1 ends on vowel teams; grade 2 ends on
+ * two-syllable families; grades 3-5 leave one-syllable rhymes behind and finish on three-syllable
+ * families and rhymes that are spelled differently and have to be matched by ear.
+ */
+const PLANS: Record<Grade, [Plan, Plan, Plan]> = {
+  0: [
+    { pick: [[1, 'a'], [1, 'i']], decoyLevels: [1], cvcOnly: true },
+    { pick: [[1, 'o']], decoyLevels: [1, 2] },
+    { pick: [[2]], decoyLevels: [1, 2] },
+  ],
+  1: [
+    { pick: [[1, 'o'], [2]], decoyLevels: [1, 2] },
+    { pick: [[2]], decoyLevels: [1, 2, 3] },
+    { pick: [[3]], decoyLevels: [2, 3] },
+  ],
+  2: [
+    { pick: [[2], [3]], decoyLevels: [2, 3] },
+    { pick: [[3]], decoyLevels: [2, 3] },
+    { pick: [[4]], decoyLevels: [3, 4] },
+  ],
+  3: [
+    { pick: [[3]], decoyLevels: [3, 4] },
+    { pick: [[4]], decoyLevels: [3, 4] },
+    { pick: [[4], [5]], decoyLevels: [4, 5] },
+  ],
+  4: [
+    { pick: [[4]], decoyLevels: [4, 5] },
+    { pick: [[4], [5]], decoyLevels: [4, 5] },
+    { pick: [[5], [6]], decoyLevels: [4, 5, 6] },
+  ],
+  5: [
+    { pick: [[5]], decoyLevels: [4, 5, 6] },
+    { pick: [[5], [6]], decoyLevels: [4, 5, 6] },
+    { pick: [[6]], decoyLevels: [4, 5, 6] },
+  ],
+}
+
+const MAX_LINE = 46
+
+/** Words of a family a grade/tier may show at all. */
+const usable = (f: Family, plan: Plan): string[] => f.words.filter(w => !plan.cvcOnly || isCvc(w))
+
+/** Words that may be the answer: never a capitalised prompt word, never a not-yet-taught pattern. */
+function answerable(f: Family, plan: Plan, grade: Grade, tier: Tier): string[] {
+  const taught = grade >= 2 || (grade === 1 && tier === 3)
+  return usable(f, plan).filter(w => !PROMPT_ONLY.has(w.toLowerCase()) && (taught || !(f.advanced ?? []).includes(w)))
+}
+
+type Fmt = { n: number; lines: (ws: string[]) => string[] }
+
+/** The elf speaks in verse for K-2. */
+const VERSE_FMTS: Fmt[] = [
+  { n: 6, lines: ws => [`${cap(ws[0])}, ${ws[1]}, ${ws[2]}`, 'Please help me out this time.', `${cap(ws[3])}, ${ws[4]}, ${ws[5]}`, 'And pick a word to rhyme.'] },
+  { n: 4, lines: ws => [`${cap(ws[0])}, ${ws[1]}, ${ws[2]}, ${ws[3]}`, 'All these words rhyme, you see.', 'Find one more that rhymes', 'And give it to me!'] },
+  { n: 4, lines: ws => [`${cap(ws[0])} and ${ws[1]}, ${ws[2]} and ${ws[3]}`, 'Sound the same at the end.', 'Which word rhymes with them?', 'Tell me, my friend!'] },
+  { n: 3, lines: ws => [`${cap(ws[0])}, ${ws[1]}, ${ws[2]}`, 'These three words rhyme, you see.', 'Which word rhymes with them?', 'Please pick it out for me!'] },
+  { n: 2, lines: ws => [`${cap(ws[0])} and ${ws[1]} sound the same.`, 'Now finish off my rhyme:', 'Which word rhymes with them?', 'Pick it out this time!'] },
+]
+/** Plain prompts for grades 3-5. */
+const PLAIN_FMTS: Fmt[] = [
+  { n: 4, lines: ws => [`${cap(ws[0])}, ${ws[1]}, ${ws[2]}, ${ws[3]}.`, 'These words all rhyme.', 'Which word rhymes with them?'] },
+  { n: 3, lines: ws => [`${cap(ws[0])}, ${ws[1]}, ${ws[2]}.`, 'These words all rhyme.', 'Which word rhymes with them?'] },
+  { n: 2, lines: ws => [`${cap(ws[0])} and ${ws[1]} rhyme.`, 'Which word rhymes with them?'] },
 ]
 
 export const rhymes: Generator = {
@@ -28,23 +85,46 @@ export const rhymes: Generator = {
   grades: [0, 1, 2, 3, 4, 5],
   weight: { 0: 2, 1: 2, 2: 1.5, 3: 1, 4: 0.7, 5: 0.5 },
   make(grade, tier, rng) {
-    const levels = familyLevels(grade, tier)
-    const pool = FAMILIES.filter(f => levels.includes(f.level) && f.words.length >= 3)
-    const fam: Family = rng.pick(pool)
-    const need = fam.words.length >= 7 ? 6 : Math.min(4, fam.words.length - 1)
-    const words = rng.sample(fam.words, Math.min(need + 1, fam.words.length))
-    const answer = words[words.length - 1]
-    const shown = words.slice(0, -1)
-    // Decoys: words from other families whose rhyme class differs and that don't end in the same letters.
-    const cls = rhymeClass(fam.end)
-    const others = FAMILIES.filter(f => rhymeClass(f.end) !== cls && !f.end.endsWith(fam.end.slice(-2)) && Math.abs(f.level - fam.level) <= 1)
-    const decoys = rng.shuffle(others.flatMap(f => f.words)).filter(w => !w.endsWith(fam.end) && Math.abs(w.length - answer.length) <= 2)
+    const plan = PLANS[grade][tier - 1]
+    const inPlan = (f: Family) => plan.pick.some(([lvl, group]) => f.level === lvl && (!group || f.group === group))
+    // Families big enough for a prompt of at least two words plus an answer; the bigger the family,
+    // the more likely it is drawn, so one tiny family cannot dominate a tier.
+    const pool = FAMILIES.filter(f => inPlan(f) && usable(f, plan).length >= 3 && answerable(f, plan, grade, tier).length >= 1)
+    const fam: Family = rng.weighted(pool, pool.map(f => Math.max(1, usable(f, plan).length - 2)))
+
+    const answer = rng.pick(answerable(fam, plan, grade, tier))
+    const rest = usable(fam, plan).filter(w => w !== answer)
+    const bag = rng.shuffle(rest)
+
+    const verse = grade <= 2
+    const fmts = (verse ? VERSE_FMTS : PLAIN_FMTS)
+      .filter(f => f.n <= bag.length)
+      .filter(f => f.lines(bag.slice(0, f.n)).every(l => l.length <= MAX_LINE))
+    // Longer prompts are better evidence of the pattern, so they are drawn more often.
+    const fmt = fmts.length ? rng.weighted(fmts, fmts.map(f => f.n)) : { n: 2, lines: PLAIN_FMTS[2].lines }
+    const shown = bag.slice(0, fmt.n)
+    const prompt = fmt.lines(shown)
+    // Sound-alike families (great / straight / weight) get a nudge that spelling will not help.
+    if (fam.varied && !verse) prompt.push('Listen for the sound, not the spelling.')
+
+    // Decoys: never a word from a family that rhymes with this one (by sound class, not spelling),
+    // never a capitalised word, and never above the reading level of the tier.
+    const cls = familyClass(fam)
+    const pickedShown = new Set([answer, ...shown])
+    const candidates = FAMILIES
+      .filter(f => plan.decoyLevels.includes(f.level) && familyClass(f) !== cls)
+      .flatMap(f => f.words)
+      .filter(w => !pickedShown.has(w) && !PROMPT_ONLY.has(w.toLowerCase()) && !classesOf(w).has(cls) && !w.endsWith(fam.end) && (!plan.cvcOnly || isCvc(w)))
+    const unique = [...new Set(candidates)]
+    // Prefer decoys of a similar length to the answer, but never run out of them.
+    const near = rng.shuffle(unique.filter(w => Math.abs(w.length - answer.length) <= 2))
+    const far = rng.shuffle(unique.filter(w => Math.abs(w.length - answer.length) > 2))
     const n = choiceCount(grade)
-    const { choices, answer: idx } = shuffled(rng, answer, decoys, n)
-    const verse = shown.length >= 6 ? VERSES[0](shown) : shown.length >= 4 ? rng.pick(VERSES.slice(1))(shown) : [`${cap(shown.join(', '))}.`, 'These words rhyme.', 'Pick one more word that rhymes.']
+    const { choices, answer: idx } = shuffled(rng, answer, [...near, ...far], n)
+
     return riddle({
-      family: 'rhymes', skill: 'phonics: rhyming', prompt: verse, verse: true,
-      highlight: shown.map(w => w.slice(w.length - fam.end.length)),
+      family: 'rhymes', skill: 'phonics: rhyming', prompt, verse: verse || undefined,
+      highlight: fam.varied ? undefined : [fam.end],
       choices, answer: idx,
       spoken: `${shown.join(', ')}. These words rhyme. Which word rhymes with them? ${choices.map(c => c.text).join(', ')}?`,
       metric: fam.level * 10 + answer.length, grade, tier,

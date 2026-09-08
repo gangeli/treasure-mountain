@@ -113,13 +113,17 @@ export const placevalue: Generator = {
       const ansUnits = roundUnits(units, step)
       const ans = fmtDec(ansUnits, to)
       const downU = Math.floor(units / step)
-      const cand = [
+      // Deduplicate by value, not by text: "5" and "5.0" read differently but are the same number,
+      // so offering both would put two identical answers on the scroll.
+      const cand: string[] = []
+      const taken = new Set<number>([Number(ans)])
+      for (const c of [
         fmtDec(downU, to), fmtDec(units % step === 0 ? downU : downU + 1, to),
         fmtDec(ansUnits + 1, to), fmtDec(ansUnits - 1, to),
         ...[0, 1, 2].filter(o => o !== to).map(o => fmtDec(roundUnits(units, Math.pow(10, places - o)), o)),
         text,
-      ].filter(s => Number(s) >= 0 && Number(s) !== Number(ans))
-      const { choices, answer } = shuffled(rng, ans, rng.shuffle([...new Set(cand)]), n)
+      ]) { const v = Number(c); if (v < 0 || taken.has(v)) continue; taken.add(v); cand.push(c) }
+      const { choices, answer } = shuffled(rng, ans, rng.shuffle(cand), n)
       const label = to === 0 ? 'whole number' : to === 1 ? 'tenth' : 'hundredth'
       const prompt = [`Round ${text} to the nearest ${label}.`]
       return mathRiddle({ family: 'placevalue', skill: 'math: rounding decimals', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: metricBase + 8 + to * 2, grade, tier }, `roundu:${units},${places},${to}`)

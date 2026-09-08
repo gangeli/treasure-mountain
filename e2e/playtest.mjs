@@ -204,7 +204,7 @@ for (const grade of grades) {
   await btn('continue'); await settle(200)
   s = await state()
   log('ascent complete; total treasures', s.total, 'screen', s.screen)
-  const expectPer = Math.min(6, 2 + stars)
+  const expectPer = [2, 2, 3, 3, 4, 4, 5, 5][Math.min(7, stars)]   // the original's table, see docs/research
   const totals = [0, 5, 25, 70, 115, 170, 230, 300]
   if (s.total !== totals[stars] + expectPer * 3) throw new Error(`expected ${totals[stars] + expectPer * 3} treasures, got ${s.total}`)
 }

@@ -72,7 +72,7 @@ export const multiply: Generator = {
         const a = byTen ? rng.int(2, 9) * 10 : rng.int(11, tier === 1 ? 50 : 99)
         const b = byTen ? rng.int(tier === 2 ? 3 : 4, 9) : pow
         const p = a * b
-        const decoys = numDecoys(rng, p, n - 1, [Math.round(p / 10), p * 10, a + b, p + 10, a * (b + 1), a * (b - 1)], Math.max(4, p / 10), 1)
+        const decoys = numDecoys(rng, p, n - 1, [Math.round(p / 10), p * 10, a + b, p + 10, a * (b + 1), a * (b - 1)], Math.max(4, p / 10), 1, Number.MAX_SAFE_INTEGER, true)
         const { choices, answer } = shuffled(rng, fmtInt(p), decoys.map(fmtInt), n)
         // Prompt and choices use the same thousands separator.
         const prompt = [rng.bool() ? `${fmtInt(a)} x ${fmtInt(b)} = ?` : `${fmtInt(b)} x ${fmtInt(a)} = ?`]
@@ -83,7 +83,7 @@ export const multiply: Generator = {
       const p = a * b
       const t = Math.floor(a / 10), o = a % 10
       const noCarry = t * b * 10 + ((o * b) % 10)
-      const decoys = numDecoys(rng, p, n - 1, [a * (b - 1), a * (b + 1), noCarry, p + 10, p - 10, a + b], Math.max(3, Math.round(p * 0.1)), 1)
+      const decoys = numDecoys(rng, p, n - 1, [a * (b - 1), a * (b + 1), noCarry, p + 10, p - 10, a + b], Math.max(3, Math.round(p * 0.1)), 1, Number.MAX_SAFE_INTEGER, true)
       const { choices, answer } = shuffled(rng, String(p), decoys.map(String), n)
       const prompt = [rng.bool(0.7) ? `${a} x ${b} = ?` : `${b} x ${a} = ?`]
       return mathRiddle({ family: 'multiply', skill: 'math: multi-digit multiplication', prompt, choices, answer, spoken: `What is ${a} times ${b}? ${sayChoices(choices)}?`, metric: (Math.log2(a) + Math.log2(b)) * 5, grade, tier }, `num:${a}*${b}`)
@@ -97,7 +97,7 @@ export const multiply: Generator = {
       // Doubling is not a tier-3 skill.
       const b = rng.int(tier === 2 ? 2 : 3, 9)
       const pu = units * b
-      const decoys = numDecoys(rng, pu, n - 1, [pu * 10, Math.round(pu / 10), units * (b - 1), units * (b + 1), pu + b, pu - b], Math.max(3, Math.round(pu * 0.1)), 1)
+      const decoys = numDecoys(rng, pu, n - 1, [pu * 10, Math.round(pu / 10), units * (b - 1), units * (b + 1), pu + b, pu - b], Math.max(3, Math.round(pu * 0.1)), 1, Number.MAX_SAFE_INTEGER, true)
       const aT = natDec(units, places)
       const { choices, answer } = shuffled(rng, natDec(pu, places), decoys.map(d => natDec(d, places)), n)
       const prompt = [`${aT} x ${b} = ?`]
@@ -112,7 +112,7 @@ export const multiply: Generator = {
     }
     const p = a * b
     const noShift = a * Math.floor(b / 10) + a * (b % 10)
-    const decoys = numDecoys(rng, p, n - 1, [a * (b - 1), a * (b + 1), noShift, p + 100, p - 100, p + 10], Math.max(5, Math.round(p * 0.08)), 1)
+    const decoys = numDecoys(rng, p, n - 1, [a * (b - 1), a * (b + 1), noShift, p + 100, p - 100, p + 10], Math.max(5, Math.round(p * 0.08)), 1, Number.MAX_SAFE_INTEGER, true)
     const { choices, answer } = shuffled(rng, fmtInt(p), decoys.map(fmtInt), n)
     const prompt = [`${a} x ${b} = ?`]
     return mathRiddle({ family: 'multiply', skill: 'math: multi-digit multiplication', prompt, choices, answer, spoken: `What is ${a} times ${b}? ${sayChoices(choices)}?`, metric: (Math.log2(a) + Math.log2(b)) * 5, grade, tier }, `num:${a}*${b}`)
