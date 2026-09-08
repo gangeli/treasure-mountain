@@ -50,17 +50,25 @@ export const alphabetical: Generator = {
   make(grade, tier, rng) {
     const n = choiceCount(grade)
     const last = tier >= 2 && rng.bool(0.4)
-    let words: string[]
+    // How far into the words a child has to read, by grade and tier. Grade 2 starts with first
+    // letters far apart and ends on words that share one; grade 3 lives on the second letter and
+    // ends on the third; grade 4 starts on the third. Every tier is a step past the one below it,
+    // so tier 3 is never the same task as tier 1 with different words.
+    let words: string[] | null = null
     if (grade === 2) {
-      const mixed = tier === 3 && rng.bool(0.4)
-      words = mixed ? (drawGroup(rng, n, 1, false) ?? drawSpread(rng, n, 1)) : drawSpread(rng, n, tier === 1 ? 4 : 1)
+      if (tier === 1) words = drawSpread(rng, n, 4)
+      else if (tier === 2) words = rng.bool(0.4) ? drawGroup(rng, n, 1, false) : drawSpread(rng, n, 1)
+      else words = rng.bool(0.8) ? drawGroup(rng, n, 1, false) : drawSpread(rng, n, 1)
     } else if (grade === 3) {
-      const deeper = tier === 3 && rng.bool(0.5)
-      words = drawGroup(rng, n, 1, deeper) ?? drawSpread(rng, n, 1)
+      if (tier === 1) words = drawGroup(rng, n, 1, false)
+      else if (tier === 2) words = drawGroup(rng, n, 1, rng.bool(0.4))
+      else words = rng.bool(0.5) ? drawGroup(rng, n, 2, false) : drawGroup(rng, n, 1, true)
     } else {
-      const deeper = tier === 3 && rng.bool(0.5)
-      words = drawGroup(rng, n, 2, deeper) ?? drawGroup(rng, n, 1, true) ?? drawSpread(rng, n, 1)
+      if (tier === 1) words = drawGroup(rng, n, 2, false)
+      else if (tier === 2) words = drawGroup(rng, n, 2, rng.bool(0.4))
+      else words = rng.bool(0.5) ? drawGroup(rng, n, 3, false) : drawGroup(rng, n, 2, true)
     }
+    words = words ?? drawGroup(rng, n, 2, false) ?? drawGroup(rng, n, 1, false) ?? drawSpread(rng, n, 1)
     const sorted = [...words].sort()
     const answer = last ? sorted[sorted.length - 1] : sorted[0]
     const { choices, answer: idx } = shuffled(rng, answer, words.filter(w => w !== answer), n)
