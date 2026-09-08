@@ -49,7 +49,15 @@ const result = await page.evaluate(async () => {
     const buf = await ctx.startRendering()
     music[name] = measure(buf)
   }
-  return { sfx, music }
+  // The worst moment the game can produce: music playing and every sound a catch can set off at
+  // once. Nothing in the mix may clip, and no single cue may be loud enough to make that likely.
+  const busyCtx = new OfflineAudioContext(1, 44100 * 4, 44100)
+  const busy = new AudioEngine()
+  busy.attach(busyCtx)
+  busy.play('level2'); busy.renderAhead(4)
+  for (const s of ['net', 'catch', 'coin', 'right', 'clue', 'treasure', 'fanfare', 'step', 'jump']) busy.sfx(s)
+  const mix = measure(await busyCtx.startRendering())
+  return { sfx, music, mix }
 })
 
 await browser.close()
@@ -72,6 +80,14 @@ const check = (kind, name, m, minMs) => {
 }
 for (const [name, m] of Object.entries(result.sfx)) check('sfx', name, m, SHORT.has(name) ? 8 : 20)
 for (const [name, m] of Object.entries(result.music)) check('music', name, m, 1500)
+
+// Headroom. Nine sounds at once is more than a child can trigger, so if that stays clear of full
+// scale the real mix never clips - and if a voice gain is raised too far one day, this is what says
+// so rather than a parent hearing it crackle.
+const mix = result.mix
+const mixDb = (20 * Math.log10(mix.peak)).toFixed(1)
+if (mix.peak > 0.85) { console.log(`\nmix  music + 9 sounds  peak ${mix.peak.toFixed(3)} (${mixDb} dBFS)  FAIL too close to clipping`); failures++ }
+else console.log(`\nmix  music + 9 sounds  peak ${mix.peak.toFixed(3)} (${mixDb} dBFS)  ok, ${(0.85 / mix.peak).toFixed(1)}x headroom`)
 
 console.log(failures ? `\n${failures} audio problems` : '\nall sounds and music produce audio')
 process.exit(failures ? 1 : 0)
