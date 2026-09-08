@@ -549,8 +549,8 @@ function howto(ctx: Ctx, g: Game): void {
 /** The little picture beside each how-to-play step, so the page is not six lines of text. */
 function howtoIcon(ctx: Ctx, i: number, x: number, y: number, t: number): void {
   ctx.save()
-  // Scaled to 0.75, or the elf's hat pokes out through the top of the card.
-  if (i === 0) { ctx.save(); ctx.translate(x - 18, y + 30); ctx.scale(0.75, 0.75); drawElf(ctx, 0, 0, -1, 'run', t, 1, 'none'); ctx.restore(); ctx.save(); ctx.translate(x + 32, y + 14); ctx.rotate(0.5); drawNet(ctx, 0.45); ctx.restore() }
+  // Scaled to 0.6, or the elf's hat and pom-pom poke out through the top of the card.
+  if (i === 0) { ctx.save(); ctx.translate(x - 18, y + 36); ctx.scale(0.6, 0.6); drawElf(ctx, 0, 0, -1, 'run', t, 1, 'none'); ctx.restore(); ctx.save(); ctx.translate(x + 32, y + 14); ctx.rotate(0.5); drawNet(ctx, 0.45); ctx.restore() }
   else if (i === 1) { roundRect(ctx, x - 40, y - 26, 80, 52, 8, P.scroll, P.ink, 3); for (let k = 0; k < 3; k++) line(ctx, x - 28, y - 12 + k * 13, x + 28, y - 12 + k * 13, P.scrollEdge, 3) }
   else if (i === 2) { drawTreasure(ctx, 'kite', x, y - 4, 0.68) }
   else if (i === 3) { circle(ctx, x, y, 22, P.gold, P.ink, 3); circle(ctx, x, y, 12, P.goldDark, 'rgba(0,0,0,0)', 0) }
