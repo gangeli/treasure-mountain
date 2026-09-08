@@ -3,14 +3,18 @@ import { riddle, shuffled, choiceCount, nearbyNumbers } from '../types'
 import { SYLLABLE_WORDS } from '../data/syllables'
 
 type Mode = 'which' | 'count'
-interface Plan { modes: Mode[]; min: number; max: number }
+interface Plan { modes: Mode[]; counts: number[] }
 
-/** Grade 1: 1 vs 2 syllables; grade 2: count to 3; grade 3: count to 4. */
+/**
+ * Grade 1 works on 1 vs 2 syllables, grade 2 counts to 3, grade 3 to 4 - and each tier leans on the
+ * top of its own range, so tier 3 is never a rerun of tier 1. `counts` lists the syllable counts a
+ * tier may ask for, repeated where that count should come up more often.
+ */
 function planFor(grade: Grade, tier: Tier): Plan {
   const table: Partial<Record<Grade, Plan[]>> = {
-    1: [{ modes: ['which'], min: 1, max: 2 }, { modes: ['which', 'count'], min: 1, max: 2 }, { modes: ['count', 'which'], min: 1, max: 3 }],
-    2: [{ modes: ['which', 'count'], min: 1, max: 3 }, { modes: ['count'], min: 1, max: 3 }, { modes: ['count', 'which'], min: 2, max: 3 }],
-    3: [{ modes: ['count', 'which'], min: 1, max: 3 }, { modes: ['count'], min: 1, max: 4 }, { modes: ['count', 'which'], min: 2, max: 4 }],
+    1: [{ modes: ['which'], counts: [1, 1, 2] }, { modes: ['which', 'count'], counts: [1, 2, 2] }, { modes: ['count', 'which'], counts: [2, 3, 3] }],
+    2: [{ modes: ['which', 'count'], counts: [1, 2, 2] }, { modes: ['count', 'which'], counts: [2, 3, 3] }, { modes: ['count', 'which'], counts: [3, 3, 4] }],
+    3: [{ modes: ['count', 'which'], counts: [2, 3, 3] }, { modes: ['count', 'which'], counts: [3, 4, 4] }, { modes: ['count', 'which'], counts: [4, 4, 3] }],
   }
   return (table[grade] ?? table[3]!)[tier - 1]
 }
@@ -26,35 +30,48 @@ export const syllables: Generator = {
   weight: { 1: 1, 2: 1.2, 3: 1 },
   make(grade, tier, rng) {
     const n = choiceCount(grade)
-    const { modes, min, max } = planFor(grade, tier)
+    const { modes, counts } = planFor(grade, tier)
     const mode = rng.pick(modes)
-    const counts = [1, 2, 3, 4].filter(k => k >= min && k <= max)
+    const max = Math.max(...counts)
     const k = rng.pick(counts)
     const word = rng.pick(SYLLABLE_WORDS[k])
+    // One riddle per word per mode: "how many syllables in napkin" and "clap it out ... napkin" are
+    // the same question, and a child should not meet both inside one climb.
+    const key = `syllables|${mode}|${word}`
 
     if (mode === 'count') {
-      const decoys = nearbyNumbers(rng, k, n - 1, 2, 1, Math.max(max, 4)).map(String)
+      // Never offer a count this tier has not met: at 1-vs-2 a "4" is a free elimination.
+      const decoys = nearbyNumbers(rng, k, n - 1, 2, 1, Math.min(4, max + 1)).map(String)
       const { choices, answer } = shuffled(rng, String(k), decoys, n)
-      const verse = grade <= 2 && rng.bool(0.4)
-      const prompt = verse
+      const clap = grade <= 2 && rng.bool(0.4)
+      const prompt = clap
         ? ['Clap it out, one beat at a time!', `How many syllables in "${word}"?`]
         : [`How many syllables are in "${word}"?`]
       return riddle({
-        family: 'syllables', skill: 'phonics: counting syllables', prompt, verse, highlight: [word], choices, answer,
+        family: 'syllables', skill: 'phonics: counting syllables', prompt, highlight: [word], choices, answer, key,
         spoken: `How many syllables are in the word ${word}? ${choices.map(c => c.text).join(', ')}?`,
-        metric: max * 10 + 5 + word.length, grade, tier,
+        metric: k * 10 + word.length, grade, tier,
       })
     }
 
-    // which: "Which word has 2 syllables?" — decoys have other counts in the same range (or one outside it).
-    const otherCounts = [1, 2, 3, 4].filter(c => c !== k && Math.abs(c - k) <= 2 && (counts.includes(c) || Math.abs(c - k) === 1))
-    const decoys = rng.shuffle(otherCounts.flatMap(c => rng.sample(SYLLABLE_WORDS[c], Math.min(3, SYLLABLE_WORDS[c].length))))
-    const { choices, answer } = shuffled(rng, word, decoys, n)
+    // which: "Which word has 2 syllables?" - decoys are one syllable away, and as close to the
+    // answer's length as the lists allow, so a child cannot win by picking the shortest word.
+    // One syllable away first, two only as filler, and nothing longer than the grade works with:
+    // a 1st grader should not be ruling out "avocado".
+    const cap = grade === 1 ? 3 : 4
+    const ok = (c: number) => c >= 1 && c <= cap
+    const near = (a: string) => Math.abs(a.length - word.length)
+    const take = (c: number, howMany: number) => ok(c)
+      ? rng.shuffle([...SYLLABLE_WORDS[c]]).sort((a, b) => near(a) - near(b)).slice(0, howMany)
+      : []
+    const close = rng.shuffle([...take(k - 1, 3), ...take(k + 1, 3)])
+    const far = rng.shuffle([...take(k + 2, 2), ...take(k - 2, 2)])
+    const { choices, answer } = shuffled(rng, word, [...close, ...far], n)
     const prompt = [`Which word has ${plural(k)}?`]
     return riddle({
-      family: 'syllables', skill: 'phonics: counting syllables', prompt, choices, answer,
+      family: 'syllables', skill: 'phonics: counting syllables', prompt, choices, answer, key,
       spoken: `Which word has ${plural(k)}? ${choices.map(c => c.text).join(', ')}?`,
-      metric: max * 10 + word.length, grade, tier,
+      metric: k * 10 + word.length + 4, grade, tier,
     })
   },
 }

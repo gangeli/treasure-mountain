@@ -82,28 +82,53 @@ export function wrap(ctx: Ctx, s: string, maxWidth: number, size: number, weight
   return lines
 }
 
-/** Draws text where listed substrings are painted in `hiColor` (used for rhyme endings and clue words). */
+/**
+ * Draws text where listed substrings are painted in `hiColor` (rhyme endings, clue words, the words
+ * a riddle is asking about). A highlight may be a phrase ("do not"), and it still matches when the
+ * word carries punctuation or sits inside quotes ("let's") or is capitalised at the start of a
+ * sentence - all three are how riddle prompts actually write them.
+ */
 export function richText(ctx: Ctx, s: string, x: number, y: number, size: number, color: string, hi: string[], hiColor: string, align: CanvasTextAlign = 'left'): void {
   ctx.font = `700 ${size}px ${FONT}`
   ctx.textBaseline = 'middle'
   ctx.textAlign = 'left'
   const total = ctx.measureText(s).width
   let cx = align === 'center' ? x - total / 2 : align === 'right' ? x - total : x
-  // Build segments: split words, highlight a word if it ends with / equals a highlight token.
-  const tokens = s.split(/(\s+)/)
-  for (const tok of tokens) {
-    if (/^\s+$/.test(tok)) { cx += ctx.measureText(tok).width; continue }
-    const bare = tok.replace(/[.,!?;:]+$/g, '')
-    const punct = tok.slice(bare.length)
-    const h = hi.find(h => h && (bare.toLowerCase() === h.toLowerCase()))
-    const ending = hi.find(h => h && h.length < bare.length && bare.toLowerCase().endsWith(h.toLowerCase()))
-    if (h) { ctx.fillStyle = hiColor; ctx.fillText(bare, cx, y); cx += ctx.measureText(bare).width }
-    else if (ending) {
-      const head = bare.slice(0, bare.length - ending.length), tail = bare.slice(bare.length - ending.length)
-      ctx.fillStyle = color; ctx.fillText(head, cx, y); cx += ctx.measureText(head).width
-      ctx.fillStyle = hiColor; ctx.fillText(tail, cx, y); cx += ctx.measureText(tail).width
-    } else { ctx.fillStyle = color; ctx.fillText(bare, cx, y); cx += ctx.measureText(bare).width }
-    if (punct) { ctx.fillStyle = color; ctx.fillText(punct, cx, y); cx += ctx.measureText(punct).width }
+  const put = (t: string, c: string) => { if (!t) return; ctx.fillStyle = c; ctx.fillText(t, cx, y); cx += ctx.measureText(t).width }
+  // Split off leading/trailing punctuation so `"let's"` still matches the highlight `let's`.
+  const SPLIT = /^([^\p{L}\p{N}]*)(.*?)([^\p{L}\p{N}]*)$/u
+  const parts = s.split(/(\s+)/).map(t => {
+    if (/^\s+$/.test(t) || t === '') return { space: true, raw: t, lead: '', core: '', trail: '' }
+    const m = SPLIT.exec(t)!
+    return { space: false, raw: t, lead: m[1], core: m[2], trail: m[3] }
+  })
+  const phrases = hi.filter(Boolean).map(h => h.toLowerCase().split(/\s+/))
+  for (let i = 0; i < parts.length; i++) {
+    const p = parts[i]
+    if (p.space) { put(p.raw, color); continue }
+    // Does a highlight phrase start here? Compare word by word, skipping the spaces between.
+    let span = 0
+    for (const ph of phrases) {
+      const idx: number[] = []
+      for (let j = i; j < parts.length && idx.length < ph.length; j++) if (!parts[j].space) idx.push(j)
+      if (idx.length < ph.length) continue
+      if (ph.every((w, k) => parts[idx[k]].core.toLowerCase() === w)) { span = Math.max(span, idx[ph.length - 1] - i + 1); }
+    }
+    if (span > 0) {
+      for (let j = i; j < i + span; j++) {
+        const q = parts[j]
+        if (q.space) { put(q.raw, color); continue }
+        put(q.lead, color); put(q.core, hiColor); put(q.trail, color)
+      }
+      i += span - 1
+      continue
+    }
+    // A shorter highlight inside the word is a word ending: "cat" with the rhyme "at" in red.
+    const ending = hi.find(h => h && !h.includes(' ') && h.length < p.core.length && p.core.toLowerCase().endsWith(h.toLowerCase()))
+    put(p.lead, color)
+    if (ending) { put(p.core.slice(0, p.core.length - ending.length), color); put(p.core.slice(p.core.length - ending.length), hiColor) }
+    else put(p.core, color)
+    put(p.trail, color)
   }
 }
 

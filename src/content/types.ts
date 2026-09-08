@@ -90,7 +90,9 @@ export const choiceCount = (grade: Grade): number => grade <= 2 ? 3 : 4
 
 export function riddle(base: Omit<Riddle, 'key' | 'spoken'> & { spoken?: string; key?: string }): Riddle {
   const spoken = base.spoken ?? base.prompt.join(' ')
-  const key = base.key ?? `${base.family}|${base.prompt.join('/')}|${base.choices.map(c => c.text ?? JSON.stringify(c.visual)).join(',')}`
+  // Choices are sorted for the key: the same question with its buttons shuffled is one riddle, so
+  // the session dedupe cannot serve it twice in a row.
+  const key = base.key ?? `${base.family}|${base.prompt.join('/')}|${base.choices.map(c => c.text ?? JSON.stringify(c.visual)).sort().join(',')}`
   return { ...base, spoken, key }
 }
 

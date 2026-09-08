@@ -14,23 +14,27 @@ const EXTRA: Record<number, string[]> = {
     'carrot', 'dragon', 'mitten', 'mirror', 'morning', 'number', 'picture', 'purple', 'silver', 'sandwich', 'chicken', 'dolphin',
     'donkey', 'hammer', 'insect', 'jelly', 'kitchen', 'letter', 'market', 'music', 'ocean', 'peanut', 'rainbow', 'ribbon', 'bucket',
     'dinner', 'candy', 'finger', 'giraffe', 'balloon', 'guitar', 'parrot', 'pillow', 'walrus', 'engine', 'planet', 'river'],
-  3: ['October', 'tomorrow', 'cucumber', 'broccoli', 'gorilla', 'octopus', 'hospital', 'holiday', 'grandmother', 'ladybug', 'newspaper',
+  3: ['tomorrow', 'cucumber', 'broccoli', 'gorilla', 'octopus', 'hospital', 'holiday', 'grandmother', 'ladybug', 'newspaper',
     'pineapple', 'popsicle', 'radio', 'rectangle', 'spaghetti', 'submarine', 'tornado', 'triangle', 'vitamin', 'volcano', 'wonderful',
     'yesterday', 'basketball', 'bicycle', 'carpenter', 'crocodile', 'envelope', 'fantastic', 'furniture', 'important', 'magazine',
-    'medicine', 'microwave', 'orchestra', 'oxygen', 'paragraph', 'president', 'remember', 'skeleton', 'sunflower', 'telescope',
+    'microwave', 'orchestra', 'oxygen', 'paragraph', 'president', 'remember', 'skeleton', 'sunflower', 'telescope',
     'together', 'tricycle', 'video', 'violin', 'adventure', 'apartment', 'astronaut', 'blueberry', 'cinnamon', 'dangerous',
     'electric', 'excellent', 'gasoline', 'hurricane', 'imagine', 'jellyfish', 'lemonade', 'lollipop', 'mosquito', 'parachute',
     'porcupine', 'tangerine', 'understand', 'vacation', 'xylophone', 'zucchini', 'delicious', 'dinosaur', 'chimpanzee', 'tomato'],
-  4: ['kindergarten', 'pepperoni', 'avocado', 'celebration', 'cauliflower', 'escalator', 'ravioli', 'rhinoceros', 'tarantula', 'harmonica',
+  4: ['kindergarten', 'pepperoni', 'avocado', 'celebration', 'escalator', 'ravioli', 'rhinoceros', 'tarantula', 'harmonica',
     'independent', 'mathematics', 'photographer', 'population', 'presentation', 'supermarket', 'transportation', 'apologize',
     'automobile', 'binoculars', 'community', 'conversation', 'decoration', 'education', 'elevator', 'environment', 'experiment',
-    'generation', 'geography', 'gymnasium', 'impossible', 'incredible', 'invisible', 'January', 'librarian', 'necessary',
+    'generation', 'geography', 'gymnasium', 'impossible', 'incredible', 'invisible', 'librarian', 'necessary',
     'operation', 'original', 'peninsula', 'prehistoric', 'remarkable', 'salamander', 'secretary', 'spectacular', 'stegosaurus',
     'ventilator', 'watermelon', 'alligator', 'caterpillar', 'helicopter', 'television', 'calculator', 'information', 'macaroni'],
 }
 
-/** Ambiguous counts in the base list (fam-ly / fam-i-ly). */
-const EXCLUDE = new Set(['family'])
+/**
+ * Left out of the merged lists: counts that vary by accent or speed (fam-ly / fam-i-ly,
+ * med-i-cine / med-cine, cau-li-flow-er), and month names, whose capital letter would make them
+ * stand out among the lowercase choices whatever their syllable count.
+ */
+const EXCLUDE = new Set(['family', 'medicine', 'cauliflower', 'october', 'january'])
 
 function merge(n: number): string[] {
   const seen = new Set<string>(EXCLUDE)
