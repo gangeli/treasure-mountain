@@ -66,7 +66,9 @@ Mountain Master (6), Champion (7: the crown is won).
   exists (Chrome, Safari, most Android WebViews). Silent fallback. K and 1st hear every riddle
   without asking. A second speaker beside the clue-word slots reads back the words won so far -
   for a pre-reader those three words are the only text the game asks them to act on, and they are
-  what a child forgets while hunting the far side of the level; winning a word speaks it too.
+  what a child forgets while hunting the far side of the level; winning a word speaks it too. The
+  story on the first climb is read out for those two grades as well - it is the only place the game
+  says why there is a mountain to climb.
 * **Controls.** Touch: tap the ground to walk, tap an elf to run at it and throw the net when in
   range, tap a scenery group to walk in front of it, big NET / COIN / JUMP buttons. Keyboard:
   arrows, Space (net), Down (coin), Up (jump/enter). Both always work.

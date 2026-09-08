@@ -2,7 +2,7 @@ import { P } from './palette'
 import { type Ctx, roundRect, circle, ellipse, text, line, poly, vgrad, h1, richText, wrap, measure, star, rr, fillStroke, FONT_DISPLAY } from './draw'
 import { W, H, PLAY_H } from '../game/layout'
 import type { Game } from '../game/game'
-import { CASTLE_FLOORS, CASTLE_FLOOR_Y, CASTLE_FLOOR_H } from '../game/game'
+import { CASTLE_FLOORS, CASTLE_FLOOR_Y, CASTLE_FLOOR_H, INTRO_LINES } from '../game/game'
 import type { Button } from '../game/ui'
 import type { Riddle } from '../content/types'
 import { SCROLL, riddleChoiceRects, gradeCardRects } from '../game/ui'
@@ -250,8 +250,7 @@ function intro(ctx: Ctx, g: Game): void {
   drawMountain(ctx, 1040, 600, 0.8, t)
   roundRect(ctx, 60, 60, 640, 470, 26, P.rockDark, P.ink, 4)
   roundRect(ctx, 82, 82, 596, 426, 18, P.scroll, P.scrollEdge, 4)
-  const lines = ['The Master of Mischief has stolen', 'the crown and hidden the treasures', 'all over Treasure Mountain!', '', 'The elves can help you. Catch them in', 'your net to get coins and clue words.', 'They will help you find treasures', 'and the keys.', '', 'As the treasure chest is filled, you will', 'earn your stars, win the crown, and', 'save Treasure Mountain!']
-  lines.forEach((l, i) => text(ctx, l, 110, 118 + i * 30, { size: 25, color: P.ink, weight: 800 }))
+  INTRO_LINES.forEach((l, i) => text(ctx, l, 110, 118 + i * 30, { size: 25, color: P.ink, weight: 800 }))
   drawPlayer(ctx, 740 + Math.sin(t * 0.7) * 20, 600, 1, 'walk', t, t * 120)
 }
 

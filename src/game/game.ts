@@ -21,6 +21,12 @@ export const NETS_PER_PURCHASE = 5
 /** Rank at which each hazard appears, following the original's rank-up announcements. */
 export const DUST_STAR = 2          // "Look out for elf dust!"
 export const GAP_STAR = 4           // "Watch out for gaps in the path!"
+/** The story on the first climb. Here rather than in the art so it can be read out loud too. */
+export const INTRO_LINES = [
+  'The Master of Mischief has stolen', 'the crown and hidden the treasures', 'all over Treasure Mountain!', '',
+  'The elves can help you. Catch them in', 'your net to get coins and clue words.', 'They will help you find treasures', 'and the keys.', '',
+  'As the treasure chest is filled, you will', 'earn your stars, win the crown, and', 'save Treasure Mountain!',
+]
 export const TRICK_LADDER_STAR = 3  // the castle's ladder maze grows with rank
 export const CASTLE_FLOORS = 4
 export const CASTLE_FLOOR_H = 118
@@ -178,7 +184,12 @@ export class Game {
       groundCoinsSpawned: 0, seen: [], recent: [], playerX: 130,
     }
     this.savedRunGrade = this.grade
-    if (this.profile().ascents === 0 && this.firstRun) { this.goto('intro'); return }
+    if (this.profile().ascents === 0 && this.firstRun) {
+      // Read out for K and 1st, like everything else they cannot read yet: this is the only place
+      // the game explains why there is a mountain to climb.
+      this.speak = INTRO_LINES.filter(Boolean).join(' ')
+      this.goto('intro'); return
+    }
     this.startLevel(1, seed)
   }
 
