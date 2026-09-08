@@ -1,5 +1,5 @@
-import { readFileSync } from 'node:fs'
 import { describe, it, expect } from 'vitest'
+import DESIGN_DOC from '../docs/DESIGN.md?raw'
 import { Rng } from '../src/engine/rng'
 import { GENERATORS } from '../src/content/generators'
 import { GRADES, TIERS, speakable, sayChoices, type Generator, type Riddle } from '../src/content/types'
@@ -614,7 +614,7 @@ describe('no family rewards a rule about how the choices look', () => {
  */
 describe('the design document describes the game that exists', () => {
   it('every family has a row, and its dashes match the grades it is offered at', () => {
-    const doc = readFileSync(new URL('../docs/DESIGN.md', import.meta.url), 'utf8')
+    const doc = DESIGN_DOC
     const rows = new Map<string, string[]>()
     for (const line of doc.split('\n')) {
       const m = /^\|\s*(.+?)\s*\(`([a-z]+)`\)\s*\|(.*)\|\s*$/.exec(line)
@@ -634,5 +634,65 @@ describe('the design document describes the game that exists', () => {
     }
     expect(problems).toEqual([])
     expect(rows.size, 'rows in the tables').toBe(GENERATORS.length)
+  })
+})
+
+/**
+ * About one boy in twelve cannot separate red from green (and orange from green, blue from purple).
+ * Where a riddle *asks* about colour, the colours it puts in front of the child must be ones they
+ * can tell apart; elsewhere colour is decoration and any pair is fine, as long as something other
+ * than colour also separates the choices.
+ */
+describe('a colour-blind child can answer every riddle', () => {
+  const CONFUSABLE = new Set(['red|green', 'green|red', 'orange|green', 'green|orange', 'green|yellow', 'yellow|green', 'red|orange', 'orange|red', 'blue|purple', 'purple|blue'])
+  /** Every colour the riddle actually paints: shape pictures, and the items of a pattern. */
+  const colorsOf = (r: Riddle): string[] => {
+    const out: string[] = []
+    for (const v of [r.visual, ...r.choices.map(c => c.visual)]) {
+      if (!v) continue
+      if (v.kind === 'shape' && v.color) out.push(v.color)
+      if (v.kind === 'pattern') for (const it of v.items) out.push(it.color)
+    }
+    return out
+  }
+  const shapesOf = (r: Riddle): { name: string; color: string }[] => {
+    const out: { name: string; color: string }[] = []
+    for (const c of r.choices) { const v = c.visual; if (v && v.kind === 'shape' && v.color) out.push({ name: v.name, color: v.color }) }
+    return out
+  }
+  it('no question about colour turns on a pair that looks the same', () => {
+    const bad: string[] = []
+    let asked = 0
+    for (const gen of GENERATORS) for (const grade of gen.grades) for (const tier of TIERS) {
+      const rng = new Rng(`cb-${gen.id}-${grade}-${tier}`)
+      for (let i = 0; i < 100; i++) {
+        const r = gen.make(grade, tier, rng)
+        if (!/\bcolou?rs?\b/i.test(r.prompt.join(' '))) continue
+        asked++
+        const cs = colorsOf(r)
+        for (let a = 0; a < cs.length; a++) for (let b = a + 1; b < cs.length; b++) {
+          if (cs[a] !== cs[b] && CONFUSABLE.has(`${cs[a]}|${cs[b]}`)) bad.push(`${gen.id} g${grade}t${tier}: ${r.prompt.join(' ')} in ${cs.join(', ')}`)
+        }
+      }
+    }
+    expect(asked, 'riddles that ask about colour').toBeGreaterThan(50)
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+  it('choices that share a picture are never told apart by colour alone', () => {
+    const bad: string[] = []
+    for (const gen of GENERATORS) for (const grade of gen.grades) for (const tier of TIERS) {
+      const rng = new Rng(`cb2-${gen.id}-${grade}-${tier}`)
+      for (let i = 0; i < 100; i++) {
+        const r = gen.make(grade, tier, rng)
+        // Only matters where telling the two apart is the question: with a third choice of another
+        // shape ("which one is a different shape?") the colour is decoration.
+        if (!/\bcolou?rs?\b/i.test(r.prompt.join(' '))) continue
+        const vs = shapesOf(r)
+        for (let a = 0; a < vs.length; a++) for (let b = a + 1; b < vs.length; b++) {
+          if (vs[a].name === vs[b].name && CONFUSABLE.has(`${vs[a].color}|${vs[b].color}`)) bad.push(`${gen.id} g${grade}t${tier}: two ${vs[a].name}s, ${vs[a].color} and ${vs[b].color}`)
+        }
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
   })
 })
