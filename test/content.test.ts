@@ -416,3 +416,38 @@ describe('no two choices are the same answer twice', () => {
     expect([...new Set(bad)].slice(0, 3)).toEqual([])
   })
 })
+
+describe('the answer does not stand out by its length', () => {
+  /**
+   * How often "always pick the longest choice" (or the shortest) would be right, against how often
+   * guessing would. A child who works out that the long answer is usually the right one has found a
+   * way to score without reading, and the riddle has stopped teaching anything. The gap was 17
+   * points on the riddle family and 19 on vocabulary before their decoys were evened up; nothing is
+   * allowed past 15 now, and the whole game sits within 2 points of chance.
+   */
+  it('no family rewards picking by length', () => {
+    const bad: string[] = []
+    let n = 0, longest = 0, shortest = 0, chance = 0
+    for (const gen of GENERATORS) {
+      let gn = 0, glo = 0, gsh = 0, gch = 0
+      for (const grade of gen.grades) for (const tier of TIERS) {
+        const rng = new Rng(`len-${gen.id}-${grade}-${tier}`)
+        for (let i = 0; i < 120; i++) {
+          const r = gen.make(grade, tier, rng)
+          const lens = r.choices.map(c => (c.text ?? '').length)
+          if (lens.some(x => x === 0)) continue
+          gn++; gch += 1 / lens.length
+          if (lens.indexOf(Math.max(...lens)) === r.answer) glo++
+          if (lens.indexOf(Math.min(...lens)) === r.answer) gsh++
+        }
+      }
+      if (gn < 100) continue
+      n += gn; longest += glo; shortest += gsh; chance += gch
+      const gap = 100 * Math.max(glo, gsh) / gn - 100 * gch / gn
+      if (gap > 15) bad.push(`${gen.id}: picking by length wins ${(100 * Math.max(glo, gsh) / gn).toFixed(0)}% against ${(100 * gch / gn).toFixed(0)}% for guessing`)
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+    const overall = 100 * Math.max(longest, shortest) / n - 100 * chance / n
+    expect(overall, `across the whole game the gap is ${overall.toFixed(1)} points`).toBeLessThan(5)
+  })
+})

@@ -677,7 +677,7 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 | 4 | 3 | 49.3 | 15.5 | 13 | 0% | What comes once in a minute, / twice in a moment, / but never in a thousand years? [the letter T / the letter N / the letter E / *the letter M] |
 | 5 | 1 | 49.3 | 11.4 | 13 | 0% | If you drop a yellow hat in the Red Sea, / what does it become? [*wet / red / orange / dry] |
 | 5 | 2 | 53.9 | 17.2 | 28 | 0% | Mary's father has five daughters: / Nana, Nene, Nini, Nono and ...? / What is the fifth daughter's name? [Nona / Nunu / *Mary / Nina] |
-| 5 | 3 | 58.4 | 18.2 | 17 | 0% | A rooster lays an egg on a roof. / Which way does the egg roll? [*roosters lay no eggs / to the left / to the right / straight down] |
+| 5 | 3 | 58.4 | 18.2 | 17 | 0% | A rooster lays an egg on a roof. / Which way does the egg roll? [*roosters lay no eggs / to the left of the roof / to the right of the roof / straight down the roof] |
 
 ### Animals (`animals`, thinking)
 
@@ -902,7 +902,7 @@ What a child sees over 12 riddles (tiers 1-3 as the levels go up), drawn by the 
 2. *(shapes, tier 1)* Point A is at (7, 8). Point B is at (7, 5). How many units apart are they? — 2, 13, 4, **3**
 3. *(events, tier 1)* Hal is slower than Oli. Hal is faster than Raj. Gil is faster than Oli. Who is the second slowest? — Gil, **Hal**, Raj, Oli
 4. *(addsub, tier 1)* 30.1 - 27.3 = ? — 3.0, **2.8**, 2.9, 57.4
-5. *(earthsky, tier 2)* Which is Earth's hottest layer? — the crust, the mantle, the ocean, **the inner core**
+5. *(earthsky, tier 2)* Which is Earth's hottest layer? — the rocky crust, the thick mantle, the deep ocean, **the inner core**
 6. *(shapes, tier 2)* Start at (1, 0). Move 2 right and 4 up. Where are you now? — (4, 3), (3, 5), **(3, 4)**, (4, 4)
 7. *(riddles, tier 2)* What breaks but never falls, and what falls but never breaks? — glass and rain, **day and night**, waves and leaves, a cup and a ball
 8. *(opposites, tier 2)* Which word means the opposite of complicate? — **simplify**, advance, attract, conserve
