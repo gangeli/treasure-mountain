@@ -13,7 +13,12 @@ export function playAscent(g: Game): void {
   g.pressButton('start')
   if (g.screen === 'intro') g.advanceScene()
   expect(g.screen).toBe('level')
-  for (let levelNo = 1; levelNo <= 3; levelNo++) {
+  finishAscent(g)
+}
+
+/** Finishes a climb from wherever it is: partway up a level, or already in the castle. */
+export function finishAscent(g: Game): void {
+  for (let levelNo = g.run!.levelNo; g.screen === 'level' && levelNo <= 3; levelNo++) {
     const run = g.run!
     expect(run.levelNo).toBe(levelNo)
     let guard = 0
@@ -30,7 +35,7 @@ export function playAscent(g: Game): void {
       elf.speed = 0
       g.throwNet()
       step(g, 0.6)
-      if (g.screen !== 'riddle') continue
+      if ((g.screen as string) !== 'riddle') continue
       const rv = g.riddle!
       g.selectChoice(rv.riddle.answer, true)
       expect(rv.phase).toBe('right')
@@ -202,6 +207,53 @@ describe('game flow', () => {
  * every prize ever won, would eventually stop saving - silently, and only for the children who
  * played the most.
  */
+/**
+ * A child does not close the app at a tidy moment. This stops a climb at 40 random points - mid
+ * level, in front of a riddle, on the way up the castle - writes the save the game would have
+ * written, opens it in a fresh Game, and finishes the climb from there.
+ */
+describe('a climb picked up from anywhere', () => {
+  it('40 saves taken at random moments all restore and finish', () => {
+    for (let i = 0; i < 40; i++) {
+      const seed = 'resume-' + i
+      const g = new Game(null, { seed, fast: true })
+      let saved: any = null
+      g.onSave = d => { saved = JSON.parse(JSON.stringify(d)) }
+      g.play(); g.chooseGrade((i % 6) as any)
+      g.pressButton('start')
+      if (g.screen === 'intro') g.advanceScene()
+      // Play a while, then stop wherever we happen to be.
+      const steps = 1 + (i * 7) % 9
+      for (let k = 0; k < steps && g.screen === 'level'; k++) {
+        const lvl = g.lvl!
+        if (g.run!.nets === 0) { const rock = lvl.level.features.find(f => f.type === 'netrock')!; lvl.player.x = rock.x; lvl.player.state = 'idle'; g.dropCoin(); step(g, 1) }
+        const elf = lvl.elves.find(e => e.kind === 'scroll' && e.state === 'run')
+        if (!elf) { step(g, 1); continue }
+        lvl.player.x = wrapX(elf.x - 80); lvl.player.facing = 1; lvl.player.state = 'idle'; lvl.player.y = 0
+        elf.speed = 0
+        g.throwNet(); step(g, 0.6)
+        if ((g.screen as string) === 'riddle') { const rv = g.riddle!; g.selectChoice(rv.riddle.answer, true); g.riddleContinue(); if ((g.screen as string) === 'clue') g.closeClue() }
+      }
+      // The game saves on every clue, treasure and screen change, so one has already been written.
+      expect(saved, `run ${i} never saved`).toBeTruthy()
+      const clues = g.cluesFound(), level = g.run!.levelNo, treasures = g.run!.treasures.length
+      // Reopen it the way the app does: same grade, "Continue climb".
+      const h = new Game(saved, { seed, fast: true })
+      h.play(); h.chooseGrade((i % 6) as any)
+      expect(h.screen, `run ${i}`).toBe('clubhouse')
+      expect(h.canResume(), `run ${i} cannot be resumed`).toBe(true)
+      h.resume()
+      expect(h.screen, `run ${i} resumed onto the wrong screen`).toBe('level')
+      expect(h.run!.levelNo, `run ${i} resumed on the wrong level`).toBe(level)
+      expect(h.cluesFound(), `run ${i} lost a clue word`).toBe(clues)
+      expect(h.run!.treasures.length, `run ${i} lost a treasure`).toBe(treasures)
+      finishAscent(h)
+      if (h.screen === 'crown') h.advanceScene()
+      expect(h.screen, `run ${i} could not finish`).toBe('clubhouse')
+    }
+  })
+})
+
 describe('a long season of climbing', () => {
   it('40 ascents: progress adds up, and nothing grows without a bound', () => {
     const g = new Game(null, { seed: 'season', fast: true })
