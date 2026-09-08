@@ -18,6 +18,10 @@ export function drawPlayer(ctx: Ctx, x: number, y: number, facing: 1 | -1, state
   const jump = state === 'jump'
   const climb = state === 'climb' || state === 'ride'
   if (!climb && state !== 'enter') shadowBlob(ctx, 0, 2, 34)
+  // Being hit knocked the Super Solver back a floor in the castle and cost a coin on the mountain,
+  // and the only sign of it was a 6px crouch: the pose was the standing one. Reeling backwards
+  // reads at a glance, which is all the time this state gets.
+  if (state === 'hit') ctx.rotate(0.22)
   ctx.translate(0, -bob + crouch)
 
   // ---- legs & boots
@@ -29,6 +33,9 @@ export function drawPlayer(ctx: Ctx, x: number, y: number, facing: 1 | -1, state
   // ---- backpack (behind the body)
   roundRect(ctx, -34, -96 - (crouch ? 4 : 0), 26, 40, 8, P.yellow)
   roundRect(ctx, -32, -92, 8, 10, 3, P.yellowDark, P.ink, 2)
+  // On a ladder the net is slung across the pack: both hands are needed for the rungs, and a
+  // climber holding a net out to one side reads as someone standing in front of a ladder.
+  if (climb) { ctx.save(); ctx.translate(-26, -70); ctx.rotate(-1.15); ctx.scale(0.72, 0.72); drawNet(ctx); ctx.restore() }
 
   // ---- body: cyan tunic with belt
   ctx.beginPath()
@@ -40,19 +47,24 @@ export function drawPlayer(ctx: Ctx, x: number, y: number, facing: 1 | -1, state
   poly(ctx, [[-14, -100], [0, -88], [14, -100]], P.cyanPale, P.ink, 2)
 
   // ---- arms
-  const armA = state === 'net' ? netSwing : walking ? -legSwing * 0.7 : jump ? -60 : climb ? Math.sin(t * 8 + 1.5) * 40 : state === 'drop' ? 45 : 0
-  // back arm
-  const backDeg = -armA * 0.6 - 20
+  // Climbing reaches up the ladder hand over hand. Swinging around zero, as this did, drew someone
+  // standing in front of a ladder with their arms by their sides.
+  const reach = climb ? Math.sin(t * 8 + 1.5) * 12 : 0
+  const armA = state === 'net' ? netSwing : walking ? -legSwing * 0.7 : jump ? -60 : climb ? -138 + reach : state === 'drop' ? 45 : state === 'hit' ? -50 : 0
+  // back arm: opposite phase on a ladder, so the two hands alternate, and up with the front arm
+  // when the Super Solver is knocked backwards
+  const backDeg = climb ? -222 - reach : state === 'hit' ? -34 : -armA * 0.6 - 20
   drawArm(ctx, -22, -92, backDeg, P.cyan)
-  // front arm with the net
+  // front arm, with the net in the hand unless it is slung for a climb
   ctx.save()
   ctx.translate(22, -92)
   ctx.rotate((armA - 10) * Math.PI / 180)
   drawArmSeg(ctx, P.cyan)
-  // net handle held at the hand
   ctx.translate(0, 34)
-  ctx.rotate(-Math.PI / 2 + 0.15)
-  drawNet(ctx)
+  if (!climb) {
+    ctx.rotate(-Math.PI / 2 + 0.15)
+    drawNet(ctx)
+  }
   // Both hands close over the handle. Drawn before the net, the pole ran straight across the palms
   // and each hand read as two skin crescents either side of the wood.
   grip(ctx)
