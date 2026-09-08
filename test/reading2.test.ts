@@ -94,8 +94,12 @@ describe('contractions', () => {
       expect(c, `answer ${a}`).toBeTruthy()
       const valid = new Set([c!.short, c!.full, ...(c!.alt ?? [])].map(s => s.toLowerCase()))
       for (const d of decoyTexts(r)) expect(valid.has(d.toLowerCase()), `${d} is valid for ${c!.short}`).toBe(false)
-      const quoted = r.prompt.join(' ')
-      expect(quoted.includes(c!.short) || quoted.includes(c!.full)).toBe(true)
+      // The prompt must name the contraction or its expansion - in the sentence mode the expansion
+      // starts the sentence, so the match is case-insensitive.
+      const quoted = r.prompt.join(' ').toLowerCase()
+      expect(quoted.includes(c!.short.toLowerCase()) || quoted.includes(c!.full.toLowerCase())).toBe(true)
+      // Whatever is highlighted has to be in the prompt, or the red words point at nothing.
+      for (const h of r.highlight ?? []) expect(quoted.includes(h.toLowerCase()), `highlight ${h}`).toBe(true)
     }
   })
 })
