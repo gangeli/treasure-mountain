@@ -92,8 +92,25 @@ export const choiceCount = (grade: Grade): number => grade <= 2 ? 3 : 4
 
 // ---------------------------------------------------------------------------------- helpers
 
+const DENOMS = ['', '', 'half', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth']
+
+/**
+ * Written maths read as words. Speech synthesis says "three slash four" for 3/4 and spells out
+ * "km/h", which is noise to the kindergartener and 1st-grader who hear every riddle read to them.
+ */
+export function speakable(s: string): string {
+  return s
+    .replace(/\bkm\/h\b/g, 'kilometers per hour')
+    .replace(/\bm\/s\b/g, 'meters per second')
+    .replace(/(\d+)\s*\/\s*(\d+)/g, (_m, a: string, b: string) => {
+      const n = parseInt(a), d = parseInt(b)
+      const name = DENOMS[d]
+      return name ? `${n} ${name}${n === 1 ? '' : 's'}` : `${n} over ${d}`
+    })
+}
+
 export function riddle(base: Omit<Riddle, 'key' | 'spoken'> & { spoken?: string; key?: string }): Riddle {
-  const spoken = base.spoken ?? base.prompt.join(' ')
+  const spoken = speakable(base.spoken ?? base.prompt.join(' '))
   // Choices are sorted for the key: the same question with its buttons shuffled is one riddle, so
   // the session dedupe cannot serve it twice in a row.
   const key = base.key ?? `${base.family}|${base.prompt.join('/')}|${base.choices.map(c => c.text ?? JSON.stringify(c.visual)).sort().join(',')}`
