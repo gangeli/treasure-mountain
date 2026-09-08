@@ -196,6 +196,46 @@ describe('game flow', () => {
   })
 })
 
+/**
+ * Forty ascents in a row, which is more than a child will play in a term. Nothing may grow without
+ * a bound: the save goes into localStorage, and a run that kept every riddle it had ever asked, or
+ * every prize ever won, would eventually stop saving - silently, and only for the children who
+ * played the most.
+ */
+describe('a long season of climbing', () => {
+  it('40 ascents: progress adds up, and nothing grows without a bound', () => {
+    const g = new Game(null, { seed: 'season', fast: true })
+    g.play(); g.chooseGrade(3)
+    // Every save the game actually writes, not just the ones between climbs: mid-level it also
+    // carries the riddles seen, the groups searched and the treasures found.
+    let biggest = 0
+    g.onSave = d => { biggest = Math.max(biggest, JSON.stringify(d).length) }
+    let last = 0
+    for (let i = 1; i <= 40; i++) {
+      playAscent(g)
+      // The crown screen appears once, on the ascent that crosses 300 treasures.
+      if (g.screen === 'crown') { expect(g.profile().crown).toBe(true); g.advanceScene() }
+      expect(g.screen).toBe('clubhouse')
+      const prof = g.profile()
+      expect(prof.total, `ascent ${i} added no treasures`).toBeGreaterThan(last)
+      last = prof.total
+      expect(prof.ascents).toBe(i)
+      expect(prof.prizes.length).toBeLessThanOrEqual(60)
+      if (g.run) {
+        expect(g.run.seen.length).toBeLessThanOrEqual(200)
+        expect(g.run.recent.length).toBeLessThanOrEqual(8)
+        expect(g.run.searched.length).toBeLessThanOrEqual(40)
+      }
+    }
+    // 300 treasures wins the crown, and the climbing carries on afterwards.
+    expect(g.profile().total).toBeGreaterThan(300)
+    expect(g.profile().crown).toBe(true)
+    expect(g.stars()).toBe(7)
+    // localStorage is 5MB in the meanest browser; this leaves room for six grades and then some.
+    expect(biggest, `the biggest save was ${biggest} bytes`).toBeLessThan(20000)
+  })
+})
+
 describe('the castle is always climbable', () => {
   /**
    * Walks the castle honestly - only taps, at the speed the player actually walks - and returns how
