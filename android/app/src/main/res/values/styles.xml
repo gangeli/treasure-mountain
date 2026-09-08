@@ -1,0 +1,7 @@
+<resources>
+    <style name="Theme.TreasureMountain" parent="@android:style/Theme.Material.NoActionBar.Fullscreen">
+        <item name="android:windowBackground">#0b1a2c</item>
+        <item name="android:navigationBarColor">#0b1a2c</item>
+        <item name="android:statusBarColor">#0b1a2c</item>
+    </style>
+</resources>

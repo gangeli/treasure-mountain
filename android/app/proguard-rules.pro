@@ -1,0 +1,3 @@
+-keepclassmembers class org.treasuremountain.app.MainActivity$Bridge { public *; }
+-keepattributes JavascriptInterface
+-dontwarn **
