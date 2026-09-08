@@ -1,6 +1,7 @@
 import type { Generator, Grade, Tier } from '../types'
 import { riddle, shuffled, choiceCount, cap } from '../types'
 import { CATEGORIES, overlapping, allMembers, byId, type Category } from '../data/categories'
+import { tierWindow, rankIn } from './textutil'
 
 type Mode = 'which' | 'odd' | 'name'
 
@@ -18,7 +19,7 @@ function levelsFor(grade: Grade, tier: Tier): number[] {
 
 function modesFor(grade: Grade, tier: Tier): Mode[] {
   if (grade === 0) return ['which']
-  if (grade === 1) return tier === 3 ? ['which', 'odd'] : ['which']
+  if (grade === 1) return tier === 3 ? ['odd', 'odd', 'which'] : tier === 2 ? ['which', 'which', 'odd'] : ['which']
   if (grade === 2) return tier === 1 ? ['which', 'odd'] : ['odd', 'odd', 'which']
   if (grade === 3) return tier === 1 ? ['odd', 'which'] : ['odd', 'name']
   if (grade === 4) return tier === 1 ? ['odd', 'name'] : ['name', 'odd']
@@ -73,7 +74,11 @@ export const categories: Generator = {
     const levels = levelsFor(grade, tier)
     const mode = rng.pick(modesFor(grade, tier))
     const pool = CATEGORIES.filter(c => levels.includes(c.level) && c.members.length >= (mode === 'name' ? 3 : n))
-    const cat = rng.pick(pool)
+    // The category list runs from the ones a child names first (colors, animals) to the ones that
+    // come later (instruments, minerals), so each tier takes its own window of the level.
+    const window = levels.flatMap(l => tierWindow(pool.filter(c => c.level === l), tier))
+    const cat = rng.pick(window.length >= 4 ? window : pool)
+    const rank = rankIn(CATEGORIES.filter(c => c.level === cat.level), cat) * 5
     const skill = mode === 'name' ? 'vocabulary: naming categories' : mode === 'odd' ? 'thinking: which does not belong' : 'vocabulary: categories'
 
     if (mode === 'which') {
@@ -83,7 +88,7 @@ export const categories: Generator = {
       return riddle({
         family: 'categories', skill, prompt, choices, answer,
         spoken: `Which one is ${cat.one}? ${list(choices.map(c => c.text ?? ''))}?`,
-        metric: cat.level * 10 + answerW.length / 2, grade, tier,
+        metric: cat.level * 10 + answerW.length / 2 + rank, grade, tier,
       })
     }
 
@@ -97,7 +102,7 @@ export const categories: Generator = {
       return riddle({
         family: 'categories', skill, prompt, choices, answer,
         spoken: `${prompt.join(' ')} ${list(choices.map(c => c.text ?? ''))}?`,
-        metric: cat.level * 10 + (hint ? 3 : 6) + outsider.length / 4, grade, tier,
+        metric: cat.level * 10 + (hint ? 3 : 6) + outsider.length / 4 + rank, grade, tier,
       })
     }
 
@@ -118,7 +123,7 @@ export const categories: Generator = {
     return riddle({
       family: 'categories', skill, prompt, highlight: shown, choices, answer,
       spoken: `${shown.join(', ')}. These are all what? ${list(choices.map(c => c.text ?? ''))}?`,
-      metric: cat.level * 10 + 8 + cat.many.length / 4, grade, tier,
+      metric: cat.level * 10 + 8 + cat.many.length / 4 + rank, grade, tier,
     })
   },
 }
