@@ -74,8 +74,11 @@ export const TREASURE_NAMES = ['lamp', 'balloon', 'boxcar', 'teddy bear', 'kite'
 
 const kindsFor = (level: LevelNo, grade: Grade): KindDef[] => {
   const base = KINDS.filter(k => k.levels.includes(level))
-  // Youngest players get the most concrete kinds.
-  if (grade <= 1) return base.filter(k => ['tree', 'bush', 'rock', 'flower', 'mushroom', 'boulder', 'lantern', 'nest', 'fence', 'pine', 'shovel', 'snowman', 'gem', 'flag', 'log', 'stump', 'sign', 'cart', 'crystal', 'icicle', 'fern', 'pinecone', 'acorn', 'sled', 'snowball'].includes(k.kind))
+  // Youngest players get the most concrete kinds. 'boulder' and 'gem' are left out: on their own
+  // levels they sit beside 'rock' and 'crystal', share descriptors with them, and look like a
+  // bigger / shinier one of the same thing - so "two round boulders" beside two round rocks asks a
+  // five-year-old a word question, not a looking question. Grade 2 up keeps both.
+  if (grade <= 1) return base.filter(k => ['tree', 'bush', 'rock', 'flower', 'mushroom', 'lantern', 'nest', 'fence', 'pine', 'shovel', 'snowman', 'flag', 'log', 'stump', 'sign', 'cart', 'crystal', 'icicle', 'fern', 'pinecone', 'acorn', 'sled', 'snowball'].includes(k.kind))
   return base
 }
 

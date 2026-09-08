@@ -39,6 +39,14 @@ describe('level generation', () => {
           const a = lv.groups[i], b = lv.groups[j]
           if (a.kind === b.kind) expect(CONF.has(`${a.descriptor}|${b.descriptor}`), `${a.kind}: ${a.descriptor} vs ${b.descriptor}`).toBe(false)
         }
+        // Kindergarten and 1st grade never see two kinds that are the same thing in different
+        // words: a boulder next to a rock, a gem next to a crystal.
+        if (grade <= 1) {
+          const kindsHere = new Set(lv.groups.map(g => g.kind))
+          for (const [a, b] of [['rock', 'boulder'], ['crystal', 'gem']]) {
+            expect(kindsHere.has(a) && kindsHere.has(b), `${a} + ${b} at grade ${grade}`).toBe(false)
+          }
+        }
         // Words
         expect(lv.clueWords.number).toBeTruthy()
         expect(lv.clueWords.object).toBeTruthy()
