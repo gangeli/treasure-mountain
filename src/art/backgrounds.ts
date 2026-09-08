@@ -135,7 +135,13 @@ function drawWall(ctx: Ctx, camX: number, th: Theme, no: LevelNo, t: number): vo
         ctx.lineTo(x + k, yy + 2 - 3 * Math.sin(wx / 37))
       }
       ctx.closePath(); ctx.fill()
-      if (r2 > 0.55) { ctx.beginPath(); ctx.ellipse(x + 40 + r1 * 90, top + 150 + r3 * 150, 26 + r3 * 14, 7, 0, 0, Math.PI * 2); ctx.fill() }
+      // Snow caught on the stones embedded in the wall: a cap on top of the stone, never floating
+      // on its own. (Drawn to match the stone placed above, so it always has something to sit on.)
+      if (r3 > 0.45) {
+        const ex = x + 80 + r2 * 60, ey = top + 120 + r3 * 180, rx = 16 + r1 * 12, ry = 10 + r2 * 6
+        ctx.beginPath(); ctx.ellipse(ex, ey - ry * 0.55, rx * 0.92, ry * 0.5, r1 * 0.4, Math.PI, 0)
+        ctx.closePath(); ctx.fill()
+      }
     }
   }
   // A leafy fringe along the top edge and hanging vines (level 1 & 2), swaying gently
@@ -193,7 +199,25 @@ function drawGround(ctx: Ctx, camX: number, th: Theme, no: LevelNo): void {
     const r = h1(wb * 5 + 2)
     tuft(ctx, x + r * 20, PLAY_H - 22, 8 + r * 8, th.groundLight)
     if (r > 0.6) tuft(ctx, x + 10, GROUND_Y + 18 + r * 40, 5 + r * 5, r > 0.8 ? th.groundLight : th.groundDark)
-    if (no === 3 && r > 0.35) { ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.ellipse(x + 18, GROUND_Y + 20 + (r * 50) % 40, 34 + r * 30, 9, 0, 0, Math.PI * 2); ctx.fill() }
+    if (no === 3) {
+      // A continuous drift banked against the path edge, with a soft shadow line, rather than
+      // detached white ovals lying on the grass like puddles.
+      const drift = (xx: number) => {
+        const wx = wrapX(camX + xx)
+        return GROUND_Y + 12 + 7 * Math.sin(wx / 46) + 4 * Math.sin(wx / 17 + 1.3)
+      }
+      ctx.fillStyle = '#ffffff'
+      ctx.beginPath()
+      ctx.moveTo(x - 2, GROUND_Y - 1)
+      for (let k = 0; k <= 40; k += 8) ctx.lineTo(x + k, drift(x + k))
+      ctx.lineTo(x + 38, GROUND_Y - 1)
+      ctx.closePath(); ctx.fill()
+      ctx.strokeStyle = P.snowShade; ctx.lineWidth = 2
+      ctx.beginPath()
+      for (let k = 0; k <= 40; k += 8) k === 0 ? ctx.moveTo(x + k, drift(x + k)) : ctx.lineTo(x + k, drift(x + k))
+      ctx.stroke()
+      if (r > 0.72) { ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.ellipse(x + 16, GROUND_Y + 34 + (r * 40) % 26, 20 + r * 14, 6, 0, 0, Math.PI * 2); ctx.fill() }
+    }
     if (no === 2 && r > 0.85) { ctx.fillStyle = th.groundDark; ctx.beginPath(); ctx.ellipse(x + 18, GROUND_Y + 30 + (r * 70) % 40, 16, 5, 0, 0, Math.PI * 2); ctx.fill() }
   }
 }
