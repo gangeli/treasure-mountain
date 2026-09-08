@@ -1,5 +1,5 @@
 import { P } from './palette'
-import { type Ctx, roundRect, circle, ellipse, text, line, poly, vgrad, richText, wrap, star, rr, fillStroke } from './draw'
+import { type Ctx, roundRect, circle, ellipse, text, line, poly, vgrad, h1, richText, wrap, star, rr, fillStroke } from './draw'
 import { W, H, PLAY_H } from '../game/layout'
 import type { Game } from '../game/game'
 import { CASTLE_FLOORS, CASTLE_FLOOR_Y, CASTLE_FLOOR_H } from '../game/game'
@@ -444,8 +444,19 @@ function throne(ctx: Ctx, g: Game): void {
 
 // ------------------------------------------------------------------ rank screen
 function rank(ctx: Ctx, g: Game): void {
-  ctx.fillStyle = '#6d7b93'; ctx.fillRect(0, 0, W, PLAY_H)
-  ctx.fillStyle = '#586478'; for (let x = 0; x < W; x += 40) for (let y = 0; y < PLAY_H; y += 40) if ((x / 40 + y / 40) % 2 === 0) ctx.fillRect(x, y, 40, 40)
+  // Night sky with a glow behind the poster. (It used to be a grey checkerboard, which reads as the
+  // transparency pattern from an image editor rather than as a celebration.)
+  ctx.fillStyle = vgrad(ctx, 0, PLAY_H, '#16224a', '#3a5a9c'); ctx.fillRect(0, 0, W, PLAY_H)
+  const glow = ctx.createRadialGradient(W / 2, 260, 40, W / 2, 260, 520)
+  glow.addColorStop(0, 'rgba(255,214,80,0.30)'); glow.addColorStop(1, 'rgba(255,214,80,0)')
+  ctx.fillStyle = glow; ctx.fillRect(0, 0, W, PLAY_H)
+  ctx.save(); ctx.fillStyle = '#ffffff'
+  for (let i = 0; i < 60; i++) {
+    const sx = h1(i * 3.1) * W, sy = h1(i * 7.7) * PLAY_H
+    ctx.globalAlpha = 0.25 + h1(i * 2.3) * 0.5 * (0.6 + 0.4 * Math.sin(g.time * 2 + i))
+    ctx.beginPath(); ctx.arc(sx, sy, 1.2 + h1(i) * 1.8, 0, Math.PI * 2); ctx.fill()
+  }
+  ctx.restore()
   const k = Math.min(1, g.sceneT / 1.5)
   const shown = Math.round(g.rankFrom + (g.rankTo - g.rankFrom) * k)
   poster(ctx, W / 2, 50, g, shown)
@@ -454,9 +465,9 @@ function rank(ctx: Ctx, g: Game): void {
   if (starsForTotal(g.rankTo) > starsForTotal(g.rankFrom) && k >= 1) {
     // Celebration stars circle around the poster, never over its text.
     ctx.save(); ctx.globalAlpha = 0.9
-    for (let i = 0; i < 14; i++) { const a = (i / 14) * Math.PI * 2 + g.time * 0.7; const sx = W / 2 + Math.cos(a) * 560, sy = 275 + Math.sin(a) * 300; if (Math.abs(sx - W / 2) < 330 && sy > 40 && sy < 510) continue; star(ctx, sx, sy, 14 + (i % 3) * 3, i % 2 ? P.yellow : P.white, P.ink, 2) }
+    for (let i = 0; i < 14; i++) { const a = (i / 14) * Math.PI * 2 + g.time * 0.7; const sx = W / 2 + Math.cos(a) * 545, sy = 280 + Math.sin(a) * 240; if (Math.abs(sx - W / 2) < 330 && sy > 40 && sy < 510) continue; star(ctx, sx, sy, 14 + (i % 3) * 3, i % 2 ? P.yellow : P.white, P.ink, 2) }
     ctx.restore()
-    text(ctx, 'NEW STAR!', W / 2, 30, { size: 40, align: 'center', color: P.yellow, weight: 900, outline: P.ink, outlineWidth: 8, font: DISPLAY })
+    text(ctx, 'NEW STAR!', W / 2, 38, { size: 40, align: 'center', color: P.yellow, weight: 900, outline: P.ink, outlineWidth: 8, font: DISPLAY })
   }
   drawFrame(ctx)
 }
