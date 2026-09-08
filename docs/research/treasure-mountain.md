@@ -374,7 +374,7 @@ old and a ten-year-old can both climb this mountain":
 | --- | --- | --- |
 | One age band (5–9) | Six grade levels, K–5, chosen at the start | The brief |
 | 360 hand-written puzzles | 41 generator families producing fresh riddles per grade and tier | Six grades × three tiers needs far more content than a fixed bank, and the child should not meet the same riddle twice |
-| Wrong answer → elf escapes at once | Two tries (three for K and grade 1), then the answer is shown | A single try on a four-line verse riddle is harsh for a five-year-old |
+| Wrong answer → elf escapes at once | Two tries, then the answer is shown | A single try on a four-line verse riddle is harsh for a five-year-old; a third try against three choices would hand the answer over |
 | Riddle text only | Optional read-aloud via speech synthesis | Pre-readers |
 | Keyboard/mouse-drag | Tap-to-walk, tap-an-elf-to-net, big NET/COIN/JUMP buttons; keyboard identical to the original | Tablets |
 | Flip (↑+direction) dodges dust and gaps | Jump (↑) does the same job | One fewer thing to learn; same function |

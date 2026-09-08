@@ -114,8 +114,12 @@ describe('game flow', () => {
     expect(run.coins).toBe(1)
   })
 
-  it('wrong answers: two tries for grade 3, three for K, then the elf escapes without a clue', () => {
-    for (const [grade, tries] of [[0, 3], [3, 2]] as const) {
+  // Two tries at every grade, and always at least one fewer than there are choices: with three
+  // tries against K's three buttons a child could rule out the other two and be handed the answer,
+  // so the riddle could not be failed and the coins meant nothing.
+  it('wrong answers: two tries at every grade, then the elf escapes without a clue', () => {
+    for (const grade of [0, 1, 2, 3, 4, 5] as const) {
+      const tries = 2
       const g = new Game(null, { seed: 'wrong' + grade, fast: true })
       g.play(); g.chooseGrade(grade); g.pressButton('start'); if (g.screen === 'intro') g.advanceScene()
       const lvl = g.lvl!, run = g.run!
@@ -132,6 +136,7 @@ describe('game flow', () => {
         if (t < tries - 1) { expect(rv.phase).toBe('wrong'); step(g, 1.3); expect(rv.phase).toBe('ask') }
       }
       expect(rv.phase).toBe('reveal')
+      expect(tries, `grade ${grade} gets ${tries} tries at ${rv.riddle.choices.length} choices`).toBeLessThan(rv.riddle.choices.length)
       g.riddleContinue()
       expect(g.screen).toBe('level')
       expect(g.cluesFound()).toBe(0)

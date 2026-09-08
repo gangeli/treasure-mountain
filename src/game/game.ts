@@ -426,7 +426,12 @@ export class Game {
     if (run.seen.length > 200) run.seen.shift()
     run.recent.push(recentEntry(r))
     if (run.recent.length > 8) run.recent.shift()
-    this.riddle = { riddle: r, selected: 0, wrong: [], triesLeft: this.grade <= 1 ? 3 : 2, phase: 'ask', t: 0, coinsWon: 0 }
+    // Two tries, never more than one short of the number of choices. Three tries against the three
+    // choices K and grade 1 see would hand the answer to a child who has only ruled the other two
+    // out: the riddle could not be failed, and the coins and clue words stopped saying anything
+    // about reading. One slip is forgiven at every grade; the second ends the riddle, and then the
+    // answer is shown either way.
+    this.riddle = { riddle: r, selected: 0, wrong: [], triesLeft: Math.min(2, r.choices.length - 1), phase: 'ask', t: 0, coinsWon: 0 }
     ;(this.riddle as any).elfId = elf.id
     this.sfx('scroll')
     this.goto('riddle')
