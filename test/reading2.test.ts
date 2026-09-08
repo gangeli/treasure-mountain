@@ -6,7 +6,7 @@ import { standardChecks } from './helpers'
 import { NOUNS, VERBS } from '../src/content/data/plurals'
 import { CONTRACTIONS } from '../src/content/data/contractions'
 import { HOMOPHONES } from '../src/content/data/homophones'
-import { DERIVED } from '../src/content/data/affixes'
+import { DERIVED, PREFIXES, SUFFIXES } from '../src/content/data/affixes'
 import { ANALOGIES } from '../src/content/data/analogies'
 import { WORDS } from '../src/content/data/wordlist'
 import { SENTENCES } from '../src/content/data/sentences'
@@ -151,7 +151,13 @@ describe('affixes', () => {
           expect(x).not.toBe(a)
           // A real-word decoy must not share the same affix (it would have the same meaning shape).
           if (real.has(x)) expect(byWord.get(x)!.affix, `${x} vs ${a}`).not.toBe(d.affix)
-          else expect(d.fake ?? []).toContain(x)
+          else {
+            // Not a real word: it must be this base carrying some other affix, so the child is
+            // choosing between affixes rather than spotting which word contains the base.
+            const built = [...PREFIXES, ...SUFFIXES].filter(f => f !== d.affix)
+              .flatMap(f => [f + d.base, d.base + f])
+            expect([...(d.fake ?? []), ...built], `${x} for ${a}`).toContain(x)
+          }
         }
       } else if (byMeaning.has(a)) {
         const d = byMeaning.get(a)!
