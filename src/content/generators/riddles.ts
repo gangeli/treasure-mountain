@@ -1,7 +1,7 @@
 import type { Generator } from '../types'
 import { riddle, shuffled, choiceCount } from '../types'
 import { RIDDLES } from '../data/riddles'
-import { pickLevel } from './thinkingUtil'
+import { bandedSource } from './thinkingUtil'
 
 const OPENERS = ['Riddle, riddle, guess me true!', 'Listen close, here is a clue:', 'Hear my riddle, if you please:', 'A riddle from the elf for you:']
 const CLOSERS = ['What am I?', 'Can you guess what I am?', 'Tell me, what am I?', 'Do you know what I am?']
@@ -15,8 +15,10 @@ export const riddles: Generator = {
   grades: [0, 1, 2, 3, 4, 5],
   weight: { 0: 1, 1: 1.2, 2: 1.5, 3: 1.5, 4: 1.5, 5: 1.5 },
   make(grade, tier, rng) {
-    const level = pickLevel(grade, tier, rng)
-    const pool = RIDDLES.filter(r => r.level === level)
+    // Tier 1/2/3 draw disjoint bands, so a riddle never shows up at two tiers of the same grade and
+    // the next grade's hardest riddles never leak downwards.
+    const src = bandedSource(grade, tier, rng)
+    const pool = RIDDLES.filter(r => r.level === src.level && src.bands.includes(r.band))
     const entry = rng.pick(pool)
     const n = choiceCount(grade)
     const { choices, answer } = shuffled(rng, entry.a, rng.shuffle(entry.d), n)
@@ -34,7 +36,7 @@ export const riddles: Generator = {
     return riddle({
       family: 'riddles', skill: 'thinking: riddles', prompt, verse: entry.verse, choices, answer,
       spoken: `${clueText}${isQuestion ? '' : ' What am I?'} ${choices.map(c => c.text).join(', ')}?`,
-      metric: level * 10 + Math.min(8, clueText.length / 15), grade, tier,
+      metric: entry.level * 10 + (entry.band - 1) * 3 + Math.min(3, clueText.length / 30), grade, tier,
       key: `riddles|${entry.a}|${clues[0]}`,
     })
   },
