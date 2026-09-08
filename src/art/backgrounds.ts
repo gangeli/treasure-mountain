@@ -91,6 +91,13 @@ function drawWall(ctx: Ctx, camX: number, th: Theme, no: LevelNo, t: number): vo
   }
   pts.push([W + 10, GROUND_Y + 10])
   poly(ctx, pts, th.wall, 'rgba(0,0,0,0)', 0)
+  // Outline the top edge. Everything else in the game is drawn with a navy line, and without one
+  // here the wall does not separate from the far hills - so the leaves along it looked like they
+  // were floating in the sky.
+  ctx.save(); ctx.strokeStyle = P.ink; ctx.lineWidth = 3; ctx.lineJoin = 'round'
+  ctx.beginPath()
+  pts.slice(1, -1).forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))
+  ctx.stroke(); ctx.restore()
   // Light band near the top and darker base
   ctx.save(); ctx.globalAlpha = 0.35; ctx.fillStyle = th.wallLight
   ctx.beginPath(); pts.forEach(([x, y], i) => i ? ctx.lineTo(x, y + 40) : ctx.moveTo(x, y)); ctx.lineTo(W + 10, top + 90); ctx.lineTo(-10, top + 90); ctx.closePath(); ctx.fill()
@@ -153,13 +160,14 @@ function drawWall(ctx: Ctx, camX: number, th: Theme, no: LevelNo, t: number): vo
       const y = top + 26 * Math.sin(wx / 210) + 14 * Math.sin(wx / 73 + 2)
       leaf(ctx, x, y - 4, 10 + r * 5, (r - 0.5) * 1.2 + (i % 2 ? 0.2 : 2.9), i % 2 ? th.vineLight : th.vine)
     }
-    for (let x = -40; x <= W + 40; x += 34) {
+    // Hanging vines: sparse, or the cliff face reads as a bead curtain.
+    for (let x = -40; x <= W + 40; x += 48) {
       const wx = wrapX(camX + x)
-      const i = Math.floor(wx / 34)
+      const i = Math.floor(wx / 48)
       const r = h1(i * 7 + 5)
-      if (r < 0.35) continue
+      if (r < 0.55) continue
       const y = top + 26 * Math.sin(wx / 210) + 14 * Math.sin(wx / 73 + 2)
-      const len = 40 + r * 110
+      const len = 34 + r * 80
       const sway = Math.sin(t * 1.1 + i * 0.7) * 5
       const bend = (r - 0.5) * 40
       ctx.strokeStyle = th.vine; ctx.lineWidth = 3.5; ctx.lineCap = 'round'
@@ -216,7 +224,9 @@ function drawGround(ctx: Ctx, camX: number, th: Theme, no: LevelNo): void {
       ctx.beginPath()
       for (let k = 0; k <= 40; k += 8) k === 0 ? ctx.moveTo(x + k, drift(x + k)) : ctx.lineTo(x + k, drift(x + k))
       ctx.stroke()
-      if (r > 0.72) { ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.ellipse(x + 16, GROUND_Y + 34 + (r * 40) % 26, 20 + r * 14, 6, 0, 0, Math.PI * 2); ctx.fill() }
+      // Snow caught on the grass itself, not white ovals lying loose on the field: a cap over the
+      // tuft that was already drawn there.
+      if (r > 0.62) { ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.ellipse(x + r * 20, PLAY_H - 27, 7 + r * 6, 4, 0, Math.PI, 0); ctx.closePath(); ctx.fill() }
     }
     if (no === 2 && r > 0.85) { ctx.fillStyle = th.groundDark; ctx.beginPath(); ctx.ellipse(x + 18, GROUND_Y + 30 + (r * 70) % 40, 16, 5, 0, 0, Math.PI * 2); ctx.fill() }
   }

@@ -58,7 +58,9 @@ export function uiButtons(g: Game): Button[] {
       break
     case 'level': {
       const run = g.run!
-      const cx = 450, y = HUD_Y + 74, w = 110, h = 74
+      // Centred in the middle HUD panel (which carries no prompt on the level screen): at +74 the
+      // buttons hung over the panel's bottom edge and read as cut off.
+      const cx = 450, y = HUD_Y + 46, w = 110, h = 76
       b.push({ id: 'net', x: cx, y, w, h, label: `Net`, icon: 'net', disabled: run.nets <= 0 })
       b.push({ id: 'coin', x: cx + w + 12, y, w, h, label: `Coin`, icon: 'coin', disabled: run.coins <= 0 })
       b.push({ id: 'jump', x: cx + 2 * (w + 12), y, w, h, label: 'Jump', icon: 'jump' })
