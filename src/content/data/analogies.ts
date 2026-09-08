@@ -51,7 +51,7 @@ export const ANALOGIES: Analogy[] = [
   A('fish', 'water', 'worm', 'soil', 'animal/home', 3, ['bird', 'apple', 'wiggle']),
   A('rabbit', 'burrow', 'spider', 'web', 'animal/home', 3, ['fly', 'legs', 'nest']),
   A('chicken', 'coop', 'cow', 'barn', 'animal/home', 3, ['milk', 'field', 'hive']),
-  A('ant', 'hill', 'beaver', 'lodge', 'animal/home', 3, ['dam', 'tail', 'log']),
+  A('ant', 'hill', 'beaver', 'lodge', 'animal/home', 3, ['tail', 'log', 'pond']),
   A('lion', 'den', 'mouse', 'hole', 'animal/home', 3, ['cheese', 'cat', 'trap']),
   // level 4: part / whole
   A('finger', 'hand', 'toe', 'foot', 'part/whole', 4, ['shoe', 'sock', 'leg']),
@@ -76,7 +76,7 @@ export const ANALOGIES: Analogy[] = [
   A('tailor', 'needle', 'fisherman', 'net', 'worker/tool', 4, ['boat', 'ocean', 'fish']),
   A('dentist', 'drill', 'firefighter', 'hose', 'worker/tool', 4, ['fire', 'smoke', 'truck']),
   A('pilot', 'plane', 'sailor', 'ship', 'worker/tool', 4, ['sea', 'anchor', 'wave']),
-  A('astronomer', 'telescope', 'scientist', 'microscope', 'worker/tool', 4, ['lab', 'cell', 'experiment']),
+  A('astronomer', 'telescope', 'biologist', 'microscope', 'worker/tool', 4, ['lab', 'cell', 'experiment']),
   // level 4: object / function
   A('knife', 'cut', 'pen', 'write', 'object/function', 4, ['ink', 'paper', 'read']),
   A('scissors', 'cut', 'broom', 'sweep', 'object/function', 4, ['dust', 'floor', 'handle']),

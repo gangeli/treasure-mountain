@@ -1,6 +1,7 @@
 import type { Generator, Grade, Tier } from '../types'
 import { riddle, shuffled, choiceCount, cap } from '../types'
 import { ANALOGIES, type Analogy, type Relation } from '../data/analogies'
+import { tierWindow, rankIn } from './textutil'
 
 function levels(grade: Grade, tier: Tier): number[] {
   const table: Partial<Record<Grade, number[][]>> = {
@@ -34,7 +35,12 @@ export const analogies: Generator = {
     const n = choiceCount(grade)
     const lv = levels(grade, tier)
     const pool = ANALOGIES.filter(a => lv.includes(a.level))
-    const a: Analogy = rng.pick(pool)
+    // Inside a level the relations run from the plainest (opposites, synonyms) to the ones that
+    // turn on specific vocabulary (a baby swan is a cygnet, a beaver lives in a lodge), so each
+    // tier takes its own window: two tiers on the same level are not the same questions.
+    const window = lv.flatMap(l => tierWindow(pool.filter(x => x.level === l), tier))
+    const a: Analogy = rng.pick(window.length >= 6 ? window : pool)
+    const rank = rankIn(ANALOGIES.filter(x => x.level === a.level), a) * 5
     type Mode = 'fill' | 'colon' | 'pair'
     const modes: Mode[] = grade === 3 ? ['fill', 'fill', tier === 3 ? 'colon' : 'fill'] : grade === 4 ? (tier === 1 ? ['fill', 'colon'] : ['fill', 'colon', 'pair']) : ['fill', 'colon', 'pair', 'pair']
     const mode = rng.pick(modes)
@@ -48,7 +54,8 @@ export const analogies: Generator = {
       return riddle({
         family: 'analogies', skill: `thinking: analogies (${RELATION_NAME[a.rel]})`, prompt, choices, answer: idx,
         spoken: `${a.a} goes with ${a.b}. Which pair goes together in the same way? ${choices.map(c => c.text).join(', ')}?`,
-        metric: a.level * 10 + a.d.length + 3, grade, tier,
+        metric: a.level * 10 + a.d.length + 3 + rank, grade, tier,
+        key: `analogies|pair|${a.a}|${a.b}`,
       })
     }
     // Decoys: the hand-picked wrong-relation words, then fourth words of other analogies with the same relation.
@@ -61,7 +68,7 @@ export const analogies: Generator = {
     return riddle({
       family: 'analogies', skill: `thinking: analogies (${RELATION_NAME[a.rel]})`, prompt, highlight: [a.a, a.b, a.c], choices, answer,
       spoken: `${a.a} is to ${a.b} as ${a.c} is to blank. ${choices.map(c => c.text).join(', ')}?`,
-      metric: a.level * 10 + a.d.length + (mode === 'colon' ? 1 : 0), grade, tier,
+      metric: a.level * 10 + a.d.length + (mode === 'colon' ? 1 : 0) + rank, grade, tier,
       key: `analogies|${a.a}|${a.b}|${a.c}|${mode}`,
     })
   },
