@@ -50,6 +50,7 @@ npm run build                         # typecheck + dist/index.html (single file
 node e2e/screenshots.mjs e2e/out/shots  # renders every screen to PNG (needs Chromium)
 node e2e/screenshots.mjs docs/shots 640 # the same screens at the size the web site shows them
 node e2e/playtest.mjs                  # plays a full ascent at every grade through the real UI
+                                      # (CI plays K and 5th, plus one at six stars)
 cd android && ./gradlew :app:assembleRelease   # signed APK in app/build/outputs/apk/release/
 ```
 
