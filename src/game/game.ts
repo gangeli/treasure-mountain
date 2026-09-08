@@ -146,7 +146,7 @@ export class Game {
     const seed = this.rng.int(1, 1e9)
     this.run = {
       levelNo: 1, seed, coins: START_COINS, nets: START_NETS, treasures: [], clues: {}, hasKey: false, searched: [], secretUsed: false,
-      groundCoinsSpawned: 0, riddlesAsked: 0, riddlesRight: 0, seen: [], recentAreas: [], playerX: 130,
+      groundCoinsSpawned: 0, seen: [], recentAreas: [], playerX: 130,
     }
     this.savedRunGrade = this.grade
     if (this.profile().ascents === 0 && this.firstRun) { this.goto('intro'); return }
@@ -389,7 +389,6 @@ export class Game {
     run.seen.push(r.key)
     if (run.seen.length > 200) run.seen.shift()
     run.recentAreas.push(r.family)
-    run.riddlesAsked++
     this.riddle = { riddle: r, selected: 0, wrong: [], triesLeft: this.grade <= 1 ? 3 : 2, phase: 'ask', t: 0, coinsWon: 0 }
     ;(this.riddle as any).elfId = elf.id
     this.sfx('scroll')
@@ -424,7 +423,6 @@ export class Game {
     const run = this.run!
     if (i === rv.riddle.answer) {
       rv.phase = 'right'; rv.t = 0
-      run.riddlesRight++
       run.coins += 2; rv.coinsWon = 2
       this.sfx('right')
       // Clue word: fill a random empty slot.

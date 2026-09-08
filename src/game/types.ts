@@ -10,7 +10,6 @@ export interface Profile {
   total: number
   prizes: string[]
   ascents: number
-  /** family -> [asked, right] */
   crown: boolean
 }
 
@@ -43,7 +42,7 @@ export interface Elf {
 }
 
 export interface Dust { x: number; y: number; vx: number; vy: number; t: number }
-export interface Effect { kind: 'poof' | 'sparkle' | 'text' | 'splash' | 'dustpuff'; x: number; y: number; t: number; text?: string }
+export interface Effect { kind: 'poof' | 'sparkle' | 'text' | 'dustpuff'; x: number; y: number; t: number; text?: string }
 export interface GroundCoin { x: number; t: number }
 
 export interface Run {
@@ -57,8 +56,6 @@ export interface Run {
   searched: number[]
   secretUsed: boolean
   groundCoinsSpawned: number
-  riddlesAsked: number
-  riddlesRight: number
   /** Riddle keys already seen this ascent. */
   seen: string[]
   recentAreas: string[]
