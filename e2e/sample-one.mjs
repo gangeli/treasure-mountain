@@ -1,5 +1,5 @@
-// Dump samples for one family: node scripts-one.mjs <file> <exportName> [per]
-import { Rng } from './src/engine/rng.ts'
+// Dump samples for one family: npx tsx e2e/sample-one.mjs <file> <exportName> [per]
+import { Rng } from '../src/engine/rng.ts'
 const [, , file, name, perS] = process.argv
 const per = parseInt(perS || '14')
 const gen = (await import(file))[name]

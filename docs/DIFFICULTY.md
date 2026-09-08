@@ -87,10 +87,10 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 | 2 | 3 | 63.3 | 5.0 | 113 | 0% | 49 - 40 = ? [*9 / 11 / 89] |
 | 3 | 1 | 67.5 | 5.0 | 227 | 0% | 47 + 28 = ? [*75 / 19 / 73 / 81] |
 | 3 | 2 | 84.0 | 5.0 | 561 | 0% | 357 - 122 = ? [251 / 268 / 479 / *235] |
-| 3 | 3 | 95.2 | 5.0 | 1135 | 0% | 358 + 259 = ? [*617 / 553 / 602 / 99] |
-| 4 | 1 | 98.7 | 5.0 | 2256 | 0% | 533 + 1299 = ? [*1832 / 1654 / 1566 / 1794] |
-| 4 | 2 | 124.0 | 5.0 | 11395 | 0% | 3358 + 4856 = ? [8359 / *8214 / 8500 / 9105] |
-| 4 | 3 | 155.8 | 5.0 | 106924 | 0% | 26927 + 48499 = ? [74935 / 75451 / 65599 / *75426] |
+| 3 | 3 | 95.2 | 5.0 | 999 | 0% | 358 + 259 = ? [*617 / 553 / 602 / 99] |
+| 4 | 1 | 98.7 | 5.0 | 996 | 0% | 533 + 1,299 = ? [*1,832 / 1,654 / 1,566 / 1,794] |
+| 4 | 2 | 124.0 | 5.0 | 999 | 0% | 3,358 + 4,856 = ? [8,359 / *8,214 / 8,500 / 9,105] |
+| 4 | 3 | 155.8 | 5.0 | 999 | 0% | 26,927 + 48,499 = ? [74,935 / 75,451 / 65,599 / *75,426] |
 | 5 | 1 | 128.9 | 5.0 | 202.2 | 0% | 59.3 + 74.7 = ? [126.4 / 152.6 / *134.0 / 146.7] |
 | 5 | 2 | 158.7 | 5.0 | 19.22 | 0% | 5.75 + 8.36 = ? [15.44 / 12.31 / *14.11 / 15.43] |
 | 5 | 3 | 189.9 | 5.0 | 200.23 | 0% | 51.07 + 49.75 = ? [*100.82 / 1.32 / 111.76 / 89.53] |
@@ -107,7 +107,7 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 | 1 | 3 | 32.5 | 5.6 | 107 | 0% | Which number is the largest? [22 / *24 / 20] |
 | 2 | 1 | 32.4 | 5.6 | 108 | 0% | Which number is between 42 and 56? [66 / 40 / *48] |
 | 2 | 2 | 37.5 | 5.6 | 537 | 0% | Which number is between 272 and 338? [267 / 209 / *333] |
-| 2 | 3 | 43.3 | 6.5 | 1122 | 0% | Which number is between 212 and 361? [428 / *342 / 89] |
+| 2 | 3 | 43.3 | 6.5 | 993 | 0% | Which number is between 212 and 361? [428 / *342 / 89] |
 | 3 | 1 | 48.4 | 6.1 | 999 | 0% | Which number is the greatest? [1,656 / *3,957 / 2,559 / 3,523] |
 | 3 | 2 | 53.2 | 6.5 | 997 | 0% | Which number is the smallest? [*2,414 / 2,885 / 2,837 / 2,870] |
 | 3 | 3 | 54.6 | 6.4 | 998 | 0% | Which number is the least? [2,583 / *2,553 / 2,563 / 2,559] |
@@ -337,18 +337,18 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 | 1 | 1 | 14.0 | 9.6 | 0 | 0% | Which unit is best to measure / a spoon? [miles / *inches / feet] |
 | 1 | 2 | 17.9 | 7.9 | 1 | 0% | What would you use to measure / how hot it is outside? [a measuring cup / a ruler / *a thermometer] |
 | 1 | 3 | 20.0 | 7.5 | 1 | 0% | What would you use to measure / how long recess lasts? [a measuring cup / *a clock / a ruler] |
-| 2 | 1 | 25.0 | 6.0 | 1000 | 45% | What temperature does the / thermometer show? [10°F / *30°F / 50°F] |
-| 2 | 2 | 28.9 | 6.7 | 1000 | 64% | What temperature does the / thermometer show? [70°F / *50°F / 60°F] |
-| 2 | 3 | 34.1 | 8.1 | 1000 | 69% | About how long is a spoon? [*6 inches / 6 feet / 60 inches] |
+| 2 | 1 | 25.0 | 6.0 | 400 | 45% | What temperature does the / thermometer show? [10°F / *30°F / 50°F] |
+| 2 | 2 | 28.9 | 6.7 | 400 | 64% | What temperature does the / thermometer show? [70°F / *50°F / 60°F] |
+| 2 | 3 | 34.1 | 8.1 | 400 | 69% | About how long is a spoon? [*6 inches / 6 feet / 60 inches] |
 | 3 | 1 | 42.9 | 7.0 | 600 | 0% | How many inches are in a foot? [*12 / 14 / 1 / 24] |
-| 3 | 2 | 44.8 | 8.2 | 1000 | 19% | How many minutes are in an hour? [6 / 58 / *60 / 30] |
-| 3 | 3 | 55.1 | 9.0 | 36000 | 24% | How many days are in a year? [465 / 3650 / *365 / 37] |
-| 4 | 1 | 59.2 | 7.3 | 960 | 29% | The chart shows stickers for each day. / Which day had the fewest stickers? [Wed / Mon / *Thu / Tue] |
-| 4 | 2 | 68.2 | 7.4 | 900 | 24% | 9 liters = ? milliliters [*9,000 milliliters / 90,000 milliliters / 900 milliliters / 10,000 milliliters] |
-| 4 | 3 | 70.9 | 7.6 | 973 | 23% | The chart shows stars for each day. / How many stars in the whole week? [*73 / 72 / 78 / 74] |
-| 5 | 1 | 66.5 | 8.3 | 950 | 42% | 4.5 days = ? hours [84 hours / 11 hours / 45 hours / *108 hours] |
-| 5 | 2 | 73.3 | 11.8 | 990 | 33% | The chart shows stars for each day. / How many more stars on Thu than Wed? [12 / 19 / *11 / 10] |
-| 5 | 3 | 76.9 | 10.9 | 990 | 32% | 8.25 kilometers = ? meters [7,250 meters / 825 meters / *8,250 meters / 9,250 meters] |
+| 3 | 2 | 44.8 | 7.4 | 600 | 19% | How many minutes are in an hour? [6 / 58 / *60 / 30] |
+| 3 | 3 | 55.1 | 8.0 | 960 | 24% | How many days are in a year? [465 / 3,650 / *365 / 37] |
+| 4 | 1 | 59.2 | 6.2 | 960 | 29% | Stickers each day: / Which day had the fewest stickers? [Wed / Mon / *Thu / Tue] |
+| 4 | 2 | 68.2 | 6.4 | 900 | 24% | 9 liters = ? milliliters [*9,000 milliliters / 90,000 milliliters / 900 milliliters / 10,000 milliliters] |
+| 4 | 3 | 70.9 | 6.6 | 973 | 23% | Stars each day: / How many stars in the whole week? [*73 / 72 / 78 / 74] |
+| 5 | 1 | 66.5 | 6.7 | 950 | 42% | 4.5 days = ? hours [84 hours / 11 hours / 45 hours / *108 hours] |
+| 5 | 2 | 73.3 | 10.5 | 990 | 33% | Stars each day: / How many more stars on Thu than Wed? [12 / 19 / *11 / 10] |
+| 5 | 3 | 76.9 | 9.6 | 990 | 32% | 8.25 kilometers = ? meters [7,250 meters / 825 meters / *8,250 meters / 9,250 meters] |
 
 ### Letters (`letters`, reading)
 
@@ -436,9 +436,9 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 14.3 | 7.2 | 10 | 0% | Look at these three words. / Which one is a drink? [lettuce / pie / *lemonade] |
-| K | 2 | 15.3 | 7.4 | 10 | 0% | Look at these three words. / Which one is a shape? [6 / 10 / *triangle] |
-| K | 3 | 22.7 | 7.4 | 10 | 0% | Look at these three words. / Which one is a day of the week? [March / *Monday / February] |
+| K | 1 | 14.4 | 7.1 | 10 | 0% | Which one is a drink? [*lemonade / pie / lettuce] |
+| K | 2 | 15.3 | 7.3 | 10 | 0% | Look at these three words. / Which one is a shape? [10 / 6 / *triangle] |
+| K | 3 | 22.4 | 7.3 | 10 | 0% | Which one is a kind of weather? [iris / *rain / cedar] |
 | 1 | 1 | 21.1 | 5.6 | 10 | 0% | Which one is a baby animal? [shark / clam / *puppy] |
 | 1 | 2 | 26.4 | 7.7 | 0 | 0% | Which one does not belong? / Two of these are kinds of weather. [*iris / sleet / rain] |
 | 1 | 3 | 27.5 | 8.9 | 0 | 0% | Which one does not belong? / Two of these are seasons. [summer / *September / spring] |
@@ -737,9 +737,9 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 | 1 | 3 | 18.9 | 9.5 | 50 | 0% | Which joint lets your hand turn and bend? [*the wrist / the knee / the hip] |
 | 2 | 1 | 18.7 | 8.6 | 50 | 0% | Which of these is a fruit? [*a banana / a carrot / a potato] |
 | 2 | 2 | 22.7 | 10.2 | 100 | 0% | How often should you brush your teeth? [once a month / *twice a day / once a day] |
-| 2 | 3 | 29.2 | 10.3 | 1000 | 0% | Riddle me this: / About how many bones are in a grown-up's body? [about 20 / about 1000 / *about 206] |
+| 2 | 3 | 29.2 | 10.3 | 206 | 0% | Riddle me this: / About how many bones are in a grown-up's body? [about 20 / about 1,000 / *about 206] |
 | 3 | 1 | 29.2 | 7.6 | 50 | 0% | Where does digestion start? [in the stomach / *in the mouth / in the intestines / in the lungs] |
-| 3 | 2 | 33.0 | 10.4 | 1000 | 0% | Let me see what you know. / Does a baby have more bones or fewer bones / than a grown-up? [the same number / no bones at all / *more bones / fewer bones] |
+| 3 | 2 | 33.0 | 10.4 | 206 | 0% | Let me see what you know. / Does a baby have more bones or fewer bones / than a grown-up? [the same number / no bones at all / *more bones / fewer bones] |
 | 3 | 3 | 38.9 | 9.9 | 0 | 0% | Which system brings oxygen into the body? [*respiratory / skeletal / digestive / circulatory] |
 | 4 | 1 | 39.3 | 8.1 | 0 | 0% | Think hard, my friend! / Which system brings oxygen into the body? [*respiratory / digestive / circulatory / skeletal] |
 | 4 | 2 | 43.2 | 9.7 | 0 | 0% | Which system protects the body from germs? [muscular / digestive / *immune / skeletal] |
@@ -761,7 +761,7 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 | 2 | 1 | 19.3 | 8.9 | 0 | 0% | Here is a question for you. / What is a grocery bag made of? [metal / *paper / glass] |
 | 2 | 2 | 22.6 | 9.6 | 0 | 0% | Why do we make raincoats out of plastic? [it is see-through / it soaks up water / *water runs off it] |
 | 2 | 3 | 28.9 | 10.7 | 0 | 0% | Think hard, my friend! / A seesaw is an example of a ... [screw / wedge / *lever] |
-| 3 | 1 | 29.2 | 8.5 | 0 | 0% | Think hard, my friend! / Which of these can you pour? [*juice / a crayon / a coin / a block] |
+| 3 | 1 | 29.2 | 8.5 | 0 | 0% | Think hard, my friend! / Which of these can you pour? [*juice / a crayon / sand / a block] |
 | 3 | 2 | 33.4 | 11.9 | 0 | 0% | What happens when a north pole and a south / pole meet? [they melt / *they pull together / nothing happens / they push apart] |
 | 3 | 3 | 38.9 | 10.1 | 0 | 0% | Light travels in ... [spirals / circles / *straight lines / zigzags] |
 | 4 | 1 | 38.9 | 8.5 | 0 | 0% | Light travels in ... [zigzags / circles / *straight lines / spirals] |
@@ -806,16 +806,16 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 | 1 | 3 | 16.2 | 5.9 | 1 | 0% | Which one is the longest? [a giant tortoise / *a train / a truck] |
 | 2 | 1 | 21.2 | 6.0 | 1 | 0% | Which of these is the slowest? [*an ant / a helicopter / a cow] |
 | 2 | 2 | 23.9 | 5.8 | 1 | 0% | Which of these is the smallest? [a football field / a mountain / *a fridge] |
-| 2 | 3 | 26.5 | 6.1 | 3500 | 0% | Which one is the fastest? [a grizzly bear / *a jet plane / a goldfish] |
-| 3 | 1 | 30.7 | 6.2 | 18000 | 0% | Which one is the tallest? [a door / a two-story house / a lighthouse / *a mountain] |
-| 3 | 2 | 32.7 | 6.3 | 15000 | 0% | About how long is a spoon? [0.15 cm / *15 cm / 1.5 m / 1.5 cm] |
-| 3 | 3 | 37.0 | 7.6 | 120000 | 0% | About how heavy is a backpack? [*7 pounds / 700 pounds / 10 ounces / 70 pounds] |
-| 4 | 1 | 42.0 | 8.8 | 120000 | 0% | Which is heavier: / one book or ten cups? [twenty cups / *ten cups / one book / about the same] |
-| 4 | 2 | 45.0 | 9.3 | 120000 | 0% | About how tall is a giraffe? [50 m / *5 m / 5 cm / 60 cm] |
-| 4 | 3 | 50.0 | 10.2 | 900000000 | 0% | Which is heavier: / one bus or three horses? [*one bus / about the same / six horses / three horses] |
-| 5 | 1 | 51.2 | 9.7 | 800000 | 0% | 4 apples cost $2.00. / How much do 16 apples cost? [*$8.00 / $4.00 / $16.00 / $5.00] |
-| 5 | 2 | 55.3 | 10.2 | 900000000 | 0% | A train travels 240 km in 6 hours. / How far does it go in 18 hours? [760 km / 258 km / *720 km / 1440 km] |
-| 5 | 3 | 59.8 | 10.9 | 900000000 | 0% | A car travels 160 km in 4 hours. / How far does it go in 9 hours? [260 km / *360 km / 1440 km / 400 km] |
+| 2 | 3 | 26.5 | 6.1 | 700 | 0% | Which one is the fastest? [a grizzly bear / *a jet plane / a goldfish] |
+| 3 | 1 | 30.9 | 6.2 | 900 | 0% | Which one is the tallest? [a door / a two-story house / a lighthouse / *a mountain] |
+| 3 | 2 | 32.7 | 6.3 | 900 | 0% | About how heavy is a child? [3 metric tons / *30 kg / 3 kg / 300 kg] |
+| 3 | 3 | 37.1 | 7.6 | 1320 | 0% | About how heavy is a backpack? [*7 pounds / 700 pounds / 10 ounces / 70 pounds] |
+| 4 | 1 | 42.4 | 8.7 | 1200 | 0% | Which is heavier: / one book or ten cups? [twenty cups / *ten cups / one book / about the same] |
+| 4 | 2 | 44.8 | 8.9 | 1320 | 0% | About how tall is a giraffe? [50 m / *5 m / 5 cm / 60 cm] |
+| 4 | 3 | 48.6 | 9.8 | 1200 | 0% | Which is heavier: / one bus or three horses? [*one bus / about the same / six horses / three horses] |
+| 5 | 1 | 51.2 | 9.6 | 960 | 0% | 4 apples cost $2.00. / How much do 16 apples cost? [*$8.00 / $4.00 / $16.00 / $5.00] |
+| 5 | 2 | 55.3 | 10.2 | 960 | 0% | A train travels 240 km in 6 hours. / How far does it go in 18 hours? [760 km / 258 km / *720 km / 1,440 km] |
+| 5 | 3 | 59.8 | 10.9 | 960 | 0% | A car travels 160 km in 4 hours. / How far does it go in 9 hours? [260 km / *360 km / 1,440 km / 400 km] |
 
 ## Mixed-play sample per grade
 
@@ -831,10 +831,10 @@ What a child sees over 12 riddles (tiers 1-3 as the levels go up), drawn by the 
 6. *(rhymes, tier 2)* Shed, led, wed Please help me out this time. Fed, bed, red And pick a word to rhyme. — **sled**, wet, smell
 7. *(sequences, tier 2)* What comes next in the pattern? — picture, **picture**, picture
 8. *(categories, tier 2)* Look at these three words. Which one is a shape? — **star**, 5, 10
-9. *(associations, tier 3)* What does a wolf say? — oink, squeak, **howl**
-10. *(wordproblems, tier 3)* 10 fish are in a tank. 6 swim away. How many fish are left? — 16, **4**, 3
-11. *(oddoneout, tier 3)* Which one shows a different number? — **picture**, picture, picture
-12. *(counting, tier 3)* What number comes right before 16? — **15**, 12, 17
+9. *(opposites, tier 3)* Near and far, over and under: Opposites, you see! Now the opposite of tall, Please pick it out for me. — thick, **short**, small
+10. *(animals, tier 3)* A joey is a baby ... — camel, penguin, **kangaroo**
+11. *(categories, tier 3)* Look at these three words. Which one is a tree? — fog, snow, **birch**
+12. *(addsub, tier 3)* 4 + 6 = ? — 8, 11, **10**
 
 ### 1st grade
 
@@ -892,7 +892,7 @@ What a child sees over 12 riddles (tiers 1-3 as the levels go up), drawn by the 
 7. *(compare, tier 2)* Which decimal is the greatest? — 6.37, 6.24, 6.16, **6.64**
 8. *(oddoneout, tier 2)* One of these is not like the others. Which one is it? — quart, fluid ounce, pint, **gram**
 9. *(alphabetical, tier 3)* In a dictionary, which of these words would you find last? — **slip**, slice, slim, slide
-10. *(riddles, tier 3)* What gets sharper the more you use it? — a pencil, **your brain**, a knife, a spoon
+10. *(riddles, tier 3)* What gets sharper the more you use it? — your pencil, **your brain**, a knife, a spoon
 11. *(sentences, tier 3)* Fill in the blank: The ___ river flooded the fields after the rain. — dry, shallow, **swollen**, trickling
 12. *(wordproblems, tier 3)* 7 shelves hold 35 books each. Emma adds 29 more books. How many books are there now? — 216, 71, **274**, 448
 

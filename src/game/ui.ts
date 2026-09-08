@@ -33,9 +33,12 @@ export function riddleChoiceRects(r: Riddle): { x: number; y: number; w: number;
     const h = Math.max(150, Math.min(260, bottom - top))
     const x0 = SCROLL.x + 60 + Math.max(0, (avail - (n * w + (n - 1) * gap)) / 2)
     for (let i = 0; i < n; i++) out.push({ x: x0 + i * (w + gap), y: bottom - h, w, h })
-  } else if (r.prompt.length >= 5 && n === 4 && !r.visual) {
+  } else if (r.prompt.length >= 4 && n === 4 && !r.visual) {
     // A long prompt (the grade-5 logic puzzles run to six lines) needs the top of the scroll, so
-    // four answers go in two columns instead of a stack that would run into the text.
+    // four answers go in two columns instead of a stack that would run into the text. Two columns
+    // also keep the buttons 66px tall rather than the 60px a stack of four would leave: on a phone
+    // that is the difference between a 9mm target and an 8mm one, with 4mm between neighbours, and
+    // a mis-tap here costs one of the two tries.
     const w = 400, h = 66, gapX = 20, gapY = 10
     const y0 = SCROLL.y + SCROLL.h - 30 - (2 * h + gapY)
     for (let i = 0; i < n; i++) out.push({ x: SCROLL.x + 60 + (i % 2) * (w + gapX), y: y0 + Math.floor(i / 2) * (h + gapY), w, h })
@@ -48,7 +51,9 @@ export function riddleChoiceRects(r: Riddle): { x: number; y: number; w: number;
     // e2e/textfit.ts measures - every compound-word chain, every three-line riddle-of-the-elf, and
     // every rhyme that carries "Listen for the sound, not the spelling."
     const long = r.prompt.length >= 4
-    const h = long ? 60 : n === 4 ? 66 : 76, gap = long ? 8 : 10, w = r.visual ? 560 : 820
+    // 60px was a 31-pixel button on a phone with 4 pixels between it and its neighbour. The three
+    // answers a K-2 verse riddle stacks are the tap targets that matter most, so they keep 66.
+    const h = long ? 66 : n === 4 ? 66 : 76, gap = long ? 8 : 10, w = r.visual ? 560 : 820
     const y0 = SCROLL.y + SCROLL.h - 30 - n * h - (n - 1) * gap
     for (let i = 0; i < n; i++) out.push({ x: SCROLL.x + 60, y: y0 + i * (h + gap), w, h })
   }
@@ -59,28 +64,28 @@ export function uiButtons(g: Game): Button[] {
   const b: Button[] = []
   if (g.paused) {
     const items = [['p-resume', 'Keep playing', '▶'], ['p-howto', 'How to play', '?'], ['p-sound', g.settings.sound ? 'Sound: on' : 'Sound: off', 'speaker'], ['p-music', g.settings.music ? 'Music: on' : 'Music: off', '♫'], ['p-quit', 'Quit to title', '⌂']]
-    items.forEach(([id, label, icon], i) => b.push({ id, x: W / 2 - 220, y: 200 + i * 78, w: 440, h: 64, label, icon }))
+    items.forEach(([id, label, icon], i) => b.push({ id, x: W / 2 - 220, y: 200 + i * 78, w: 440, h: 68, label, icon }))
     return b
   }
   switch (g.screen) {
     case 'title':
       b.push({ id: 'play', x: 200, y: 385, w: 340, h: 92, label: 'PLAY', big: true })
-      b.push({ id: 'howto', x: 100, y: 505, w: 260, h: 58, label: 'How to play' })
-      b.push({ id: 'about', x: 380, y: 505, w: 260, h: 58, label: 'About' })
+      b.push({ id: 'howto', x: 100, y: 505, w: 260, h: 68, label: 'How to play' })
+      b.push({ id: 'about', x: 380, y: 505, w: 260, h: 68, label: 'About' })
       // A speaker, not a second music note: side by side with the music toggle two notes were one
       // control drawn twice. (The struck-through note glyph also rendered as tofu on some fonts.)
-      b.push({ id: 'sound', x: W - 150, y: 16, w: 60, h: 60, label: '', icon: 'speaker', toggled: g.settings.sound })
-      b.push({ id: 'music', x: W - 80, y: 16, w: 60, h: 60, label: '', icon: '♫', toggled: g.settings.music })
-      if (g.installable && !g.isApp) b.push({ id: 'install', x: 20, y: 16, w: 200, h: 56, label: 'Install app', icon: '⤓' })
+      b.push({ id: 'sound', x: W - 158, y: 12, w: 72, h: 72, label: '', icon: 'speaker', toggled: g.settings.sound })
+      b.push({ id: 'music', x: W - 80, y: 12, w: 72, h: 72, label: '', icon: '♫', toggled: g.settings.music })
+      if (g.installable && !g.isApp) b.push({ id: 'install', x: 20, y: 12, w: 200, h: 68, label: 'Install app', icon: '⤓' })
       break
     case 'grade':
-      b.push({ id: 'back', x: 20, y: 16, w: 130, h: 56, label: 'Back', icon: '‹' })
+      b.push({ id: 'back', x: 20, y: 12, w: 140, h: 68, label: 'Back', icon: '‹' })
       break
     case 'clubhouse':
       b.push({ id: 'start', x: W / 2 - 200, y: H - 130, w: 400, h: 90, label: g.canResume() ? 'NEW CLIMB' : 'START CLIMBING', big: true })
       if (g.canResume()) b.push({ id: 'resume', x: W / 2 + 230, y: H - 122, w: 300, h: 74, label: 'Continue climb', icon: '▶' })
-      b.push({ id: 'back', x: 20, y: 16, w: 130, h: 56, label: 'Back', icon: '‹' })
-      b.push({ id: 'howto', x: W - 230, y: 16, w: 210, h: 56, label: 'How to play', icon: '?' })
+      b.push({ id: 'back', x: 20, y: 12, w: 140, h: 68, label: 'Back', icon: '‹' })
+      b.push({ id: 'howto', x: W - 236, y: 12, w: 216, h: 68, label: 'How to play', icon: '?' })
       break
     case 'level': {
       const run = g.run!
@@ -112,7 +117,7 @@ export function uiButtons(g: Game): Button[] {
     case 'clue': b.push({ id: 'goon', x: 470, y: HUD_Y + 70, w: 340, h: 74, label: 'Go on', big: true }); break
     case 'throne': case 'rank': case 'crown': b.push({ id: 'continue', x: W / 2 - 170, y: H - 100, w: 340, h: 74, label: g.screen === 'throne' ? 'Skip' : 'Continue', big: true }); break
     case 'intro': b.push({ id: 'continue', x: W / 2 - 170, y: H - 100, w: 340, h: 74, label: "Let's go!", big: true }); break
-    case 'howto': case 'about': b.push({ id: 'back', x: 20, y: 16, w: 130, h: 56, label: 'Back', icon: '‹' }); break
+    case 'howto': case 'about': b.push({ id: 'back', x: 20, y: 12, w: 140, h: 68, label: 'Back', icon: '‹' }); break
   }
   return b
 }

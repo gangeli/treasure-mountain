@@ -35,7 +35,7 @@ Mischief.
 | `src/art/` | Everything drawn: palette, drawing helpers, backdrops, characters, scenery, features, HUD, riddle pictures, screens. |
 | `android/` | A one-Activity WebView app that bundles `dist/index.html`. |
 | `docs/` | The GitHub Pages site (install instructions, screenshots) and the design and research documents. |
-| `e2e/` | Playwright tools: screenshots of every screen, the real-input playtest, a random-input fuzzer, the offline/PWA and service-worker-update checks, the `file://` check, headless audio rendering, icon rendering, per-screen frame times, the prize bounding-box, text-contrast and riddle text-fit measurements, and the sample and difficulty dumps. |
+| `e2e/` | Playwright tools: screenshots of every screen, the real-input playtest, a random-input fuzzer, the offline/PWA and service-worker-update checks, the `file://` check, headless audio rendering, icon rendering, per-screen frame times and flash rates, the prize bounding-box, text-contrast and riddle text-fit measurements, and the sample and difficulty dumps. |
 | `test/` | Vitest suites: content validity and difficulty ramps, level generation, game flow. |
 
 ## Building
@@ -48,6 +48,7 @@ npm ci
 npm test                              # content, world and game-flow tests
 npm run build                         # typecheck + dist/index.html (single file) + sw.js + manifest
 node e2e/screenshots.mjs e2e/out/shots  # renders every screen to PNG (needs Chromium)
+node e2e/screenshots.mjs docs/shots 640 # the same screens at the size the web site shows them
 node e2e/playtest.mjs                  # plays a full ascent at every grade through the real UI
 cd android && ./gradlew :app:assembleRelease   # signed APK in app/build/outputs/apk/release/
 ```
