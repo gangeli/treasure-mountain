@@ -80,7 +80,7 @@ if ('serviceWorker' in navigator && location.protocol.startsWith('http') && !tes
 
 // Test hooks: screenshots and scripted play from Playwright.
 if (testMode) {
-  const shots = ['title', 'grade', 'clubhouse', 'intro', 'level1', 'level2', 'level3', 'riddle', 'riddle-visual', 'clue', 'castle', 'throne', 'rank', 'crown', 'howto', 'about', 'pause', 'level1-poof', 'level1-key', 'sheet-characters', 'sheet-scenery1', 'sheet-scenery2', 'sheet-scenery3', 'sheet-features', 'sheet-treasures', 'sheet-visuals']
+  const shots = ['title', 'grade', 'clubhouse', 'intro', 'level1', 'level2', 'level3', 'riddle', 'riddle-visual', 'riddle-long', 'clue', 'castle', 'throne', 'rank', 'crown', 'howto', 'about', 'pause', 'level1-poof', 'level1-key', 'sheet-characters', 'sheet-scenery1', 'sheet-scenery2', 'sheet-scenery3', 'sheet-features', 'sheet-treasures', 'sheet-visuals']
   window.__tm = {
     ready: true,
     game,
@@ -102,12 +102,15 @@ if (testMode) {
         case 'level3': startLevel(3); break
         case 'level1-poof': startLevel(1); { const grp = g.lvl!.level.groups.find(x => x.hides === 'treasure')!; g.lvl!.player.x = grp.x; g.lvl!.camX = grp.x - 500; g.run!.coins = 5; g.dropCoin(); for (let i = 0; i < 40; i++) g.update(1 / 60) } break
         case 'level1-key': startLevel(1); { g.run!.clues = { ...g.lvl!.level.clueWords }; const grp = g.lvl!.level.groups.find(x => x.hides === 'key')!; g.lvl!.player.x = grp.x; g.lvl!.camX = grp.x - 500; g.run!.coins = 5; g.dropCoin(); for (let i = 0; i < 40; i++) g.update(1 / 60) } break
-        case 'riddle': case 'riddle-visual': case 'clue': {
+        case 'riddle': case 'riddle-visual': case 'riddle-long': case 'clue': {
           startLevel(1)
           const elf = g.lvl!.elves.find(e => e.kind === 'scroll')!
           elf.speed = 0; g.lvl!.player.x = elf.x - 80; g.lvl!.player.facing = 1
           g.throwNet(); for (let i = 0; i < 40; i++) g.update(1 / 60)
           if (name === 'riddle-visual') { const r = Game.riddleFor(0, 1, 'visual-shot'); let tries = 0; let rr = r; while (!rr.visual && tries++ < 50) rr = Game.riddleFor(0, 1, 'visual-shot' + tries); g.riddle!.riddle = rr }
+          // The longest prompt the game can ask (a grade-5 logic puzzle), to check that the text
+          // and the four answers still fit on the scroll together.
+          if (name === 'riddle-long') { let rr = Game.riddleFor(5, 3, 'long-shot'); let tries = 0; while (rr.prompt.length < 6 && tries++ < 300) rr = Game.riddleFor(5, 3, 'long-shot' + tries); g.riddle!.riddle = rr }
           if (name === 'clue') { g.selectChoice(g.riddle!.riddle.answer, true); g.riddleContinue() }
           break
         }

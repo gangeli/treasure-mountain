@@ -52,7 +52,12 @@ export function drawHud(ctx: Ctx, g: Game, buttons: Button[]): void {
 }
 
 function hudPrompt(g: Game): string[] {
-  if (g.screen === 'riddle' && g.riddle?.phase === 'ask') return ['Pick the answer!', 'Tap it, or press 1, 2, 3']
+  // The number keys follow the number of answers: grades 3-5 have four, and the hint used to say
+  // "press 1, 2, 3" with a fourth button on screen.
+  if (g.screen === 'riddle' && g.riddle?.phase === 'ask') {
+    const keys = g.riddle.riddle.choices.map((_, i) => i + 1).join(', ')
+    return ['Pick the answer!', `Tap it, or press ${keys}`]
+  }
   if (g.screen === 'castle') return ['Climb to the top!', 'Tap a ladder']
   return []
 }

@@ -23,8 +23,15 @@ export function riddleChoiceRects(r: Riddle): { x: number; y: number; w: number;
     const w = 190, h = 150, gap = 24
     const x0 = SCROLL.x + 60
     for (let i = 0; i < n; i++) out.push({ x: x0 + i * (w + gap), y: SCROLL.y + SCROLL.h - h - 40, w, h })
+  } else if (r.prompt.length >= 5 && n === 4) {
+    // A long prompt (the grade-5 logic puzzles run to six lines) needs the top of the scroll, so
+    // four answers go in two columns instead of a stack that would run into the text.
+    const w = 400, h = 66, gapX = 20, gapY = 10
+    const y0 = SCROLL.y + SCROLL.h - 30 - (2 * h + gapY)
+    for (let i = 0; i < n; i++) out.push({ x: SCROLL.x + 60 + (i % 2) * (w + gapX), y: y0 + Math.floor(i / 2) * (h + gapY), w, h })
   } else {
-    const h = n === 4 ? 66 : 76, gap = 10, w = 820
+    const long = r.prompt.length >= 5
+    const h = long ? 60 : n === 4 ? 66 : 76, gap = long ? 8 : 10, w = 820
     const y0 = SCROLL.y + SCROLL.h - 30 - n * h - (n - 1) * gap
     for (let i = 0; i < n; i++) out.push({ x: SCROLL.x + 60, y: y0 + i * (h + gap), w, h })
   }

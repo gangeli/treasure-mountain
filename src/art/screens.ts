@@ -1,5 +1,5 @@
 import { P } from './palette'
-import { type Ctx, roundRect, circle, ellipse, text, line, poly, vgrad, h1, richText, wrap, star, rr, fillStroke } from './draw'
+import { type Ctx, roundRect, circle, ellipse, text, line, poly, vgrad, h1, richText, wrap, measure, star, rr, fillStroke } from './draw'
 import { W, H, PLAY_H } from '../game/layout'
 import type { Game } from '../game/game'
 import { CASTLE_FLOORS, CASTLE_FLOOR_Y, CASTLE_FLOOR_H } from '../game/game'
@@ -288,13 +288,22 @@ function riddle(ctx: Ctx, g: Game, clueMode = false): void {
     if (selected) edge = P.red
     roundRect(ctx, rc.x, rc.y, rc.w, rc.h, 14, fill, edge, selected || showRight ? 5 : 3)
     if (c.visual) drawVisual(ctx, c.visual, rc.x + 8, rc.y + 8, rc.w - 16, rc.h - 16)
-    else text(ctx, c.text ?? '', rc.x + 26, rc.y + rc.h / 2, { size: (c.text ?? '').length > 18 ? 26 : 32, color: wrong ? P.rockDark : P.ink, weight: 800 })
+    else {
+      const tx = rc.w <= 500 ? rc.x + 46 : rc.x + 26
+      const room = rc.w - (tx - rc.x) - 18
+      let ts = (c.text ?? '').length > 18 ? 26 : 32
+      while (ts > 15 && measure(ctx, c.text ?? '', ts, 800) > room) ts -= 1
+      text(ctx, c.text ?? '', tx, rc.y + rc.h / 2, { size: ts, color: wrong ? P.rockDark : P.ink, weight: 800 })
+    }
     if (wrong) line(ctx, rc.x + 14, rc.y + rc.h / 2, rc.x + rc.w - 14, rc.y + rc.h / 2, P.red, 4)
     if (showRight) { circle(ctx, rc.x + rc.w - 26, rc.y + rc.h / 2, 16, P.green, P.ink, 2.5); line(ctx, rc.x + rc.w - 34, rc.y + rc.h / 2, rc.x + rc.w - 28, rc.y + rc.h / 2 + 7, P.white, 4); line(ctx, rc.x + rc.w - 28, rc.y + rc.h / 2 + 7, rc.x + rc.w - 16, rc.y + rc.h / 2 - 8, P.white, 4) }
     // Picture answers sit in a row, so their number goes inside the card: to the left it landed on
     // the neighbouring card's border.
     if (rv.phase === 'ask' && !wrong) {
-      const bx = c.visual ? rc.x + 22 : rc.x - 24, by = c.visual ? rc.y + 22 : rc.y + rc.h / 2
+      // Inside the card for pictures and for the two-column layout, where a badge to the left of
+      // the second column would sit on the first column's button.
+      const inside = !!c.visual || rc.w <= 500
+      const bx = inside ? rc.x + 22 : rc.x - 24, by = c.visual ? rc.y + 22 : inside ? rc.y + rc.h / 2 : rc.y + rc.h / 2
       circle(ctx, bx, by, 14, P.scrollEdge, P.ink, 2)
       text(ctx, String(i + 1), bx, by + 1, { size: 18, align: 'center', color: P.white, weight: 900 })
     }

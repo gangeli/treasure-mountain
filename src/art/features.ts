@@ -276,11 +276,29 @@ export function drawTreasure(ctx: Ctx, name: string, x: number, y: number, s = 1
     case 'trumpet': line(ctx, -26, 0, 10, 0, P.ink, 10); line(ctx, -26, 0, 10, 0, P.gold, 6); poly(ctx, [[10, -6], [30, -18], [30, 18], [10, 6]], P.gold); for (let i = 0; i < 3; i++) roundRect(ctx, -12 + i * 9, -12, 5, 8, 1, P.gold, P.ink, 1.5); break
     case 'yo-yo': circle(ctx, 0, 4, 18, P.green); circle(ctx, 0, 4, 5, P.greenDark, P.ink, 1.5); line(ctx, 0, -14, 0, -36, P.ink, 2); break
     case 'rocket': poly(ctx, [[0, -40], [14, -10], [14, 16], [-14, 16], [-14, -10]], P.rockLight); circle(ctx, 0, -8, 5, P.cyan, P.ink, 1.5); poly(ctx, [[-14, 0], [-26, 22], [-14, 16]], P.red); poly(ctx, [[14, 0], [26, 22], [14, 16]], P.red); poly(ctx, [[-8, 16], [0, 32], [8, 16]], P.orange, P.ink, 1.5); break
-    case 'doll': circle(ctx, 0, -20, 12, P.skin); poly(ctx, [[-10, -8], [10, -8], [18, 24], [-18, 24]], P.pink); ctx.fillStyle = P.yellow; ctx.beginPath(); ctx.arc(0, -24, 13, Math.PI, 0); ctx.fill(); break
+    case 'doll': {
+      // Arms, a face and hair either side: a circle over a triangle read as a traffic cone.
+      poly(ctx, [[-9, -8], [9, -8], [17, 22], [-17, 22]], P.pink)
+      for (const sx of [-1, 1]) { roundRect(ctx, sx > 0 ? 8 : -20, -6, 12, 7, 3, P.skin); roundRect(ctx, sx * 7 - 4, 22, 8, 6, 3, P.skin) }
+      circle(ctx, 0, -20, 12, P.skin)
+      ctx.fillStyle = P.yellow; ctx.beginPath(); ctx.arc(0, -22, 13, Math.PI, 0); ctx.fill()
+      for (const sx of [-1, 1]) { ellipse(ctx, sx * 12, -18, 5, 9, P.yellow, P.ink, 2); circle(ctx, sx * 4, -21, 1.8, P.ink, P.ink, 0) }
+      ctx.strokeStyle = P.ink; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.arc(0, -18, 5, 0.5, Math.PI - 0.5); ctx.stroke()
+      break
+    }
     case 'ball': circle(ctx, 0, 0, 20, P.red); ctx.fillStyle = P.white; ctx.beginPath(); ctx.ellipse(0, 0, 20, 8, 0, 0, Math.PI * 2); ctx.fill(); circle(ctx, 0, 0, 20, 'rgba(0,0,0,0)'); break
     case 'crown jewel': poly(ctx, [[-18, -8], [-9, -22], [9, -22], [18, -8], [0, 20]], P.cyan); ctx.save(); ctx.globalAlpha = 0.5; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(-12, -8); ctx.lineTo(-6, -18); ctx.lineTo(0, -8); ctx.closePath(); ctx.fill(); ctx.restore(); break
     case 'music box': roundRect(ctx, -24, -8, 48, 28, 4, P.purple); roundRect(ctx, -24, -20, 48, 12, 3, P.purpleDark); ctx.fillStyle = P.gold; ctx.font = '700 18px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('♪', 0, 12); break
-    case 'puzzle': roundRect(ctx, -22, -22, 44, 44, 4, P.green); ctx.strokeStyle = P.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, -22); ctx.lineTo(0, 22); ctx.moveTo(-22, 0); ctx.lineTo(22, 0); ctx.stroke(); circle(ctx, 0, -11, 5, P.green, P.ink, 2); circle(ctx, 11, 0, 5, P.green, P.ink, 2); break
+    case 'puzzle': {
+      // One piece lifted out of the corner, with the tabs that make it a jigsaw rather than a grid.
+      roundRect(ctx, -22, -22, 44, 44, 4, P.green)
+      ctx.strokeStyle = P.ink; ctx.lineWidth = 2
+      ctx.beginPath(); ctx.moveTo(0, -22); ctx.lineTo(0, -6); ctx.arc(0, 0, 6, -Math.PI / 2, Math.PI / 2, true); ctx.lineTo(0, 22)
+      ctx.moveTo(-22, 0); ctx.lineTo(-6, 0); ctx.arc(0, 0, 6, Math.PI, 0); ctx.lineTo(22, 0); ctx.stroke()
+      roundRect(ctx, 6, -40, 20, 20, 3, P.greenLight, P.ink, 2)
+      ctx.beginPath(); ctx.arc(16, -20, 5, Math.PI, 0, true); fillStroke(ctx, P.greenLight, P.ink, 2)
+      break
+    }
     case 'paint set': roundRect(ctx, -26, -14, 52, 30, 4, P.rockLight); [P.red, P.yellow, P.blue, P.green].forEach((c, i) => circle(ctx, -18 + i * 12, 0, 5, c, P.ink, 1.5)); line(ctx, -20, 20, 10, -24, P.ink, 4); line(ctx, -20, 20, 10, -24, P.wood, 2); break
     case 'toy car': roundRect(ctx, -26, -8, 52, 20, 6, P.yellow); roundRect(ctx, -14, -22, 28, 16, 5, P.yellow); ctx.fillStyle = P.cyanPale; ctx.fillRect(-10, -19, 20, 10); circle(ctx, -14, 12, 7, P.ink, P.ink, 0); circle(ctx, 14, 12, 7, P.ink, P.ink, 0); break
     case 'jack-in-the-box': roundRect(ctx, -20, -4, 40, 30, 3, P.red); roundRect(ctx, -22, -10, 44, 8, 2, P.blue); line(ctx, 0, -4, 0, -30, P.ink, 3); circle(ctx, 0, -38, 12, P.skin); poly(ctx, [[-12, -46], [0, -62], [12, -46]], P.green, P.ink, 2); break
