@@ -41,7 +41,7 @@ export const rhymes: Generator = {
     const decoys = rng.shuffle(others.flatMap(f => f.words)).filter(w => !w.endsWith(fam.end) && Math.abs(w.length - answer.length) <= 2)
     const n = choiceCount(grade)
     const { choices, answer: idx } = shuffled(rng, answer, decoys, n)
-    const verse = shown.length >= 6 ? VERSES[0](shown) : shown.length >= 4 ? rng.pick(VERSES.slice(1))(shown) : [`${shown.map(cap).join(', ')}.`, 'These words rhyme.', 'Pick one more word that rhymes.']
+    const verse = shown.length >= 6 ? VERSES[0](shown) : shown.length >= 4 ? rng.pick(VERSES.slice(1))(shown) : [`${cap(shown.join(', '))}.`, 'These words rhyme.', 'Pick one more word that rhymes.']
     return riddle({
       family: 'rhymes', skill: 'phonics: rhyming', prompt: verse, verse: true,
       highlight: shown.map(w => w.slice(w.length - fam.end.length)),

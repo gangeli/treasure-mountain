@@ -1,5 +1,5 @@
 import { P } from './palette'
-import { type Ctx, roundRect, circle, text, line, poly, vgrad, richText, wrap, star, rr, fillStroke } from './draw'
+import { type Ctx, roundRect, circle, text, line, poly, vgrad, richText, wrap, measure, star, rr, fillStroke } from './draw'
 import { W, H, PLAY_H } from '../game/layout'
 import type { Game } from '../game/game'
 import { CASTLE_FLOORS, CASTLE_FLOOR_Y, CASTLE_FLOOR_H } from '../game/game'
@@ -214,14 +214,16 @@ function riddle(ctx: Ctx, g: Game, clueMode = false): void {
   // prompt text (with visual)
   const hasVisual = !!r.visual
   const promptX = S.x + 60, promptY = S.y + 60
-  const longest = Math.max(...r.prompt.map(l => l.length))
-  const size = longest > 36 ? 30 : longest > 24 ? 34 : r.prompt.length <= 2 ? 46 : 38
-  const textW = hasVisual ? 560 : S.w - 260
+  const textW = hasVisual ? 570 : S.w - 250
+  // Largest size at which every prompt line fits on one line; otherwise wrap at 30px.
+  const sizes = r.prompt.length <= 2 ? [46, 42, 38, 34, 30] : [38, 34, 30]
+  let size = sizes.find(sz => r.prompt.every(l => measure(ctx, l, sz) <= textW)) ?? 30
+  const maxLines = hasVisual ? 5 : 6
   let y = promptY
-  for (const line0 of r.prompt) {
-    const lines = wrap(ctx, line0, textW, size)
-    for (const l of lines) { richText(ctx, l, promptX, y, size, P.ink, r.highlight ?? [], P.redDark); y += size * 1.3 }
-  }
+  const rows: string[] = []
+  for (const line0 of r.prompt) rows.push(...wrap(ctx, line0, textW, size))
+  if (rows.length > maxLines) size = 28
+  for (const l of rows) { richText(ctx, l, promptX, y, size, P.ink, r.highlight ?? [], P.redDark); y += size * 1.3 }
   if (r.visual) drawVisual(ctx, r.visual, S.x + 640, S.y + 30, 440, 250)
   // choices
   const rects = riddleChoiceRects(r)

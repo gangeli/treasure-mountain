@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Treasure Mountain · play in your browser or on a tablet</title>
+<meta name="description" content="A free, open-source remake of the 1990 educational game Treasure Mountain! for grades K-5. Play in the browser, add it to your home screen, or install the tiny Android APK.">
+<link rel="icon" href="play/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#1a2238; --blue:#1b3a5c; --sky:#5fb0ff; --grass:#46b83f; --cream:#fff6d8; --gold:#ffd23f; --red:#e63946; --cyan:#5fdad9; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: Nunito, "Segoe UI", system-ui, sans-serif; color: var(--ink); background: #f4f8fc; line-height:1.55; }
+  header { background: linear-gradient(180deg, #3c7dd9, #9fd0ff); color:#fff; padding: 48px 20px 40px; text-align:center; }
+  header h1 { font-family: Fredoka, Nunito, sans-serif; font-size: clamp(38px, 7vw, 64px); margin: 0 0 6px; color: var(--gold); text-shadow: 0 4px 0 #1a2238, 0 0 24px rgba(0,0,0,.25); letter-spacing: 1px; }
+  header p.tag { font-size: 20px; max-width: 720px; margin: 0 auto 26px; font-weight: 700; text-shadow: 0 2px 0 rgba(0,0,0,.3); }
+  .cta { display:flex; flex-wrap:wrap; gap:14px; justify-content:center; }
+  .btn { display:inline-block; padding: 16px 28px; border-radius: 16px; font-weight: 800; font-size: 20px; text-decoration:none; color:#fff; background:#2f6fe4; box-shadow: 0 5px 0 #1e48a3, 0 8px 18px rgba(0,0,0,.2); border: 3px solid var(--ink); transition: transform .08s; }
+  .btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #1e48a3; }
+  .btn.play { background: #3fb544; box-shadow: 0 5px 0 #2b8a33, 0 8px 18px rgba(0,0,0,.2); font-family: Fredoka, sans-serif; font-size: 26px; padding: 18px 40px; }
+  .btn.apk { background: #ff8c1a; box-shadow: 0 5px 0 #c46200, 0 8px 18px rgba(0,0,0,.2); }
+  header .fine { margin-top: 20px; font-size: 15px; opacity: .95; }
+  main { max-width: 1000px; margin: 0 auto; padding: 30px 20px 60px; }
+  section { margin: 46px 0; }
+  h2 { font-family: Fredoka, Nunito, sans-serif; font-size: 34px; color: var(--blue); margin: 0 0 12px; }
+  h3 { font-size: 20px; margin: 22px 0 6px; }
+  .cards { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+  .card { background:#fff; border: 3px solid var(--ink); border-radius: 18px; padding: 18px 20px; box-shadow: 0 6px 0 #d9e2ee; }
+  .card h3 { margin-top: 0; color: var(--blue); }
+  ol.steps { padding-left: 22px; } ol.steps li { margin: 6px 0; }
+  kbd { background: var(--cream); border: 2px solid var(--ink); border-radius: 8px; padding: 1px 8px; font-family: inherit; font-weight: 800; }
+  .gallery { display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .gallery figure { margin:0; background:#fff; border: 3px solid var(--ink); border-radius: 14px; overflow:hidden; box-shadow: 0 6px 0 #d9e2ee; }
+  .gallery img { display:block; width:100%; height:auto; }
+  .gallery figcaption { padding: 8px 12px; font-size: 15px; font-weight: 700; }
+  .hero { border: 4px solid var(--ink); border-radius: 18px; overflow:hidden; box-shadow: 0 10px 0 #d9e2ee; margin: 10px auto 0; max-width: 900px; }
+  .hero img { display:block; width:100%; }
+  table { border-collapse: collapse; width:100%; font-size: 15px; } th, td { border: 2px solid #d9e2ee; padding: 6px 10px; text-align:left; vertical-align: top; } th { background: #eef4fb; }
+  footer { text-align:center; padding: 30px 20px 50px; color: #4b5878; font-size: 15px; }
+  a { color: #1e48a3; }
+  .note { background: var(--cream); border: 3px solid var(--ink); border-radius: 14px; padding: 12px 16px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Treasure Mountain!</h1>
+  <p class="tag">Catch elves, solve riddles, find the treasure and win back the crown. A friendly remake of the 1990 classic for grades K-5, made for small hands.</p>
+  <div class="cta">
+    <a class="btn play" href="play/">▶ Play in your browser</a>
+    <a class="btn" href="#install">Add to home screen</a>
+    <a class="btn apk" href="app-release.apk" id="apk">Download for Android (APK)</a>
+  </div>
+  <p class="fine">Same game three ways: play right here, add it to your home screen as a web app, or install the native Android app.<br>Free and open source · no ads, no accounts, no internet needed once loaded · the whole game is about <span id="size">400 KB</span>.</p>
+</header>
+<main>
+  <div class="hero"><img src="shots/level1.png" alt="The Super Solver with a net on the first level of Treasure Mountain, an elf with a scroll running by, the clue-word panel below" width="640" height="360"></div>
+
+  <section id="install">
+    <h2>Three ways to play</h2>
+    <p>The browser version is a <strong>web app</strong>: put it on the home screen and it opens full screen with its own icon, works offline and keeps your progress, exactly like a store app. That is how to play on an iPad or iPhone, where nothing else can be installed.</p>
+    <div class="cards">
+      <div class="card"><h3>iPad &amp; iPhone</h3><ol class="steps"><li>Open <a href="play/">the game</a> in <strong>Safari</strong> (not Chrome).</li><li>Tap <strong>Share</strong>, the square with an arrow.</li><li>Scroll down, tap <strong>Add to Home Screen</strong>, then <strong>Add</strong>.</li></ol></div>
+      <div class="card"><h3>Android tablet &amp; phone</h3><ol class="steps"><li>Open <a href="play/">the game</a> in <strong>Chrome</strong>.</li><li>Tap the <strong>Install app</strong> button on the title screen, or the browser's ⋮ menu → <strong>Install app</strong>.</li><li>Prefer a real APK? <a href="#apk-howto">Download it</a> and see the sideloading steps.</li></ol></div>
+      <div class="card"><h3>Computer</h3><ol class="steps"><li>Open <a href="play/">the game</a> in Chrome or Edge (Firefox and Safari play it in a tab).</li><li>Click <strong>Install</strong> on the title screen, or the small install icon at the right end of the address bar.</li><li>It shows up in your apps like any other program.</li></ol></div>
+    </div>
+    <p>The home-screen copy updates itself the next time it opens with a connection. The web version and the APK keep separate progress.</p>
+  </section>
+
+  <section>
+    <h2>What's inside</h2>
+    <div class="cards">
+      <div class="card"><h3>The original loop</h3><p>Three levels of the mountain, elves to net, scroll riddles, three clue words that describe one group of scenery ("two small trees"), magic coins to search behind things, a key to climb, a castle of ladders, a chest to fill, a prize for the clubhouse, and stars on the rank poster at 5, 25, 70, 115, 170, 230 and 300 treasures.</p></div>
+      <div class="card"><h3>Six grades</h3><p>Pick K, 1st, 2nd, 3rd, 4th or 5th grade on the way in. Every puzzle family has a version for each grade, gets harder from the bottom of the mountain to the top, and again as stars are earned. Each grade keeps its own treasures, stars and prizes.</p></div>
+      <div class="card"><h3>40 puzzle families</h3><p>Reading: rhymes, letter sounds, vowels, compound words, opposites, synonyms, categories, syllables, plurals, contractions, homophones, prefixes and suffixes, analogies, ABC order, sentences, parts of speech, vocabulary. Math: counting, adding and subtracting, comparing, multiplying, dividing, patterns, place value, time, money, shapes, fractions, word problems, factors, measurement. Thinking: odd one out, riddles, animals, earth and sky, the body, matter and machines, sequences, comparisons.</p></div>
+      <div class="card"><h3>Made for small hands</h3><p>Tap the ground to walk, tap an elf to throw the net, big NET / COIN / JUMP buttons, three big answer buttons (four from 3rd grade), a speaker button that reads the riddle aloud, two tries per riddle (three for K and 1st), and no way to lose: out of nets and coins, the rock gives you free nets.</p></div>
+      <div class="card"><h3>Tiny and private</h3><p>All art is vector, all sounds are synthesised. One HTML file of a few hundred kilobytes in the browser, about 130 KB as an APK. Nothing leaves the device; there are no accounts, no ads and no tracking.</p></div>
+      <div class="card"><h3>Keyboard too</h3><p>On a computer: <kbd>←</kbd> <kbd>→</kbd> walk, <kbd>Space</kbd> swings the net, <kbd>↓</kbd> drops a coin, <kbd>↑</kbd> jumps, climbs and enters tunnels, <kbd>1</kbd>–<kbd>4</kbd> pick an answer, <kbd>Esc</kbd> pauses.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>See it run</h2>
+    <div class="gallery">
+      <figure><img src="shots/title.png" alt="Title screen" loading="lazy"><figcaption>Title screen</figcaption></figure>
+      <figure><img src="shots/grade.png" alt="Grade select" loading="lazy"><figcaption>Who is climbing today? Each grade keeps its own stars</figcaption></figure>
+      <figure><img src="shots/clubhouse.png" alt="Clubhouse with the rank poster" loading="lazy"><figcaption>The clubhouse: rank poster and prize shelf</figcaption></figure>
+      <figure><img src="shots/riddle.png" alt="A riddle on the scroll" loading="lazy"><figcaption>An elf's riddle on the scroll</figcaption></figure>
+      <figure><img src="shots/riddle-visual.png" alt="A riddle with a picture" loading="lazy"><figcaption>Pictures for the youngest players</figcaption></figure>
+      <figure><img src="shots/clue.png" alt="Winning a clue word" loading="lazy"><figcaption>A right answer wins a clue word</figcaption></figure>
+      <figure><img src="shots/level1-key.png" alt="Finding the key with a coin" loading="lazy"><figcaption>Drop a coin where all three clue words match: the key!</figcaption></figure>
+      <figure><img src="shots/level2.png" alt="Level 2, the elf mine" loading="lazy"><figcaption>Level 2: the elf mine</figcaption></figure>
+      <figure><img src="shots/level3.png" alt="Level 3, the snowy summit" loading="lazy"><figcaption>Level 3: the snowy summit</figcaption></figure>
+      <figure><img src="shots/castle.png" alt="The castle ladders" loading="lazy"><figcaption>Climb the castle ladders (grey ones are tricks)</figcaption></figure>
+      <figure><img src="shots/throne.png" alt="The throne room" loading="lazy"><figcaption>Fill the chest and send the Master of Mischief packing</figcaption></figure>
+      <figure><img src="shots/crown.png" alt="Winning the crown" loading="lazy"><figcaption>300 treasures: the crown is won</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>How to play</h2>
+    <ol class="steps">
+      <li><strong>Catch an elf.</strong> Tap an elf (or press <kbd>Space</kbd> when it is close) to swing your net. Each throw uses one net.</li>
+      <li><strong>Answer the riddle.</strong> Elves carrying a scroll ask a riddle. A right answer wins a clue word and two coins. Catching any elf gives a coin.</li>
+      <li><strong>Read the clue words.</strong> The three words describe one group of things on the level: a number, what it looks like, and what it is, for example <em>two · small · trees</em>.</li>
+      <li><strong>Drop a coin.</strong> Stand in front of things that match your clue words and tap <strong>COIN</strong> (or <kbd>↓</kbd>). The scenery goes POOF and shows what was hiding behind it.</li>
+      <li><strong>All three match: the key.</strong> Two of three match: a treasure. Take the key to the big tree, the elf fountain or the castle door and press <kbd>↑</kbd> to climb.</li>
+      <li><strong>Need nets?</strong> Drop coins at the NETS rock (5 nets for 4 coins). No nets and no coins? The rock rolls aside and gives you nets for free.</li>
+      <li><strong>Climb the castle.</strong> Tap ladders to reach the throne room; grey ladders are tricks. Fill the chest, keep one treasure as a prize, and earn stars on the poster in the clubhouse.</li>
+    </ol>
+  </section>
+
+  <section id="apk-howto">
+    <h2>Installing the Android app (APK)</h2>
+    <p>The APK is the same game as a native Android app. It is not on the Play Store because this is a hobby project, so Android asks for permission once.</p>
+    <ol class="steps">
+      <li>On the tablet, open this page in Chrome and tap <a href="app-release.apk">Download for Android (APK)</a>.</li>
+      <li>When the download finishes, tap the notification (or open the Files app and tap <strong>app-release.apk</strong>).</li>
+      <li>Android says it needs permission to install apps from this source. Tap <strong>Settings</strong>, switch on <strong>Allow from this source</strong>, then go back.</li>
+      <li>Tap <strong>Install</strong>. If Play Protect asks, choose <strong>Install anyway</strong>.</li>
+      <li>Find <strong>Treasure Mountain</strong> in the app drawer and play. Updates install over the old version and keep your progress. You can switch the permission off again afterwards.</li>
+    </ol>
+    <p class="note">The APK is built and signed by the GitHub Actions workflow in the repository, so what you download is exactly what the source code produces.</p>
+  </section>
+
+  <section>
+    <h2>For grown-ups</h2>
+    <table>
+      <tr><th>Grade</th><th>Reading</th><th>Math</th><th>Thinking &amp; science</th></tr>
+      <tr><td>K</td><td>letters, beginning sounds, rhymes, opposites, categories, sight-word sentences</td><td>counting to 10, adding and subtracting within 5 with pictures, shapes, patterns, coins, clocks on the hour, longer/heavier</td><td>animal sounds and babies, seasons and weather, senses, float/sink, first-next-last, odd one out by colour</td></tr>
+      <tr><td>1</td><td>ending sounds, digraphs, vowel sounds, compound words, synonyms, plurals, syllables</td><td>counting to 100, within 20, tens and ones, half hours, counting coins, halves and quarters</td><td>homes and groups, sun/moon/stars, body parts, materials, daily routines</td></tr>
+      <tr><td>2</td><td>blends, contractions, homophones, ABC order, context clues</td><td>within 100, equal groups, hundreds, five minutes, quarters, thirds, even/odd, thermometers</td><td>animal classes, the water cycle, healthy food, solid/liquid/gas, life cycles</td></tr>
+      <tr><td>3</td><td>prefixes and suffixes, analogies, parts of speech, vocabulary</td><td>3-digit sums, multiplication and division facts, rounding, elapsed time, change, perimeter, comparing fractions</td><td>adaptations, planets, organs, magnets and simple machines, procedures</td></tr>
+      <tr><td>4</td><td>harder analogies, adjectives and adverbs, tier-2 vocabulary</td><td>multi-digit, 2-digit × 1-digit, remainders, millions, angles and area, equivalent fractions, unit conversions</td><td>food chains, moon phases and rocks, body systems, energy and light, cause and effect</td></tr>
+      <tr><td>5</td><td>academic vocabulary, pronouns and conjunctions, tense in context</td><td>decimals, 2-digit × 2-digit, primes and GCF, volume and coordinates, unlike fractions, multi-step problems</td><td>ecosystems, the solar system, cells, electricity and forces, logic puzzles</td></tr>
+    </table>
+    <p>Riddles get harder from level 1 to level 3, and again as stars are earned. Everything is generated, so the same riddle rarely repeats. The full per-family, per-grade measurements are in <a href="https://github.com/gangeli/treasure-mountain/blob/main/docs/DIFFICULTY.md">DIFFICULTY.md</a>; the design in <a href="https://github.com/gangeli/treasure-mountain/blob/main/docs/DESIGN.md">DESIGN.md</a>; and the notes on the original game in <a href="https://github.com/gangeli/treasure-mountain/blob/main/docs/research/treasure-mountain.md">the research document</a>.</p>
+  </section>
+
+  <section>
+    <h2>About</h2>
+    <p>An open-source fan remake of The Learning Company's 1990 <em>Super Solvers: Treasure Mountain!</em>. The rules follow the original (nets, scroll riddles, three clue words, magic coins, keys, tunnels, the net rock, the castle ladders, the chest, the rank poster) with new vector art, big touch targets, read-aloud riddles and six grade levels of content, so that a five-year-old and a ten-year-old can both climb the same mountain.</p>
+    <p>One TypeScript code base runs everywhere: the game logic, puzzles and drawing run in the browser and inside a 130 KB Android WebView shell. The pictures on this page are rendered by the game itself. <a href="https://github.com/gangeli/treasure-mountain">Source code on GitHub</a>.</p>
+  </section>
+</main>
+<footer>MIT licensed · Not affiliated with The Learning Company · <a href="play/">Play</a> · <a href="app-release.apk">APK</a> · <a href="https://github.com/gangeli/treasure-mountain">GitHub</a></footer>
+</body>
+</html>

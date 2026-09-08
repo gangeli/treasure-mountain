@@ -54,7 +54,7 @@ function counters(ctx: Ctx, v: Extract<Visual, { kind: 'counters' }>, x: number,
   // Lay out in rows of up to 5 (or per group)
   const perRow = n <= 5 ? n : n <= 10 ? 5 : n <= 12 ? 6 : 7
   const rows = Math.ceil(n / perRow)
-  const cell = Math.min(w / (perRow + (groups > 1 ? groups * 0.6 : 0)), h / rows, 74)
+  const cell = Math.min(w / (perRow + (groups > 1 ? groups * 0.6 : 0)), h / rows, n <= 3 ? 130 : n <= 6 ? 110 : 90)
   const r = cell * 0.34
   const totalW = perRow * cell + (groups > 1 ? (groups - 1) * cell * 0.6 : 0)
   const x0 = x + (w - totalW) / 2 + cell / 2, y0 = y + (h - rows * cell) / 2 + cell / 2
