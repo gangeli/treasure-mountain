@@ -67,7 +67,10 @@ export const associations: Generator = {
     if (rev) {
       // "Who lives in a nest?" — decoys are subjects for which the answer is not acceptable.
       const ok = peers.filter(q => !same(q.a, p.a) && !acceptable(q).has(p.b.toLowerCase()) && (rel !== 'part' || q.dom !== p.dom))
-      const decoys = ok.map(q => q.a).filter(w => w.length <= 26)
+      // Same kind of subject first: "Who lives in the desert?" should not put a family beside a
+      // camel. Only a fallback when the list runs short, since there are few people to draw on.
+      const kind = (q: Assoc) => (!!q.person === !!p.person ? 0 : 1)
+      const decoys = ok.slice().sort((a, b) => kind(a) - kind(b)).map(q => q.a).filter(w => w.length <= 26)
       const { choices, answer } = shuffled(rng, p.a, decoys, n)
       const b = p.b
       const prompt: string[] = rel === 'lives' ? [`Who lives in ${withArt(b, p.art)}?`]

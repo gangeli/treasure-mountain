@@ -12,7 +12,7 @@ export const SUFFIXES = ['ful', 'less', 'ness', 'able', 'er', 'ly', 'tion', 'men
 /** What each affix means (used for "what does pre- mean?" questions). */
 export const AFFIX_MEANING: Record<string, string> = {
   un: 'not', re: 'again', pre: 'before', dis: 'not', mis: 'wrongly', non: 'not', sub: 'under', inter: 'between',
-  ful: 'full of', less: 'without', ness: 'the state of being', able: 'able to be', er: 'one who', ly: 'in a certain way', tion: 'the act of', ment: 'the result of',
+  ful: 'full of', less: 'without', ness: 'the state of being', able: 'able to be', er: 'one who', ly: 'in a certain way', tion: 'the act of', ment: 'the act of',
 }
 
 const d = (word: string, base: string, affix: string, meaning: string, decoys: string[], level: 3 | 4 | 5, fake?: string[]): Derived =>

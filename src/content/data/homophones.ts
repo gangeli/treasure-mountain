@@ -88,7 +88,7 @@ export const HOMOPHONES: HomophoneSet[] = [
   // level 5
   { level: 5, words: [{ word: 'affect', sentence: 'The rain did not ___ our plans.' }, { word: 'effect', sentence: 'The medicine had a good ___.' }] },
   { level: 5, words: [{ word: 'council', sentence: 'The city ___ voted on the new park.' }, { word: 'counsel', sentence: 'The coach gave us wise ___.' }] },
-  { level: 5, words: [{ word: 'miner', sentence: 'The ___ dug for gold.' }, { word: 'minor', sentence: 'It was only a ___ scratch.' }] },
+  { level: 5, words: [{ word: 'miner', sentence: 'The ___ dug for gold.' }, { word: 'minor', sentence: 'The crash caused only ___ damage.' }] },
   { level: 5, words: [{ word: 'vain', sentence: 'He was too ___ to admit his mistake.' }, { word: 'vein', sentence: 'The nurse found a ___ in my arm.' }, { word: 'vane', sentence: 'The weather ___ showed the wind\'s direction.' }] },
   { level: 5, words: [{ word: 'bazaar', sentence: 'We bought rugs at the ___.' }, { word: 'bizarre', sentence: 'The dream was ___ and confusing.' }] },
   { level: 5, words: [{ word: 'patience', sentence: 'Fishing takes a lot of ___.' }, { word: 'patients', sentence: 'The doctor saw ten ___ today.' }] },

@@ -148,4 +148,7 @@ export function nearbyNumbers(rng: Rng, answer: number, count: number, spread: n
 
 export const ordinal = (n: number): string => { const s = ['th', 'st', 'nd', 'rd']; const v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]) }
 export const cap = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1)
-export const an = (w: string): string => (/^[aeiou]/i.test(w) ? 'an ' : 'a ') + w
+// The article follows the sound, not the letter: a university, a one-way street, an hour.
+const TAKES_A = /^(uni|use|usu|ufo|euro|eu|one|once)/i
+const TAKES_AN = /^(hour|honest|honor|heir)/i
+export const an = (w: string): string => (TAKES_A.test(w) ? 'a ' : TAKES_AN.test(w) || /^[aeiou]/i.test(w) ? 'an ' : 'a ') + w

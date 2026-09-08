@@ -227,7 +227,7 @@ export const VERBS: Verb[] = [
   { base: 'arise', past: 'arose', level: 5, obj: 'at dawn', wrong: ['arised', 'arosed', 'arisen'] },
   { base: 'shrink', past: 'shrank', level: 5, obj: 'the sweater', wrong: ['shrinked', 'shrunked', 'shranked'] },
   { base: 'spring', past: 'sprang', level: 5, obj: 'out of bed', wrong: ['springed', 'sprung', 'spranged'] },
-  { base: 'sink', past: 'sank', level: 5, obj: 'the toy boat', wrong: ['sinked', 'sunk', 'sanked'] },
+  { base: 'sink', past: 'sank', level: 5, obj: 'the toy boat', alt: ['sunk'], wrong: ['sinked', 'sinking', 'sanked'] },
   { base: 'tear', past: 'tore', level: 5, obj: 'the paper', wrong: ['teared', 'tored', 'torn'] },
   { base: 'swear', past: 'swore', level: 5, obj: 'to tell the truth', wrong: ['sweared', 'swored', 'sworn'] },
   { base: 'lay', past: 'laid', level: 5, obj: 'the table', wrong: ['layed', 'lain', 'lied'] },

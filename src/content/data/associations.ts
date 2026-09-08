@@ -5,7 +5,7 @@
  * Level 1 = K, 2 = grades 1-2, 3 = grades 2-3, 4 = grades 4-5.
  */
 export type Rel = 'lives' | 'sound' | 'does' | 'works' | 'uses' | 'part' | 'function'
-export interface Assoc { a: string; b: string; rel: Rel; level: 1 | 2 | 3 | 4; also?: string[]; art?: 'the' | ''; dom?: string; pl?: true }
+export interface Assoc { a: string; b: string; rel: Rel; level: 1 | 2 | 3 | 4; also?: string[]; art?: 'the' | ''; dom?: string; pl?: true; person?: true }
 
 const p = (rel: Rel, level: 1 | 2 | 3 | 4, a: string, b: string, also: string[] = [], extra: Partial<Assoc> = {}): Assoc => ({ a, b, rel, level, also, ...extra })
 
@@ -13,9 +13,9 @@ export const ASSOCIATIONS: Assoc[] = [
   // ---- where it lives
   p('lives', 1, 'bird', 'nest', ['tree']), p('lives', 1, 'bee', 'hive', ['nest']), p('lives', 1, 'bear', 'den', ['cave', 'forest', 'woods']),
   p('lives', 1, 'dog', 'doghouse', ['kennel', 'house', 'home']), p('lives', 1, 'cow', 'barn', ['field', 'farm', 'pasture']), p('lives', 1, 'pig', 'pigpen', ['sty', 'barn', 'pen', 'farm']),
-  p('lives', 1, 'spider', 'web', []), p('lives', 1, 'fish', 'water', ['ocean', 'sea', 'pond', 'lake', 'river', 'tank', 'aquarium', 'bowl'], { art: 'the' }),
-  p('lives', 1, 'king', 'castle', ['palace']), p('lives', 1, 'queen', 'palace', ['castle']), p('lives', 1, 'rabbit', 'burrow', ['hutch', 'hole', 'warren']),
-  p('lives', 1, 'mouse', 'hole', ['nest', 'burrow']), p('lives', 1, 'frog', 'pond', ['swamp', 'marsh', 'lake', 'water']), p('lives', 1, 'family', 'house', ['home', 'apartment']),
+  p('lives', 1, 'spider', 'web', ['corner', 'ground', 'desert', 'attic', 'garden']), p('lives', 1, 'fish', 'water', ['ocean', 'sea', 'pond', 'lake', 'river', 'tank', 'aquarium', 'bowl'], { art: 'the' }),
+  p('lives', 1, 'king', 'castle', ['palace'], { person: true }), p('lives', 1, 'queen', 'palace', ['castle'], { person: true }), p('lives', 1, 'rabbit', 'burrow', ['hutch', 'hole', 'warren']),
+  p('lives', 1, 'mouse', 'hole', ['nest', 'burrow']), p('lives', 1, 'frog', 'pond', ['swamp', 'marsh', 'lake', 'water']), p('lives', 1, 'family', 'house', ['home', 'apartment'], { person: true }),
   p('lives', 2, 'horse', 'stable', ['barn', 'field', 'farm', 'pasture']), p('lives', 2, 'chicken', 'coop', ['barn', 'henhouse', 'farm']), p('lives', 2, 'ant', 'anthill', ['nest', 'colony', 'hill']),
   p('lives', 2, 'lion', 'den', ['savanna', 'jungle']), p('lives', 2, 'fox', 'den', ['hole', 'burrow', 'forest']), p('lives', 2, 'owl', 'tree', ['barn', 'nest', 'hollow', 'forest']),
   p('lives', 2, 'monkey', 'jungle', ['tree', 'rainforest', 'forest', 'zoo'], { art: 'the' }), p('lives', 2, 'camel', 'desert', [], { art: 'the' }), p('lives', 2, 'whale', 'ocean', ['sea', 'water'], { art: 'the' }),
@@ -24,7 +24,7 @@ export const ASSOCIATIONS: Assoc[] = [
   p('lives', 2, 'hamster', 'cage', ['tank', 'house']), p('lives', 2, 'goldfish', 'bowl', ['tank', 'aquarium', 'pond', 'water']), p('lives', 2, 'sheep', 'pen', ['barn', 'field', 'fold', 'farm', 'pasture']),
   p('lives', 2, 'penguin', 'Antarctica', ['ice', 'zoo'], { art: '' }), p('lives', 2, 'polar bear', 'Arctic', ['ice', 'snow', 'zoo'], { art: 'the' }), p('lives', 2, 'hermit crab', 'shell', ['beach', 'ocean', 'sea', 'tide pool']),
   p('lives', 2, 'otter', 'river', ['den', 'holt', 'ocean', 'sea', 'stream', 'water'], { art: 'the' }), p('lives', 2, 'termite', 'mound', ['nest', 'colony', 'wood']), p('lives', 2, 'deer', 'forest', ['woods', 'meadow', 'field'], { art: 'the' }),
-  p('lives', 3, 'soldier', 'barracks', ['base', 'camp', 'fort'], { art: 'the' }), p('lives', 3, 'monk', 'monastery', ['abbey', 'temple']), p('lives', 3, 'astronaut', 'space station', ['spaceship', 'space'], { art: 'the' }),
+  p('lives', 3, 'soldier', 'barracks', ['base', 'camp', 'fort'], { art: 'the', person: true }), p('lives', 3, 'monk', 'monastery', ['abbey', 'temple'], { person: true }), p('lives', 3, 'astronaut', 'space station', ['spaceship', 'space'], { art: 'the', person: true }),
   p('lives', 3, 'prairie dog', 'burrow', ['tunnel', 'hole', 'prairie', 'town']), p('lives', 3, 'clam', 'shell', ['sand', 'ocean', 'sea', 'mud', 'water']), p('lives', 3, 'oyster', 'shell', ['reef', 'ocean', 'sea', 'water', 'bed']),
   // ---- what it says
   p('sound', 1, 'cow', 'moo'), p('sound', 1, 'pig', 'oink'), p('sound', 1, 'duck', 'quack'), p('sound', 1, 'dog', 'woof', ['bark', 'ruff', 'arf']),

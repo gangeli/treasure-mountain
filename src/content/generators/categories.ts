@@ -93,8 +93,14 @@ export const categories: Generator = {
     }
 
     if (mode === 'odd') {
-      const members = rng.sample(cat.members.filter(m => m.length <= 26), n - 1)
+      const pool2 = cat.members.filter(m => m.length <= 26)
       const outsider = outsiders(rng, cat, grade)[0]
+      // Number sets need one rule, not two: with 7 as the outsider, members 14 and 21 make "not a
+      // multiple of 7" a second, equally good reason to pick a different choice.
+      const num = (x: string) => /^\d+$/.test(x) ? parseInt(x) : 0
+      const out = num(outsider)
+      const coprime = pool2.filter(m => { const v = num(m); return v > 0 && v % out !== 0 && out % v !== 0 })
+      const members = rng.sample(out > 1 && coprime.length >= n - 1 ? coprime : pool2, n - 1)
       const { choices, answer } = shuffled(rng, outsider, members, n)
       const hint = grade <= 2 || (grade === 3 && tier === 1)
       const count = n - 1 === 3 ? 'Three' : 'Two'
