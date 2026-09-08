@@ -2,34 +2,38 @@ import type { Generator } from '../types'
 import { shuffled, choiceCount } from '../types'
 import { mathRiddle, sayChoices, numDecoys, fmtInt, fmtDec, wrap, NAMES } from './mathutil'
 
-// K: ordered triples [least, middle, most].
-const HEAVY = [['feather', 'apple', 'rock'], ['leaf', 'book', 'brick'], ['balloon', 'shoe', 'bowling ball'], ['button', 'cup', 'chair'], ['ant', 'cat', 'elephant'], ['sock', 'pumpkin', 'car'], ['crayon', 'bag of flour', 'bike'], ['paper clip', 'banana', 'TV'], ['pencil', 'brick', 'horse'], ['cotton ball', 'orange', 'piano'], ['bubble', 'egg', 'truck'], ['ribbon', 'melon', 'cow']]
+// K: ordered triples [least, middle, most]. The heaviest item is always unambiguous ("rock" was not:
+// a pebble is lighter than an apple).
+const HEAVY = [['feather', 'apple', 'brick'], ['leaf', 'book', 'rock'], ['balloon', 'shoe', 'bowling ball'], ['button', 'cup', 'chair'], ['ant', 'cat', 'elephant'], ['sock', 'pumpkin', 'car'], ['crayon', 'bag of flour', 'bike'], ['paper clip', 'banana', 'TV'], ['pencil', 'brick', 'horse'], ['cotton ball', 'orange', 'piano'], ['bubble', 'egg', 'truck'], ['ribbon', 'melon', 'cow']]
 const LONG = [['ant', 'pencil', 'bus'], ['crayon', 'broom', 'train'], ['spoon', 'baseball bat', 'road'], ['key', 'ruler', 'river'], ['coin', 'shoe', 'snake'], ['bead', 'rope', 'street'], ['pea', 'carrot', 'ladder'], ['button', 'book', 'bed'], ['pin', 'scarf', 'bridge'], ['seed', 'stick', 'fence']]
 const TALL = [['mouse', 'dog', 'giraffe'], ['flower', 'child', 'tree'], ['cup', 'chair', 'house'], ['ball', 'table', 'tower'], ['cat', 'horse', 'building'], ['bug', 'bush', 'mountain'], ['shoe', 'door', 'lighthouse'], ['book', 'lamp', 'skyscraper']]
-const HOLDS = [['spoon', 'cup', 'bathtub'], ['cup', 'bucket', 'pool'], ['thimble', 'bottle', 'bathtub'], ['glass', 'jug', 'pond'], ['teaspoon', 'bowl', 'sink'], ['egg cup', 'pot', 'lake']]
+// Everything here is a word a five-year-old knows (no thimble, no egg cup).
+const HOLDS = [['spoon', 'cup', 'bathtub'], ['cup', 'bucket', 'pool'], ['spoon', 'bottle', 'bathtub'], ['glass', 'jug', 'pond'], ['teaspoon', 'bowl', 'sink'], ['cup', 'pot', 'lake']]
+/** The scale art draws one short centred label per pan, so both pictured items must be short words. */
+const SCALE_TRIPLES = HEAVY.filter(t => !t[0].includes(' ') && !t[2].includes(' ') && t[0].length <= 8 && t[2].length <= 8)
+const SAME_WEIGHT = 'They weigh the same'
 
-// Grade 1: which unit / which tool.
-const UNIT_ITEMS: { thing: string; unit: string; system: 'us' | 'metric' | 'weight' }[] = [
-  { thing: 'a pencil', unit: 'inches', system: 'us' }, { thing: 'a crayon', unit: 'inches', system: 'us' }, { thing: 'a spoon', unit: 'inches', system: 'us' }, { thing: 'a book', unit: 'inches', system: 'us' }, { thing: 'a shoe', unit: 'inches', system: 'us' }, { thing: 'your hand', unit: 'inches', system: 'us' },
-  { thing: 'a room', unit: 'feet', system: 'us' }, { thing: 'a bed', unit: 'feet', system: 'us' }, { thing: 'a car', unit: 'feet', system: 'us' }, { thing: 'a door', unit: 'feet', system: 'us' }, { thing: 'a tree', unit: 'feet', system: 'us' }, { thing: 'a school bus', unit: 'feet', system: 'us' },
-  { thing: 'a trip to another city', unit: 'miles', system: 'us' }, { thing: 'a long road', unit: 'miles', system: 'us' }, { thing: 'a river', unit: 'miles', system: 'us' }, { thing: 'a plane trip', unit: 'miles', system: 'us' }, { thing: 'a highway', unit: 'miles', system: 'us' },
-  { thing: 'a finger', unit: 'centimeters', system: 'metric' }, { thing: 'an eraser', unit: 'centimeters', system: 'metric' }, { thing: 'a key', unit: 'centimeters', system: 'metric' }, { thing: 'a pencil', unit: 'centimeters', system: 'metric' },
-  { thing: 'a classroom', unit: 'meters', system: 'metric' }, { thing: 'a bus', unit: 'meters', system: 'metric' }, { thing: 'a swimming pool', unit: 'meters', system: 'metric' }, { thing: 'a house', unit: 'meters', system: 'metric' },
-  { thing: 'a trip between two towns', unit: 'kilometers', system: 'metric' }, { thing: 'a marathon', unit: 'kilometers', system: 'metric' }, { thing: 'a long river', unit: 'kilometers', system: 'metric' },
-  { thing: 'a letter', unit: 'ounces', system: 'weight' }, { thing: 'a cookie', unit: 'ounces', system: 'weight' }, { thing: 'a person', unit: 'pounds', system: 'weight' }, { thing: 'a dog', unit: 'pounds', system: 'weight' }, { thing: 'a bag of apples', unit: 'pounds', system: 'weight' }, { thing: 'a truck', unit: 'tons', system: 'weight' }, { thing: 'an elephant', unit: 'tons', system: 'weight' }, { thing: 'a whale', unit: 'tons', system: 'weight' },
+// Grade 1: which unit / which tool. Inches and feet only -- metric prefixes and ounces/pounds/tons
+// are grades 3-4 content and their words are well past a six-year-old's decoding.
+const UNIT_ITEMS: { thing: string; unit: string }[] = [
+  { thing: 'a pencil', unit: 'inches' }, { thing: 'a crayon', unit: 'inches' }, { thing: 'a spoon', unit: 'inches' }, { thing: 'a book', unit: 'inches' }, { thing: 'a shoe', unit: 'inches' }, { thing: 'your hand', unit: 'inches' },
+  { thing: 'a room', unit: 'feet' }, { thing: 'a bed', unit: 'feet' }, { thing: 'a car', unit: 'feet' }, { thing: 'a door', unit: 'feet' }, { thing: 'a tree', unit: 'feet' }, { thing: 'a school bus', unit: 'feet' },
 ]
-const UNITS: Record<string, string[]> = { us: ['inches', 'feet', 'miles'], metric: ['centimeters', 'meters', 'kilometers'], weight: ['ounces', 'pounds', 'tons'] }
+const US_UNITS = ['inches', 'feet', 'miles']
+/** Ordered short-to-long unit sets for "which one is longer?". */
+const UNIT_SIZES = [['1 inch', '1 foot', '1 mile'], ['1 inch', '1 foot', '1 yard'], ['1 foot', '1 yard', '1 mile'], ['1 inch', '1 yard', '1 mile']]
 const TOOLS: { q: string; a: string }[] = [
   { q: 'how heavy a dog is', a: 'a scale' }, { q: 'how long a table is', a: 'a ruler' }, { q: 'how much water fits in a jug', a: 'a measuring cup' }, { q: 'how long recess lasts', a: 'a clock' }, { q: 'how hot it is outside', a: 'a thermometer' },
-  { q: 'how tall you are', a: 'a ruler' }, { q: 'how heavy a watermelon is', a: 'a scale' }, { q: 'how much milk is in a bowl', a: 'a measuring cup' }, { q: 'how long a song is', a: 'a clock' }, { q: 'if you have a fever', a: 'a thermometer' },
+  { q: 'how tall you are', a: 'a ruler' }, { q: 'how heavy a watermelon is', a: 'a scale' }, { q: 'how much milk is in a bowl', a: 'a measuring cup' }, { q: 'how long a song is', a: 'a clock' }, { q: 'your temperature', a: 'a thermometer' },
 ]
 const TOOL_NAMES = ['a scale', 'a ruler', 'a measuring cup', 'a clock', 'a thermometer']
 
-// Grade 2: estimates (value, unit) with decoys a factor of 10 away.
-const ESTIMATES: { thing: string; v: number; unit: string }[] = [
+// Grade 2: estimates (value, unit) with decoys a factor of 10 away. `tall` items are asked with
+// "About how tall is...?", which is the vocabulary grade 2 is taught.
+const ESTIMATES: { thing: string; v: number; unit: string; tall?: boolean }[] = [
   { thing: 'a crayon', v: 10, unit: 'cm' }, { thing: 'a pencil', v: 15, unit: 'cm' }, { thing: 'a book', v: 25, unit: 'cm' }, { thing: 'your finger', v: 5, unit: 'cm' }, { thing: 'a spoon', v: 15, unit: 'cm' }, { thing: 'an ant', v: 1, unit: 'cm' },
-  { thing: 'a door', v: 2, unit: 'm' }, { thing: 'a car', v: 4, unit: 'm' }, { thing: 'a bed', v: 2, unit: 'm' }, { thing: 'a bus', v: 10, unit: 'm' }, { thing: 'a classroom', v: 8, unit: 'm' }, { thing: 'a football field', v: 100, unit: 'm' }, { thing: 'a tall tree', v: 20, unit: 'm' },
-  { thing: 'a pencil', v: 7, unit: 'inches' }, { thing: 'a spoon', v: 6, unit: 'inches' }, { thing: 'a book', v: 9, unit: 'inches' }, { thing: 'a door', v: 7, unit: 'feet' }, { thing: 'a car', v: 15, unit: 'feet' }, { thing: 'a bus', v: 40, unit: 'feet' }, { thing: 'a classroom', v: 30, unit: 'feet' },
+  { thing: 'a door', v: 2, unit: 'm', tall: true }, { thing: 'a car', v: 4, unit: 'm' }, { thing: 'a bed', v: 2, unit: 'm' }, { thing: 'a bus', v: 10, unit: 'm' }, { thing: 'a classroom', v: 8, unit: 'm' }, { thing: 'a football field', v: 100, unit: 'm' }, { thing: 'a tree', v: 20, unit: 'm', tall: true },
+  { thing: 'a pencil', v: 7, unit: 'inches' }, { thing: 'a spoon', v: 6, unit: 'inches' }, { thing: 'a book', v: 9, unit: 'inches' }, { thing: 'a door', v: 7, unit: 'feet', tall: true }, { thing: 'a car', v: 15, unit: 'feet' }, { thing: 'a bus', v: 40, unit: 'feet' }, { thing: 'a classroom', v: 30, unit: 'feet' },
 ]
 const OTHER_UNIT: Record<string, string> = { cm: 'm', m: 'cm', inches: 'feet', feet: 'inches' }
 
@@ -47,7 +51,16 @@ const CONV: { big: string; small: string; f: number; level: number }[] = [
   { big: 'pounds', small: 'ounces', f: 16, level: 3 }, { big: 'centimeters', small: 'millimeters', f: 10, level: 3 }, { big: 'yards', small: 'inches', f: 36, level: 3 }, { big: 'quarts', small: 'cups', f: 4, level: 3 }, { big: 'tons', small: 'pounds', f: 2000, level: 3 },
 ]
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
-const singular = (u: string) => u === 'feet' ? 'foot' : u.replace(/s$/, '')
+/** Bar-chart subjects are all countable, so no choice claims a unit the picture never draws. */
+const CHART = ['books', 'laps', 'goals', 'stickers', 'points', 'stars']
+const singular = (u: string) => u === 'feet' ? 'foot' : u === 'inches' ? 'inch' : u.replace(/s$/, '')
+/** "1 minute", "2 minutes", "1 foot". Always carries its unit, whatever the unit is. */
+const withUnit = (v: number, u: string) => `${fmtInt(v)} ${v === 1 ? singular(u) : u}`
+/**
+ * The independent answer check in test/math.test.ts reads "3 hours" as a duration (180 minutes), so
+ * an hour count that is displayed as a whole number is checked in minutes.
+ */
+const checkVal = (expr: string, u: string) => u === 'hours' ? `(${expr})*60` : expr
 /** Two-step conversion stories by big unit: (name, "3 meters", "170 centimeters", "centimeters") -> text. */
 const TWO_STEP: Record<string, (name: string, big: string, cut: string, small: string) => string> = {
   meters: (n, b, c, s) => `${n} has ${b} of ribbon and uses ${c}. How many ${s} are left?`,
@@ -59,10 +72,6 @@ const TWO_STEP: Record<string, (name: string, big: string, cut: string, small: s
   kilometers: (n, b, c, s) => `A trail is ${b} long. ${n} has walked ${c}. How many ${s} are left?`,
   minutes: (n, b, c, s) => `A song is ${b} long. ${n} has heard ${c} of it. How many ${s} are left?`,
 }
-/** "N hours" would read as a duration in minutes to the tests; hours get plain-number choices. */
-const unitSuffix = (u: string) => u === 'hours' ? '' : ` ${u}`
-/** "1 minute", "2 minutes", "3" (hours). */
-const withUnit = (v: number, u: string) => u === 'hours' ? fmtInt(v) : `${fmtInt(v)} ${v === 1 ? singular(u) : u}`
 
 const natDec = (units: number, places: number): string => {
   let s = fmtDec(units, places)
@@ -84,19 +93,23 @@ export const measurement: Generator = {
       type M = 'heavy' | 'long' | 'tall' | 'holds' | 'scale'
       const modes: M[] = tier === 1 ? ['heavy', 'long'] : tier === 2 ? ['heavy', 'long', 'tall', 'scale'] : ['heavy', 'long', 'tall', 'holds', 'scale']
       const mode = rng.pick(modes)
+      // Tier 3 draws from the half of each table the easier tiers never see.
+      const half = <T>(t: T[]): T[] => tier === 3 ? t.slice(Math.floor(t.length / 2)) : t.slice(0, Math.ceil(t.length / 2))
       if (mode === 'scale') {
-        const [a, b, c] = rng.pick(HEAVY)
-        const leftHeavy = rng.bool()
-        const left = leftHeavy ? c : a, right = leftHeavy ? a : c
+        const [a, , c] = rng.pick(half(SCALE_TRIPLES))
         const askHeavy = tier === 3 ? rng.bool() : true
+        // Only the two objects the picture draws are offered, plus the state the pans could be in.
+        // Nothing on the list is an object the child cannot see, so nothing is answerable by
+        // elimination, and the comparative now matches what is drawn.
+        const leftHeavy = rng.bool()
         const ans = askHeavy ? c : a
-        const { choices, answer } = shuffled(rng, ans, [askHeavy ? a : c, b], n)
+        const { choices, answer } = shuffled(rng, ans, [askHeavy ? a : c, SAME_WEIGHT], n)
         const prompt = ['Look at the scale.', `Which one is ${askHeavy ? 'heavier' : 'lighter'}?`]
-        return mathRiddle({ family: 'measurement', skill: 'math: comparing weight', prompt, visual: { kind: 'scale', left, right, heavier: leftHeavy ? 'left' : 'right' }, choices, answer, spoken: `Look at the scale. Which one is ${askHeavy ? 'heavier' : 'lighter'}? ${sayChoices(choices)}?`, metric: 6 + tier, grade, tier }, '')
+        return mathRiddle({ family: 'measurement', skill: 'math: comparing weight', prompt, visual: { kind: 'scale', left: leftHeavy ? c : a, right: leftHeavy ? a : c, heavier: leftHeavy ? 'left' : 'right' }, choices, answer, spoken: `Look at the scale. Which one is ${askHeavy ? 'heavier' : 'lighter'}? ${sayChoices(choices)}?`, metric: 6 + tier, grade, tier }, '')
       }
       const table = mode === 'heavy' ? HEAVY : mode === 'long' ? LONG : mode === 'tall' ? TALL : HOLDS
-      const triple = rng.pick(table)
-      const most = tier === 1 ? true : rng.bool(0.6)
+      const triple = rng.pick(half(table))
+      const most = rng.bool(tier === 1 ? 0.75 : 0.6)
       const words = mode === 'heavy' ? ['heaviest', 'lightest'] : mode === 'long' ? ['longest', 'shortest'] : mode === 'tall' ? ['tallest', 'shortest'] : ['the most', 'the least']
       const ans = most ? triple[2] : triple[0]
       const { choices, answer } = shuffled(rng, ans, triple.filter(t => t !== ans), n)
@@ -105,52 +118,77 @@ export const measurement: Generator = {
     }
 
     if (grade === 1) {
-      const mode = rng.pick(tier === 1 ? ['unit', 'unit'] : tier === 2 ? ['unit', 'tool'] : ['unit', 'tool', 'weight'])
+      // Tier 1 mixes the unit choice with the tool question rather than running one template 14 times.
+      const mode = rng.pick(tier === 1 ? ['unit', 'tool'] : ['unit', 'tool', 'bigger'])
+      if (mode === 'bigger') {
+        const set = rng.pick(UNIT_SIZES)
+        const longer = rng.bool()
+        const ans = longer ? set[2] : set[0]
+        const { choices, answer } = shuffled(rng, ans, rng.shuffle(set.filter(u => u !== ans)), n)
+        const prompt = [`Which one is ${longer ? 'longer' : 'shorter'}?`]
+        return mathRiddle({ family: 'measurement', skill: 'math: choosing units', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: 18 + tier * 2, grade, tier }, '')
+      }
+      // Tier 3 uses the objects the easier tiers do not.
+      const oddEven = <T>(t: T[]): T[] => t.filter((_, i) => (tier === 3 ? i % 2 === 1 : i % 2 === 0))
       if (mode === 'tool') {
-        const t = rng.pick(TOOLS)
+        const t = rng.pick(oddEven(TOOLS))
         const { choices, answer } = shuffled(rng, t.a, rng.shuffle(TOOL_NAMES.filter(x => x !== t.a)), n)
         const prompt = ['What would you use to measure', `${t.q}?`]
-        return mathRiddle({ family: 'measurement', skill: 'math: measuring tools', prompt, choices, answer, spoken: `What would you use to measure ${t.q}? ${sayChoices(choices)}?`, metric: 16, grade, tier }, '')
+        return mathRiddle({ family: 'measurement', skill: 'math: measuring tools', prompt, choices, answer, spoken: `What would you use to measure ${t.q}? ${sayChoices(choices)}?`, metric: 12 + tier * 2, grade, tier }, '')
       }
-      const systems = mode === 'weight' ? ['weight'] : tier === 1 ? ['us'] : ['us', 'metric']
-      const sys = rng.pick(systems)
-      const item = rng.pick(UNIT_ITEMS.filter(u => u.system === sys))
-      const { choices, answer } = shuffled(rng, item.unit, rng.shuffle(UNITS[sys].filter(u => u !== item.unit)), n)
-      const prompt = mode === 'weight' ? ['Which unit is best to weigh', `${item.thing}?`] : ['Which unit is best to measure', `${item.thing}?`]
-      return mathRiddle({ family: 'measurement', skill: 'math: choosing units', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 14 + (sys === 'us' ? 0 : 2) + (mode === 'weight' ? 2 : 0), grade, tier }, '')
+      const item = rng.pick(oddEven(UNIT_ITEMS))
+      const { choices, answer } = shuffled(rng, item.unit, rng.shuffle(US_UNITS.filter(u => u !== item.unit)), n)
+      const prompt = ['Which unit is best to measure', `${item.thing}?`]
+      return mathRiddle({ family: 'measurement', skill: 'math: choosing units', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 12 + tier * 2, grade, tier }, '')
     }
 
     if (grade === 2) {
-      const mode = rng.pick(tier === 1 ? ['estimate', 'thermo'] : tier === 2 ? ['estimate', 'thermo', 'thermo'] : ['estimate', 'thermo', 'weather'])
+      const mode = rng.pick(tier === 1 ? ['estimate', 'thermo'] : tier === 2 ? ['estimate', 'thermo', 'weather'] : ['estimate', 'thermo', 'weather', 'change'])
       if (mode === 'estimate') {
         const e = rng.pick(ESTIMATES)
-        const txt = (v: number, u: string) => `${v} ${u}`
+        const txt = (v: number, u: string) => `${v} ${v === 1 && (u === 'inches' || u === 'feet') ? singular(u) : u}`
         const other = OTHER_UNIT[e.unit]
         const decoys = rng.shuffle([txt(e.v * 10, e.unit), txt(e.v, other), txt(Math.max(1, Math.round(e.v / 10)), e.unit), txt(e.v * 100, e.unit)].filter(t => t !== txt(e.v, e.unit)))
         const { choices, answer } = shuffled(rng, txt(e.v, e.unit), decoys, n)
-        const prompt = [`About how long is ${e.thing}?`]
-        return mathRiddle({ family: 'measurement', skill: 'math: estimating length', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: 24 + tier, grade, tier }, '')
+        const prompt = [`About how ${e.tall ? 'tall' : 'long'} is ${e.thing}?`]
+        return mathRiddle({ family: 'measurement', skill: 'math: estimating length', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: 22 + tier * 3, grade, tier }, '')
       }
-      const unit = tier === 3 && rng.bool(0.5) ? 'C' : 'F'
-      const deg = unit === 'F' ? (tier === 1 ? rng.int(2, 10) * 10 : tier === 2 ? rng.int(4, 20) * 5 : rng.int(10, 105)) : rng.int(-5, 40)
+      // The thermometer art ticks every 10 degrees F (5 C), so both the reading and every decoy sit
+      // on a tick: a 1-degree decoy cannot be told from the answer in the picture.
+      const unit: 'F' | 'C' = tier === 3 && rng.bool(0.5) ? 'C' : 'F'
+      const tick = unit === 'F' ? 10 : 5
+      // Celsius stays at or above zero: negative numbers are a grade-6 standard.
+      const deg = unit === 'F' ? rng.int(2, tier === 1 ? 8 : 10) * 10 : rng.int(0, 8) * 5
       if (mode === 'weather') {
         const label = unit === 'F' ? (deg >= 85 ? 'hot' : deg <= 40 ? 'cold' : 'mild') : (deg >= 30 ? 'hot' : deg <= 5 ? 'cold' : 'mild')
         if (label === 'mild') return measurement.make(grade, tier, rng)
         const { choices, answer } = shuffled(rng, label, [label === 'hot' ? 'cold' : 'hot', 'just right'], n)
         const prompt = [`The thermometer shows ${deg}°${unit}.`, 'What is the weather like?']
-        return mathRiddle({ family: 'measurement', skill: 'math: temperature', prompt, visual: { kind: 'thermometer', degrees: deg, unit }, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 30, grade, tier }, '')
+        return mathRiddle({ family: 'measurement', skill: 'math: temperature', prompt, visual: { kind: 'thermometer', degrees: deg, unit }, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 26 + tier * 3, grade, tier }, '')
       }
-      const step = tier === 1 ? 10 : tier === 2 ? 5 : 2
-      const decoys = numDecoys(rng, deg, n - 1, [deg + step, deg - step, deg + 2 * step, deg - 2 * step, deg + 1, deg - 1], step * 2, unit === 'C' ? -20 : 0).map(d => `${d}°${unit}`)
-      const { choices, answer } = shuffled(rng, `${deg}°${unit}`, decoys, n)
+      if (mode === 'change') {
+        const delta = rng.int(1, 3) * tick
+        const up = rng.bool() || deg - delta < 0
+        const ans = up ? deg + delta : deg - delta
+        const decoys = numDecoys(rng, ans, n - 1, [deg, up ? deg - delta : deg + delta, ans + tick, ans - tick, ans + 2 * tick], tick * 2, 0).map(d => `${d}°${unit}`)
+        const { choices, answer } = shuffled(rng, `${ans}°${unit}`, decoys, n)
+        const prompt = [`The thermometer shows ${deg}°${unit}.`, `It gets ${delta}° ${up ? 'warmer' : 'colder'}. What is it now?`]
+        return mathRiddle({ family: 'measurement', skill: 'math: temperature', prompt, visual: { kind: 'thermometer', degrees: deg, unit }, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 30 + tier * 3, grade, tier }, `num:${deg}${up ? '+' : '-'}${delta}`)
+      }
+      const steps = rng.shuffle([1, -1, 2, -2, 3, -3]).map(j => deg + j * tick).filter(d => d >= (unit === 'C' ? 0 : 0))
+      const { choices, answer } = shuffled(rng, `${deg}°${unit}`, steps.map(d => `${d}°${unit}`), n)
       const prompt = ['What temperature does the', 'thermometer show?']
-      return mathRiddle({ family: 'measurement', skill: 'math: reading a thermometer', prompt, visual: { kind: 'thermometer', degrees: deg, unit }, choices, answer, spoken: `What temperature does the thermometer show? ${sayChoices(choices)}?`, metric: 24 + (step === 10 ? 0 : step === 5 ? 3 : 6) + tier, grade, tier }, `num:${deg}`)
+      return mathRiddle({ family: 'measurement', skill: 'math: reading a thermometer', prompt, visual: { kind: 'thermometer', degrees: deg, unit }, choices, answer, spoken: `What temperature does the thermometer show? ${sayChoices(choices)}?`, metric: 22 + tier * 3 + (unit === 'C' ? 2 : 0), grade, tier }, `num:${deg}`)
     }
 
     if (grade === 3) {
-      const pool = FACTS.filter(f => f[3] <= tier && (tier === 1 || f[3] >= tier - 1))
+      // Tier 3 is the multi-step question almost every time, and its plain recalls are the level-3
+      // facts only, so it is no longer a re-run of tier 2.
+      const multi = tier === 3 && rng.bool(0.8)
+      const pool = multi
+        ? FACTS.filter(f => f[3] >= 2 && f[2] <= 100)
+        : FACTS.filter(f => tier === 3 ? f[3] === 3 : f[3] <= tier && (tier === 1 || f[3] >= tier - 1))
       const [what, inWhat, v] = rng.pick(pool)
-      const multi = tier === 3 && rng.bool(0.4) && v <= 100
       if (multi) {
         const k = rng.int(2, 6)
         const ans = v * k
@@ -158,82 +196,86 @@ export const measurement: Generator = {
         const { choices, answer } = shuffled(rng, String(ans), decoys, n)
         const plural = inWhat.replace(/^an? /, '').replace(/^half /, '')
         const prompt = [`How many ${what} are in ${k} ${plural}${plural.endsWith('s') ? '' : 's'}?`]
-        return mathRiddle({ family: 'measurement', skill: 'math: measurement facts', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: 40 + Math.log2(ans) * 2, grade, tier }, `num:${v}*${k}`)
+        return mathRiddle({ family: 'measurement', skill: 'math: measurement facts', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: 34 + tier * 4 + Math.log2(ans) * 2, grade, tier }, `num:${v}*${k}`)
       }
+      // Near misses derived from the fact itself; `sameSize` keeps decoys within an order of
+      // magnitude so a child cannot cross two of four choices off on sight.
       const near = v >= 100 ? [v + v / 10, v - v / 10, v + 100, v - 100] : [v + 2, v - 2, v + 10, v - 10]
-      const decoys = numDecoys(rng, v, n - 1, [v * 2, v / 2, v * 10, v / 10, ...near, ...[7, 12, 24, 60, 100, 365, 52, 16, 1000].filter(x => x !== v)], Math.max(2, Math.round(v / 5)), 1).map(String)
+      const decoys = numDecoys(rng, v, n - 1, [v * 2, Math.round(v / 2), v * 10, Math.round(v / 10), ...near], Math.max(2, Math.round(v / 5)), 1, Number.MAX_SAFE_INTEGER, true).map(String)
       const { choices, answer } = shuffled(rng, String(v), decoys, n)
       const prompt = [`How many ${what} are in ${inWhat}?`]
-      return mathRiddle({ family: 'measurement', skill: 'math: measurement facts', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: 36 + Math.log2(v) * 2, grade, tier }, `num:${v}`)
+      return mathRiddle({ family: 'measurement', skill: 'math: measurement facts', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: 30 + tier * 4 + Math.log2(v) * 2, grade, tier }, `num:${v}`)
     }
 
     if (grade === 4) {
-      const c = rng.pick(CONV.filter(x => x.level <= tier && (tier === 1 || x.level >= tier - 1)))
       const mode = rng.pick(tier === 1 ? ['up'] : tier === 2 ? ['up', 'down'] : ['up', 'down', 'mixed'])
+      // At tier 2 the "up" conversions are level-2 only, so no tier-2 card is character-for-character
+      // a tier-1 card; level-1 facts come back only in the new "down" direction.
+      const levels = mode === 'up'
+        ? (tier === 1 ? [1] : tier === 2 ? [2] : [2, 3])
+        : (tier === 2 ? [1, 2] : [1, 2, 3])
+      const c = rng.pick(CONV.filter(x => levels.includes(x.level)))
       if (mode === 'mixed') {
         const big = rng.int(1, 5), extra = rng.int(1, c.f - 1)
         const ans = big * c.f + extra
-        const decoys = numDecoys(rng, ans, n - 1, [big + extra, big * c.f, ans + c.f, ans - c.f, (big + 1) * c.f, ans + 10], Math.max(3, Math.round(c.f / 2)), 1).map(v => `${fmtInt(v)}${unitSuffix(c.small)}`)
-        const { choices, answer } = shuffled(rng, `${fmtInt(ans)}${unitSuffix(c.small)}`, decoys, n)
-        const prompt = [`${big} ${big === 1 ? singular(c.big) : c.big} ${extra} ${c.small} = ? ${c.small}`]
-        return mathRiddle({ family: 'measurement', skill: 'math: unit conversions', prompt, choices, answer, spoken: `${big} ${c.big} and ${extra} ${c.small} is how many ${c.small}? ${sayChoices(choices)}?`, metric: 56 + Math.log2(ans) * 2, grade, tier }, `num:${big}*${c.f}+${extra}`)
+        const decoys = numDecoys(rng, ans, n - 1, [big + extra, big * c.f, ans + c.f, ans - c.f, (big + 1) * c.f, ans + 10], Math.max(3, Math.round(c.f / 2)), 1).map(v => withUnit(v, c.small))
+        const { choices, answer } = shuffled(rng, withUnit(ans, c.small), decoys, n)
+        const prompt = [`${withUnit(big, c.big)} ${withUnit(extra, c.small)} = ? ${c.small}`]
+        return mathRiddle({ family: 'measurement', skill: 'math: unit conversions', prompt, choices, answer, spoken: `${big} ${c.big} and ${extra} ${c.small} is how many ${c.small}? ${sayChoices(choices)}?`, metric: 52 + tier * 3 + Math.log2(ans) * 2, grade, tier }, `num:${checkVal(`${big}*${c.f}+${extra}`, c.small)}`)
       }
       const k = rng.int(2, c.f >= 100 ? 9 : 12)
       if (mode === 'down') {
         const small = k * c.f
-        const decoys = numDecoys(rng, k, n - 1, [small * c.f, k + 1, k - 1, k * 2, small - c.f, k + 10], 3, 1).map(v => withUnit(v, c.big))
+        const decoys = numDecoys(rng, k, n - 1, [k + 1, k - 1, k * 2, k + 10, Math.round(small / 10), k * c.f], 3, 1).map(v => withUnit(v, c.big))
         const { choices, answer } = shuffled(rng, withUnit(k, c.big), decoys, n)
         const prompt = [`${fmtInt(small)} ${c.small} = ? ${c.big}`]
-        return mathRiddle({ family: 'measurement', skill: 'math: unit conversions', prompt, choices, answer, spoken: `${fmtInt(small)} ${c.small} is how many ${c.big}? ${sayChoices(choices)}?`, metric: 54 + Math.log2(small) * 2, grade, tier }, `num:${small}/${c.f}`)
+        return mathRiddle({ family: 'measurement', skill: 'math: unit conversions', prompt, choices, answer, spoken: `${fmtInt(small)} ${c.small} is how many ${c.big}? ${sayChoices(choices)}?`, metric: 50 + tier * 3 + Math.log2(small) * 2, grade, tier }, `num:${checkVal(`${small}/${c.f}`, c.big)}`)
       }
       const ans = k * c.f
-      const decoys = numDecoys(rng, ans, n - 1, [k + c.f, ans + c.f, ans - c.f, ans * 10, ans / 10, (k + 1) * c.f], Math.max(3, Math.round(c.f / 2)), 1).map(v => `${fmtInt(v)}${unitSuffix(c.small)}`)
-      const { choices, answer } = shuffled(rng, `${fmtInt(ans)}${unitSuffix(c.small)}`, decoys, n)
+      const decoys = numDecoys(rng, ans, n - 1, [k + c.f, ans + c.f, ans - c.f, ans * 10, Math.round(ans / 10), (k + 1) * c.f], Math.max(3, Math.round(c.f / 2)), 1).map(v => withUnit(v, c.small))
+      const { choices, answer } = shuffled(rng, withUnit(ans, c.small), decoys, n)
       const prompt = [`${k} ${c.big} = ? ${c.small}`]
-      return mathRiddle({ family: 'measurement', skill: 'math: unit conversions', prompt, choices, answer, spoken: `${k} ${c.big} is how many ${c.small}? ${sayChoices(choices)}?`, metric: 52 + Math.log2(ans) * 2, grade, tier }, `num:${k}*${c.f}`)
+      return mathRiddle({ family: 'measurement', skill: 'math: unit conversions', prompt, choices, answer, spoken: `${k} ${c.big} is how many ${c.small}? ${sayChoices(choices)}?`, metric: 48 + tier * 3 + Math.log2(ans) * 2, grade, tier }, `num:${checkVal(`${k}*${c.f}`, c.small)}`)
     }
 
-    // grade 5
-    const mode = rng.pick(tier === 1 ? ['decimalUp', 'bars', 'barsDiff'] : tier === 2 ? ['decimalUp', 'decimalDown', 'bars', 'barsDiff', 'twoStep'] : ['decimalUp', 'decimalDown', 'twoStep', 'barsDiff', 'barsTotal'])
+    // grade 5 -- bar charts are one item in three, and the harder chart questions are held back.
+    const mode = rng.pick(tier === 1 ? ['decimalUp', 'decimalUp', 'bars'] : tier === 2 ? ['decimalUp', 'decimalDown', 'barsDiff', 'twoStep'] : ['decimalUp', 'decimalDown', 'twoStep', 'barsTotal'])
     if (mode.startsWith('bars')) {
-      const what = rng.pick([{ q: 'rain', unit: 'mm' }, { q: 'snow', unit: 'cm' }, { q: 'books', unit: '' }, { q: 'laps', unit: '' }])
+      const what = rng.pick(CHART)
       const values = rng.sample([2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 16, 18, 20], 5)
-      const countable = !what.unit
-      const prompt0 = countable ? `The chart shows ${what.q} for each day.` : `The chart shows ${what.q} for one week.`
-      const much = countable ? 'many' : 'much'
-      const u = (v: number) => what.unit ? `${v} ${what.unit}` : String(v)
+      const prompt0 = `The chart shows ${what} for each day.`
       if (mode === 'bars') {
         const most = rng.bool()
         const target = most ? Math.max(...values) : Math.min(...values)
         const label = DAYS[values.indexOf(target)]
         const { choices, answer } = shuffled(rng, label, DAYS.filter(d => d !== label), n)
-        const prompt = [prompt0, `Which day had the ${most ? 'most' : countable ? 'fewest' : 'least'} ${what.q}?`]
-        return mathRiddle({ family: 'measurement', skill: 'math: reading bar charts', prompt, visual: { kind: 'bars', values, labels: DAYS }, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 68, grade, tier }, most ? 'barmax' : 'barmin')
+        const prompt = [prompt0, `Which day had the ${most ? 'most' : 'fewest'} ${what}?`]
+        return mathRiddle({ family: 'measurement', skill: 'math: reading bar charts', prompt, visual: { kind: 'bars', values, labels: DAYS }, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 60 + tier * 3, grade, tier }, most ? 'barmax' : 'barmin')
       }
       if (mode === 'barsDiff') {
         const [i, j] = rng.sample([0, 1, 2, 3, 4], 2)
         const hi = values[i] > values[j] ? i : j, lo = hi === i ? j : i
         const diff = values[hi] - values[lo]
-        const decoys = numDecoys(rng, diff, n - 1, [values[hi] + values[lo], values[hi], values[lo], diff + 1, diff - 1], 3, 1).map(u)
-        const { choices, answer } = shuffled(rng, u(diff), decoys, n)
-        const prompt = [prompt0, `How ${much} more ${what.q} on ${DAYS[hi]} than ${DAYS[lo]}?`]
-        return mathRiddle({ family: 'measurement', skill: 'math: reading bar charts', prompt, visual: { kind: 'bars', values, labels: DAYS }, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 70, grade, tier }, `num:${values[hi]}-${values[lo]}`)
+        const decoys = numDecoys(rng, diff, n - 1, [values[hi] + values[lo], values[hi], values[lo], diff + 1, diff - 1], 3, 1).map(String)
+        const { choices, answer } = shuffled(rng, String(diff), decoys, n)
+        const prompt = [prompt0, `How many more ${what} on ${DAYS[hi]} than ${DAYS[lo]}?`]
+        return mathRiddle({ family: 'measurement', skill: 'math: reading bar charts', prompt, visual: { kind: 'bars', values, labels: DAYS }, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 62 + tier * 3, grade, tier }, `num:${values[hi]}-${values[lo]}`)
       }
       const total = values.reduce((a, b) => a + b, 0)
-      const decoys = numDecoys(rng, total, n - 1, [total - Math.min(...values), total + Math.max(...values), total + 1, total - 1, total + 5], 6, 1).map(u)
-      const { choices, answer } = shuffled(rng, u(total), decoys, n)
-      const prompt = [prompt0, `How ${much} ${what.q} in the whole week?`]
-      return mathRiddle({ family: 'measurement', skill: 'math: reading bar charts', prompt, visual: { kind: 'bars', values, labels: DAYS }, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 72, grade, tier }, `num:${values.join('+')}`)
+      const decoys = numDecoys(rng, total, n - 1, [total - Math.min(...values), total + Math.max(...values), total + 1, total - 1, total + 5], 6, 1).map(String)
+      const { choices, answer } = shuffled(rng, String(total), decoys, n)
+      const prompt = [prompt0, `How many ${what} in the whole week?`]
+      return mathRiddle({ family: 'measurement', skill: 'math: reading bar charts', prompt, visual: { kind: 'bars', values, labels: DAYS }, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 64 + tier * 3, grade, tier }, `num:${values.join('+')}`)
     }
     const c = rng.pick(CONV.filter(x => x.f >= 4 && (mode !== 'twoStep' || TWO_STEP[x.big])))
     if (mode === 'twoStep') {
       const name = rng.pick(NAMES)
       const big = rng.int(1, 5), cut = rng.int(1, big * c.f - 1)
       const ans = big * c.f - cut
-      const decoys = numDecoys(rng, ans, n - 1, [big * c.f + cut, big - cut, cut, ans + c.f, ans - c.f], Math.max(3, Math.round(c.f / 4)), 1).map(v => `${fmtInt(v)}${unitSuffix(c.small)}`)
-      const { choices, answer } = shuffled(rng, `${fmtInt(ans)}${unitSuffix(c.small)}`, decoys, n)
-      const prompt = wrap(TWO_STEP[c.big](name, `${big} ${big === 1 ? singular(c.big) : c.big}`, `${fmtInt(cut)} ${c.small}`, c.small))
-      return mathRiddle({ family: 'measurement', skill: 'math: unit conversions', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 76 + Math.log2(ans) * 2, grade, tier }, `num:${big}*${c.f}-${cut}`)
+      const decoys = numDecoys(rng, ans, n - 1, [big * c.f + cut, big - cut, cut, ans + c.f, ans - c.f], Math.max(3, Math.round(c.f / 4)), 1).map(v => withUnit(v, c.small))
+      const { choices, answer } = shuffled(rng, withUnit(ans, c.small), decoys, n)
+      const prompt = wrap(TWO_STEP[c.big](name, withUnit(big, c.big), withUnit(cut, c.small), c.small))
+      return mathRiddle({ family: 'measurement', skill: 'math: unit conversions', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 68 + tier * 3 + Math.log2(ans) / 2, grade, tier }, `num:${checkVal(`${big}*${c.f}-${cut}`, c.small)}`)
     }
     // decimal conversions
     const places = tier === 1 ? 1 : 2
@@ -243,20 +285,18 @@ export const measurement: Generator = {
       const bigUnits = rng.int(1, 9) * p + rng.int(1, p - 1)
       const small = bigUnits * c.f / p
       if (!Number.isInteger(small)) return measurement.make(grade, tier, rng)
-      const ans = natDec(bigUnits, places)
-      const suffix = unitSuffix(c.big)
-      const decoys = numDecoys(rng, bigUnits, n - 1, [bigUnits * 10, Math.round(bigUnits / 10), bigUnits + p, bigUnits - p, small], Math.max(2, p / 2), 1).map(v => `${natDec(v, places)}${suffix}`)
-      const { choices, answer } = shuffled(rng, `${ans}${suffix}`, decoys, n)
+      const decoys = numDecoys(rng, bigUnits, n - 1, [bigUnits * 10, Math.round(bigUnits / 10), bigUnits + p, bigUnits - p, small], Math.max(2, p / 2), 1).map(v => `${natDec(v, places)} ${c.big}`)
+      const { choices, answer } = shuffled(rng, `${natDec(bigUnits, places)} ${c.big}`, decoys, n)
       const prompt = [`${fmtInt(small)} ${c.small} = ? ${c.big}`]
-      return mathRiddle({ family: 'measurement', skill: 'math: unit conversions', prompt, choices, answer, spoken: `${fmtInt(small)} ${c.small} is how many ${c.big}? ${sayChoices(choices)}?`, metric: 72 + places * 4, grade, tier }, `num:${fmtInt(small).replace(/,/g, '')}/${c.f}`)
+      return mathRiddle({ family: 'measurement', skill: 'math: unit conversions', prompt, choices, answer, spoken: `${fmtInt(small)} ${c.small} is how many ${c.big}? ${sayChoices(choices)}?`, metric: 66 + tier * 3 + places * 2, grade, tier }, `num:${fmtInt(small).replace(/,/g, '')}/${c.f}`)
     }
     const bigUnits = rng.int(1, 9) * p + rng.pick([p / 2, p / 4, p / 5, 3 * p / 4].filter(Number.isInteger))
     const small = bigUnits * c.f / p
     if (!Number.isInteger(small)) return measurement.make(grade, tier, rng)
     const bigT = natDec(bigUnits, places)
-    const decoys = numDecoys(rng, small, n - 1, [small * 10, small / 10, small + c.f, small - c.f, bigUnits], Math.max(3, Math.round(c.f / 4)), 1).map(v => `${fmtInt(v)}${unitSuffix(c.small)}`)
-    const { choices, answer } = shuffled(rng, `${fmtInt(small)}${unitSuffix(c.small)}`, decoys, n)
+    const decoys = numDecoys(rng, small, n - 1, [small * 10, Math.round(small / 10), small + c.f, small - c.f, bigUnits], Math.max(3, Math.round(c.f / 4)), 1).map(v => withUnit(v, c.small))
+    const { choices, answer } = shuffled(rng, withUnit(small, c.small), decoys, n)
     const prompt = [`${bigT} ${c.big} = ? ${c.small}`]
-    return mathRiddle({ family: 'measurement', skill: 'math: unit conversions', prompt, choices, answer, spoken: `${bigT} ${c.big} is how many ${c.small}? ${sayChoices(choices)}?`, metric: 70 + places * 4, grade, tier }, `num:${bigT}*${c.f}`)
+    return mathRiddle({ family: 'measurement', skill: 'math: unit conversions', prompt, choices, answer, spoken: `${bigT} ${c.big} is how many ${c.small}? ${sayChoices(choices)}?`, metric: 64 + tier * 3 + places * 2, grade, tier }, `num:${checkVal(`${bigT}*${c.f}`, c.small)}`)
   },
 }

@@ -21,7 +21,10 @@ import { riddle, nearbyNumbers } from '../types'
  *   (empty)        answer validated by construction (e.g. names of shapes)
  */
 export function mathRiddle(base: Omit<Riddle, 'key' | 'spoken'> & { spoken?: string }, check: string): Riddle {
-  const key = `${base.family}|${check}|${base.prompt.join('/')}|${base.choices.map(c => c.text ?? JSON.stringify(c.visual)).join(',')}`
+  // The choice list is sorted, so the same question with the buttons in a different order is the
+  // same riddle: otherwise the session dedupe lets a child be asked it three or four times in a row.
+  const shown = base.choices.map(c => c.text ?? JSON.stringify(c.visual)).slice().sort().join(',')
+  const key = `${base.family}|${check}|${base.prompt.join('/')}|${shown}`
   return riddle({ ...base, key })
 }
 
@@ -116,7 +119,14 @@ export function wrap(text: string, width = 46): string[] {
       else { flush(); cur = s }
       continue
     }
+    // A quantity and its unit are one token, so a line never ends on a bare "117" or "2,210".
+    const words: string[] = []
     for (const w of s.split(/\s+/).filter(Boolean)) {
+      const prev = words[words.length - 1]
+      if (prev !== undefined && /^\$?[\d][\d,.]*$/.test(prev) && /^[a-zA-Z]/.test(w)) words[words.length - 1] = prev + ' ' + w
+      else words.push(w)
+    }
+    for (const w of words) {
       if (cur.length === 0) cur = w
       else if (cur.length + 1 + w.length <= width) cur += ' ' + w
       else { flush(); cur = w }

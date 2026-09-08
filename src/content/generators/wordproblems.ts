@@ -4,7 +4,9 @@ import { mathRiddle, sayChoices, numDecoys, wrap, twoNames, plural, fracStr, cen
 import type { Rng } from '../../engine/rng'
 
 const OBJS = ['sticker', 'marble', 'cookie', 'balloon', 'book', 'shell', 'crayon', 'toy car', 'block', 'button', 'pencil', 'card', 'rock', 'apple', 'flower', 'coin']
-const ANIMALS = ['bird', 'frog', 'duck', 'bunny', 'bee', 'ant', 'butterfly', 'squirrel', 'turtle', 'puppy', 'kitten', 'goose']
+/** Counter sprites a verb is true of: you only eat food, and only round things roll away. */
+const EDIBLE: CounterItem[] = ['apple', 'cookie']
+const ROUND: CounterItem[] = ['ball', 'balloon', 'acorn', 'apple']
 
 interface Problem {
   text: string
@@ -30,52 +32,72 @@ const natDec = (units: number, places: number): string => {
   if (s.includes('.')) { s = s.replace(/0+$/, ''); if (s.endsWith('.')) s = s.slice(0, -1) }
   return s
 }
+const isAre = (n: number) => n === 1 ? 'is' : 'are'
+/** "1 rolls away" / "3 roll away". */
+const verb = (n: number, sing: string, plur: string) => n === 1 ? sing : plur
 
 // ------------------------------------------------------------------ K and grade 1: one step with counters
-function addSubTemplates(maxSum: (t: number) => number, withPictures: boolean): Template[] {
-  const pick = (rng: Rng, tier: number) => {
-    const max = maxSum(tier)
-    const a = rng.int(1, max - 1), b = rng.int(1, max - a)
-    const item: CounterItem = rng.pick(COUNTER_ITEMS)
+/** Per-tier band: totals stay inside [min, max] and each part is at least `part`. */
+interface Band { min: number; max: number; part: number }
+
+function addSubTemplates(band: (t: number) => Band, withPictures: boolean, withCompare: boolean): Template[] {
+  const pick = (rng: Rng, tier: number, pool: readonly CounterItem[] = COUNTER_ITEMS) => {
+    const { min, max, part } = band(tier)
+    const t = rng.int(min, max)
+    const a = rng.int(part, t - part), b = t - a
+    const item = rng.pick(pool)
     const [N, N2] = twoNames(rng)
-    return { a, b, t: a + b, item, items: plural(item, 2), N, N2, max }
+    return { a, b, t, item, items: plural(item, 2), N, N2 }
   }
-  const add = (text: (c: ReturnType<typeof pick>) => string, skill = 'math: addition word problems'): Template => (rng, tier) => {
-    const c = pick(rng, tier)
-    return { text: text(c), expr: `${c.a}+${c.b}`, ans: c.t, pref: [c.a - c.b, c.b - c.a, c.t + 1, c.t - 1, c.a, c.b], magnitude: c.t, skill, visual: withPictures ? { kind: 'counters', item: c.item, count: c.t, groups: 2 } : undefined }
+  type C = ReturnType<typeof pick>
+  const add = (text: (c: C) => string, pool?: readonly CounterItem[], skill = 'math: addition word problems'): Template => (rng, tier) => {
+    const c = pick(rng, tier, pool)
+    // The picture shows the two addends from the prompt, not two equal groups.
+    return { text: text(c), expr: `${c.a}+${c.b}`, ans: c.t, pref: [c.a - c.b, c.b - c.a, c.t + 1, c.t - 1, c.a, c.b], magnitude: c.t, skill, visual: withPictures ? { kind: 'counters', item: c.item, count: c.t, groups: [c.a, c.b] } : undefined }
   }
-  const sub = (text: (c: ReturnType<typeof pick>) => string, skill = 'math: subtraction word problems'): Template => (rng, tier) => {
-    const c = pick(rng, tier)
+  const sub = (text: (c: C) => string, pool?: readonly CounterItem[], skill = 'math: subtraction word problems'): Template => (rng, tier) => {
+    const c = pick(rng, tier, pool)
     return { text: text(c), expr: `${c.t}-${c.b}`, ans: c.a, pref: [c.t + c.b, c.a + 1, c.a - 1, c.b, c.t], magnitude: c.t, skill, visual: withPictures ? { kind: 'counters', item: c.item, count: c.t, crossed: c.b } : undefined }
   }
-  return [
+  const templates: Template[] = [
     add(c => `${c.N} has ${c.a} ${plural(c.item, c.a)}. ${c.N2} gives ${c.N} ${c.b} more. How many ${c.items} does ${c.N} have now?`),
-    add(c => `${c.a} ${plural(c.item, c.a)} are in a bowl. ${c.N} puts in ${c.b} more. How many ${c.items} are in the bowl now?`),
+    add(c => `${c.a} ${plural(c.item, c.a)} ${isAre(c.a)} in a bowl. ${c.N} puts in ${c.b} more. How many ${c.items} are in the bowl now?`),
     add(c => `${c.N} has ${c.a} ${plural(c.item, c.a)}. ${c.N2} has ${c.b}. How many ${c.items} do they have in all?`),
     add(c => `${c.N} finds ${c.a} ${plural(c.item, c.a)}. Then ${c.N} finds ${c.b} more. How many ${c.items} did ${c.N} find?`),
-    add(c => `There are ${c.a} ${plural(c.item, c.a)} on the table and ${c.b} on the floor. How many ${c.items} are there?`),
+    add(c => `There ${isAre(c.a)} ${c.a} ${plural(c.item, c.a)} on the table and ${c.b} on the floor. How many ${c.items} are there?`),
     add(c => `${c.N} picks ${c.a} ${plural(c.item, c.a)} and ${c.N2} picks ${c.b}. How many ${c.items} did they pick?`),
-    add(c => `${c.a} ${plural(rng2(c), c.a)} sit on a log. ${c.b} more hop on. How many are on the log now?`),
-    sub(c => `${c.N} has ${c.t} ${plural(c.item, c.t)}. ${c.N} eats ${c.b}. How many ${c.items} are left?`),
+    add(c => `${c.a} ${plural(c.item, c.a)} ${isAre(c.a)} on a leaf. ${c.b} more ${verb(c.b, 'crawls', 'crawl')} on. How many ${c.items} are on the leaf now?`, ['bug']),
+    sub(c => `${c.N} has ${c.t} ${plural(c.item, c.t)}. ${c.N} eats ${c.b}. How many ${c.items} are left?`, EDIBLE),
     sub(c => `${c.t} ${plural(c.item, c.t)} are in a box. ${c.N} takes ${c.b} out. How many are still in the box?`),
     sub(c => `${c.N} has ${c.t} ${plural(c.item, c.t)}. ${c.N} gives ${c.b} to ${c.N2}. How many does ${c.N} keep?`),
-    sub(c => `There are ${c.t} ${plural(c.item, c.t)}. ${c.b} roll away. How many ${c.items} are left?`),
+    sub(c => `There are ${c.t} ${plural(c.item, c.t)}. ${c.b} ${verb(c.b, 'rolls', 'roll')} away. How many ${c.items} are left?`, ROUND),
     sub(c => `${c.N} had ${c.t} ${plural(c.item, c.t)} and lost ${c.b}. How many ${c.items} does ${c.N} have now?`),
-    sub(c => `${c.t} ${plural(rng2(c), c.t)} sit on a fence. ${c.b} fly away. How many are left?`),
-    sub(c => `${c.N} has ${c.t} ${plural(c.item, c.t)}. ${c.N2} has ${c.b}. How many more does ${c.N} have?`, 'math: comparing word problems'),
+    sub(c => `${c.t} ${c.items} are in a tank. ${c.b} ${verb(c.b, 'swims', 'swim')} away. How many ${c.items} are left?`, ['fish']),
+    sub(c => `There are ${c.t} ${plural(c.item, c.t)} out. ${c.N} puts ${c.b} away. How many ${c.items} are still out?`),
   ]
+  // Difference-unknown is a grade-1 standard (1.OA.A.1); kindergarten only adds to and takes from.
+  if (withCompare) templates.push(sub(c => `${c.N} has ${c.t} ${plural(c.item, c.t)}. ${c.N2} has ${c.b}. How many more does ${c.N} have?`, undefined, 'math: comparing word problems'))
+  return templates
 }
-// A stable animal for a given draw (uses the item index so the same problem stays deterministic).
-const rng2 = (c: { item: CounterItem }) => ANIMALS[Math.max(0, (COUNTER_ITEMS as readonly string[]).indexOf(c.item)) % ANIMALS.length]
 
-const K_TEMPLATES = addSubTemplates(t => (t === 1 ? 5 : t === 2 ? 7 : 10), true)
+const K_BAND = (t: number): Band => t === 1 ? { min: 2, max: 5, part: 1 } : t === 2 ? { min: 6, max: 7, part: 2 } : { min: 8, max: 10, part: 2 }
+const G1_BAND = (t: number): Band => t === 1 ? { min: 4, max: 10, part: 1 } : t === 2 ? { min: 11, max: 15, part: 2 } : { min: 16, max: 20, part: 3 }
+
+const K_TEMPLATES = addSubTemplates(K_BAND, true, false)
 const G1_TEMPLATES: Template[] = [
-  ...addSubTemplates(t => (t === 1 ? 10 : t === 2 ? 15 : 20), false),
-  (rng, tier) => { const max = tier === 1 ? 10 : tier === 2 ? 15 : 20; const t = rng.int(5, max), a = rng.int(1, t - 1); const [N] = twoNames(rng); const o = rng.pick(OBJS); return { text: `${N} has ${a} ${plural(o, a)}. How many more does ${N} need to have ${t}?`, expr: `${t}-${a}`, ans: t - a, pref: [t + a, t - a + 1, t - a - 1, a], magnitude: t, skill: 'math: missing addend' } },
-  (rng, tier) => { const max = tier === 1 ? 10 : tier === 2 ? 15 : 20; const a = rng.int(2, max - 2), b = rng.int(1, max - a); const [N] = twoNames(rng); return { text: `${N} read ${a} pages on Monday and ${b} pages on Tuesday. How many pages in all?`, expr: `${a}+${b}`, ans: a + b, pref: [a - b, a + b + 1, a + b - 1, b], magnitude: a + b, skill: 'math: addition word problems' } },
-  (rng, tier) => { const max = tier === 1 ? 10 : tier === 2 ? 15 : 20; const t = rng.int(4, max), b = rng.int(1, t - 1); return { text: `A bus has ${t} kids on it. ${b} get off. How many kids are on the bus now?`, expr: `${t}-${b}`, ans: t - b, pref: [t + b, t - b + 1, t - b - 1, b], magnitude: t, skill: 'math: subtraction word problems' } },
-  (rng, tier) => { const max = tier === 1 ? 10 : tier === 2 ? 15 : 20; const t = rng.int(4, max), a = rng.int(1, t - 1); return { text: `There were ${t} birds in a tree. Some flew away. Now there are ${a}. How many flew away?`, expr: `${t}-${a}`, ans: t - a, pref: [t + a, t - a + 1, t - a - 1, a], magnitude: t, skill: 'math: missing part' } },
-  (rng, tier) => { const max = tier === 1 ? 10 : tier === 2 ? 15 : 20; const a = rng.int(4, max - 2), b = rng.int(1, max - a); const [N, N2] = twoNames(rng); return { text: `${N} is ${a} years old. ${N2} is ${b} years older. How old is ${N2}?`, expr: `${a}+${b}`, ans: a + b, pref: [a - b, a + b + 1, a + b - 1, b], magnitude: a + b, skill: 'math: addition word problems' } },
+  ...addSubTemplates(G1_BAND, false, true),
+  (rng, tier) => {
+    // Missing addend: at tier 3 the target and the gap both have to be worth working for.
+    const { min, max } = G1_BAND(tier)
+    const gap = tier === 1 ? 1 : tier === 2 ? 2 : 3
+    const t = rng.int(min, max), a = rng.int(1, t - gap)
+    const [N] = twoNames(rng); const o = rng.pick(OBJS)
+    return { text: `${N} has ${a} ${plural(o, a)}. How many more does ${N} need to have ${t}?`, expr: `${t}-${a}`, ans: t - a, pref: [t + a, t - a + 1, t - a - 1, a], magnitude: t, skill: 'math: missing addend' }
+  },
+  (rng, tier) => { const { min, max } = G1_BAND(tier); const t = rng.int(min, max), a = rng.int(1, t - 1), b = t - a; const [N] = twoNames(rng); return { text: `${N} read ${a} ${plural('page', a)} on Monday and ${b} ${plural('page', b)} on Tuesday. How many pages in all?`, expr: `${a}+${b}`, ans: t, pref: [a - b, t + 1, t - 1, b], magnitude: t, skill: 'math: addition word problems' } },
+  (rng, tier) => { const { min, max } = G1_BAND(tier); const t = rng.int(min, max), b = rng.int(1, t - 1); return { text: `A bus has ${t} kids on it. ${b} ${verb(b, 'gets', 'get')} off. How many kids are on the bus now?`, expr: `${t}-${b}`, ans: t - b, pref: [t + b, t - b + 1, t - b - 1, b], magnitude: t, skill: 'math: subtraction word problems' } },
+  (rng, tier) => { const { min, max } = G1_BAND(tier); const t = rng.int(min, max), a = rng.int(1, t - 1); return { text: `There were ${t} birds in a tree. Some flew away. Now there are ${a}. How many flew away?`, expr: `${t}-${a}`, ans: t - a, pref: [t + a, t - a + 1, t - a - 1, a], magnitude: t, skill: 'math: missing part' } },
+  (rng, tier) => { const { min, max } = G1_BAND(tier); const t = rng.int(min, max), b = rng.int(1, Math.max(1, t - 4)), a = t - b; const [N, N2] = twoNames(rng); return { text: `${N} is ${a} years old. ${N2} is ${b} ${b === 1 ? 'year' : 'years'} older. How old is ${N2}?`, expr: `${a}+${b}`, ans: t, pref: [a - b, t + 1, t - 1, b], magnitude: t, skill: 'math: addition word problems' } },
 ]
 
 // ------------------------------------------------------------------ grade 2: within 100
@@ -104,39 +126,53 @@ const G2_TEMPLATES: Template[] = (() => {
 
 // ------------------------------------------------------------------ grade 3: multiplication, division, two steps
 const G3_TEMPLATES: Template[] = (() => {
-  const km = (rng: Rng, tier: number) => ({ k: rng.int(2, tier === 1 ? 5 : tier === 2 ? 8 : 9), m: rng.int(2, tier === 1 ? 5 : tier === 2 ? 9 : 12) })
+  /**
+   * Per-tier operand floors, so a tier-2 or tier-3 card is never a 2s-table fact that tier 1 could
+   * also draw. The two factors always differ, which also stops the answer from being a number the
+   * prompt already printed.
+   */
+  const km = (rng: Rng, tier: number) => {
+    const k = rng.int(tier === 1 ? 2 : tier === 2 ? 4 : 6, tier === 1 ? 5 : tier === 2 ? 8 : 9)
+    let m = rng.int(tier === 1 ? 2 : tier === 2 ? 5 : 6, tier === 1 ? 5 : tier === 2 ? 9 : 12)
+    if (m === k) m = m + 1 <= (tier === 1 ? 6 : tier === 2 ? 10 : 13) ? m + 1 : m - 1
+    return { k, m }
+  }
   const names = (rng: Rng) => { const [N, N2] = twoNames(rng); const o = rng.pick(OBJS); return { N, N2, o, os: plural(o, 2) } }
   const mult = (text: (c: any) => string): Template => (rng, tier) => { const { k, m } = km(rng, tier); const c = { ...names(rng), k, m }; return { text: text(c), expr: `${k}*${m}`, ans: k * m, pref: [k + m, k * (m + 1), k * (m - 1), k * m + 1], magnitude: k * m, skill: 'math: multiplication word problems' } }
   const div = (text: (c: any) => string, askGroups = false): Template => (rng, tier) => { const { k, m } = km(rng, tier); const c = { ...names(rng), k, m, t: k * m }; return { text: text(c), expr: askGroups ? `${k * m}/${m}` : `${k * m}/${k}`, ans: askGroups ? k : m, pref: [askGroups ? m : k, k * m - (askGroups ? m : k), (askGroups ? k : m) + 1, (askGroups ? k : m) - 1], magnitude: k * m, skill: 'math: division word problems' } }
   const two = (text: (c: any) => string, expr: (c: any) => string, ans: (c: any) => number, pref: (c: any) => number[], fmt?: (v: number) => string): Template => (rng, tier) => {
     const { k, m } = km(rng, tier)
-    const c = { ...names(rng), k, m, t: k * m, b: rng.int(1, Math.max(1, k * m - 1)), c: rng.int(1, tier === 1 ? 5 : 9), a: rng.int(10, tier === 1 ? 30 : 60) }
+    const a = rng.int(10, tier === 1 ? 30 : 60)
+    // `g` is what is given away out of `a`: never more than there is, so the story stays possible
+    // and the running total never goes below zero (negatives are a grade-6 standard).
+    const c = { ...names(rng), k, m, t: k * m, b: rng.int(1, Math.max(1, k * m - 1)), c: rng.int(1, tier === 1 ? 5 : 9), a, g: rng.int(1, a - 1) }
     return { text: text(c), expr: expr(c), ans: ans(c), pref: pref(c), magnitude: k * m + c.a, skill: 'math: two-step word problems', fmt }
   }
   return [
     mult(c => `${c.N} has ${c.k} bags with ${c.m} ${c.os} in each bag. How many ${c.os} does ${c.N} have?`),
     mult(c => `There are ${c.k} rows of ${c.m} chairs. How many chairs are there?`),
-    (rng, tier) => { const k = rng.int(2, tier === 1 ? 5 : tier === 2 ? 8 : 12); return { text: `A spider has 8 legs. How many legs do ${k} spiders have?`, expr: `${k}*8`, ans: k * 8, pref: [k + 8, k * 6, k * 8 + 8, k * 8 - 8, k * 4], magnitude: k * 8, skill: 'math: multiplication word problems' } },
+    (rng, tier) => { let k = rng.int(tier === 1 ? 2 : tier === 2 ? 4 : 6, tier === 1 ? 5 : tier === 2 ? 8 : 12); if (k === 8) k = 9; return { text: `A spider has 8 legs. How many legs do ${k} spiders have?`, expr: `${k}*8`, ans: k * 8, pref: [k + 8, k * 6, k * 8 + 8, k * 8 - 8, k * 4], magnitude: k * 8, skill: 'math: multiplication word problems' } },
     mult(c => `${c.N} buys ${c.k} packs of ${c.m} pencils. How many pencils is that?`),
     mult(c => `Each box holds ${c.m} ${c.os}. How many ${c.os} are in ${c.k} boxes?`),
     div(c => `${c.t} ${c.os} are shared equally by ${c.k} kids. How many does each kid get?`),
     div(c => `${c.N} puts ${c.t} cookies into bags of ${c.m}. How many bags does ${c.N} fill?`, true),
     div(c => `${c.t} students sit in ${c.k} equal rows. How many students are in each row?`),
     div(c => `${c.N} has ${c.t} ${c.os} and puts ${c.m} in each box. How many boxes are needed?`, true),
-    two(c => `${c.N} had ${c.a} stickers, gave ${c.b} to ${c.N2} and then got ${c.c} more. How many stickers now?`, c => `${c.a}-${c.b}+${c.c}`, c => c.a - c.b + c.c, c => [c.a + c.b + c.c, c.a - c.b - c.c, c.a - c.b, c.a + c.c]),
+    two(c => `${c.N} had ${c.a} stickers, gave ${c.g} to ${c.N2} and then got ${c.c} more. How many stickers now?`, c => `${c.a}-${c.g}+${c.c}`, c => c.a - c.g + c.c, c => [c.a + c.g + c.c, c.a - c.g - c.c, c.a - c.g, c.a + c.c]),
     two(c => `${c.N} buys ${c.k} packs of ${c.m} ${c.os} and gives away ${c.b}. How many ${c.os} are left?`, c => `${c.k}*${c.m}-${c.b}`, c => c.k * c.m - c.b, c => [c.k * c.m + c.b, c.k * c.m, c.k + c.m - c.b, c.k * c.m - c.b + 1]),
-    two(c => `A box holds ${c.m} eggs. ${c.N} has ${c.k} full boxes and ${c.c} extra eggs. How many eggs?`, c => `${c.k}*${c.m}+${c.c}`, c => c.k * c.m + c.c, c => [c.k * c.m - c.c, c.k * c.m, c.k + c.m + c.c, c.k * (c.m + c.c)]),
+    two(c => `A box holds ${c.m} eggs. ${c.N} has ${c.k} full boxes and ${c.c} extra ${plural('egg', c.c)}. How many eggs?`, c => `${c.k}*${c.m}+${c.c}`, c => c.k * c.m + c.c, c => [c.k * c.m - c.c, c.k * c.m, c.k + c.m + c.c, c.k * (c.m + c.c)]),
     two(c => `${c.N} has ${c.a + c.k * c.m}¢ and buys ${c.k} stickers at ${c.m}¢ each. How much money is left?`, c => `${c.a + c.k * c.m}-${c.k}*${c.m}`, c => c.a, c => [c.a + 2 * c.k * c.m, c.a + c.k * c.m - c.m, c.a + c.k * c.m - c.k, c.a + c.m], cents),
     two(c => `${c.N} reads ${c.m} pages a day for ${c.k} days. The book has ${c.k * c.m + c.a} pages. How many pages are left?`, c => `${c.k * c.m + c.a}-${c.k}*${c.m}`, c => c.a, c => [c.a + 2 * c.k * c.m, c.a + c.k * c.m - c.m, c.a + c.m, c.a + c.k]),
-    two(c => `${c.k} kids each bring ${c.m} balloons. ${c.b} balloons pop. How many balloons are left?`, c => `${c.k}*${c.m}-${c.b}`, c => c.k * c.m - c.b, c => [c.k * c.m + c.b, c.k * c.m, c.k + c.m - c.b, c.k * c.m - c.b - 1]),
-    two(c => `There are ${c.k * c.m + c.b} kids at the park. ${c.b} go home. The rest make ${c.k} equal teams. How many on each team?`, c => `(${c.k * c.m + c.b}-${c.b})/${c.k}`, c => c.m, c => [c.k, c.m + 1, c.m - 1, c.k * c.m]),
+    two(c => `${c.k} kids each bring ${c.m} balloons. ${c.b} ${verb(c.b, 'balloon pops', 'balloons pop')}. How many balloons are left?`, c => `${c.k}*${c.m}-${c.b}`, c => c.k * c.m - c.b, c => [c.k * c.m + c.b, c.k * c.m, c.k + c.m - c.b, c.k * c.m - c.b - 1]),
+    two(c => `There are ${c.k * c.m + c.b} kids at the park. ${c.b} ${verb(c.b, 'goes', 'go')} home. The rest make ${c.k} equal teams. How many on each team?`, c => `(${c.k * c.m + c.b}-${c.b})/${c.k}`, c => c.m, c => [c.k, c.m + 1, c.m - 1, c.k * c.m]),
   ]
 })()
 
 // ------------------------------------------------------------------ grade 4: multi-step
 const G4_TEMPLATES: Template[] = (() => {
   const base = (rng: Rng, tier: number) => {
-    const k = rng.int(2, tier === 1 ? 5 : tier === 2 ? 7 : 9), m = rng.int(tier === 1 ? 6 : 10, tier === 1 ? 12 : tier === 2 ? 25 : 50)
+    const k = rng.int(tier === 1 ? 2 : tier === 2 ? 3 : 4, tier === 1 ? 5 : tier === 2 ? 7 : 9)
+    const m = rng.int(tier === 1 ? 6 : tier === 2 ? 10 : 12, tier === 1 ? 12 : tier === 2 ? 25 : 50)
     const [N, N2] = twoNames(rng); const o = rng.pick(OBJS)
     return { k, m, N, N2, o, os: plural(o, 2), b: rng.int(3, Math.max(4, Math.floor(k * m / 2))), c: rng.int(2, tier === 1 ? 9 : 30), q: rng.int(2, 4), r: rng.int(tier === 1 ? 5 : 8, tier === 1 ? 12 : 30) }
   }
@@ -145,16 +181,24 @@ const G4_TEMPLATES: Template[] = (() => {
     const c = base(rng, tier)
     return { text: text(c), expr: expr(c), ans: ans(c), pref: pref(c), magnitude: c.k * c.m, skill, fmt, spread: Math.max(3, Math.round(c.k * c.m * 0.1)) }
   }
+  // The riders left over after the full buses must fit on the last bus, or the story contradicts itself.
+  const spill = (c: C) => (c.c % c.m === 0 ? 1 : c.c % c.m)
+  // The rope is cut into more pieces than are used, so the two steps cannot cancel.
+  const pieces = (c: C) => c.k + 3
+  // Classes and buses must differ, or multiplying then dividing just reprints a number from the prompt.
+  const buses = (c: C) => (c.q === c.k ? c.q + 1 : c.q)
+  // Earning and spending the same amount each week makes the subtraction free.
+  const spend = (c: C) => (c.b === c.m ? c.b + 1 : c.b)
   return [
     T(c => `${c.N} has ${c.k} boxes of ${c.m} crayons and gives away ${c.b} crayons. How many crayons are left?`, c => `${c.k}*${c.m}-${c.b}`, c => c.k * c.m - c.b, c => [c.k * c.m + c.b, c.k * c.m, c.k * (c.m - c.b), c.k + c.m - c.b]),
-    T(c => `A bus holds ${c.m} people. ${c.k} buses are full and ${c.c} people ride on one more bus. How many people in all?`, c => `${c.k}*${c.m}+${c.c}`, c => c.k * c.m + c.c, c => [c.k * c.m - c.c, c.k * c.m, (c.k + 1) * c.m, c.k * (c.m + c.c)]),
+    T(c => `A bus holds ${c.m} people. ${c.k} buses are full and ${spill(c)} ${spill(c) === 1 ? 'person rides' : 'people ride'} on one more bus. How many people in all?`, c => `${c.k}*${c.m}+${spill(c)}`, c => c.k * c.m + spill(c), c => [c.k * c.m - spill(c), c.k * c.m, (c.k + 1) * c.m, c.k * (c.m + spill(c))]),
     T(c => `${c.N} reads ${c.m} pages a day for ${c.k} days. The book has ${c.k * c.m + c.r} pages. How many pages are left?`, c => `${c.k * c.m + c.r}-${c.k}*${c.m}`, c => c.r, c => [c.r + 2 * c.k * c.m, c.r + c.k * c.m - c.m, c.r + c.m, c.k * c.m]),
-    T(c => `${c.k} classes of ${c.m * c.q} students ride ${c.q} buses, the same number on each bus. How many students on each bus?`, c => `${c.k}*${c.m * c.q}/${c.q}`, c => c.k * c.m, c => [c.k * c.m * c.q, c.m * c.q, c.k * c.m + c.q, c.k * c.m - c.q]),
-    T(c => `${c.N} earns $${c.m} a week for ${c.k} weeks and then spends $${c.b}. How much money is left?`, c => `${c.k}*${c.m}-${c.b}`, c => c.k * c.m - c.b, c => [c.k * c.m + c.b, c.k * c.m, c.m - c.b + c.k, c.k * (c.m - c.b)], v => `$${v}`),
+    T(c => `${c.k} classes of ${c.m * buses(c)} students ride ${buses(c)} buses, the same number on each bus. How many students on each bus?`, c => `${c.k}*${c.m * buses(c)}/${buses(c)}`, c => c.k * c.m, c => [c.k * c.m * buses(c), c.m * buses(c), c.k * c.m + buses(c), c.k * c.m - buses(c)]),
+    T(c => `${c.N} earns $${c.m} a week for ${c.k} weeks and then spends $${spend(c)}. How much money is left?`, c => `${c.k}*${c.m}-${spend(c)}`, c => c.k * c.m - spend(c), c => [c.k * c.m + spend(c), c.k * c.m, c.m - spend(c) + c.k, c.k * (c.m - spend(c))], v => `$${v}`),
     T(c => `A hall has ${c.k} rows of ${c.m} chairs. ${c.b} chairs are empty. How many chairs are being used?`, c => `${c.k}*${c.m}-${c.b}`, c => c.k * c.m - c.b, c => [c.k * c.m + c.b, c.k * c.m, c.k * (c.m - c.b), c.k + c.m + c.b]),
     T(c => `${c.N} runs ${c.m} km every day for ${c.k} days. ${c.N2} runs ${c.k * c.m - c.b} km in total. How many more km does ${c.N} run?`, c => `${c.k}*${c.m}-(${c.k * c.m - c.b})`, c => c.b, c => [2 * c.k * c.m - c.b, c.k * c.m, c.b + c.m, c.b + c.k], v => `${v} km`),
     T(c => `A bakery bakes ${c.k * c.m * c.q} rolls and packs them in bags of ${c.q}. It sells ${c.b} bags. How many bags are left?`, c => `${c.k * c.m * c.q}/${c.q}-${c.b}`, c => c.k * c.m - c.b, c => [c.k * c.m + c.b, c.k * c.m, c.k * c.m * c.q - c.b, c.k * c.m - c.b - c.q]),
-    T(c => `A rope ${c.k * c.m} cm long is cut into ${c.k} equal pieces. ${c.N} uses ${c.q} of the pieces. How many cm does ${c.N} use?`, c => `${c.k * c.m}/${c.k}*${c.q}`, c => c.m * c.q, c => [c.m, c.k * c.m - c.q, c.m * c.q + c.m, c.m * (c.q + 1), c.k * c.q], v => `${v} cm`),
+    T(c => `A rope ${pieces(c) * c.m} cm long is cut into ${pieces(c)} equal pieces. ${c.N} uses ${c.q} of the pieces. How many cm does ${c.N} use?`, c => `${pieces(c) * c.m}/${pieces(c)}*${c.q}`, c => c.m * c.q, c => [c.m, pieces(c) * c.m - c.q, c.m * c.q + c.m, c.m * (c.q + 1), pieces(c) * c.q], v => `${v} cm`),
     T(c => `${c.N} buys ${c.k} packs of ${c.m} cards and ${c.N2} buys ${c.q} packs of ${c.r} cards. How many cards do they have in all?`, c => `${c.k}*${c.m}+${c.q}*${c.r}`, c => c.k * c.m + c.q * c.r, c => [c.k * c.m + c.r, c.m + c.q * c.r, (c.k + c.q) * (c.m + c.r), c.k * c.m + c.q * c.r + c.k]),
     T(c => `A farmer collects ${c.k * c.m + c.b} eggs. ${c.b} break. The rest go into cartons of ${c.k}. How many cartons are filled?`, c => `(${c.k * c.m + c.b}-${c.b})/${c.k}`, c => c.m, c => [c.m + 1, c.m - 1, c.k, Math.floor((c.k * c.m + c.b) / c.k)]),
     T(c => `Tickets cost $${c.m} each. ${c.N} buys ${c.k} tickets and pays with $${c.k * c.m + c.b}. How much change does ${c.N} get?`, c => `${c.k * c.m + c.b}-${c.k}*${c.m}`, c => c.b, c => [c.b + 2 * c.k * c.m, c.b + c.k * c.m - c.m, c.b + c.m, c.k * c.m], v => `$${v}`),
@@ -183,7 +227,7 @@ const G5_TEMPLATES: Template[] = (() => {
     return { text: text(c), expr: expr(c), ans: nn / dd, pref: [], frac: { num: nn, den: dd, pref: pref(c) }, magnitude: 10 + d, skill }
   }
   const R = (text: (c: any) => string, expr: (c: any) => string, ans: (c: any) => number, pref: (c: any) => number[], fmt: (v: number) => string, skill: string): Template => (rng, tier) => {
-    const v = rng.int(tier === 1 ? 4 : 10, tier === 1 ? 12 : 90) * (tier === 1 ? 5 : 1), h = rng.int(2, tier === 1 ? 5 : 9), half = tier >= 2 && rng.bool(0.5)
+    const v = rng.int(tier === 1 ? 4 : tier === 2 ? 12 : 20, tier === 1 ? 12 : 90) * (tier === 1 ? 5 : 1), h = rng.int(2, tier === 1 ? 5 : 9), half = tier >= 2 && rng.bool(0.5)
     const c = { ...names(rng), v, h, half, H: half ? `${h}.5` : `${h}`, hv: half ? h + 0.5 : h }
     return { text: text(c), expr: expr(c), ans: ans(c), pref: pref(c), fmt, magnitude: ans(c), skill, units: 10 }
   }
@@ -198,7 +242,14 @@ const G5_TEMPLATES: Template[] = (() => {
     D(c => `A board is ${dec(c.a * c.k, c.places)} m long. It is cut into ${c.k} equal pieces. How long is each piece?`, c => `${dec(c.a * c.k, c.places)}/${c.k}`, c => c.a, c => [c.a * c.k * c.k, c.a + c.k * c.p, c.a - c.p, c.a + c.p, c.a * 10], 'm', 'math: decimal word problems'),
     F(c => `${c.N} had ${c.a}/${c.d} of a pizza and ate ${c.b}/${c.d} of the pizza. How much of the pizza is left?`, c => `${c.a}/${c.d}-${c.b}/${c.d}`, c => c.a - c.b, c => c.d, c => [[c.a + c.b, c.d], [c.a - c.b, 2 * c.d], [c.a - c.b + 1, c.d], [c.a - c.b - 1, c.d]], 'math: fraction word problems'),
     F(c => `A recipe needs ${c.b}/${c.d} cup of sugar. ${c.N} makes ${c.k} batches. How many cups of sugar are needed?`, c => `${c.b}/${c.d}*${c.k}`, c => c.b * c.k, c => c.d, c => [[c.b + c.k, c.d], [c.b * c.k, c.d * c.k], [c.b * c.k + 1, c.d], [c.b, c.d * c.k]], 'math: fraction word problems'),
-    F(c => `${c.k} friends share ${c.b} pizzas equally. How much pizza does each friend get?`, c => `${c.b}/${c.k}`, c => c.b, c => c.k, c => [[c.k, c.b], [c.b + 1, c.k], [c.b, c.k + 1], [c.b - 1, c.k], [1, c.k]], 'math: fraction word problems'),
+    (rng, tier) => {
+      // Sharing: more pizzas than friends and never an exact multiple, so the answer is a mixed
+      // number and the item is grade-5 work rather than "half a pizza each".
+      const f = rng.int(2, tier === 1 ? 4 : tier === 2 ? 5 : 6)
+      let p = rng.int(f + 1, f * 3)
+      if (p % f === 0) p += 1
+      return { text: `${f} friends share ${p} pizzas equally. How much pizza does each friend get?`, expr: `${p}/${f}`, ans: p / f, pref: [], frac: { num: p, den: f, pref: [[f, p], [p + 1, f], [p, f + 1], [p - 1, f], [p + f, f]] }, magnitude: 10 + f + p, skill: 'math: fraction word problems' }
+    },
     F(c => `${c.N} drank ${c.b}/${c.d} of a bottle of juice and ${c.N2} drank ${c.a - c.b}/${c.d}. What fraction of the bottle did they drink?`, c => `${c.b}/${c.d}+${c.a - c.b}/${c.d}`, c => c.a, c => c.d, c => [[c.a, 2 * c.d], [c.a + 1, c.d], [c.a - 1, c.d], [2 * c.b - c.a, c.d]], 'math: fraction word problems'),
     (rng, tier) => {
       const d = rng.pick(tier === 1 ? [2, 4, 5] : [3, 4, 5, 6, 8, 10]); const a = rng.pick(Array.from({ length: d - 1 }, (_, i) => i + 1).filter(x => gcd(x, d) === 1)); const t = d * rng.int(tier === 1 ? 3 : 4, tier === 1 ? 8 : 15)
@@ -253,7 +304,8 @@ export const wordproblems: Generator = {
         const d = numDecoys(rng, units, n - 1, pref, Math.max(3, Math.round(units * 0.15)), 1).map(u => fmt(u / U))
         ;({ choices, answer } = shuffled(rng, fmt(p.ans), d, n))
       } else {
-        const d = numDecoys(rng, p.ans, n - 1, p.pref, p.spread ?? Math.max(2, Math.round(p.ans * 0.2)), grade <= 1 ? 1 : 0).map(fmt)
+        // No answer in this family is ever 0, so a decoy of 0 is only ever eliminable filler.
+        const d = numDecoys(rng, p.ans, n - 1, p.pref, p.spread ?? Math.max(2, Math.round(p.ans * 0.2)), 1).map(fmt)
         ;({ choices, answer } = shuffled(rng, fmt(p.ans), d, n))
       }
     }

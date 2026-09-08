@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { Rng } from '../src/engine/rng'
 import { TIERS, type Choice, type Generator, type Riddle } from '../src/content/types'
 import { MATH } from '../src/content/generators/math'
-import { article } from '../src/content/generators/mathutil'
+import { article, fracWord, plural } from '../src/content/generators/mathutil'
 import { counting, addSub } from '../src/content/generators/counting'
 import { standardChecks } from './helpers'
 
@@ -694,6 +694,521 @@ describe('content review regressions', () => {
     for (const tier of TIERS) {
       for (const r of draw('time', 0, tier, 200)) expect(r.prompt.join(' ')).not.toMatch(/lunch/i)
       for (const r of draw('time', 3, tier, 200)) expect(r.prompt.join(' ')).not.toMatch(/What time is it in \d/)
+    }
+  })
+})
+
+// ------------------------------------------------- regressions: shapes, fractions, word problems,
+// ------------------------------------------------- even/odd and measurement (expert content review)
+
+/** Value of every fraction word the generators can produce ("two fourths" -> 0.5). */
+const WORD_VAL: Record<string, number> = (() => {
+  const m: Record<string, number> = {}
+  for (let d = 2; d <= 12; d++) for (let s = 1; s < d; s++) m[fracWord(s, d)] = s / d
+  return m
+})()
+/** Numeric worth of a choice for the "no two choices are the same amount" rule, or null. */
+const amountOf = (c: Choice): number | null => {
+  if (c.visual?.kind === 'fraction') return c.visual.shaded / c.visual.parts
+  const t = (c.text ?? '').trim()
+  if (t in WORD_VAL) return WORD_VAL[t]
+  if (/^\d+\/\d+$/.test(t)) return num(c)
+  return null
+}
+/** Every number printed anywhere in a riddle. */
+const numbersIn = (r: Riddle): number[] => [...r.prompt, ...r.choices.map(c => c.text ?? '')].flatMap(t => [...t.matchAll(/\d+/g)].map(m => Number(m[0])))
+/** Smallest metric a generator produces for one grade/tier. */
+const floorMetricOf = (id: string, grade: number, tier: number, seeds = 300): number =>
+  Math.min(...draw(id, grade, tier, seeds).map(r => r.metric))
+
+describe('shapes: review regressions', () => {
+  it('"Which shape is a rectangle?" never offers a square, which is also a rectangle', () => {
+    const bad: string[] = []
+    for (const grade of family('shapes').grades) for (const tier of TIERS) {
+      for (const r of draw('shapes', grade, tier, 250)) {
+        if (!/^Which shape is an? rectangle\?$/.test(r.prompt[0])) continue
+        if (r.choices.some(c => c.visual?.kind === 'shape' && c.visual.name === 'square')) bad.push(shape(r))
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+
+  it('a solid look-alike phrase never contains the answer word', () => {
+    const bad: string[] = []
+    let seen = 0
+    for (const tier of TIERS) for (const r of draw('shapes', 2, tier, 300)) {
+      if (r.prompt[0] !== 'Which solid is shaped like') continue
+      seen++
+      const ans = r.choices[r.answer].text!
+      if (r.prompt.join(' ').toLowerCase().includes(ans)) bad.push(shape(r))
+      if (/\bdice\b/.test(r.prompt.join(' '))) bad.push(`"a dice" is plural: ${shape(r)}`)
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+    expect(seen, 'no look-alike questions were drawn').toBeGreaterThan(20)
+  })
+
+  it('a pyramid face count names the base and never offers the tetrahedron answer', () => {
+    const bad: string[] = []
+    let seen = 0
+    for (const tier of TIERS) for (const r of draw('shapes', 2, tier, 300)) {
+      if (r.visual?.kind !== 'shape' || r.visual.name !== 'pyramid' || !/flat faces/.test(r.prompt.join(' '))) continue
+      seen++
+      if (!/square pyramid/.test(r.prompt.join(' '))) bad.push(`base not named: ${shape(r)}`)
+      if (r.choices.some(c => c.text === '4')) bad.push(`4 is a triangular pyramid's face count: ${shape(r)}`)
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+    expect(seen, 'no pyramid face questions were drawn').toBeGreaterThan(10)
+  })
+
+  it('grade 1 tier 3 never asks about the shapes tier 1 already covers', () => {
+    const bad: string[] = []
+    for (const r of draw('shapes', 1, 3, 400)) {
+      if (/\b(triangle|square|rectangle)\b/.test(r.prompt.join(' '))) bad.push(r.prompt.join(' / '))
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+
+  it('a drawn angle is never close enough to a straight line to be misread', () => {
+    const bad: string[] = []
+    for (const tier of TIERS) for (const r of draw('shapes', 4, tier, 300)) {
+      if (r.visual?.kind !== 'angle') continue
+      if (r.visual.degrees > 160) bad.push(`${r.visual.degrees}° drawn against a "straight" choice`)
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+
+  it('a triangle angle question is ordered, and no decoy is an impossible angle', () => {
+    const bad: string[] = []
+    let seen = 0
+    for (const tier of TIERS) for (const r of draw('shapes', 5, tier, 300)) {
+      const m = /^Two angles of a triangle are (\d+)° and (\d+)°\.$/.exec(r.prompt[0])
+      if (!m) continue
+      seen++
+      if (Number(m[1]) > Number(m[2])) bad.push(`unordered pair ${m[1]}/${m[2]}: the mirrored item is a second riddle`)
+      for (const c of r.choices) { const v = num(c); if (v > 179 || v < 1) bad.push(`${v}° cannot be an angle of a triangle`) }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+    expect(seen, 'no triangle angle questions were drawn').toBeGreaterThan(30)
+  })
+
+  it('grade 5 coordinates stay in the first quadrant and never print the answer', () => {
+    const bad: string[] = []
+    for (const tier of TIERS) for (const r of draw('shapes', 5, tier, 300)) {
+      if (r.skill !== 'math: coordinates') continue
+      const all = [...r.prompt, ...r.choices.map(c => c.text ?? '')].join(' ')
+      if (/\(-|, -/.test(all)) bad.push(`negative coordinate: ${shape(r)}`)
+      // The old "which point is at (0, 6)?" template printed the answer pair verbatim.
+      const ans = r.choices[r.answer].text!
+      if (/^\(\d+, \d+\)$/.test(ans) && r.prompt.join(' ').includes(ans)) bad.push(`prompt prints the answer ${ans}`)
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+
+  it('"n long and m wide" names the longer side first and the picture agrees', () => {
+    const bad: string[] = []
+    let seen = 0
+    for (const grade of [3, 4]) for (const tier of TIERS) {
+      for (const r of draw('shapes', grade, tier, 250)) {
+        const m = /is (\d+) (cm|m|in|ft) long and (\d+) \2 wide/.exec(r.prompt.join(' '))
+        if (!m) continue
+        seen++
+        const lng = Number(m[1]), wid = Number(m[3])
+        if (lng < wid) bad.push(`"${m[0]}" calls the shorter side long`)
+        if (r.visual?.kind === 'grid' && (r.visual.w !== lng || r.visual.h !== wid)) bad.push(`picture is ${r.visual.w}x${r.visual.h} for "${m[0]}"`)
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+    expect(seen, 'no long/wide rectangles were drawn').toBeGreaterThan(30)
+  })
+})
+
+describe('fractions: review regressions', () => {
+  it('"has one half colored" never offers an uncoloured shape, which is cut in half too', () => {
+    const bad: string[] = []
+    for (const grade of [0, 1]) for (const tier of TIERS) {
+      for (const r of draw('fractions', grade, tier, 300)) {
+        if (!/colored\?$/.test(r.prompt[0])) continue
+        if (r.choices.some(c => c.visual?.kind === 'fraction' && c.visual.shaded === 0)) bad.push(shape(r))
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+
+  it('no two choices are worth the same amount (2/4 never sits beside 1/2)', () => {
+    const bad: string[] = []
+    for (const grade of family('fractions').grades) for (const tier of TIERS) {
+      for (const r of draw('fractions', grade, tier, 250)) {
+        if (/cut into/.test(r.prompt[0])) continue
+        const vals = r.choices.map(amountOf)
+        if (vals.some(v => v === null)) continue
+        for (let i = 0; i < vals.length; i++) for (let j = i + 1; j < vals.length; j++) {
+          if (close(vals[i]!, vals[j]!)) bad.push(`two choices are both ${vals[i]}: ${shape(r)}`)
+        }
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+
+  it('grade 2 never has to simplify: the offered fraction is the one the picture shows', () => {
+    const bad: string[] = []
+    let seen = 0
+    for (const tier of TIERS) for (const r of draw('fractions', 2, tier, 300)) {
+      if (r.visual?.kind !== 'fraction' || !/fraction is/.test(r.prompt[0])) continue
+      seen++
+      const { parts, shaded } = r.visual
+      const counted = /NOT/.test(r.prompt[0]) ? parts - shaded : shaded
+      if (r.choices[r.answer].text !== `${counted}/${parts}`) bad.push(`picture shows ${counted}/${parts} but the key is ${r.choices[r.answer].text}`)
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+    expect(seen, 'no naming questions were drawn').toBeGreaterThan(50)
+  })
+
+  it('"which picture shows a/b" always offers another picture cut into the same parts', () => {
+    const bad: string[] = []
+    let seen = 0
+    for (const grade of [0, 1, 2]) for (const tier of TIERS) {
+      for (const r of draw('fractions', grade, tier, 250)) {
+        if (!/^Which picture/.test(r.prompt[0])) continue
+        seen++
+        const ans = r.choices[r.answer].visual
+        if (ans?.kind !== 'fraction') continue
+        const same = r.choices.filter((c, i) => i !== r.answer && c.visual?.kind === 'fraction' && c.visual.parts === ans.parts)
+        if (!same.length) bad.push(`counting the parts alone solves it: ${shape(r)}`)
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+    expect(seen, 'no picture-matching questions were drawn').toBeGreaterThan(50)
+  })
+
+  it('a number line is ticked in the denominator the answer uses', () => {
+    const bad: string[] = []
+    let seen = 0
+    for (const tier of TIERS) for (const r of draw('fractions', 3, tier, 300)) {
+      if (r.visual?.kind !== 'numberline') continue
+      seen++
+      const den = Number(r.choices[r.answer].text!.split('/')[1])
+      if (Math.abs(r.visual.step! - 1 / den) > 1e-9) bad.push(`line is in ${Math.round(1 / r.visual.step!)}ths but the answer is ${r.choices[r.answer].text}`)
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+    expect(seen, 'no number line questions were drawn').toBeGreaterThan(30)
+  })
+
+  it('K stays in pictures and grades K-1 never meet thirds or the a/b symbol', () => {
+    const bad: string[] = []
+    for (const tier of TIERS) {
+      for (const r of draw('fractions', 0, tier, 300)) {
+        if (r.choices.some(c => c.text !== undefined)) bad.push(`K reads a word choice: ${shape(r)}`)
+      }
+      for (const grade of [0, 1]) for (const r of draw('fractions', grade, tier, 300)) {
+        const all = [...r.prompt, ...r.choices.map(c => c.text ?? '')].join(' ')
+        if (/third/.test(all)) bad.push(`thirds at grade ${grade}: ${all}`)
+        if (/\d\/\d/.test(all)) bad.push(`a/b notation at grade ${grade}: ${all}`)
+        if (/shaded/.test(all)) bad.push(`"shaded" is above grade ${grade} reading level: ${all}`)
+        for (const c of r.choices) if (c.visual?.kind === 'fraction' && c.visual.parts === 3 && c.visual.shaded > 0) bad.push(`a thirds picture at grade ${grade}`)
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+
+  it('"1/5 of 30" never offers more than there is', () => {
+    const bad: string[] = []
+    let seen = 0
+    for (const tier of TIERS) for (const r of draw('fractions', 5, tier, 300)) {
+      const m = /What is \d+\/\d+ of (\d+)\?/.exec(r.prompt.join(' ')) ?? /has (\d+) \w+ and gives away/.exec(r.prompt.join(' '))
+      if (!m) continue
+      seen++
+      const whole = Number(m[1])
+      for (const c of r.choices) if (num(c) > whole) bad.push(`${c.text} is more than the whole ${whole}`)
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+    expect(seen, 'no fraction-of-a-number questions were drawn').toBeGreaterThan(20)
+  })
+})
+
+describe('word problems: review regressions', () => {
+  // Nouns whose plural is a distinct word and is not also a verb form ("rolls", "swims").
+  const NOUNS = ['apple', 'star', 'ball', 'flower', 'heart', 'balloon', 'bug', 'cookie', 'acorn', 'sticker', 'marble', 'book', 'shell', 'crayon', 'block', 'button', 'pencil', 'card', 'coin', 'egg', 'pizza', 'page', 'kid', 'chair', 'seat', 'carton', 'ticket', 'bag', 'student', 'bird', 'leaf']
+  const PLURALS = new Set(NOUNS.map(w => plural(w, 2)).filter(w => !NOUNS.includes(w)))
+
+  it('the counter picture shows the addends and the sprite the story names', () => {
+    const bad: string[] = []
+    let seen = 0
+    for (const tier of TIERS) for (const r of draw('wordproblems', 0, tier, 300)) {
+      const v = r.visual
+      if (v?.kind !== 'counters') continue
+      seen++
+      const words = r.prompt.join(' ').toLowerCase()
+      if (!words.includes(v.item) && !words.includes(plural(v.item, 2))) bad.push(`picture draws ${v.item}s but the story is about something else: ${r.prompt.join(' / ')}`)
+      if (Array.isArray(v.groups)) {
+        const ns = numbersIn(r)
+        if (v.groups.reduce((a, b) => a + b, 0) !== v.count) bad.push(`groups ${v.groups.join('+')} do not make ${v.count}`)
+        for (const g of v.groups) if (!ns.includes(g)) bad.push(`group of ${g} is not a number in the prompt`)
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+    expect(seen, 'no picture problems were drawn').toBeGreaterThan(100)
+  })
+
+  it('only food is eaten and only round things roll away', () => {
+    const bad: string[] = []
+    for (const grade of [0, 1]) for (const tier of TIERS) {
+      for (const r of draw('wordproblems', grade, tier, 300)) {
+        const t = r.prompt.join(' ')
+        if (/ eats /.test(t) && !/\b(apple|cookie)s?\b/.test(t)) bad.push(`inedible: ${t}`)
+        if (/rolls? away/.test(t) && !/\b(ball|balloon|acorn|apple)s?\b/.test(t)) bad.push(`does not roll: ${t}`)
+        if (/(fly|flies) away/.test(t) && /\b(puppy|puppies|squirrel|squirrels|turtle|turtles)\b/.test(t)) bad.push(`cannot fly: ${t}`)
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+
+  it('a quantity of 1 never takes a plural noun', () => {
+    const bad: string[] = []
+    for (const grade of family('wordproblems').grades) for (const tier of TIERS) {
+      for (const r of draw('wordproblems', grade, tier, 300)) {
+        const t = r.prompt.join(' ')
+        for (const m of t.matchAll(/\b1 ([a-z]+)\b/g)) if (PLURALS.has(m[1])) bad.push(`"1 ${m[1]}" in: ${t}`)
+        if (/\bThere are 1\b/.test(t) || /\b1 people\b/.test(t)) bad.push(`plural noun after 1 in: ${t}`)
+        if (/\b1 [a-z]+ (are|were)\b/.test(t) || /\b1 more (crawl|hop|roll|fly|swim|climb)\b/.test(t)) bad.push(`plural verb after 1 in: ${t}`)
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+
+  it('kindergarten adds and takes away only, inside its tier band', () => {
+    const BAND: Record<number, [number, number]> = { 1: [2, 5], 2: [6, 7], 3: [8, 10] }
+    const bad: string[] = []
+    for (const tier of TIERS) for (const r of draw('wordproblems', 0, tier, 300)) {
+      if (r.skill === 'math: comparing word problems') bad.push(`comparing is a grade-1 standard: ${r.prompt.join(' / ')}`)
+      const total = r.visual?.kind === 'counters' ? r.visual.count : null
+      if (total === null) continue
+      const [lo, hi] = BAND[tier]
+      if (total < lo || total > hi) bad.push(`total ${total} is outside the tier-${tier} band ${lo}-${hi}`)
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+
+  it('no story is impossible and no answer goes below zero', () => {
+    const bad: string[] = []
+    for (const grade of family('wordproblems').grades) for (const tier of TIERS) {
+      for (const r of draw('wordproblems', grade, tier, 300)) {
+        for (const c of r.choices) { const v = valueOf(c); if (v !== null && v < 0) bad.push(`negative choice ${c.text}: ${r.prompt.join(' / ')}`) }
+        const t = r.prompt.join(' ')
+        const gave = /had (\d+) \w+, gave (\d+)/.exec(t)
+        if (gave && Number(gave[2]) > Number(gave[1])) bad.push(`gives away more than there is: ${t}`)
+        const bus = /A bus holds (\d+) people\. \d+ buses are full and (\d+) people ride on one more bus/.exec(t)
+        if (bus && Number(bus[2]) >= Number(bus[1])) bad.push(`the last bus is over its stated capacity: ${t}`)
+        const rope = /cut into (\d+) equal pieces\. \w+ uses (\d+) of the pieces/.exec(t)
+        if (rope && Number(rope[2]) >= Number(rope[1])) bad.push(`uses every piece, so the two steps cancel: ${t}`)
+        const cls = /(\d+) classes of \d+ students ride (\d+) buses/.exec(t)
+        if (cls && cls[1] === cls[2]) bad.push(`classes = buses, so the answer is a number already printed: ${t}`)
+        const pizza = /(\d+) friends share (\d+) pizzas equally/.exec(t)
+        if (pizza && Number(pizza[2]) % Number(pizza[1]) === 0) bad.push(`shares out evenly, so no fraction reasoning is needed: ${t}`)
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+
+  it('grade 3 tier 2 and 3 never fall back to a 2s-table fact', () => {
+    const bad: string[] = []
+    for (const tier of [2, 3]) for (const r of draw('wordproblems', 3, tier, 300)) {
+      const m = /^num:(\d+)\*(\d+)$/.exec(r.key.split('|')[1])
+      if (!m) continue
+      const a = Number(m[1]), b = Number(m[2])
+      if (a === b) bad.push(`equal factors ${a}x${b}: ${r.prompt.join(' / ')}`)
+      if (a * b < 20) bad.push(`${a}x${b} is below the tier-1 ceiling: ${r.prompt.join(' / ')}`)
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+
+  it('grade 1 tier 3 missing addends work to a real target', () => {
+    const bad: string[] = []
+    for (const r of draw('wordproblems', 1, 3, 400)) {
+      const m = /has (\d+) \w+\. How many more does \w+ need to have (\d+)\?/.exec(r.prompt.join(' '))
+      if (!m) continue
+      const have = Number(m[1]), want = Number(m[2])
+      if (want < 16 || want - have < 3) bad.push(`${have} -> ${want} is a kindergarten missing addend`)
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+})
+
+describe('even, odd, factors and primes: review regressions', () => {
+  it('prime and composite items cannot be answered by parity alone', () => {
+    const bad: string[] = []
+    let seen = 0
+    for (const tier of TIERS) for (const r of draw('evenodd', 5, tier, 300)) {
+      const check = r.key.split('|')[1]
+      if (check !== 'prime' && check !== 'composite') continue
+      seen++
+      const vals = r.choices.map(num)
+      const ansEven = vals[r.answer] % 2 === 0
+      if (vals.filter(v => (v % 2 === 0) === ansEven).length === 1) bad.push(`the key is the only ${ansEven ? 'even' : 'odd'} choice: ${shape(r)}`)
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+    expect(seen, 'no prime/composite questions were drawn').toBeGreaterThan(50)
+  })
+
+  it('factor items cannot be answered by "pick the smallest" or "pick the biggest"', () => {
+    const bad: string[] = []
+    let seen = 0
+    for (const grade of [4, 5]) for (const tier of TIERS) {
+      for (const r of draw('evenodd', grade, tier, 300)) {
+        const check = r.key.split('|')[1]
+        if (!/^(not)?factor:/.test(check)) continue
+        seen++
+        const vals = r.choices.map(num), a = vals[r.answer]
+        if (check.startsWith('not')) { if (!vals.some(v => v > a)) bad.push(`the key is the biggest choice: ${shape(r)}`) }
+        else if (!vals.some(v => v < a)) bad.push(`the key is the smallest choice: ${shape(r)}`)
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+    expect(seen, 'no factor questions were drawn').toBeGreaterThan(50)
+  })
+
+  it('grades 2 and 3 stay inside the place-value range they are taught', () => {
+    const bad: string[] = []
+    for (const grade of [2, 3]) for (const tier of TIERS) {
+      for (const r of draw('evenodd', grade, tier, 300)) {
+        for (const v of numbersIn(r)) if (v > 999) bad.push(`g${grade}t${tier} shows ${v}: ${shape(r)}`)
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+
+  it('no choice is impossible: no filler options and no sub-operand common multiples', () => {
+    const bad: string[] = []
+    let seenLcm = 0
+    for (const grade of family('evenodd').grades) for (const tier of TIERS) {
+      for (const r of draw('evenodd', grade, tier, 300)) {
+        for (const c of r.choices) if (/^(Neither|It could be either)$/.test(c.text ?? '')) bad.push(`filler option "${c.text}"`)
+        const m = /^lcm:(\d+),(\d+)$/.exec(r.key.split('|')[1])
+        if (!m) continue
+        seenLcm++
+        const bigger = Math.max(Number(m[1]), Number(m[2]))
+        for (const c of r.choices) if (num(c) <= bigger) bad.push(`${c.text} cannot be a common multiple of ${m[1]} and ${m[2]}`)
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+    expect(seenLcm, 'no LCM questions were drawn').toBeGreaterThan(20)
+  })
+
+  it('grade 5 tier 3 never re-serves a tier 1 prime or composite', () => {
+    const keyOf = (r: Riddle) => `${r.key.split('|')[1]}:${r.choices[r.answer].text}`
+    const easy = new Set(draw('evenodd', 5, 1, 400).filter(r => /^(prime|composite)$/.test(r.key.split('|')[1])).map(keyOf))
+    const repeat = draw('evenodd', 5, 3, 400).filter(r => /^(prime|composite)$/.test(r.key.split('|')[1])).map(keyOf).find(k => easy.has(k))
+    expect(repeat).toBeUndefined()
+  })
+})
+
+describe('measurement: review regressions', () => {
+  it('every thermometer decoy is at least one drawn tick from the answer', () => {
+    const bad: string[] = []
+    let seen = 0
+    for (const tier of TIERS) for (const r of draw('measurement', 2, tier, 300)) {
+      if (r.prompt[0] !== 'What temperature does the') continue
+      seen++
+      const unit = /°C/.test(r.choices[r.answer].text!) ? 'C' : 'F'
+      const tick = unit === 'F' ? 10 : 5
+      const vals = r.choices.map(num), a = vals[r.answer]
+      if (a % tick !== 0) bad.push(`${a}°${unit} does not sit on a tick`)
+      if (unit === 'C' && vals.some(v => v < 0)) bad.push(`below zero at grade 2: ${shape(r)}`)
+      for (const [i, v] of vals.entries()) if (i !== r.answer && Math.abs(v - a) < tick) bad.push(`${v}°${unit} is inside one tick of ${a}°${unit}`)
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+    expect(seen, 'no thermometer readings were drawn').toBeGreaterThan(50)
+  })
+
+  it('every scale choice is something the picture shows', () => {
+    const bad: string[] = []
+    let seen = 0
+    for (const tier of TIERS) for (const r of draw('measurement', 0, tier, 300)) {
+      if (r.visual?.kind !== 'scale') continue
+      seen++
+      const on = new Set([r.visual.left, r.visual.right, 'They weigh the same'])
+      for (const c of r.choices) if (!on.has(c.text ?? '')) bad.push(`"${c.text}" is not on the scale: ${shape(r)}`)
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+    expect(seen, 'no scale questions were drawn').toBeGreaterThan(20)
+  })
+
+  it('grade 1 never meets metric prefixes or weight units', () => {
+    const bad: string[] = []
+    for (const tier of TIERS) for (const r of draw('measurement', 1, tier, 300)) {
+      const all = [...r.prompt, ...r.choices.map(c => c.text ?? '')].join(' ')
+      if (/\b(centimeters?|meters?|kilometers?|ounces?|pounds?|tons?)\b/.test(all)) bad.push(all)
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+
+  it('a conversion prompt never writes "1 cups", and hour answers carry their unit', () => {
+    const UNITS = new Set(['inches', 'feet', 'minutes', 'seconds', 'hours', 'days', 'cups', 'quarts', 'gallons', 'meters', 'centimeters', 'millimeters', 'grams', 'kilograms', 'liters', 'milliliters', 'ounces', 'pounds', 'tons', 'yards', 'weeks', 'miles'])
+    const bad: string[] = []
+    for (const grade of [4, 5]) for (const tier of TIERS) {
+      for (const r of draw('measurement', grade, tier, 300)) {
+        for (const m of r.prompt.join(' ').matchAll(/\b1 ([a-z]+)\b/g)) if (UNITS.has(m[1])) bad.push(`"1 ${m[1]}" in: ${r.prompt.join(' / ')}`)
+        if (!/= \? hours$/.test(r.prompt[0])) continue
+        for (const c of r.choices) if (!/ hours?$/.test(c.text ?? '')) bad.push(`bare hour answer "${c.text}" beside unit-carrying siblings`)
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+
+  it('a bar chart never claims a unit the picture does not draw', () => {
+    const bad: string[] = []
+    let seen = 0
+    for (const tier of TIERS) for (const r of draw('measurement', 5, tier, 300)) {
+      if (r.visual?.kind !== 'bars') continue
+      seen++
+      for (const c of r.choices) if (!/^(Mon|Tue|Wed|Thu|Fri|\d+)$/.test(c.text ?? '')) bad.push(`"${c.text}" carries a unit the chart has no axis for`)
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+    expect(seen, 'no chart questions were drawn').toBeGreaterThan(30)
+  })
+})
+
+describe('shared math helpers: review regressions', () => {
+  const REVIEWED = ['shapes', 'fractions', 'wordproblems', 'evenodd', 'measurement']
+
+  it('a line never ends on a bare number split from its unit', () => {
+    const bad: string[] = []
+    for (const id of REVIEWED) for (const grade of family(id).grades) for (const tier of TIERS) {
+      for (const r of draw(id, grade, tier, 200)) {
+        for (const [i, line] of r.prompt.entries()) {
+          if (i === r.prompt.length - 1) continue
+          if (/\s[\d,]+$/.test(line) && /^[a-z]/.test(r.prompt[i + 1])) bad.push(`${id}: "${line}" / "${r.prompt[i + 1]}"`)
+        }
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+
+  it('reshuffling the buttons does not make a new riddle', () => {
+    const bad: string[] = []
+    for (const id of REVIEWED) for (const grade of family(id).grades) for (const tier of TIERS) {
+      const byShape = new Map<string, string>()
+      for (const r of draw(id, grade, tier, 200)) {
+        const s = shape(r)
+        const seen = byShape.get(s)
+        if (seen === undefined) byShape.set(s, r.key)
+        else if (seen !== r.key) bad.push(`${id} g${grade} t${tier}: one riddle has two keys: ${s}`)
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+
+  it('no reviewed family lets a harder tier or grade start below an easier one', () => {
+    for (const id of REVIEWED) {
+      const gs = family(id).grades
+      for (const grade of gs) {
+        const t1 = floorMetricOf(id, grade, 1), t2 = floorMetricOf(id, grade, 2), t3 = floorMetricOf(id, grade, 3)
+        expect(t2, `${id} g${grade}: tier-2 floor ${t2.toFixed(1)} below tier-1 floor ${t1.toFixed(1)}`).toBeGreaterThanOrEqual(t1)
+        expect(t3, `${id} g${grade}: tier-3 floor ${t3.toFixed(1)} below tier-2 floor ${t2.toFixed(1)}`).toBeGreaterThanOrEqual(t2)
+      }
+      for (let i = 1; i < gs.length; i++) {
+        const prev = floorMetricOf(id, gs[i - 1], 1), cur = floorMetricOf(id, gs[i], 1)
+        expect(cur, `${id}: grade ${gs[i]} tier-1 floor ${cur.toFixed(1)} below grade ${gs[i - 1]}'s ${prev.toFixed(1)}`).toBeGreaterThan(prev)
+      }
     }
   })
 })
