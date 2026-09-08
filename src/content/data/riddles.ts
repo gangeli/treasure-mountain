@@ -172,7 +172,7 @@ export const RIDDLES: RiddleEntry[] = [
   R(5, 2, ['I am lighter than a feather,', 'yet the strongest person cannot', 'hold me for five minutes.'], 'your breath', ['a bubble', 'a cloud', 'a snowflake']),
   R(5, 2, ['Which month has 28 days?'], 'all of them', ['February', 'only the short ones', 'none of them']),
   R(5, 2, ["Mary's father has five daughters:", 'Nana, Nene, Nini, Nono and ...?', "What is the fifth daughter's name?"], 'Mary', ['Nunu', 'Nina', 'Nona']),
-  R(5, 2, ['A boy kicked a ball as hard as he could', 'and it came straight back to him', 'without touching anything. How?'], 'he kicked it straight up', ['it hit a tree and rolled back', 'a friend threw it back to him', 'it bounced off a garden wall']),
+  R(5, 2, ['A boy kicked a ball as hard as he could', 'and it came straight back to him', 'without touching anything. How?'], 'he kicked it straight up', ['it rolled back off a tree', 'his friend threw it back', 'it bounced off a big wall']),
   R(5, 2, ['What breaks but never falls,', 'and what falls but never breaks?'], 'day and night', ['glass and rain', 'waves and leaves', 'a cup and a ball']),
   // ---- Grade 5 band 3: word puzzles and traps that need two steps.
   R(5, 3, ['What five-letter word sounds', 'like it has only one letter?'], 'queue', ['quiet', 'cough', 'aisle']),

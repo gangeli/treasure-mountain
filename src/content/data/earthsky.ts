@@ -85,7 +85,7 @@ export const EARTHSKY_FACTS: Fact[] = [
   F(2, 1, 'Clouds are made of ...', 'tiny drops of water', ['soft white cotton', 'smoke from fires', 'birds\u2019 feathers']),
   F(2, 1, 'Dark, heavy clouds usually bring ...', 'rain', ['sunshine', 'a clear sky', 'a rainbow']),
   F(2, 1, 'What happens to water when it gets very cold?', 'it freezes into ice', ['it evaporates away', 'it boils and bubbles', 'it turns into sand']),
-  F(2, 1, 'What do we use to measure how hot or cold it is?', 'a thermometer', ['a metre ruler', 'a kitchen clock', 'a kitchen scale']),
+  F(2, 1, 'What do we use to measure how hot or cold it is?', 'a thermometer', ['a meter stick', 'a kitchen clock', 'a kitchen scale']),
   F(2, 1, 'What are the water drops on the grass in the morning called?', 'dew', ['hail', 'sleet', 'mist']),
   F(2, 1, 'What is fog?', 'a cloud near the ground', ['smoke from a bonfire', 'dust blown in the air', 'steam from a kettle']),
   F(2, 1, 'Where does the water in clouds come from?', 'water that evaporated', ['the faraway moon', 'the burning hot sun', 'deep in outer space']),
@@ -141,7 +141,7 @@ export const EARTHSKY_FACTS: Fact[] = [
   F(4, 1, 'How long does the moon take to go through all its phases?', 'about one month', ['about one day', 'about one week', 'about one year']),
   // ---- Level 4 band 2: phase names, waxing and waning, how each rock class forms.
   F(4, 2, 'A thin curved sliver of moon is called a ...', 'crescent', ['gibbous', 'full moon', 'quarter']),
-  F(4, 2, 'Why does the moon seem to change shape?', 'we see different lit parts', ['it really shrinks and grows', 'clouds hide parts of it', "it is always Earth's shadow"]),
+  F(4, 2, 'Why does the moon seem to change shape?', 'we see different lit parts', ['the moon shrinks and grows', 'clouds hide parts of it', "Earth's shadow covers it"]),
   F(4, 2, 'The moon is getting bigger each night. It is ...', 'waxing', ['waning', 'full', 'new']),
   F(4, 2, 'The moon is getting smaller each night. It is ...', 'waning', ['waxing', 'full', 'new']),
   F(4, 2, 'Which type of rock forms when magma cools deep underground?', 'igneous', ['sedimentary', 'metamorphic', 'volcanic']),
