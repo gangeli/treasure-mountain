@@ -291,16 +291,47 @@ export const SYLLABLES: Record<number, string[]> = {
   4: ['watermelon', 'alligator', 'caterpillar', 'helicopter', 'television', 'calculator', 'information', 'macaroni', 'dictionary', 'invitation', 'motorcycle', 'thermometer'],
 }
 
-/** Long-vowel sound families for "same vowel sound" riddles (grades 1-2). */
-export const VOWEL_SOUNDS: Record<string, { sample: string; words: string[] }> = {
-  'long a': { sample: 'cake', words: ['rain', 'play', 'name', 'gate', 'train', 'day', 'lake', 'wave'] },
-  'long e': { sample: 'tree', words: ['bee', 'leaf', 'seed', 'read', 'sheep', 'green', 'meat', 'key'] },
-  'long i': { sample: 'kite', words: ['bike', 'ride', 'light', 'nine', 'pie', 'sky', 'time', 'mice'] },
-  'long o': { sample: 'boat', words: ['rope', 'snow', 'goat', 'bone', 'road', 'nose', 'toe', 'coat'] },
-  'long u': { sample: 'cube', words: ['mule', 'tune', 'blue', 'glue', 'flute', 'moon', 'fruit', 'huge'] },
-  'short a': { sample: 'cat', words: ['bag', 'map', 'hat', 'jam', 'fan', 'sad', 'bat', 'pan'] },
-  'short e': { sample: 'bed', words: ['pen', 'net', 'hen', 'leg', 'wet', 'ten', 'jet', 'red'] },
-  'short i': { sample: 'pig', words: ['fish', 'lip', 'wig', 'six', 'bin', 'hit', 'dig', 'sit'] },
-  'short o': { sample: 'dog', words: ['pot', 'fox', 'log', 'mop', 'box', 'hop', 'sock', 'rock'] },
-  'short u': { sample: 'bug', words: ['sun', 'cup', 'rug', 'nut', 'mud', 'tub', 'bus', 'hug'] },
+/**
+ * Vowel sounds for the "same vowel sound" riddles (grades 1-2). Grouped BY SOUND, not by spelling:
+ * every word in a group really has that sound, and no word appears in two groups, so a decoy drawn
+ * from another group can never also be a correct answer.
+ *
+ * Words left out on purpose: "read" (red / reed), "tune" and "news" (/toon/ or /tyoon/ by region),
+ * "dog", "log", "off", "song" and friends (for the many speakers without the cot-caught merger these
+ * are not the short o of "hop"), "roof" and "root" (/oo/ or the book vowel), "bow", "live", "wind".
+ * Long u is split in two pools that must never share a choice list: /yoo/ (cube) and /oo/ (moon).
+ */
+export interface VowelSound {
+  /** How the prompt names the sound; the riddle adds the word "sound" after it. */
+  label: string
+  /** Read-aloud noun phrase, e.g. 'short a sound'. */
+  spoken: string
+  /** 1 = short vowels, 2 = long vowels / silent e, 3 = the tricky /yoo/ and /oo/ pools. */
+  band: 1 | 2 | 3
+  /** Same letter, other sound: the most useful decoy (cake for "short a"). */
+  contrast?: string
+  /** Sounds that must never appear in the same choice list (both would be defensible answers). */
+  conflicts?: string[]
+  words: string[]
 }
+
+export const VOWEL_SOUNDS: Record<string, VowelSound> = {
+  'short a': { label: 'short a', spoken: 'short a sound', band: 1, contrast: 'long a', words: ['cat', 'hat', 'bat', 'map', 'bag', 'jam', 'fan', 'pan', 'sad', 'cap', 'ham', 'van', 'flag', 'rat'] },
+  'short e': { label: 'short e', spoken: 'short e sound', band: 1, contrast: 'long e', words: ['bed', 'red', 'pen', 'net', 'hen', 'leg', 'wet', 'ten', 'jet', 'egg', 'nest', 'desk', 'vest', 'sled'] },
+  'short i': { label: 'short i', spoken: 'short i sound', band: 1, contrast: 'long i', words: ['pig', 'six', 'fish', 'lip', 'wig', 'bin', 'hit', 'dig', 'sit', 'kid', 'chin', 'ship', 'gift', 'milk'] },
+  'short o': { label: 'short o', spoken: 'short o sound', band: 1, contrast: 'long o', words: ['top', 'pot', 'hop', 'mop', 'box', 'fox', 'sock', 'rock', 'lock', 'clock', 'drop', 'spot', 'hot', 'pop'] },
+  'short u': { label: 'short u', spoken: 'short u sound', band: 1, contrast: 'long u', words: ['bug', 'sun', 'cup', 'rug', 'nut', 'mud', 'tub', 'bus', 'hug', 'duck', 'drum', 'jump', 'gum', 'truck'] },
+  'long a': { label: 'long a', spoken: 'long a sound', band: 2, contrast: 'short a', words: ['cake', 'rain', 'play', 'name', 'gate', 'train', 'day', 'lake', 'wave', 'snail', 'tail', 'plate', 'whale', 'paint'] },
+  'long e': { label: 'long e', spoken: 'long e sound', band: 2, contrast: 'short e', words: ['tree', 'bee', 'leaf', 'seed', 'sheep', 'green', 'meat', 'key', 'feet', 'beach', 'queen', 'team', 'sleep', 'seal'] },
+  'long i': { label: 'long i', spoken: 'long i sound', band: 2, contrast: 'short i', words: ['kite', 'bike', 'ride', 'light', 'nine', 'pie', 'sky', 'time', 'mice', 'night', 'fly', 'smile', 'five', 'hive'] },
+  'long o': { label: 'long o', spoken: 'long o sound', band: 2, contrast: 'short o', words: ['boat', 'rope', 'snow', 'goat', 'bone', 'road', 'nose', 'toe', 'coat', 'home', 'stone', 'soap', 'phone', 'bowl'] },
+  // /yoo/: the letter u says its own name. Never mixed with the /oo/ pool below.
+  'long u': { label: 'long u (as in cube)', spoken: 'long u sound, the one in cube', band: 3, contrast: 'short u', conflicts: ['oo'], words: ['cube', 'cute', 'mule', 'mute', 'huge', 'fuse', 'few', 'music', 'human', 'menu'] },
+  // /oo/: spelled oo, ue, ui, u_e, ou. Many programs also call this "long u", so it never meets it.
+  oo: { label: 'oo (as in moon)', spoken: 'oo sound, the one in moon', band: 3, contrast: 'long o', conflicts: ['long u'], words: ['moon', 'spoon', 'blue', 'glue', 'flute', 'fruit', 'boot', 'zoo', 'broom', 'school', 'tooth', 'food', 'juice', 'noon', 'pool', 'soup'] },
+}
+
+/** The one sound group a word belongs to (words never appear in two groups). */
+const VOWEL_OF = new Map<string, string>()
+for (const [k, s] of Object.entries(VOWEL_SOUNDS)) for (const w of s.words) VOWEL_OF.set(w, k)
+export const vowelSoundOf = (w: string): string | undefined => VOWEL_OF.get(w.toLowerCase())

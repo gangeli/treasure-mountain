@@ -1,12 +1,47 @@
 import type { Generator, Grade, Tier, Riddle } from '../types'
 import type { Rng } from '../../engine/rng'
 import { riddle, shuffled, choiceCount, cap } from '../types'
-import { SEQUENCES, CAUSE_EFFECT } from '../data/events'
-import { factRiddle, pickLevel, wrap } from './thinkingUtil'
+import { SEQUENCES, CAUSE_SIMPLE, CAUSE_MEDIUM, CAUSE_HARD, type Sequence } from '../data/events'
+import type { Fact } from './thinkingUtil'
+import { wrap } from './thinkingUtil'
 
-export const NAMES = ['Ann', 'Ben', 'Cy', 'Dev', 'Eli', 'Fay', 'Gus', 'Ida', 'Jo', 'Kim', 'Lou', 'Max', 'Nia', 'Oli', 'Pat', 'Raj', 'Sam', 'Tia', 'Uma', 'Vic', 'Wes', 'Zed', 'Ava', 'Leo', 'Mia', 'Noah', 'Zoe', 'Ali', 'Omar', 'Kai', 'Lena', 'Tom']
+/**
+ * Short first names for the deduction puzzles. All <= 4 characters so a four-name intro line still
+ * fits the scroll, and drawn through `pickNames` so no two names in one puzzle look alike.
+ */
+export const NAMES = ['Ann', 'Bea', 'Cy', 'Dev', 'Eve', 'Fay', 'Gus', 'Hal', 'Ida', 'Jo', 'Kim', 'Lou', 'Max', 'Nia', 'Oli', 'Pat', 'Raj', 'Sam', 'Tess', 'Uma', 'Vic', 'Wes', 'Zed', 'Ava', 'Leo', 'Mia', 'Noah', 'Zoe', 'Ali', 'Omar', 'Kai', 'Lena', 'Tom', 'Rosa', 'Finn', 'Ivy', 'Jack', 'Ruby', 'Hugo', 'Cleo', 'Nina', 'Dot', 'Gil', 'Pia', 'Ted', 'Val', 'Wren']
 
-// ------------------------------------------------------------------ logic puzzles (grade 5)
+/**
+ * True when two names are close enough to be mixed up while holding a puzzle in your head:
+ * same initial, same last two letters (Nia/Tia rhyme), or the same length with one letter changed.
+ */
+export function confusableNames(a: string, b: string): boolean {
+  const x = a.toLowerCase(), y = b.toLowerCase()
+  if (x[0] === y[0]) return true
+  if (x.slice(-2) === y.slice(-2)) return true
+  if (x.length === y.length) {
+    let diff = 0
+    for (let i = 0; i < x.length; i++) if (x[i] !== y[i]) diff++
+    if (diff <= 1) return true
+  }
+  return false
+}
+
+function pickNames(rng: Rng, k: number): string[] {
+  const distinct = (s: string[]) => s.every((a, i) => s.every((b, j) => i === j || !confusableNames(a, b)))
+  for (let t = 0; t < 40; t++) {
+    const s = rng.sample(NAMES, k)
+    if (distinct(s)) return s
+  }
+  const out: string[] = []
+  for (const n of rng.shuffle(NAMES)) {
+    if (out.every(o => !confusableNames(o, n))) out.push(n)
+    if (out.length === k) break
+  }
+  return out
+}
+
+// ------------------------------------------------------------------ logic puzzles (grades 4-5)
 
 /**
  * A clue about an assignment of names to items (ranks or objects). Ranks are items in order, index 0
@@ -52,48 +87,131 @@ export function solveLogic(names: string[], items: string[], clues: Clue[]): Rec
   return permutations(items).map(p => Object.fromEntries(names.map((nm, i) => [nm, p[i]]))).filter(ok)
 }
 
+/** True when no clue can be dropped without losing the unique solution. */
+export function minimalClues(names: string[], items: string[], clues: Clue[]): boolean {
+  if (solveLogic(names, items, clues).length !== 1) return false
+  return clues.every((_, i) => solveLogic(names, items, clues.filter((__, j) => j !== i)).length > 1)
+}
+
 const CHAIN_ATTRS = [
   { more: 'taller', less: 'shorter', most: 'tallest', least: 'shortest' },
   { more: 'older', less: 'younger', most: 'oldest', least: 'youngest' },
   { more: 'faster', less: 'slower', most: 'fastest', least: 'slowest' },
   { more: 'heavier', less: 'lighter', most: 'heaviest', least: 'lightest' },
 ]
-const RACES = ['running race', 'swimming race', 'sack race', 'bike race', 'spelling contest']
-const PLACES = ['first', 'second', 'third']
-const MATCH_THEMES = [
-  { noun: 'pet', items: ['cat', 'dog', 'fish'], intro: (ns: string[]) => `${ns[0]}, ${ns[1]} and ${ns[2]} each have one pet: a cat, a dog and a fish.`, has: 'has the', hasnot: 'does not have the', q: (n: string) => `Which pet does ${n} have?`, who: (it: string) => `Who has the ${it}?` },
-  { noun: 'fruit', items: ['apple', 'pear', 'plum'], intro: (ns: string[]) => `${ns[0]}, ${ns[1]} and ${ns[2]} each eat one fruit: an apple, a pear and a plum.`, has: 'eats the', hasnot: 'does not eat the', q: (n: string) => `Which fruit does ${n} eat?`, who: (it: string) => `Who eats the ${it}?` },
-  { noun: 'hat', items: ['red hat', 'blue hat', 'green hat'], intro: (ns: string[]) => `${ns[0]}, ${ns[1]} and ${ns[2]} each wear a hat: one red, one blue and one green.`, has: 'wears the', hasnot: 'does not wear the', q: (n: string) => `Which hat does ${n} wear?`, who: (it: string) => `Who wears the ${it}?` },
-  { noun: 'instrument', items: ['drum', 'flute', 'piano'], intro: (ns: string[]) => `${ns[0]}, ${ns[1]} and ${ns[2]} each play one instrument: a drum, a flute and a piano.`, has: 'plays the', hasnot: 'does not play the', q: (n: string) => `Which instrument does ${n} play?`, who: (it: string) => `Who plays the ${it}?` },
+const RACES = ['running race', 'swimming race', 'sack race', 'bike race', 'spelling bee']
+const PLACES = ['first', 'second', 'third', 'fourth']
+
+/** Short verbs keep two clues on one 46-character line. */
+interface MatchTheme {
+  items: string[]
+  list: string
+  has: (who: string, it: string) => string
+  hasnot: (who: string, it: string) => string
+  what: (who: string) => string
+  who: (it: string) => string
+}
+const MATCH_THEMES: MatchTheme[] = [
+  {
+    items: ['cat', 'dog', 'fish', 'bird'], list: 'Each has one pet: cat, dog, fish, bird.',
+    has: (w, i) => `${w} has the ${i}.`, hasnot: (w, i) => `${w} has no ${i}.`,
+    what: w => `Which pet does ${w} have?`, who: i => `Who has the ${i}?`,
+  },
+  {
+    items: ['apple', 'pear', 'plum', 'fig'], list: 'Each eats one fruit: apple, pear, plum, fig.',
+    has: (w, i) => `${w} eats the ${i}.`, hasnot: (w, i) => `${w} eats no ${i}.`,
+    what: w => `What does ${w} eat?`, who: i => `Who eats the ${i}?`,
+  },
+  {
+    items: ['milk', 'juice', 'water', 'tea'], list: 'Each drinks one: milk, juice, water, tea.',
+    has: (w, i) => `${w} drinks the ${i}.`, hasnot: (w, i) => `${w} drinks no ${i}.`,
+    what: w => `What does ${w} drink?`, who: i => `Who drinks the ${i}?`,
+  },
+  {
+    items: ['drum', 'flute', 'harp', 'horn'], list: 'Each plays one: drum, flute, harp, horn.',
+    has: (w, i) => `${w} plays the ${i}.`, hasnot: (w, i) => `${w} plays no ${i}.`,
+    what: w => `What does ${w} play?`, who: i => `Who plays the ${i}?`,
+  },
 ]
 
-/** Builds a random three-clue logic puzzle with a unique solution (brute-force checked). */
-export function logicPuzzle(rng: Rng, tier: Tier): LogicPuzzle {
-  const kinds: LogicPuzzle['kind'][] = tier === 1 ? ['chain', 'chain', 'race'] : tier === 2 ? ['chain', 'race', 'match'] : ['race', 'match', 'match', 'chain']
-  const kind = rng.pick(kinds)
-  if (kind === 'chain') {
-    const count = tier === 3 ? 4 : 3
-    const names = rng.sample(NAMES, count)
-    const attr = rng.pick(CHAIN_ATTRS)
-    const items = names.map((_, i) => String(i + 1)) // rank 1 = most
-    const order = rng.shuffle(names) // order[0] is the most
-    const clues: Clue[] = []
-    for (let i = 0; i + 1 < order.length; i++) clues.push({ kind: 'before', a: order[i], b: order[i + 1] })
-    const shown = tier === 1 ? clues : rng.shuffle(clues)
-    const lines = shown.map(c => c.kind === 'before' ? (tier >= 2 && rng.bool(0.4) ? `${c.b} is ${attr.less} than ${c.a}.` : `${c.a} is ${attr.more} than ${c.b}.`) : '')
-    const askKind = rng.pick(count === 3 ? ['most', 'least', 'middle'] : ['most', 'least'])
-    const target = askKind === 'most' ? '1' : askKind === 'least' ? String(count) : '2'
-    const question = askKind === 'most' ? `Who is the ${attr.most}?` : askKind === 'least' ? `Who is the ${attr.least}?` : 'Who is in the middle?'
-    const answer = order[Number(target) - 1]
-    return { kind, names, items, clues, ask: ['who', target], lines, question, answer, decoys: [...names.filter(n => n !== answer), 'cannot tell'] }
+export interface LogicSpec {
+  kinds: LogicPuzzle['kind'][]
+  /** Present the comparison clues out of order. */
+  shuffleClues: boolean
+  /** Mix "A is taller than B" with "B is shorter than A". */
+  mixDirection: boolean
+  minClues: number
+  maxClues: number
+}
+
+/** Which shape of deduction puzzle a grade/tier gets. Grade 4 only ever sees the plain chain. */
+export function logicSpec(grade: Grade, tier: Tier): LogicSpec {
+  if (grade <= 4) return { kinds: ['chain'], shuffleClues: false, mixDirection: false, minClues: 3, maxClues: 3 }
+  if (tier === 1) return { kinds: ['chain'], shuffleClues: true, mixDirection: true, minClues: 3, maxClues: 3 }
+  if (tier === 2) return { kinds: ['chain', 'race'], shuffleClues: true, mixDirection: true, minClues: 3, maxClues: 4 }
+  return { kinds: ['race', 'match'], shuffleClues: true, mixDirection: true, minClues: 4, maxClues: 6 }
+}
+
+/** Greedily packs up to two short sentences onto a line. */
+export function packLines(sentences: string[], width = 46): string[] {
+  const out: string[] = []
+  const count: number[] = []
+  for (const s of sentences) {
+    const i = out.length - 1
+    if (i >= 0 && count[i] < 2 && out[i].length + 1 + s.length <= width) { out[i] += ' ' + s; count[i]++ }
+    else { out.push(s); count.push(1) }
   }
-  const names = rng.sample(NAMES, 3)
+  return out
+}
+
+function chainPuzzle(rng: Rng, spec: LogicSpec): LogicPuzzle {
+  const names = pickNames(rng, 4)
+  const attr = rng.pick(CHAIN_ATTRS)
+  const items = names.map((_, i) => String(i + 1)) // rank 1 = most
+  const order = rng.shuffle(names) // order[0] is the most
+  const clues: Clue[] = []
+  for (let i = 0; i + 1 < order.length; i++) clues.push({ kind: 'before', a: order[i], b: order[i + 1] })
+  const shown = spec.shuffleClues ? rng.shuffle(clues) : clues
+  const lines = packLines(shown.map(c => c.kind === 'before' && spec.mixDirection && rng.bool(0.4)
+    ? `${c.b} is ${attr.less} than ${c.a}.`
+    : `${(c as { a: string }).a} is ${attr.more} than ${(c as { b: string }).b}.`))
+  const askKind = rng.pick(['most', 'least', 'second', 'third'] as const)
+  const target = askKind === 'most' ? '1' : askKind === 'second' ? '2' : askKind === 'third' ? '3' : '4'
+  const question = askKind === 'most' ? `Who is the ${attr.most}?`
+    : askKind === 'least' ? `Who is the ${attr.least}?`
+    : askKind === 'second' ? `Who is the second ${attr.most}?`
+    : `Who is the second ${attr.least}?`
+  const answer = order[Number(target) - 1]
+  return { kind: 'chain', names, items, clues, ask: ['who', target], lines, question, answer, decoys: names.filter(n => n !== answer) }
+}
+
+/** Builds a minimal, uniquely-solvable clue set for a bijection puzzle by adding then pruning. */
+function minimalSet(rng: Rng, names: string[], items: string[], cands: Clue[]): Clue[] {
+  // At most one clue may name someone's item outright, or the puzzle stops being a deduction. It
+  // goes first so it actually earns its place: a page of nothing but negatives is a slog to read.
+  const isClues = cands.filter(c => c.kind === 'is')
+  const lead: Clue[] = isClues.length && rng.bool(0.75) ? [rng.pick(isClues)] : []
+  const bag = [...lead, ...rng.shuffle(cands.filter(c => c.kind !== 'is'))]
+  let cur: Clue[] = []
+  for (const c of bag) {
+    if (solveLogic(names, items, cur).length === 1) break
+    cur.push(c)
+  }
+  if (solveLogic(names, items, cur).length !== 1) return []
+  for (const c of rng.shuffle(cur)) {
+    const rest = cur.filter(x => x !== c)
+    if (solveLogic(names, items, rest).length === 1) cur = rest
+  }
+  return cur
+}
+
+function bijectionPuzzle(rng: Rng, spec: LogicSpec, kind: 'race' | 'match'): LogicPuzzle | null {
+  const names = pickNames(rng, 4)
   const theme = rng.pick(MATCH_THEMES)
   const items = kind === 'race' ? PLACES : theme.items
   const truth = rng.shuffle(items)
   const as: Record<string, string> = Object.fromEntries(names.map((n, i) => [n, truth[i]]))
   const rank = (it: string) => items.indexOf(it)
-  // Candidate clues that are true of the assignment.
   const cands: Clue[] = []
   for (const who of names) {
     cands.push({ kind: 'is', who, what: as[who] })
@@ -104,116 +222,242 @@ export function logicPuzzle(rng: Rng, tier: Tier): LogicPuzzle {
     if (rank(as[a]) < rank(as[b])) cands.push({ kind: 'before', a, b })
     if (rank(as[a]) === rank(as[b]) + 1) cands.push({ kind: 'rightafter', a, b })
   }
-  let clues: Clue[] = []
-  const want = tier === 1 ? 2 : 3
-  for (let tries = 0; tries < 60; tries++) {
-    const pick = rng.sample(cands, Math.min(want, cands.length))
-    // At most one direct "is" clue keeps it a puzzle.
-    if (pick.filter(c => c.kind === 'is').length > 1) continue
-    if (solveLogic(names, items, pick).length === 1) { clues = pick; break }
-  }
-  if (clues.length === 0) clues = names.slice(0, 2).map(who => ({ kind: 'is', who, what: as[who] }) as Clue)
-  const race = rng.pick(RACES)
-  const lines = clues.map(c => {
+  const clues = minimalSet(rng, names, items, cands)
+  if (clues.length < spec.minClues || clues.length > spec.maxClues) return null
+
+  const shown = spec.shuffleClues ? rng.shuffle(clues) : clues
+  const sentences = shown.map(c => {
     switch (c.kind) {
-      case 'is': return kind === 'race' ? `${c.who} came ${c.what}.` : `${c.who} ${theme.has} ${c.what}.`
-      case 'not': return kind === 'race' ? `${c.who} did not come ${c.what}.` : `${c.who} ${theme.hasnot} ${c.what}.`
-      case 'before': return rng.bool() ? `${c.a} finished before ${c.b}.` : `${c.b} finished after ${c.a}.`
-      case 'rightafter': return `${c.a} finished right after ${c.b}.`
+      case 'is': return kind === 'race' ? `${c.who} came ${c.what}.` : theme.has(c.who, c.what)
+      case 'not': return kind === 'race' ? `${c.who} was not ${c.what}.` : theme.hasnot(c.who, c.what)
+      case 'before': return spec.mixDirection && rng.bool(0.4) ? `${c.b} lost to ${c.a}.` : `${c.a} beat ${c.b}.`
+      case 'rightafter': return `${c.a} came just after ${c.b}.`
     }
   })
-  const intro = kind === 'race' ? `${names[0]}, ${names[1]} and ${names[2]} had a ${race}.` : theme.intro(names)
-  // Never ask something a clue states outright.
+  const intro = kind === 'race'
+    ? [`The ${rng.pick(RACES)}: ${names.join(', ')}.`]
+    : [`Four friends: ${names.join(', ')}.`, theme.list]
+  const lines = [...intro, ...packLines(sentences)]
+
+  // Never ask something a clue states outright, and never ask something the clues about that one
+  // name (or that one place/object) already settle by themselves -- otherwise the puzzle collapses
+  // into "cross off three boxes in a row" and the rest of the clue set is decoration.
   const stated = clues.filter(c => c.kind === 'is') as { who: string; what: string }[]
-  const askableItems = items.filter(it => !stated.some(c => c.what === it))
-  const askableNames = names.filter(nm => !stated.some(c => c.who === nm))
+  const mentions = (c: Clue, side: 'who' | 'what', target: string) =>
+    c.kind === 'is' || c.kind === 'not'
+      ? (side === 'what' ? c.who === target : c.what === target)
+      : side === 'what' && (c.a === target || c.b === target)
+  const needsWholeSet = (side: 'who' | 'what', target: string) => {
+    const local = clues.filter(c => mentions(c, side, target))
+    const cell = (sol: Record<string, string>) => side === 'who' ? names.find(n => sol[n] === target)! : sol[target]
+    return new Set(solveLogic(names, items, local).map(cell)).size > 1
+  }
+  const askableItems = items.filter(it => !stated.some(c => c.what === it) && needsWholeSet('who', it))
+  const askableNames = names.filter(nm => !stated.some(c => c.who === nm) && needsWholeSet('what', nm))
+  if (askableItems.length === 0 && askableNames.length === 0) return null
   const askWho = askableNames.length === 0 || (askableItems.length > 0 && rng.bool(0.6))
   if (askWho) {
     const target = rng.pick(askableItems)
     const answer = names.find(n => as[n] === target)!
-    const question = kind === 'race' ? (target === 'first' ? 'Who won?' : `Who came ${target}?`) : theme.who(target)
-    return { kind, names, items, clues, ask: ['who', target], lines: [intro, ...lines], question, answer, decoys: [...names.filter(n => n !== answer), 'cannot tell'] }
+    const question = kind === 'race' ? `Who came ${target}?` : theme.who(target)
+    return { kind, names, items, clues, ask: ['who', target], lines, question, answer, decoys: names.filter(n => n !== answer) }
   }
   const who = rng.pick(askableNames)
   const answer = as[who]
-  const question = kind === 'race' ? `Where did ${who} finish?` : theme.q(who)
-  return { kind, names, items, clues, ask: ['what', who], lines: [intro, ...lines], question, answer, decoys: [...items.filter(i => i !== answer), 'cannot tell'] }
+  const question = kind === 'race' ? `Where did ${who} finish?` : theme.what(who)
+  return { kind, names, items, clues, ask: ['what', who], lines, question, answer, decoys: items.filter(i => i !== answer) }
 }
+
+/**
+ * Builds a random logic puzzle whose clue set is minimal (no clue follows from the others) and whose
+ * solution is unique -- both brute-force checked here, so no decoy can be a defensible answer.
+ */
+export function logicPuzzle(rng: Rng, spec: LogicSpec): LogicPuzzle {
+  const fits = (p: LogicPuzzle) => p.lines.length + 1 <= 6 && p.lines.every(l => l.length <= 46) && p.question.length <= 46
+  for (let tries = 0; tries < 60; tries++) {
+    const kind = rng.pick(spec.kinds)
+    const p = kind === 'chain' ? chainPuzzle(rng, spec) : bijectionPuzzle(rng, spec, kind)
+    if (p && fits(p) && minimalClues(p.names, p.items, p.clues)) return p
+  }
+  return chainPuzzle(rng, spec) // 3 links over 4 names: always minimal, unique and short
+}
+
+const KIND_BONUS = { chain: 0, race: 3, match: 5 }
 
 function logicRiddle(grade: Grade, tier: Tier, rng: Rng): Riddle {
   const n = choiceCount(grade)
-  const p = logicPuzzle(rng, tier)
+  const spec = logicSpec(grade, tier)
+  const p = logicPuzzle(rng, spec)
   const { choices, answer } = shuffled(rng, p.answer, rng.shuffle(p.decoys), n)
-  const prompt = [...p.lines.flatMap(l => wrap(l)), p.question]
+  const nots = p.clues.filter(c => c.kind === 'not').length
   return riddle({
-    family: 'events', skill: 'thinking: logical deduction', prompt, choices, answer,
+    family: 'events', skill: 'thinking: logical deduction', prompt: [...p.lines, p.question], choices, answer,
     spoken: `${p.lines.join(' ')} ${p.question} ${choices.map(c => c.text).join(', ')}?`,
-    metric: 50 + p.clues.length * 2 + (p.names.length - 3) * 3 + (p.kind === 'chain' ? 0 : 3), grade, tier,
+    metric: 40 + p.names.length * 2 + p.clues.length * 2 + KIND_BONUS[p.kind] + (spec.shuffleClues ? 2 : 0) + (spec.mixDirection ? 1 : 0) + nots,
+    grade, tier,
     key: `events|logic|${p.kind}|${p.lines.join('/')}|${p.question}`,
   })
 }
 
 // ------------------------------------------------------------------ sequences (K-3)
 
-function sequenceQ(grade: Grade, tier: Tier, level: Grade, rng: Rng): Riddle {
-  const n = choiceCount(grade)
-  const pool = SEQUENCES.filter(s => s.level === level)
-  const seq = rng.pick(pool)
-  const steps = seq.steps
-  type Mode = 'first' | 'next' | 'last' | 'before'
-  const modes: Mode[] = level === 0 ? (steps.length >= 3 ? ['first', 'first', 'next', 'last'] : ['first', 'last']) : level === 1 ? ['first', 'next', 'next', 'last'] : ['first', 'next', 'next', 'last', 'before']
-  const mode = tier === 1 && level >= 2 ? rng.pick(modes.filter(m => m !== 'before')) : rng.pick(modes)
-  let answer: string, others: string[], ref = ''
-  if (mode === 'first') { answer = steps[0]; others = steps.slice(1) }
-  else if (mode === 'last') { answer = steps[steps.length - 1]; others = steps.slice(0, -1) }
-  else if (mode === 'next') { const i = rng.int(0, steps.length - 2); ref = steps[i]; answer = steps[i + 1]; others = steps.filter((_, j) => j !== i && j !== i + 1) }
-  else { const i = rng.int(1, steps.length - 1); ref = steps[i]; answer = steps[i - 1]; others = steps.filter((_, j) => j !== i && j !== i - 1) }
-  // Fill up decoys from other sequences at the same level when the sequence is short.
-  const fillers = rng.shuffle(pool.filter(s => s !== seq).flatMap(s => s.steps)).filter(s => !steps.includes(s))
-  const decoys = [...rng.shuffle(others), ...(level === 0 && steps.length === 2 ? ['both at the same time'] : []), ...fillers]
-  const { choices, answer: idx } = shuffled(rng, answer, decoys, n)
-  const topic = seq.topic
-  let prompt: string[]
-  if (level === 0) {
-    const listed = rng.shuffle(steps).join(', ')
-    prompt = mode === 'first' ? [...wrap(`${cap(topic)}: ${listed}.`), 'What do you do first?']
-      : mode === 'last' ? [...wrap(`${cap(topic)}: ${listed}.`), 'What do you do last?']
-      : [`First you ${ref}.`, 'What do you do next?']
-  } else if (level === 1) {
-    prompt = mode === 'first' ? [`Think about ${topic}.`, 'What happens first?']
-      : mode === 'last' ? [`Think about ${topic}.`, 'What is the last thing you do?']
-      : [...wrap(`After you ${ref}, what do you do next?`)]
-  } else if (level === 2) {
-    const title = seq.title ?? `The life cycle of ${topic}.`
-    prompt = mode === 'first' ? [title, 'What comes first?']
-      : mode === 'last' ? [title, 'What is the last stage?']
-      : mode === 'next' ? [title, `This stage: ${ref}.`, 'What comes next?']
-      : [title, `This stage: ${ref}.`, 'What comes just before it?']
-  } else {
-    prompt = mode === 'first' ? [`${cap(topic)}.`, 'What is the very first step?']
-      : mode === 'last' ? [`${cap(topic)}.`, 'What is the last step?']
-      : mode === 'next' ? [`${cap(topic)}.`, ...wrap(`You have just done this: ${ref}.`), 'What do you do next?']
-      : [`${cap(topic)}.`, ...wrap(`What must you do just before this: ${ref}?`)]
+export type SeqMode = 'first' | 'last' | 'next' | 'before'
+
+/** The canonical order plus every other order the data says an adult would also accept. */
+export const acceptedOrders = (s: Sequence): string[][] => [s.steps, ...(s.alts ?? [])]
+
+/**
+ * Every step that could defensibly answer `mode` (relative to `ref`) under *some* accepted order.
+ * A question is only asked when this returns exactly one step -- which is also what guarantees that
+ * no decoy is a defensible alternative answer.
+ */
+export function acceptedAnswers(s: Sequence, mode: SeqMode, ref: string): string[] {
+  const out = new Set<string>()
+  for (const order of acceptedOrders(s)) {
+    if (mode === 'first' || mode === 'last') {
+      if (s.cyclic) return [] // a loop has no first or last stage
+      out.add(mode === 'first' ? order[0] : order[order.length - 1])
+      continue
+    }
+    const i = order.indexOf(ref)
+    if (i < 0) return []
+    if (mode === 'next') { if (i === order.length - 1) return []; out.add(order[i + 1]) }
+    else { if (i === 0) return []; out.add(order[i - 1]) }
   }
-  const bonus = mode === 'first' ? 0 : mode === 'last' ? 1 : mode === 'next' ? 3 : 4
+  return [...out]
+}
+
+/** K scenarios come in two sizes: the 3-step ones are listed out, the 4-step ones carry tier 3. */
+type Band = 'short' | 'long' | 'any'
+interface SeqQ { seq: Sequence; mode: SeqMode; ref: string; answer: string }
+
+const inBand = (s: Sequence, band: Band) => band === 'any' || (band === 'short' ? s.steps.length === 3 : s.steps.length >= 4)
+
+const candCache = new Map<string, SeqQ[]>()
+/** Questions of this shape that have exactly one defensible answer and enough same-scenario decoys. */
+export function seqCandidates(level: Grade, mode: SeqMode, band: Band, decoys: number): SeqQ[] {
+  const cacheKey = `${level}|${mode}|${band}|${decoys}`
+  const hit = candCache.get(cacheKey)
+  if (hit) return hit
+  const out: SeqQ[] = []
+  for (const seq of SEQUENCES) {
+    if (seq.level !== level || !inBand(seq, band)) continue
+    const refs = mode === 'first' || mode === 'last' ? [''] : seq.steps
+    for (const ref of refs) {
+      // K only ever asks "First you X. What next?", so the reference step must be the first one.
+      if (level === 0 && mode === 'next' && ref !== seq.steps[0]) continue
+      const accepted = acceptedAnswers(seq, mode, ref)
+      if (accepted.length !== 1) continue
+      const answer = accepted[0]
+      if (seq.steps.filter(x => x !== answer && x !== ref).length < decoys) continue
+      out.push({ seq, mode, ref, answer })
+    }
+  }
+  candCache.set(cacheKey, out)
+  return out
+}
+
+/** Each tier of each level gets its own question shape, so no item is reused across tiers. */
+export function seqPlan(level: Grade, tier: Tier): { modes: SeqMode[]; band: Band } {
+  if (level === 0) {
+    return tier === 1 ? { modes: ['first'], band: 'short' }
+      : tier === 2 ? { modes: ['last'], band: 'short' }
+      : { modes: ['first', 'last', 'next'], band: 'long' }
+  }
+  return tier === 1 ? { modes: ['first', 'last'], band: 'any' }
+    : tier === 2 ? { modes: ['next'], band: 'any' }
+    : { modes: ['before'], band: 'any' }
+}
+
+/** Lists the steps in an order that is not one of the accepted ones, so the list is never a hint. */
+function listing(seq: Sequence, rng: Rng): string {
+  const accepted = new Set(acceptedOrders(seq).map(o => o.join('>')))
+  let order = rng.shuffle(seq.steps)
+  for (let i = 0; i < 8 && accepted.has(order.join('>')); i++) order = rng.shuffle(seq.steps)
+  return order.join(', ')
+}
+
+const MODE_BONUS: Record<SeqMode, number> = { first: 0, last: 1, next: 3, before: 4 }
+
+function seqPrompt(q: SeqQ, level: Grade, rng: Rng): string[] {
+  const { seq, mode, ref } = q
+  if (level === 0) {
+    if (mode === 'next') return [`First you ${ref}.`, 'What do you do next?']
+    return [...wrap(`${cap(seq.topic)}: ${listing(seq, rng)}.`), mode === 'first' ? 'What do you do first?' : 'What do you do last?']
+  }
+  if (level === 1) {
+    const head = `Think about ${seq.topic}.`
+    if (mode === 'first') return [head, 'What happens first?']
+    if (mode === 'last') return [head, 'What is the last thing you do?']
+    if (mode === 'next') return [head, ...wrap(`After you ${ref}, what do you do next?`)]
+    return [head, ...wrap(`What do you do just before you ${ref}?`)]
+  }
+  if (level === 2) {
+    const title = seq.title ?? `The life cycle of ${seq.topic}.`
+    if (mode === 'first') return [title, 'What comes first?']
+    if (mode === 'last') return [title, 'What is the last stage?']
+    if (mode === 'next') return [title, `This stage: ${ref}.`, 'What comes next?']
+    return [title, `This stage: ${ref}.`, 'What comes just before it?']
+  }
+  const head = seq.title ?? `${cap(seq.topic)}.`
+  if (mode === 'first') return [head, 'What is the very first step?']
+  if (mode === 'last') return [head, 'What is the last step?']
+  if (mode === 'next') return [head, 'You have just done this:', `${ref}.`, 'What do you do next?']
+  return [head, 'You are about to do this:', `${ref}.`, 'What did you do just before?']
+}
+
+function sequenceQ(grade: Grade, tier: Tier, rng: Rng): Riddle {
+  const level = grade as Grade
+  const n = choiceCount(grade)
+  const plan = seqPlan(level, tier)
+  const pool = plan.modes.flatMap(m => seqCandidates(level, m, plan.band, n - 1))
+  if (pool.length === 0) throw new Error(`events: no sequence questions for level ${level} tier ${tier}`)
+  const q = rng.pick(pool)
+  // Every decoy is another step of the same scenario, so none of them is eliminable on topic alone.
+  const decoys = rng.shuffle(q.seq.steps.filter(x => x !== q.answer && x !== q.ref))
+  const { choices, answer } = shuffled(rng, q.answer, decoys, n)
+  const prompt = seqPrompt(q, level, rng)
+  const skill = q.seq.skill ?? (level === 2 ? 'science: life cycles' : 'thinking: sequencing')
   return riddle({
-    family: 'events', skill: level === 2 ? 'science: life cycles' : 'thinking: sequencing', prompt, choices, answer: idx,
+    family: 'events', skill, prompt, choices, answer,
     spoken: `${prompt.join(' ')} ${choices.map(c => c.text).join(', ')}?`,
-    metric: level * 10 + steps.length + bonus, grade, tier,
-    key: `events|${topic}|${mode}|${ref}`,
+    metric: level * 10 + q.seq.steps.length + MODE_BONUS[q.mode], grade, tier,
+    key: `events|seq|${level}|${q.seq.topic}|${q.mode}|${q.ref}`,
   })
 }
 
-/** Sequences of events: first/next/last (K), daily routines (1), life cycles (2), procedures (3), cause and effect (4), logic puzzles (5). */
+// ------------------------------------------------------------------ cause and effect (grade 4)
+
+const CAUSE_LEADS = ['Think it through!', 'Here is a puzzle for you.', 'Use what you know.']
+
+function causeRiddle(grade: Grade, tier: Tier, rng: Rng): Riddle {
+  const band: Fact[] = tier === 1 ? CAUSE_SIMPLE : tier === 2 ? CAUSE_MEDIUM : CAUSE_HARD
+  const f = rng.pick(band)
+  const n = choiceCount(grade)
+  const { choices, answer } = shuffled(rng, f.a, rng.shuffle(f.d), n)
+  const body = wrap(f.q)
+  const prompt = body.length === 1 && rng.bool(0.35) ? [rng.pick(CAUSE_LEADS), ...body] : body
+  return riddle({
+    family: 'events', skill: 'thinking: cause and effect', prompt, choices, answer,
+    spoken: `${f.q} ${choices.map(c => c.text).join(', ')}?`,
+    metric: 40 + (tier - 1) * 3 + Math.min(3, f.q.length / 30), grade, tier,
+    key: `events|cause|${f.q}`,
+  })
+}
+
+/**
+ * Sequences of events: first/last (K), daily routines (1), life cycles (2), procedures (3),
+ * cause and effect (4), logical deduction (5). Each grade owns one skill and each tier one question
+ * shape, so nothing an easier tier asks can come back at a harder one.
+ */
 export const events: Generator = {
   id: 'events',
   name: 'Sequences of events',
   area: 'thinking',
   grades: [0, 1, 2, 3, 4, 5],
   make(grade, tier, rng) {
-    const level = pickLevel(grade, tier, rng)
-    if (level <= 3) return sequenceQ(grade, tier, level, rng)
-    if (level === 4) return factRiddle('events', 'thinking: cause and effect', CAUSE_EFFECT, grade, tier, rng, 4)
-    return logicRiddle(grade, tier, rng)
+    if (grade === 5) return logicRiddle(grade, tier, rng)
+    if (grade === 4) return tier === 3 && rng.bool(0.35) ? logicRiddle(grade, tier, rng) : causeRiddle(grade, tier, rng)
+    return sequenceQ(grade, tier, rng)
   },
 }
