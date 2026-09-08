@@ -111,9 +111,11 @@ function drawSequence(rng: Rng, grade: number, tier: number): { rule: Rule; term
       rule = rng.pick(opts)
       terms = [rule.kind === 'mul' ? rng.int(6, 9) : rule.kind === 'add' && rule.k < 0 ? rng.int(60, 140) : rng.int(20, 90)]
     } else {
-      const opts: Rule[] = [{ kind: 'add', k: 7 }, { kind: 'add', k: 9 }, { kind: 'add', k: -7 }, { kind: 'mul', m: 2 }]
+      // Tier 1 is skip counting only: doubling belongs to tier 2, and with it here tier 1 measured
+      // as hard as tier 2.
+      const opts: Rule[] = [{ kind: 'add', k: 7 }, { kind: 'add', k: 9 }, { kind: 'add', k: -7 }, { kind: 'add', k: -8 }]
       rule = rng.pick(opts)
-      terms = [rule.kind === 'mul' ? rng.int(1, 5) : rule.kind === 'add' && rule.k < 0 ? rng.int(40, 99) : rng.int(1, 50)]
+      terms = [rule.kind === 'add' && rule.k < 0 ? rng.int(40, 99) : rng.int(1, 50)]
     }
   } else if (grade === 4) {
     // Tier 1 is single-step with 2-3 digit numbers; tier 2 doubles +/- k; tier 3 triples +/- k.

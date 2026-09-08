@@ -22,75 +22,75 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 13.1 | 18.6 | 0 | 0% | Jet, vet, get / Please help me out this time. / Wet, net, pet / And pick a word to rhyme. [ring / kid / *let] |
-| K | 2 | 13.1 | 18.5 | 0 | 0% | Clam, yam, jam, ram / All these words rhyme, you see. / Find one more that rhymes / And give it to me! [*ham / stick / vest] |
-| K | 3 | 17.9 | 18.4 | 0 | 0% | Rig, jig, wig / Please help me out this time. / Big, pig, dig / And pick a word to rhyme. [frog / *fig / jack] |
-| 1 | 1 | 17.7 | 18.3 | 0 | 0% | Dish, fish, wish. / These words rhyme. / Pick one more word that rhymes. [*swish / pan / joke] |
-| 1 | 2 | 24.4 | 18.1 | 0 | 0% | Brick, sick, tick / Please help me out this time. / Lick, kick, pick / And pick a word to rhyme. [wide / pin / *stick] |
-| 1 | 3 | 29.5 | 18.1 | 0 | 0% | Noon, balloon, soon / Please help me out this time. / Cartoon, spoon, moon / And pick a word to rhyme. [*raccoon / state / bride] |
-| 2 | 1 | 29.6 | 18.2 | 0 | 0% | Choke, smoke, broke / Please help me out this time. / Poke, woke, spoke / And pick a word to rhyme. [mine / test / *joke] |
-| 2 | 2 | 34.4 | 18.1 | 0 | 0% | Rake, shake, cake / Please help me out this time. / Lake, snake, bake / And pick a word to rhyme. [meat / gang / *make] |
-| 2 | 3 | 40.7 | 16.8 | 0 | 0% | Balloon, soon, moon / Please help me out this time. / Cartoon, noon, raccoon / And pick a word to rhyme. [trash / *spoon / wide] |
-| 3 | 1 | 34.4 | 18.1 | 0 | 0% | Noon, raccoon, moon / Please help me out this time. / Cartoon, balloon, spoon / And pick a word to rhyme. [smelly / *soon / power / trail] |
-| 3 | 2 | 41.7 | 16.2 | 0 | 0% | Plate, crate, date / Please help me out this time. / Gate, skate, late / And pick a word to rhyme. [back / soon / *state / bring] |
-| 3 | 3 | 46.3 | 14.5 | 0 | 0% | Handy, candy, dandy. / These words rhyme. / Pick one more word that rhymes. [tray / nation / *sandy / came] |
-| 4 | 1 | 40.5 | 16.5 | 0 | 0% | Mine, line, shine / Please help me out this time. / Spine, vine, fine / And pick a word to rhyme. [way / dash / *pine / berry] |
-| 4 | 2 | 46.3 | 15.1 | 0 | 0% | December, remember, member, November / All these words rhyme, you see. / Find one more that rhymes / And give it to me! [*September / sprinkle / crumble / stumble] |
-| 4 | 3 | 46.1 | 14.8 | 0 | 0% | Motion and lotion, notion and ocean / Sound the same at the end. / Which word rhymes with them? / Tell me, my friend! [runny / crumble / shake / *potion] |
-| 5 | 1 | 46.3 | 14.7 | 0 | 0% | Creation and nation, vacation and location / Sound the same at the end. / Which word rhymes with them? / Tell me, my friend! [plate / skate / *station / sheep] |
-| 5 | 2 | 46.3 | 14.5 | 0 | 0% | Nickel, trickle, tickle. / These words rhyme. / Pick one more word that rhymes. [*pickle / slide / pocket / chain] |
-| 5 | 3 | 46.3 | 15.0 | 0 | 0% | Merry and very, cherry and ferry / Sound the same at the end. / Which word rhymes with them? / Tell me, my friend! [flight / crown / *berry / treat] |
+| K | 1 | 13.0 | 19.8 | 0 | 0% | Bit, fit, lit / These three words rhyme, you see. / Which word rhymes with them? / Please pick it out for me! [*pit / hub / ham] |
+| K | 2 | 18.1 | 20.0 | 0 | 0% | Log, jog, hog / Please help me out this time. / Dog, bog, fog / And pick a word to rhyme. [stuck / *frog / fish] |
+| K | 3 | 27.4 | 19.9 | 0 | 0% | Block and knock sound the same. / Now finish off my rhyme: / Which word rhymes with them? / Pick it out this time! [drill / track / *dock] |
+| 1 | 1 | 24.1 | 20.0 | 0 | 0% | Tell, yell, well / Please help me out this time. / Sell, shell, bell / And pick a word to rhyme. [men / wet / *spell] |
+| 1 | 2 | 29.4 | 19.9 | 0 | 0% | Track, jack, rack, pack / All these words rhyme, you see. / Find one more that rhymes / And give it to me! [*black / jump / sick] |
+| 1 | 3 | 37.4 | 19.7 | 0 | 0% | Snail and nail sound the same. / Now finish off my rhyme: / Which word rhymes with them? / Pick it out this time! [*rail / ring / way] |
+| 2 | 1 | 33.6 | 19.8 | 0 | 0% | Pool, stool, drool / These three words rhyme, you see. / Which word rhymes with them? / Please pick it out for me! [hall / pill / *cool] |
+| 2 | 2 | 37.4 | 19.8 | 0 | 0% | Rake, shake, cake / These three words rhyme, you see. / Which word rhymes with them? / Please pick it out for me! [brick / *wake / small] |
+| 2 | 3 | 49.1 | 20.4 | 0 | 0% | Jelly and smelly sound the same. / Now finish off my rhyme: / Which word rhymes with them? / Pick it out this time! [*belly / crumble / treat] |
+| 3 | 1 | 39.4 | 11.5 | 0 | 0% | Spoon, noon, moon. / These words all rhyme. / Which word rhymes with them? [rain / rake / right / *soon] |
+| 3 | 2 | 49.1 | 11.1 | 0 | 0% | Wetter, better, letter. / These words all rhyme. / Which word rhymes with them? [sheep / creep / *sweater / plain] |
+| 3 | 3 | 54.4 | 11.3 | 0 | 0% | Merry, berry, very, ferry. / These words all rhyme. / Which word rhymes with them? [decision / candle / *cherry / crinkle] |
+| 4 | 1 | 51.2 | 11.1 | 0 | 0% | Cable, label, fable, stable. / These words all rhyme. / Which word rhymes with them? [mitten / feather / *table / pocket] |
+| 4 | 2 | 55.8 | 11.2 | 0 | 0% | Division, decision, television, vision. / These words all rhyme. / Which word rhymes with them? [connection / *collision / vacation / infection] |
+| 4 | 3 | 66.6 | 16.4 | 0 | 0% | Television and collision rhyme. / Which word rhymes with them? [*decision / fantastic / nation / clutter] |
+| 5 | 1 | 64.3 | 11.5 | 0 | 0% | Stability, humility, fragility, agility. / These words all rhyme. / Which word rhymes with them? [kitten / *ability / flipper / trickle] |
+| 5 | 2 | 66.6 | 16.1 | 0 | 0% | Through, chew, shoe, glue. / These words all rhyme. / Which word rhymes with them? / Listen for the sound, not the spelling. [vision / wait / roar / *blue] |
+| 5 | 3 | 67.9 | 18.9 | 0 | 0% | Fluff, puff, rough. / These words all rhyme. / Which word rhymes with them? / Listen for the sound, not the spelling. [straight / mitten / *enough / handle] |
 
 ### Letter sounds (`sounds`, reading)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 13.6 | 20.0 | 0 | 0% | Ten, tent, tub, tap / These words all begin with t. / Find one more t word / And pick it, my friend. [*toy / frog / dig] |
-| K | 2 | 17.9 | 21.3 | 0 | 0% | Fog, leg, dog, bag / These words all end with g. / Do you see one more g word? / Please pick it for me, then. [box / kick / *wig] |
-| K | 3 | 18.9 | 21.6 | 0 | 0% | Pull, doll, shell, fill / These words all end with ll. / Do you see one more ll word? / Please pick it for me, then. [hat / *well / tip] |
-| 1 | 1 | 18.3 | 21.5 | 0 | 0% | Sun, sit, seal, six / These words all begin with s. / Find one more s word / And pick it, my friend. [vase / hop / *soap] |
-| 1 | 2 | 29.3 | 21.4 | 0 | 0% | Whip, whale, whisper, white / These words all start with wh. / Find one more wh word / And pick it, my friend. [that / *what / shoe] |
-| 1 | 3 | 28.7 | 21.6 | 0 | 0% | Truck, kick, pick, sock / These words all end with k. / Do you see one more k word? / Please pick it for me, then. [*rock / web / cat] |
-| 2 | 1 | 39.4 | 20.0 | 0 | 0% | Swan, switch, sweep, sweet / These words all start with sw. / Find one more sw word / And pick it, my friend. [*swing / black / drop] |
-| 2 | 2 | 44.8 | 20.0 | 0 | 0% | Flag, flat, flower, flip / These words all start with fl. / Find one more fl word / And pick it, my friend. [snap / *fly / strong] |
-| 2 | 3 | 44.8 | 20.0 | 0 | 0% | Snow, snap, snail, snake / These words all start with sn. / Find one more sn word / And pick it, my friend. [trick / *sniff / train] |
+| K | 1 | 13.6 | 23.5 | 0 | 0% | Ten, tent, tap, toy. / These words all begin with t. / Which word begins with t as well? / Pick it out and ring the bell! [*top / vine / worm] |
+| K | 2 | 18.4 | 23.6 | 0 | 0% | Leg, fog, dog, bag. / These words all end with g. / Which word ends with g as well? / Pick it out and ring the bell! [kiss / *jug / kid] |
+| K | 3 | 23.2 | 23.5 | 0 | 0% | Wall, pull, well, hill. / These words all end with ll. / Which word ends with ll too? / Pick that one, and we are through! [*tall / pig / rim] |
+| 1 | 1 | 20.1 | 23.5 | 0 | 0% | Sun, sit, soap, seal. / These words all begin with s. / Which word begins with s as well? / Pick it out and ring the bell! [hop / *sad / violin] |
+| 1 | 2 | 34.9 | 23.5 | 0 | 0% | Question, quack, quick, quilt. / These words all begin with qu. / Which word begins with qu too? / Pick that one, and we are through! [*queen / chest / shark] |
+| 1 | 3 | 40.7 | 23.5 | 0 | 0% | Long, thing, king, ring. / These words all end with ng. / Which word ends with ng too? / Pick that one, and we are through! [*strong / wish / dish] |
+| 2 | 1 | 41.9 | 23.5 | 0 | 0% | Stone, star, stamp, step. / These words all begin with st. / Which word begins with st too? / Pick that one, and we are through! [black / *stop / spill] |
+| 2 | 2 | 48.7 | 23.5 | 0 | 0% | Flag, flat, flower, flip. / These words all begin with fl. / Which word begins with fl too? / Pick that one, and we are through! [spill / *float / plus] |
+| 2 | 3 | 56.2 | 23.5 | 0 | 0% | Bolt, belt, built, melt. / These words all end with lt. / Which word ends with lt as well? / Pick it out and ring the bell! [trunk / sand / *tilt] |
 
 ### Counting (`counting`, math)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 8.1 | 6.0 | 12 | 65% | What number comes right after 5? [4 / *6 / 3] |
-| K | 2 | 11.1 | 5.9 | 18 | 36% | How many cookies do you see? [2 / 3 / *1] |
-| K | 3 | 14.8 | 6.0 | 21 | 25% | What number comes right before 6? [3 / *5 / 2] |
-| 1 | 1 | 16.5 | 6.7 | 52 | 70% | What number comes right after 3? [3 / 1 / *4] |
-| 1 | 2 | 21.6 | 6.4 | 52 | 25% | Which number is "ten"? [8 / *10 / 11] |
-| 1 | 3 | 24.6 | 6.8 | 101 | 0% | 0, 10, 20, 30, ... / What number comes next? [*40 / 42 / 50] |
-| 2 | 1 | 27.9 | 6.9 | 120 | 0% | 50, 60, 70, 80, ... / What number comes next? [100 / 89 / *90] |
-| 2 | 2 | 28.9 | 6.9 | 120 | 0% | 6, 8, 10, 12, ... / What number comes next? [*14 / 16 / 15] |
-| 2 | 3 | 27.9 | 6.7 | 120 | 0% | What number comes right before 58? [59 / 56 / *57] |
-| 3 | 1 | 29.6 | 9.0 | 70 | 0% | 13, 15, 17, 19, ... / What number comes next? [20 / *21 / 22 / 23] |
-| 3 | 2 | 42.3 | 9.0 | 169 | 0% | 4, 14, 24, 34, ... / What number comes next? [*44 / 45 / 46 / 43] |
-| 3 | 3 | 43.3 | 9.0 | 170 | 0% | 15, 19, 23, 27, ... / What number comes next? [35 / 30 / 32 / *31] |
+| K | 1 | 6.6 | 6.0 | 12 | 65% | What number comes right after 5? [4 / *6 / 3] |
+| K | 2 | 11.0 | 5.3 | 18 | 29% | How many cookies do you see? [4 / 5 / *3] |
+| K | 3 | 14.5 | 5.5 | 23 | 24% | What number comes right before 11? [8 / *10 / 7] |
+| 1 | 1 | 14.9 | 6.7 | 23 | 68% | What number comes right after 5? [5 / 3 / *6] |
+| 1 | 2 | 21.1 | 6.3 | 52 | 23% | Which number is "thirteen"? [11 / *13 / 14] |
+| 1 | 3 | 25.9 | 6.8 | 102 | 0% | 0, 10, 20, 30, ... / What number comes next? [39 / 41 / *40] |
+| 2 | 1 | 27.2 | 6.9 | 102 | 0% | 50, 60, 70, 80, ... / What number comes next? [92 / 100 / *90] |
+| 2 | 2 | 30.5 | 6.9 | 210 | 0% | 16, 18, 20, 22, ... / What number comes next? [22 / *24 / 25] |
+| 2 | 3 | 32.9 | 6.9 | 202 | 0% | What number comes right before 143? [144 / 141 / *142] |
+| 3 | 1 | 35.1 | 9.0 | 44 | 0% | 13, 16, 19, 22, ... / What number comes next? [28 / 26 / 23 / *25] |
+| 3 | 2 | 42.9 | 9.0 | 112 | 0% | 92, 82, 72, 62, ... / What number comes next? [53 / *52 / 54 / 50] |
+| 3 | 3 | 54.6 | 9.0 | 248 | 0% | 87, 93, 99, 105, ... / What number comes next? [117 / 112 / *111 / 113] |
 
 ### Adding and subtracting (`addsub`, math)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 20.8 | 5.0 | 7 | 100% | 2 - 1 = ? [*1 / 3 / 2] |
-| K | 2 | 25.2 | 5.0 | 9 | 100% | 2 - 1 = ? [3 / 0 / *1] |
-| K | 3 | 29.1 | 5.0 | 12 | 100% | 6 - 2 = ? [5 / *4 / 8] |
-| 1 | 1 | 29.5 | 5.0 | 12 | 54% | 4 + 4 = ? [0 / *8 / 9] |
-| 1 | 2 | 35.3 | 5.0 | 17 | 0% | 9 - 2 = ? [*7 / 11 / 9] |
-| 1 | 3 | 38.4 | 5.0 | 23 | 0% | 19 - 1 = ? [*18 / 15 / 20] |
-| 2 | 1 | 44.9 | 5.0 | 35 | 0% | 7 - 5 = ? [*2 / 1 / 12] |
-| 2 | 2 | 54.7 | 5.0 | 69 | 0% | 50 - 1 = ? [*49 / 51 / 46] |
-| 2 | 3 | 61.4 | 5.0 | 112 | 0% | 70 - 13 = ? [*57 / 64 / 83] |
-| 3 | 1 | 72.0 | 5.0 | 225 | 0% | 55 + 112 = ? [*167 / 153 / 163 / 181] |
-| 3 | 2 | 84.9 | 5.0 | 565 | 0% | 448 - 49 = ? [426 / 455 / 497 / *399] |
-| 3 | 3 | 94.6 | 5.0 | 1126 | 0% | 244 + 482 = ? [*726 / 651 / 708 / 818] |
-| 4 | 1 | 105.5 | 5.0 | 2250 | 0% | 1731 + 83 = ? [*1814 / 1638 / 1550 / 1648] |
-| 4 | 2 | 127.3 | 5.0 | 11419 | 0% | 7712 + 829 = ? [8691 / *8541 / 8838 / 6883] |
-| 4 | 3 | 138.0 | 5.0 | 113000 | 0% | 26213 + 208 = ? [*26421 / 29337 / 26005 / 22733] |
+| K | 1 | 17.6 | 5.0 | 7 | 100% | 1 - 1 = ? [*0 / 1 / 2] |
+| K | 2 | 27.0 | 5.0 | 9 | 100% | 4 - 2 = ? [4 / 6 / *2] |
+| K | 3 | 31.5 | 5.0 | 12 | 100% | 6 - 2 = ? [5 / *4 / 8] |
+| 1 | 1 | 29.8 | 5.0 | 12 | 51% | 4 + 4 = ? [0 / *8 / 9] |
+| 1 | 2 | 37.0 | 5.0 | 17 | 0% | 7 - 4 = ? [*3 / 11 / 5] |
+| 1 | 3 | 41.6 | 5.0 | 23 | 0% | 11 - 9 = ? [*2 / 20 / 3] |
+| 2 | 1 | 42.9 | 5.0 | 35 | 0% | 8 - 5 = ? [*3 / 2 / 13] |
+| 2 | 2 | 55.0 | 5.0 | 69 | 0% | 44 - 13 = ? [*31 / 57 / 29] |
+| 2 | 3 | 63.3 | 5.0 | 113 | 0% | 49 - 40 = ? [*9 / 11 / 89] |
+| 3 | 1 | 67.5 | 5.0 | 227 | 0% | 47 + 28 = ? [*75 / 19 / 73 / 81] |
+| 3 | 2 | 84.0 | 5.0 | 561 | 0% | 357 - 122 = ? [251 / 268 / 479 / *235] |
+| 3 | 3 | 95.2 | 5.0 | 1135 | 0% | 358 + 259 = ? [*617 / 553 / 602 / 99] |
+| 4 | 1 | 98.7 | 5.0 | 2256 | 0% | 533 + 1299 = ? [*1832 / 1654 / 1566 / 1794] |
+| 4 | 2 | 124.0 | 5.0 | 11395 | 0% | 3358 + 4856 = ? [8359 / *8214 / 8500 / 9105] |
+| 4 | 3 | 155.8 | 5.0 | 106924 | 0% | 26927 + 48499 = ? [74935 / 75451 / 65599 / *75426] |
 | 5 | 1 | 128.9 | 5.0 | 202.2 | 0% | 59.3 + 74.7 = ? [126.4 / 152.6 / *134.0 / 146.7] |
 | 5 | 2 | 158.7 | 5.0 | 19.22 | 0% | 5.75 + 8.36 = ? [15.44 / 12.31 / *14.11 / 15.43] |
 | 5 | 3 | 189.9 | 5.0 | 200.23 | 0% | 51.07 + 49.75 = ? [*100.82 / 1.32 / 111.76 / 89.53] |
@@ -101,79 +101,79 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 | --- | --- | --- | --- | --- | --- | --- |
 | K | 1 | 9.0 | 5.6 | 5 | 64% | Which group has the most acorns? [picture / *picture / picture] |
 | K | 2 | 15.6 | 5.3 | 10 | 33% | Which group has the most acorns? [picture / *picture / picture] |
-| K | 3 | 19.9 | 5.8 | 24 | 25% | Which number is the smallest? [*1 / 15 / 20] |
-| 1 | 1 | 18.8 | 5.3 | 20 | 31% | Which number is the smallest? [10 / *2 / 9] |
-| 1 | 2 | 27.6 | 5.7 | 55 | 0% | Which number is between 24 and 30? [*26 / 35 / 34] |
-| 1 | 3 | 32.6 | 5.7 | 111 | 0% | Which number is the largest? [22 / *24 / 20] |
-| 2 | 1 | 30.5 | 5.6 | 111 | 0% | Which number is between 42 and 56? [33 / *48 / 64] |
-| 2 | 2 | 37.6 | 5.7 | 529 | 0% | Which number is between 272 and 338? [219 / *333 / 360] |
-| 2 | 3 | 43.2 | 6.2 | 1134 | 0% | Which number is between 212 and 361? [387 / *342 / 426] |
-| 3 | 1 | 48.4 | 5.8 | 999 | 0% | Which number is the greatest? [1,656 / *3,957 / 2,559 / 3,523] |
-| 3 | 2 | 53.2 | 6.3 | 999 | 0% | Which number is the smallest? [*2,414 / 2,885 / 2,837 / 2,870] |
-| 3 | 3 | 54.5 | 6.0 | 998 | 0% | Which number is the least? [2,583 / *2,553 / 2,563 / 2,559] |
-| 4 | 1 | 70.5 | 5.0 | 8 | 0% | Which fraction is the least? [3/5 / 4/5 / *1/5 / 2/5] |
-| 4 | 2 | 75.3 | 5.8 | 12 | 0% | Which decimal is the least? [5.84 / 5.94 / 5.61 / *5.38] |
-| 4 | 3 | 78.1 | 5.9 | 12 | 0% | Which fraction is the least? [3/7 / *1/7 / 4/7 / 2/7] |
-| 5 | 1 | 95.4 | 6.4 | 10 | 0% | Which fraction is the greatest? [5/9 / 1/2 / 1/9 / *5/6] |
-| 5 | 2 | 98.2 | 6.7 | 10 | 0% | Which decimal is the greatest? [6.293 / 6.072 / 6.048 / *6.687] |
-| 5 | 3 | 99.4 | 6.6 | 10 | 0% | Which fraction is the greatest? [4/9 / 8/9 / 3/7 / *9/10] |
+| K | 3 | 18.5 | 5.8 | 26 | 34% | Which number is the smallest? [*1 / 15 / 20] |
+| 1 | 1 | 23.0 | 5.0 | 20 | 0% | Which number is the smallest? [10 / *2 / 9] |
+| 1 | 2 | 27.8 | 5.8 | 57 | 0% | Which number is between 24 and 30? [*26 / 32 / 37] |
+| 1 | 3 | 32.5 | 5.6 | 107 | 0% | Which number is the largest? [22 / *24 / 20] |
+| 2 | 1 | 32.4 | 5.6 | 108 | 0% | Which number is between 42 and 56? [66 / 40 / *48] |
+| 2 | 2 | 37.5 | 5.6 | 537 | 0% | Which number is between 272 and 338? [267 / 209 / *333] |
+| 2 | 3 | 43.3 | 6.5 | 1122 | 0% | Which number is between 212 and 361? [428 / *342 / 89] |
+| 3 | 1 | 48.4 | 6.1 | 999 | 0% | Which number is the greatest? [1,656 / *3,957 / 2,559 / 3,523] |
+| 3 | 2 | 53.2 | 6.5 | 997 | 0% | Which number is the smallest? [*2,414 / 2,885 / 2,837 / 2,870] |
+| 3 | 3 | 54.6 | 6.4 | 998 | 0% | Which number is the least? [2,583 / *2,553 / 2,563 / 2,559] |
+| 4 | 1 | 70.9 | 5.0 | 9 | 0% | Which fraction is the greatest? [6/8 / 4/8 / 3/8 / *7/8] |
+| 4 | 2 | 79.2 | 6.2 | 12 | 0% | Which decimal is the least? [5.84 / 5.94 / 5.61 / *5.38] |
+| 4 | 3 | 84.4 | 6.3 | 12 | 0% | Which fraction is the greatest? [5/8 / *7/8 / 5/9 / 1/3] |
+| 5 | 1 | 87.0 | 6.4 | 10 | 0% | Which fraction is the greatest? [*3/5 / 1/4 / 1/7 / 2/9] |
+| 5 | 2 | 94.1 | 7.1 | 10 | 0% | Which decimal is the greatest? [6.293 / 6.072 / 6.048 / *6.687] |
+| 5 | 3 | 99.8 | 7.0 | 10 | 0% | Which fraction is the least? [*1/9 / 1/8 / 2/5 / 4/9] |
 
 ### Multiplication (`multiply`, math)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
 | 2 | 1 | 14.4 | 8.6 | 16 | 100% | 2 groups of 3 apples. / How many apples in all? [4 / *6 / 7] |
-| 2 | 2 | 16.1 | 8.4 | 25 | 100% | There are 4 rows of 2 acorns. / How many acorns are there? [12 / *8 / 6] |
-| 2 | 3 | 17.9 | 7.3 | 36 | 100% | 4 rows of 4 = ? [12 / 17 / *16] |
-| 3 | 1 | 19.5 | 5.0 | 60 | 0% | 10 x 5 = ? [51 / 60 / *50 / 40] |
-| 3 | 2 | 24.8 | 6.5 | 99 | 0% | 3 x 7 = ? [28 / 18 / 24 / *21] |
-| 3 | 3 | 31.4 | 6.5 | 132 | 0% | 10 x 6 = ? [66 / 16 / *60 / 61] |
+| 2 | 2 | 17.4 | 8.4 | 25 | 100% | There are 4 rows of 3 acorns. / How many acorns are there? [16 / *12 / 9] |
+| 2 | 3 | 21.4 | 8.2 | 36 | 100% | 4 rows of 5 = ? [16 / 21 / *20] |
+| 3 | 1 | 19.1 | 5.0 | 60 | 0% | 10 x 5 = ? [51 / 60 / *50 / 40] |
+| 3 | 2 | 24.0 | 6.5 | 54 | 0% | 6 x 4 = ? [28 / 18 / 30 / *24] |
+| 3 | 3 | 30.8 | 6.5 | 120 | 0% | 9 x 6 = ? [60 / 15 / *54 / 55] |
 | 4 | 1 | 32.5 | 5.0 | 900 | 0% | 21 x 4 = ? [74 / *84 / 63 / 25] |
-| 4 | 2 | 39.2 | 5.0 | 990 | 0% | 36 x 9 = ? [360 / 274 / *324 / 45] |
-| 4 | 3 | 45.3 | 5.0 | 1000 | 0% | 58 x 8 = ? [*464 / 66 / 522 / 406] |
+| 4 | 2 | 39.9 | 5.0 | 990 | 0% | 36 x 9 = ? [360 / 274 / *324 / 45] |
+| 4 | 3 | 47.0 | 5.0 | 980 | 0% | 58 x 8 = ? [*464 / 66 / 522 / 406] |
 | 5 | 1 | 41.1 | 5.0 | 680 | 0% | 18 x 11 = ? [98 / 180 / 208 / *198] |
 | 5 | 2 | 50.8 | 5.0 | 996 | 0% | 9.4 x 4 = ? [28.2 / 376 / *37.6 / 37.2] |
-| 5 | 3 | 61.7 | 5.0 | 996 | 0% | 86 x 48 = ? [1,032 / 4,138 / 4,042 / *4,128] |
+| 5 | 3 | 61.5 | 5.0 | 999 | 0% | 86 x 48 = ? [1,032 / 4,138 / 4,042 / *4,128] |
 
 ### Division (`divide`, math)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| 2 | 1 | 21.4 | 12.0 | 15 | 100% | 2 friends share 6 fish equally. / How many does each friend get? [6 / 2 / *3] |
-| 2 | 2 | 27.9 | 12.0 | 24 | 100% | 8 cookies go into 2 bags equally. / How many in each bag? [6 / *4 / 5] |
-| 2 | 3 | 31.0 | 9.6 | 40 | 100% | 16 hearts go into 2 bags equally. / How many in each bag? [14 / 7 / *8] |
-| 3 | 1 | 31.4 | 5.0 | 50 | 0% | 16 ÷ 2 = ? [7 / 2 / 9 / *8] |
-| 3 | 2 | 38.8 | 6.3 | 90 | 0% | 27 ÷ 9 = ? [2 / *3 / 5 / 4] |
-| 3 | 3 | 49.7 | 6.8 | 120 | 0% | 84 ÷ 7 = ? [14 / 77 / *12 / 13] |
-| 4 | 1 | 46.8 | 5.0 | 125 | 0% | 96 ÷ 4 = ? [25 / 23 / *24 / 92] |
-| 4 | 2 | 72.7 | 5.7 | 999 | 0% | 379 ÷ 2 / What is the remainder? [*1 / 3 / 2 / 0] |
-| 4 | 3 | 77.9 | 7.3 | 999 | 0% | 692 ÷ 8 / What is the quotient? / (Ignore the remainder.) [87 / 96 / *86 / 76] |
-| 5 | 1 | 63.4 | 5.0 | 580 | 0% | 384 ÷ 16 = ? [22 / 25 / 16 / *24] |
-| 5 | 2 | 75.7 | 5.0 | 2223 | 0% | 1287 ÷ 39 = ? [32 / *33 / 35 / 34] |
-| 5 | 3 | 84.0 | 5.7 | 2376 | 0% | 2225 ÷ 37 / What is the remainder? [6 / 32 / 15 / *5] |
+| 2 | 1 | 26.5 | 12.0 | 12 | 100% | 2 friends share 8 fish equally. / How many does each friend get? [8 / 3 / *4] |
+| 2 | 2 | 36.3 | 12.0 | 24 | 100% | 18 cookies go into 2 bags equally. / How many in each bag? [11 / *9 / 10] |
+| 2 | 3 | 38.1 | 12.0 | 25 | 100% | 24 hearts go into 3 bags equally. / How many in each bag? [21 / 7 / *8] |
+| 3 | 1 | 36.4 | 5.0 | 50 | 0% | 18 ÷ 2 = ? [*9 / 16 / 2 / 8] |
+| 3 | 2 | 43.5 | 6.3 | 90 | 0% | 27 ÷ 9 = ? [2 / *3 / 5 / 4] |
+| 3 | 3 | 55.6 | 6.8 | 120 | 0% | 84 ÷ 7 = ? [14 / 77 / *12 / 13] |
+| 4 | 1 | 50.2 | 5.0 | 125 | 0% | 96 ÷ 4 = ? [25 / 23 / *24 / 92] |
+| 4 | 2 | 77.3 | 5.7 | 999 | 0% | 379 ÷ 2 / What is the remainder? [*1 / 3 / 2 / 0] |
+| 4 | 3 | 82.4 | 7.3 | 999 | 0% | 692 ÷ 8 / What is the quotient? / (Ignore the remainder.) [87 / 96 / *86 / 76] |
+| 5 | 1 | 71.2 | 5.0 | 580 | 0% | 384 ÷ 16 = ? [22 / 25 / 16 / *24] |
+| 5 | 2 | 84.0 | 5.0 | 2223 | 0% | 1287 ÷ 39 = ? [32 / *33 / 35 / 34] |
+| 5 | 3 | 92.7 | 5.7 | 2376 | 0% | 2225 ÷ 37 / What is the remainder? [6 / 32 / 15 / *5] |
 
 ### Patterns and sequences (`sequences`, math)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 9.1 | 5.7 | 0 | 100% | What comes next in the pattern? [picture / picture / *picture] |
-| K | 2 | 11.5 | 5.7 | 0 | 100% | What comes next in the pattern? [picture / picture / *picture] |
-| K | 3 | 13.2 | 5.6 | 0 | 100% | Which shape comes next? [*picture / picture / picture] |
-| 1 | 1 | 13.4 | 7.3 | 48 | 47% | Look at the pattern. / What comes next? [*picture / picture / picture] |
-| 1 | 2 | 18.7 | 7.6 | 100 | 33% | 14, 16, 18, 20, ... / What comes next? [*22 / 21 / 20] |
-| 1 | 3 | 19.2 | 8.6 | 100 | 0% | 50, 60, 70, 80, ... / What number comes next? [100 / 91 / *90] |
-| 2 | 1 | 22.1 | 8.6 | 98 | 0% | 21, 31, 41, 51, ... / What comes next? [*61 / 71 / 60] |
-| 2 | 2 | 30.3 | 8.8 | 100 | 0% | 13, 17, 21, 25, ... / Which number is next? [*29 / 28 / 21] |
-| 2 | 3 | 34.3 | 8.7 | 225 | 0% | 82, 79, 76, 73, ... / What number comes next? [73 / 76 / *70] |
-| 3 | 1 | 48.1 | 8.6 | 120 | 0% | 18, 25, 32, 39, ... / What comes next? [*46 / 32 / 56 / 39] |
-| 3 | 2 | 50.2 | 8.7 | 324 | 0% | 5, 10, 20, 40, ... / Which number is next? [82 / 79 / *80 / 81] |
-| 3 | 3 | 51.8 | 8.7 | 350 | 0% | 2, 4, 8, 16, ... / What number comes next? [48 / 24 / *32 / 31] |
-| 4 | 1 | 65.5 | 8.6 | 128 | 0% | 4, 9, 19, 39, ... / What comes next? [80 / 59 / *79 / 78] |
-| 4 | 2 | 59.5 | 8.8 | 365 | 0% | 9, 20, 31, 42, ... / What is the rule? [Subtract 11 / Multiply by 3 / Triple, then add 1 / *Add 11] |
-| 4 | 3 | 62.6 | 8.8 | 406 | 0% | 144, 72, 36, 18, ... / What is the rule? [Subtract 18 / *Divide by 2 / Add 6 / Triple, then subtract 1] |
-| 5 | 1 | 68.3 | 8.7 | 242 | 0% | 8, 26, 80, 242, ... / What is the rule? [Multiply by 2 / Divide by 2 / *Triple, then add 2 / Subtract 18] |
-| 5 | 2 | 73.9 | 8.7 | 527 | 0% | 3, 10, 31, 94, ... / Which number is next? [*283 / 157 / 284 / 282] |
-| 5 | 3 | 75.3 | 8.7 | 353 | 0% | 3, 6, 10, 15, ... / What comes next? [22 / *21 / 20 / 23] |
+| K | 1 | 9.1 | 5.6 | 0 | 100% | Look at the pattern. / What comes next? [*picture / picture / picture] |
+| K | 2 | 12.5 | 5.7 | 0 | 100% | Look at the pattern. / What comes next? [picture / picture / *picture] |
+| K | 3 | 13.0 | 5.6 | 0 | 100% | Which shape comes next? [picture / *picture / picture] |
+| 1 | 1 | 13.4 | 7.2 | 48 | 51% | Look at the pattern. / What comes next? [*picture / picture / picture] |
+| 1 | 2 | 18.8 | 7.7 | 104 | 32% | 44, 46, 48, 50, ... / Which number is next? [62 / *52 / 53] |
+| 1 | 3 | 21.2 | 8.7 | 100 | 0% | 96, 86, 76, 66, ... / What number comes next? [51 / 50 / *56] |
+| 2 | 1 | 22.1 | 8.7 | 100 | 0% | 21, 31, 41, 51, ... / What comes next? [54 / *61 / 57] |
+| 2 | 2 | 30.3 | 8.8 | 100 | 0% | 13, 17, 21, 25, ... / What number comes next? [27 / 31 / *29] |
+| 2 | 3 | 36.2 | 8.8 | 225 | 0% | 82, 79, 76, 73, ... / Which number is next? [*70 / 69 / 60] |
+| 3 | 1 | 45.5 | 8.7 | 99 | 0% | 18, 25, 32, 39, ... / What number comes next? [*46 / 47 / 40 / 45] |
+| 3 | 2 | 48.5 | 8.8 | 216 | 0% | 139, __, 121, 112, 103 / What number is missing? [129 / 133 / 131 / *130] |
+| 3 | 3 | 52.1 | 8.7 | 432 | 0% | 10, 20, 40, 80, ... / What comes next? [166 / 162 / 159 / *160] |
+| 4 | 1 | 51.6 | 8.8 | 540 | 0% | 160, 80, 40, 20, ... / What is the rule? [Divide by 3 / Divide by 4 / *Divide by 2 / Subtract 20] |
+| 4 | 2 | 66.8 | 8.6 | 281 | 0% | 11, 23, 47, 95, ... / What comes next? [198 / 182 / *191 / 190] |
+| 4 | 3 | 68.3 | 8.8 | 691 | 0% | 9, 25, 73, 217, ... / What is the rule? [Triple, then subtract 1 / Triple, then add 1 / Triple, then subtract 4 / *Triple, then subtract 2] |
+| 5 | 1 | 69.5 | 8.8 | 320 | 0% | 8, 17, 35, 71, ... / What is the rule? [*Double, then add 1 / Double, then add 4 / Double, then add 2 / Triple, then add 1] |
+| 5 | 2 | 74.4 | 8.7 | 781 | 0% | 2, 7, 22, 67, ... / Which number is next? [*202 / 68 / 201 / 112] |
+| 5 | 3 | 75.2 | 8.7 | 568 | 0% | 7, 11, 19, 35, ... / What number comes next? [*67 / 70 / 64 / 58] |
 
 ### Place value (`placevalue`, math)
 
@@ -181,316 +181,316 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | 1 | 20.0 | 7.0 | 94 | 0% | 2 tens and 7 ones = ? [*27 / 9 / 28] |
 | 1 | 2 | 21.0 | 6.5 | 109 | 0% | 3 tens and 6 ones = ? [26 / *36 / 63] |
-| 1 | 3 | 21.8 | 7.1 | 104 | 0% | Which number has a 6 in the / tens place? [33 / *60 / 30] |
-| 2 | 1 | 31.5 | 8.2 | 992 | 0% | 9 hundreds, 7 tens / = ? [*970 / 980 / 960] |
-| 2 | 2 | 32.7 | 8.4 | 9000 | 0% | Which digit is in the hundreds / place of 698? [*6 / 4 / 5] |
-| 2 | 3 | 34.3 | 8.4 | 9000 | 0% | Which digit is in the hundreds / place of 854? [6 / 7 / *8] |
-| 3 | 1 | 42.9 | 8.9 | 993 | 0% | 8,000 + 600 + 50 + 9 = ? [*8,659 / 8,649 / 8,660 / 8,559] |
-| 3 | 2 | 46.0 | 8.0 | 990 | 0% | What is the value of the 8 in 4,681? [90 / 9 / *80 / 8] |
-| 3 | 3 | 46.5 | 7.5 | 990 | 0% | What is the value of the 3 in 8,301? [400 / 3,000 / *300 / 30] |
-| 4 | 1 | 67.6 | 8.1 | 987 | 0% | Round 918,364 to the nearest / thousand. [918,400 / *918,000 / 919,000 / 920,000] |
-| 4 | 2 | 77.5 | 7.8 | 990 | 0% | Which shows 26,050 in expanded form? [2,000 + 6,000 + 50 / 20,000 + 6,000 + 5 / 20,000 + 60,000 + 50 / *20,000 + 6,000 + 50] |
+| 1 | 3 | 21.8 | 7.3 | 104 | 0% | Which number has a 6 in the / tens place? [33 / *60 / 30] |
+| 2 | 1 | 31.5 | 8.2 | 986 | 0% | 9 hundreds, 7 tens / = ? [*970 / 980 / 960] |
+| 2 | 2 | 32.6 | 8.4 | 985 | 0% | Which digit is in the hundreds / place of 698? [*6 / 9 / 8] |
+| 2 | 3 | 34.2 | 8.4 | 997 | 0% | Which digit is in the hundreds / place of 854? [*8 / 4 / 5] |
+| 3 | 1 | 43.1 | 8.7 | 996 | 0% | 8,000 + 600 + 50 + 9 = ? [*8,659 / 8,649 / 8,660 / 8,559] |
+| 3 | 2 | 46.2 | 8.1 | 987 | 0% | What is the value of the 8 in 4,681? [90 / 9 / *80 / 8] |
+| 3 | 3 | 46.5 | 7.4 | 990 | 0% | What is the value of the 3 in 8,301? [400 / 3,000 / *300 / 30] |
+| 4 | 1 | 67.9 | 8.1 | 986 | 0% | Round 918,364 to the nearest / thousand. [918,400 / *918,000 / 919,000 / 920,000] |
+| 4 | 2 | 77.8 | 7.5 | 987 | 0% | Which shows 26,050 in expanded form? [2,000 + 6,000 + 50 / 20,000 + 6,000 + 5 / 20,000 + 60,000 + 50 / *20,000 + 6,000 + 50] |
 | 4 | 3 | 77.9 | 7.7 | 984 | 0% | What is the value of the 7 in 3,014,675? [12 / 7 / 700 / *70] |
-| 5 | 1 | 87.7 | 9.0 | 90 | 0% | Which digit is in the thousandths / place of 2.673? [7 / 6 / *3 / 2] |
-| 5 | 2 | 92.8 | 7.9 | 90 | 0% | What is the value of the 7 in 6.718? [*0.7 / 0.007 / 70 / 0.07] |
-| 5 | 3 | 94.6 | 7.2 | 80 | 0% | Which shows 1.736 in expanded form? [1 + 0.07 + 0.003 + 0.0006 / 1 + 7 + 3 + 6 / 1 + 0.007 + 0.03 + 0.6 / *1 + 0.7 + 0.03 + 0.006] |
+| 5 | 1 | 89.6 | 9.0 | 90 | 0% | Which digit is in the thousandths / place of 7.459? [5 / *9 / 4 / 7] |
+| 5 | 2 | 92.9 | 7.8 | 90 | 0% | What is the value of the 7 in 6.718? [*0.7 / 0.007 / 70 / 0.07] |
+| 5 | 3 | 94.4 | 7.2 | 90 | 0% | Which shows 1.736 in expanded form? [1 + 0.07 + 0.003 + 0.0006 / 1 + 7 + 3 + 6 / 1 + 0.007 + 0.03 + 0.6 / *1 + 0.7 + 0.03 + 0.006] |
 
 ### Telling time (`time`, math)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 7.3 | 5.2 | 12 | 67% | Which clock shows 4 o'clock? [picture / *picture / picture] |
-| K | 2 | 7.3 | 5.6 | 12 | 66% | Which part of the day comes first? [*morning / afternoon / night] |
-| K | 3 | 7.3 | 5.5 | 12 | 67% | Which part of the day comes last? [*night / afternoon / morning] |
+| K | 1 | 6.7 | 5.2 | 12 | 67% | Which clock shows 4 o'clock? [picture / *picture / picture] |
+| K | 2 | 7.4 | 5.7 | 12 | 66% | Which part of the day comes first? [*morning / afternoon / night] |
+| K | 3 | 8.3 | 6.0 | 12 | 63% | Which part of the day comes last? [*night / afternoon / morning] |
 | 1 | 1 | 15.0 | 5.5 | 30 | 100% | Which clock shows 11 o'clock? [picture / picture / *picture] |
-| 1 | 2 | 20.1 | 7.9 | 30 | 100% | What time is it? [*half past 9 / 10 o'clock / 9 o'clock] |
-| 1 | 3 | 19.1 | 8.5 | 30 | 100% | It is 8:00 now. / What time will it be in 2 hours? [9:00 / 6:00 / *10:00] |
-| 2 | 1 | 30.2 | 5.0 | 55 | 100% | Look at the clock. What time is it? [8:55 / 7:50 / *7:55] |
-| 2 | 2 | 30.2 | 7.0 | 55 | 100% | The clock shows 2:15. / Which is another way to say it? [quarter to 2 / *quarter past 2 / quarter to 3] |
-| 2 | 3 | 33.4 | 9.6 | 55 | 100% | The clock shows 7:15. / Which is another way to say it? [quarter past 6 / *quarter past 7 / quarter to 8] |
-| 3 | 1 | 44.1 | 8.1 | 59 | 48% | It is 4:00. / What time is it in 3 hours? [*7:00 / 6:30 / 8:00 / 7:30] |
-| 3 | 2 | 49.4 | 7.8 | 59 | 38% | What time does the clock show? [*8:18 / 7:18 / 9:18 / 8:19] |
-| 3 | 3 | 49.7 | 8.1 | 59 | 30% | How much time passes from / 8:00 to 2:00? [8 hours / 5 hours / *6 hours / 7 hours] |
-| 4 | 1 | 57.5 | 10.7 | 55 | 0% | It is 12:10. / What time will it be in 20 minutes? [12:20 / *12:30 / 12:40 / 11:30] |
-| 4 | 2 | 64.1 | 10.8 | 55 | 0% | How much time passes from / 6:40 to 7:05? [15 minutes / 30 minutes / 35 minutes / *25 minutes] |
+| 1 | 2 | 19.3 | 7.9 | 30 | 100% | What time is it? [*half past 9 / 10 o'clock / 9 o'clock] |
+| 1 | 3 | 20.8 | 8.7 | 30 | 100% | It is 8:30 now. / What time will it be in 2 hours? [9:30 / 6:30 / *10:30] |
+| 2 | 1 | 26.2 | 5.4 | 55 | 100% | Look at the clock. What time is it? [8:30 / 7:25 / *7:30] |
+| 2 | 2 | 30.6 | 7.3 | 55 | 100% | The clock shows 2:15. / Which is another way to say it? [quarter to 2 / *quarter past 2 / quarter to 3] |
+| 2 | 3 | 36.9 | 9.5 | 55 | 100% | The clock shows 7:15. / Which is another way to say it? [quarter to 7 / quarter past 6 / *quarter past 7] |
+| 3 | 1 | 43.5 | 8.4 | 55 | 51% | It is 4:00. / What time will it be in 3 hours? [*7:00 / 1:00 / 6:30 / 8:00] |
+| 3 | 2 | 49.7 | 8.1 | 59 | 37% | What time does the clock show? [*8:18 / 7:18 / 9:18 / 8:19] |
+| 3 | 3 | 53.7 | 8.9 | 59 | 35% | How much time passes from / 8:10 to 2:55? [6 hours 30 minutes / 6 hours 50 minutes / *6 hours 45 minutes / 6 hours 15 minutes] |
+| 4 | 1 | 57.5 | 10.4 | 55 | 0% | It is 12:10. / What time will it be in 20 minutes? [12:20 / *12:30 / 12:40 / 11:30] |
+| 4 | 2 | 64.3 | 10.6 | 55 | 0% | How much time passes from / 6:40 to 7:05? [15 minutes / 30 minutes / 35 minutes / *25 minutes] |
 | 4 | 3 | 69.3 | 11.9 | 55 | 0% | Ana's class starts at 2:45 / and lasts 1 hour 35 minutes. / When does it end? [*4:20 / 3:20 / 4:25 / 4:10] |
-| 5 | 1 | 83.9 | 14.7 | 55 | 0% | Emma's movie starts at 11:35 a.m. / and lasts 4 hours 10 minutes. / When does it end? [*3:45 p.m. / 3:15 p.m. / 4:15 p.m. / 3:40 p.m.] |
-| 5 | 2 | 87.5 | 14.9 | 55 | 0% | Rosa's movie starts at 7:05 a.m. / and lasts 4 hours 30 minutes. / When does it end? [*11:35 a.m. / 11:40 a.m. / 11:05 a.m. / 11:35 p.m.] |
-| 5 | 3 | 93.2 | 14.9 | 55 | 0% | Sara's game starts at 7:15 p.m. / and lasts 4 hours 25 minutes. / When does it end? [10:40 p.m. / *11:40 p.m. / 11:45 p.m. / 11:10 p.m.] |
+| 5 | 1 | 84.1 | 14.9 | 55 | 0% | Emma's trip starts at 11:35 a.m. / and lasts 4 hours 10 minutes. / When does it end? [*3:45 p.m. / 3:15 p.m. / 4:15 p.m. / 3:40 p.m.] |
+| 5 | 2 | 87.2 | 15.1 | 55 | 0% | Rosa's trip starts at 7:05 a.m. / and lasts 4 hours 30 minutes. / When does it end? [*11:35 a.m. / 11:40 a.m. / 11:05 a.m. / 11:35 p.m.] |
+| 5 | 3 | 92.2 | 15.2 | 55 | 0% | Sara's trip starts at 7:15 p.m. / and lasts 4 hours 25 minutes. / When does it end? [10:40 p.m. / *11:40 p.m. / 11:45 p.m. / 11:10 p.m.] |
 
 ### Money (`money`, math)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 6.1 | 5.5 | 0 | 100% | Which coin is worth the most? [*picture / picture / picture] |
-| K | 2 | 7.6 | 5.8 | 25 | 100% | How much is a nickel worth? [1 cent / 25 cents / *5 cents] |
-| K | 3 | 8.4 | 5.9 | 25 | 100% | Which coin is worth the most? [picture / *picture / picture] |
-| 1 | 1 | 18.9 | 5.6 | 40 | 100% | How much money is this? [3¢ / *2¢ / 7¢] |
-| 1 | 2 | 24.8 | 5.7 | 90 | 100% | How much money is this? [71¢ / *70¢ / 65¢] |
-| 1 | 3 | 23.8 | 5.6 | 72 | 100% | How much money do you see? [*28¢ / 38¢ / 27¢] |
-| 2 | 1 | 35.0 | 5.8 | 160 | 49% | How many quarters make one dollar? [8 / *4 / 2] |
-| 2 | 2 | 36.8 | 8.2 | 141 | 29% | How much money do you see? [56¢ / *46¢ / 47¢] |
-| 2 | 3 | 37.3 | 7.5 | 131 | 26% | Which coins make 35¢? [*1 quarter, 1 dime / 2 quarters, 2 dimes / 1 dime, 3 nickels] |
-| 3 | 1 | 49.6 | 14.0 | 145 | 0% | You pay one dollar for a 25¢ ball. / What is your change? [85¢ / 80¢ / 74¢ / *75¢] |
-| 3 | 2 | 51.3 | 14.2 | 194 | 0% | You pay one dollar for a 28¢ eraser. / What is your change? [*72¢ / 67¢ / 71¢ / 82¢] |
-| 3 | 3 | 54.1 | 17.5 | 194 | 0% | A sticker costs 35¢ and a marble costs 15¢. / Nina pays for both with one dollar. / How much change does Nina get? [45¢ / *50¢ / 85¢ / 65¢] |
+| K | 1 | 5.6 | 4.4 | 0 | 100% | Which coin is the dime? [*picture / picture / picture] |
+| K | 2 | 6.5 | 5.2 | 25 | 100% | How much is a nickel worth? [1 cent / 25 cents / *5 cents] |
+| K | 3 | 9.2 | 6.0 | 25 | 100% | How much is a quarter worth? [5 cents / *25 cents / 1 cent] |
+| 1 | 1 | 25.0 | 5.6 | 40 | 100% | How much money is this? [3¢ / *2¢ / 7¢] |
+| 1 | 2 | 30.8 | 5.7 | 90 | 100% | How much money is this? [71¢ / *70¢ / 65¢] |
+| 1 | 3 | 34.0 | 5.7 | 60 | 100% | Count the coins. How much money? [*23¢ / 22¢ / 13¢] |
+| 2 | 1 | 34.7 | 5.8 | 96 | 67% | Count the coins. How much money? [75¢ / 60¢ / *65¢] |
+| 2 | 2 | 40.5 | 8.2 | 95 | 35% | How much money do you see? [61¢ / *51¢ / 52¢] |
+| 2 | 3 | 45.1 | 7.2 | 98 | 59% | Which coins make 35¢? [*1 quarter, 1 dime / 2 quarters, 2 dimes / 1 dime, 3 nickels] |
+| 3 | 1 | 49.6 | 14.0 | 96 | 0% | You pay one dollar for a 25¢ ball. / What is your change? [85¢ / 80¢ / 74¢ / *75¢] |
+| 3 | 2 | 51.3 | 14.2 | 98 | 0% | You pay one dollar for a 28¢ eraser. / What is your change? [*72¢ / 67¢ / 71¢ / 82¢] |
+| 3 | 3 | 59.4 | 17.9 | 90 | 0% | A sticker costs 35¢ and a marble costs 15¢. / Nina pays for both with one dollar. / How much change does Nina get? [45¢ / *50¢ / 85¢ / 65¢] |
 | 4 | 1 | 70.6 | 10.3 | 35.25 | 0% | A book costs $19.25. / A ring costs $2.50. / How much more does the book cost? [$16.50 / *$16.75 / $15.75 / $16.65] |
-| 4 | 2 | 70.7 | 11.2 | 35.4 | 0% | A pencil costs $3.15 and a eraser / costs $4.30. What is the total? [$7.35 / $8.45 / $7.70 / *$7.45] |
-| 4 | 3 | 74.7 | 13.7 | 33 | 0% | A ring costs $10.95. / A sticker costs $1.03. / How much more does the ring cost? [$9.67 / $10.92 / $8.92 / *$9.92] |
-| 5 | 1 | 87.8 | 14.2 | 81 | 0% | Rosa buys 3 notebooks at $0.80 each and / 3 yo-yos at $0.65 each. / How much does Rosa spend? [$2.75 / *$4.35 / $4.80 / $1.45] |
-| 5 | 2 | 87.9 | 15.3 | 83.25 | 0% | Hugo buys 3 notebooks at $3.90 each / and pays with $20.00. / How much change does Hugo get? [*$8.30 / $7.30 / $16.10 / $4.40] |
-| 5 | 3 | 91.6 | 15.6 | 50 | 0% | Ruby buys 3 balls at $1.05 each and / 1 hat at $2.85 each. / How much does Ruby spend? [$5.00 / $4.20 / $7.00 / *$6.00] |
+| 4 | 2 | 73.7 | 11.2 | 35.4 | 0% | A pencil costs $3.15 and an eraser / costs $4.30. What is the total? [$7.35 / $8.45 / $7.70 / *$7.45] |
+| 4 | 3 | 77.7 | 13.7 | 33 | 0% | A ring costs $10.95. / A sticker costs $1.03. / How much more does the ring cost? [$9.67 / $10.92 / $8.92 / *$9.92] |
+| 5 | 1 | 85.9 | 12.5 | 87.75 | 0% | Rosa buys 3 notebooks at $0.65 each. / How much does that cost? [*$1.95 / $2.95 / $0.20 / $2.60] |
+| 5 | 2 | 89.8 | 15.9 | 81 | 0% | Hugo buys 3 notebooks at $3.90 each / and pays with $20.00. / How much change does Hugo get? [*$8.30 / $7.30 / $16.10 / $4.40] |
+| 5 | 3 | 92.0 | 15.4 | 43.5 | 0% | Ruby buys 3 balls at $1.05 each and / 2 hats at $2.85 each. / How much does Ruby spend? [$11.70 / $7.85 / *$8.85 / $3.15] |
 
 ### Shapes and geometry (`shapes`, math)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 6.0 | 4.9 | 0 | 100% | Which word names this shape? [circle / *triangle / square] |
-| K | 2 | 7.5 | 4.8 | 0 | 100% | Which shape is a square? [picture / picture / *picture] |
-| K | 3 | 10.0 | 5.5 | 6 | 100% | What is this shape called? [*circle / square / rectangle] |
+| K | 1 | 7.0 | 4.9 | 0 | 100% | Which word names this shape? [circle / *triangle / square] |
+| K | 2 | 9.5 | 4.8 | 0 | 100% | Which shape is a square? [picture / picture / *picture] |
+| K | 3 | 12.6 | 5.5 | 6 | 100% | What is this shape called? [*circle / square / rectangle] |
 | 1 | 1 | 15.6 | 6.3 | 6 | 100% | How many corners does a triangle have? [5 / *3 / 4] |
-| 1 | 2 | 16.4 | 6.0 | 8 | 100% | How many sides does a hexagon have? [*6 / 5 / 7] |
-| 1 | 3 | 17.2 | 5.7 | 10 | 100% | Which shape is a triangle? [picture / picture / *picture] |
-| 2 | 1 | 24.7 | 5.7 | 3 | 100% | Which of these is a solid (3D) shape? [*picture / picture / picture] |
-| 2 | 2 | 25.6 | 6.3 | 3 | 77% | Which of these is a solid (3D) shape? [picture / *picture / picture] |
-| 2 | 3 | 26.5 | 6.8 | 8 | 81% | Which of these is a flat (2D) shape? [picture / picture / *picture] |
-| 3 | 1 | 43.0 | 9.8 | 30 | 100% | A rectangle is 6 ft long and 4 ft wide. / What is its perimeter? [*20 ft / 22 ft / 16 ft / 24 ft] |
-| 3 | 2 | 46.1 | 11.8 | 108 | 74% | A rectangle is 8 cm long and 6 cm wide. / What is its perimeter? [20 cm / 22 cm / 30 cm / *28 cm] |
-| 3 | 3 | 50.9 | 15.4 | 144 | 48% | A rectangle has a perimeter of 32 m. / One side is 11 m. How long is / the side next to it? [6 m / *5 m / 16 m / 21 m] |
-| 4 | 1 | 56.3 | 9.0 | 63 | 100% | A rectangle is 2 in long and 3 in wide. / What is its area? [8 sq in / *6 sq in / 4 sq in / 9 sq in] |
-| 4 | 2 | 60.1 | 9.4 | 240 | 77% | A rectangle is 13 m long and 9 m wide. / What is its area? [22 sq m / 126 sq m / 130 sq m / *117 sq m] |
-| 4 | 3 | 62.1 | 11.1 | 195 | 59% | A rectangle is 9 ft by 2 ft. / What is its perimeter? [18 ft / *22 ft / 31 ft / 24 ft] |
-| 5 | 1 | 71.2 | 18.9 | 340 | 0% | A box is 4 m long, 3 m wide / and 3 m tall. What is its volume? [66 cubic m / 10 cubic m / *36 cubic m / 12 cubic m] |
-| 5 | 2 | 73.1 | 18.2 | 441 | 0% | A box is 5 ft long, 4 ft wide / and 7 ft tall. What is its volume? [160 cubic ft / 135 cubic ft / 145 cubic ft / *140 cubic ft] |
-| 5 | 3 | 75.1 | 14.9 | 810 | 0% | A box is 6 m long, 8 m wide / and 3 m tall. What is its volume? [180 cubic m / 192 cubic m / 17 cubic m / *144 cubic m] |
+| 1 | 2 | 16.9 | 6.0 | 8 | 100% | How many sides does a hexagon have? [*6 / 5 / 7] |
+| 1 | 3 | 18.4 | 5.7 | 10 | 100% | Which shape is a pentagon? [picture / picture / *picture] |
+| 2 | 1 | 25.4 | 5.7 | 3 | 100% | Which of these is a solid (3D) shape? [*picture / picture / picture] |
+| 2 | 2 | 28.0 | 6.3 | 4 | 77% | Which of these is a solid (3D) shape? [picture / *picture / picture] |
+| 2 | 3 | 30.8 | 7.0 | 9 | 81% | Which of these is a flat (2D) shape? [picture / picture / *picture] |
+| 3 | 1 | 41.0 | 10.8 | 30 | 72% | I am a shape with / 8 sides. / What am I? [*octagon / pentagon / square / triangle] |
+| 3 | 2 | 46.4 | 11.4 | 144 | 72% | Which shape is NOT a quadrilateral? [picture / *picture / picture / picture] |
+| 3 | 3 | 51.8 | 15.4 | 144 | 48% | A rectangle has a perimeter of 32 m. / One side is 11 m. How long is / the side next to it? [6 m / *5 m / 16 m / 21 m] |
+| 4 | 1 | 53.3 | 8.5 | 63 | 100% | A rectangle is 3 in long and 2 in wide. / What is its area? [8 sq in / *6 sq in / 4 sq in / 9 sq in] |
+| 4 | 2 | 60.9 | 9.4 | 240 | 74% | Which angle is a straight angle? [165° / 45° / *180° / 60°] |
+| 4 | 3 | 65.8 | 14.3 | 240 | 55% | Two angles make a straight line. / One is 75°. How big is the other? [*105° / 110° / 15° / 115°] |
+| 5 | 1 | 67.4 | 16.3 | 170 | 0% | A box is 4 m long, 3 m wide / and 3 m tall. What is its volume? [66 cubic m / 10 cubic m / *36 cubic m / 12 cubic m] |
+| 5 | 2 | 71.3 | 15.5 | 576 | 0% | A box is 5 ft long, 4 ft wide / and 7 ft tall. What is its volume? [160 cubic ft / 135 cubic ft / 145 cubic ft / *140 cubic ft] |
+| 5 | 3 | 78.8 | 14.1 | 810 | 0% | A box is 6 m long, 8 m wide / and 3 m tall. What is its volume? [180 cubic m / 192 cubic m / 17 cubic m / *144 cubic m] |
 
 ### Fractions (`fractions`, math)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 7.0 | 5.0 | 0 | 100% | Which picture shows one half? [picture / *picture / picture] |
-| K | 2 | 8.6 | 5.7 | 0 | 100% | What part of the shape is shaded? [three fourths / *one fourth / one third] |
-| K | 3 | 8.6 | 5.9 | 0 | 100% | Which picture shows one half? [*picture / picture / picture] |
-| 1 | 1 | 9.0 | 6.1 | 0 | 100% | What part of the shape is shaded? [one half / two thirds / *one fourth] |
-| 1 | 2 | 10.1 | 5.4 | 5 | 100% | What part of the shape is shaded? [one fourth / two thirds / *one half] |
-| 1 | 3 | 10.5 | 5.3 | 5 | 100% | What fraction is shaded? [*1/2 / 2/5 / 1/4] |
-| 2 | 1 | 22.4 | 4.0 | 5 | 100% | What fraction is shaded? [1/3 / *2/3 / 3/4] |
-| 2 | 2 | 24.3 | 4.3 | 7 | 100% | What fraction is NOT shaded? [1/6 / *2/3 / 1/4] |
-| 2 | 3 | 25.6 | 4.3 | 9 | 100% | Which picture shows 2/3? [*picture / picture / picture] |
-| 3 | 1 | 39.5 | 6.7 | 16 | 36% | Which fraction is the biggest? [1/6 / *1/2 / 1/10 / 1/12] |
-| 3 | 2 | 40.3 | 6.2 | 16 | 25% | What fraction is marked on the / number line? [2/5 / *3/5 / 7/10 / 1/3] |
-| 3 | 3 | 42.3 | 6.7 | 16 | 55% | Which fraction is the biggest? [1/12 / 1/4 / *1/3 / 1/6] |
-| 4 | 1 | 56.9 | 5.5 | 20 | 0% | Which fraction is equivalent to 3/4? [9/13 / 4/5 / *9/12 / 1/2] |
-| 4 | 2 | 59.1 | 6.0 | 36 | 0% | 5/6 - 4/6 = ? [1/2 / 11/12 / *1/6 / 1/12] |
-| 4 | 3 | 60.3 | 6.6 | 36 | 0% | 5/6 - 3/6 = ? / (Give the answer in simplest form.) [*1/3 / 1/2 / 1/6 / 5/6] |
-| 5 | 1 | 71.0 | 7.9 | 150 | 0% | Theo has 9 coins and gives away / 2/3 of them. How many are given away? [18 / 9 / 3 / *6] |
-| 5 | 2 | 77.6 | 7.6 | 1200 | 0% | 3 1/4 + 4 1/2 = ? [7 1/4 / 8 / 7 1/3 / *7 3/4] |
-| 5 | 3 | 79.2 | 7.4 | 800 | 0% | 1/3 - 1/4 = ? [5/8 / 1/6 / *1/12 / 11/12] |
+| K | 1 | 8.0 | 6.0 | 0 | 100% | Which shape is cut into halves? [*picture / picture / picture] |
+| K | 2 | 10.0 | 6.0 | 0 | 100% | Which shape is cut into fourths? [*picture / picture / picture] |
+| K | 3 | 11.0 | 6.0 | 0 | 100% | Which picture has one half colored? [picture / picture / *picture] |
+| 1 | 1 | 9.7 | 6.3 | 0 | 100% | Which picture has one half colored? [*picture / picture / picture] |
+| 1 | 2 | 13.0 | 6.4 | 0 | 100% | Which picture has one half colored? [*picture / picture / picture] |
+| 1 | 3 | 17.1 | 6.5 | 0 | 100% | What part of the shape is colored? [one fourth / one half / *three fourths] |
+| 2 | 1 | 22.5 | 4.0 | 5 | 100% | What fraction is shaded? [1/3 / *2/3 / 3/4] |
+| 2 | 2 | 26.3 | 4.3 | 7 | 100% | What fraction is NOT shaded? [1/6 / *2/3 / 1/4] |
+| 2 | 3 | 30.3 | 4.3 | 9 | 100% | Which picture shows 3/4? [picture / *picture / picture] |
+| 3 | 1 | 36.9 | 6.7 | 16 | 33% | Which fraction is the biggest? [1/6 / *1/3 / 1/5 / 1/4] |
+| 3 | 2 | 41.6 | 5.9 | 12 | 29% | What fraction is marked on the / number line? [2/5 / *3/5 / 7/10 / 1/3] |
+| 3 | 3 | 44.2 | 6.0 | 24 | 32% | Which fraction is the smallest? [1/4 / 1/10 / 1/5 / *1/12] |
+| 4 | 1 | 57.0 | 5.5 | 24 | 0% | Which fraction is equivalent to 3/4? [8/12 / 10/12 / 9/13 / *9/12] |
+| 4 | 2 | 58.9 | 6.1 | 30 | 0% | 5/6 - 4/6 = ? [1/2 / 11/12 / *1/6 / 1/12] |
+| 4 | 3 | 59.9 | 6.7 | 36 | 0% | 5/6 - 3/6 = ? / (Give the answer in simplest form.) [*1/3 / 1/2 / 1/6 / 5/6] |
+| 5 | 1 | 70.8 | 9.2 | 30 | 0% | What is 2/3 of 9? [*6 / 3 / 9 / 2] |
+| 5 | 2 | 75.1 | 6.2 | 24 | 0% | 3 1/6 + 2 2/3 = ? [5 1/3 / *5 5/6 / 6 / 6 5/6] |
+| 5 | 3 | 86.4 | 6.1 | 80 | 0% | 3 1/2 + 3 4/5 = ? [7 1/5 / *7 3/10 / 6 3/10 / 1] |
 
 ### Word problems (`wordproblems`, math)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 5.1 | 14.8 | 9 | 100% | Cleo has 5 bugs. Cleo gives 2 to Lily. / How many does Cleo keep? [*3 / 5 / 2] |
-| K | 2 | 7.7 | 14.9 | 12 | 100% | Kai had 7 acorns and lost 4. / How many acorns does Kai have now? [7 / 4 / *3] |
-| K | 3 | 10.4 | 14.8 | 19 | 100% | 9 flowers are in a box. Kai takes 1 out. / How many are still in the box? [1 / *8 / 10] |
-| 1 | 1 | 16.4 | 15.0 | 19 | 0% | 9 hearts are in a box. Kai takes 4 out. / How many are still in the box? [9 / 6 / *5] |
-| 1 | 2 | 19.1 | 15.2 | 29 | 0% | 6 stars are in a bowl. Owen puts in 8 more. / How many stars are in the bowl now? [13 / 8 / *14] |
-| 1 | 3 | 21.7 | 15.2 | 39 | 0% | There are 10 fish on the table and 2 on the / floor. How many fish are there? [2 / *12 / 11] |
+| K | 1 | 4.6 | 15.0 | 9 | 100% | Cleo has 4 bugs. Cleo gives 1 to Lily. / How many does Cleo keep? [*3 / 4 / 2] |
+| K | 2 | 8.0 | 15.1 | 12 | 100% | Kai had 6 acorns and lost 2. / How many acorns does Kai have now? [6 / 5 / *4] |
+| K | 3 | 10.7 | 15.2 | 18 | 100% | 10 flowers are in a box. Kai takes 5 out. / How many are still in the box? [4 / *5 / 15] |
+| 1 | 1 | 16.1 | 15.1 | 19 | 0% | Kai has 7 hearts. Kai gives 2 to Theo. / How many does Kai keep? [7 / 6 / *5] |
+| 1 | 2 | 19.5 | 15.3 | 29 | 0% | 9 stars are in a bowl. Owen puts in 3 more. / How many stars are in the bowl now? [3 / 6 / *12] |
+| 1 | 3 | 22.3 | 15.3 | 39 | 0% | There are 5 fish on the table and 13 on the / floor. How many fish are there? [13 / *18 / 17] |
 | 2 | 1 | 30.8 | 16.8 | 52 | 0% | Ruby counted 22 red cars and 7 blue cars. / How many cars did Ruby count? [39 / 15 / *29] |
 | 2 | 2 | 34.2 | 16.5 | 108 | 0% | It is 30 steps to the park and 24 more steps / to the pond. How many steps is that in all? [44 / 64 / *54] |
 | 2 | 3 | 37.2 | 16.6 | 185 | 0% | Lily counted 82 red cars and 11 blue cars. / How many cars did Lily count? [94 / 92 / *93] |
-| 3 | 1 | 48.3 | 14.8 | 80 | 0% | 10 students sit in 5 equal rows. / How many students are in each row? [1 / *2 / 3 / 5] |
-| 3 | 2 | 51.7 | 15.0 | 161 | 0% | A spider has 8 legs. / How many legs do 8 spiders have? [16 / *64 / 56 / 48] |
-| 3 | 3 | 54.1 | 15.0 | 271 | 0% | Each box holds 8 books. / How many books are in 6 boxes? [14 / 54 / *48 / 49] |
+| 3 | 1 | 48.3 | 14.9 | 90 | 0% | 10 students sit in 5 equal rows. / How many students are in each row? [1 / *2 / 3 / 5] |
+| 3 | 2 | 52.8 | 15.4 | 198 | 0% | A spider has 8 legs. / How many legs do 9 spiders have? [17 / *72 / 64 / 54] |
+| 3 | 3 | 55.5 | 15.1 | 245 | 0% | Each box holds 10 books. / How many books are in 8 boxes? [18 / 88 / *80 / 81] |
 | 4 | 1 | 69.3 | 19.6 | 220 | 0% | Ruby earns $8 a week for 2 weeks and then / spends $5. How much money is left? [$6 / $5 / *$11 / $21] |
-| 4 | 2 | 73.1 | 19.5 | 616 | 0% | A bakery bakes 100 rolls and packs them in / bags of 2. It sells 19 bags. / How many bags are left? [*31 / 69 / 50 / 81] |
-| 4 | 3 | 76.5 | 19.3 | 1296 | 0% | Tickets cost $45 each. / Jack buys 6 tickets and pays with $306. / How much change does Jack get? [$261 / $81 / *$36 / $576] |
-| 5 | 1 | 85.4 | 17.0 | 360 | 0% | Lily earns $1.5 an hour and works 4 hours. / How much does Lily earn? [$7.00 / *$6.00 / $4.50 / $7.50] |
-| 5 | 2 | 88.2 | 17.2 | 830 | 0% | Maya drank 1/4 of a bottle of juice and Cleo / drank 1/4. / What fraction of the bottle did they drink? [1 1/2 / 1 / 3/4 / *1/2] |
-| 5 | 3 | 90.2 | 17.0 | 850 | 0% | A tank holds 2.41 L of water. / It uses 1.15 L a day for 2 days. / How much water is left? [4.71 L / 1.26 L / *0.11 L / 2.3 L] |
+| 4 | 2 | 73.5 | 19.4 | 528 | 0% | A bakery bakes 120 rolls and packs them in / bags of 2. It sells 23 bags. / How many bags are left? [*37 / 83 / 60 / 97] |
+| 4 | 3 | 77.3 | 19.6 | 1568 | 0% | Tickets cost $45 each. / Jack buys 7 tickets and pays with $357. / How much change does Jack get? [$312 / $87 / *$42 / $672] |
+| 5 | 1 | 85.5 | 16.8 | 360 | 0% | Lily earns $1.5 an hour and works 4 hours. / How much does Lily earn? [$7.00 / *$6.00 / $4.50 / $7.50] |
+| 5 | 2 | 88.2 | 17.0 | 826.5 | 0% | Maya drank 1/4 of a bottle of juice and Cleo / drank 1/4. / What fraction of the bottle did they drink? [1 1/2 / 1 / 3/4 / *1/2] |
+| 5 | 3 | 90.2 | 17.3 | 845.5 | 0% | A tank holds 2.41 L of water. / It uses 1.15 L a day for 2 days. / How much water is left? [4.71 L / 1.26 L / *0.11 L / 2.3 L] |
 
 ### Even, odd, factors and primes (`evenodd`, math)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| 2 | 1 | 19.3 | 6.4 | 26 | 0% | What is the first odd number / after 4? [*5 / 4 / 6] |
-| 2 | 2 | 24.3 | 6.6 | 130 | 0% | Which number is odd? [*49 / 60 / 88] |
-| 2 | 3 | 30.8 | 6.7 | 1018 | 0% | Which of these is an odd number? [834 / *865 / 838] |
-| 3 | 1 | 39.2 | 6.7 | 118 | 0% | What is the first even number / after 16? [17 / 20 / 19 / *18] |
-| 3 | 2 | 46.0 | 6.7 | 1020 | 0% | What is the first even number / after 835? [835 / 837 / *836 / 838] |
-| 3 | 3 | 53.9 | 6.5 | 9915 | 0% | Which number is a multiple of 5? [54 / 48 / *55 / 46] |
-| 4 | 1 | 53.1 | 7.0 | 49 | 0% | Which number is a factor of 20? [*5 / 3 / 7 / 6] |
-| 4 | 2 | 57.0 | 7.4 | 115 | 0% | Which number is a multiple of 3? [11 / 13 / *12 / 14] |
-| 4 | 3 | 64.4 | 7.2 | 168 | 0% | How many factors does 100 have? [*9 / 11 / 4 / 18] |
-| 5 | 1 | 69.9 | 6.3 | 180 | 0% | Which number is composite? [23 / 19 / *20 / 29] |
-| 5 | 2 | 72.3 | 7.0 | 864 | 0% | Which number is composite? [19 / 13 / 47 / *28] |
-| 5 | 3 | 73.4 | 6.7 | 576 | 0% | What is the greatest common factor / of 108 and 84? [11 / 6 / *12 / 13] |
+| 2 | 1 | 13.7 | 6.4 | 21 | 0% | What is the first odd number / after 5? [*7 / 5 / 8] |
+| 2 | 2 | 17.0 | 6.7 | 99 | 0% | Which of these is an odd number? [42 / 68 / *59] |
+| 2 | 3 | 20.0 | 6.6 | 999 | 0% | Which number is odd? [*875 / 720 / 750] |
+| 3 | 1 | 31.0 | 6.9 | 500 | 0% | What is the first even number / after 163? [163 / 166 / 165 / *164] |
+| 3 | 2 | 34.0 | 6.8 | 999 | 0% | What is the first even number / after 884? [884 / 887 / *886 / 888] |
+| 3 | 3 | 39.1 | 5.4 | 999 | 0% | Which number is a multiple of 4? [615 / 610 / *616 / 618] |
+| 4 | 1 | 50.2 | 7.0 | 63 | 0% | Which number is a factor of 24? [11 / 13 / *8 / 7] |
+| 4 | 2 | 59.1 | 7.3 | 143 | 0% | Which number is a multiple of 3? [11 / 13 / *12 / 14] |
+| 4 | 3 | 69.2 | 7.1 | 198 | 0% | How many factors does 100 have? [*9 / 11 / 4 / 18] |
+| 5 | 1 | 62.7 | 5.0 | 100 | 0% | Which number is composite? [29 / 23 / *25 / 13] |
+| 5 | 2 | 69.5 | 6.7 | 576 | 0% | Which number is composite? [37 / 53 / 41 / *45] |
+| 5 | 3 | 74.5 | 7.1 | 840 | 0% | What is the greatest common factor / of 132 and 96? [13 / 36 / *12 / 96] |
 
 ### Measurement (`measurement`, math)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 5.0 | 5.0 | 0 | 0% | Which one is the longest? [ruler / key / *river] |
+| K | 1 | 5.2 | 5.0 | 0 | 0% | Which one is the longest? [*train / crayon / broom] |
 | K | 2 | 6.8 | 5.8 | 0 | 27% | Which one is the shortest? [pencil / *ant / bus] |
-| K | 3 | 7.6 | 5.5 | 0 | 17% | Which one is the shortest? [shoe / *coin / snake] |
-| 1 | 1 | 14.0 | 8.4 | 0 | 0% | Which unit is best to measure / a car? [*feet / miles / inches] |
-| 1 | 2 | 15.5 | 9.8 | 0 | 0% | What would you use to measure / how hot it is outside? [a measuring cup / a ruler / *a thermometer] |
-| 1 | 3 | 16.4 | 9.2 | 0 | 0% | What would you use to measure / how much water fits in a jug? [a clock / *a measuring cup / a ruler] |
-| 2 | 1 | 25.0 | 6.1 | 10000 | 55% | What temperature does the / thermometer show? [10°F / 50°F / *30°F] |
-| 2 | 2 | 27.9 | 6.0 | 10000 | 64% | What temperature does the / thermometer show? [55°F / 60°F / *50°F] |
-| 2 | 3 | 29.9 | 6.7 | 10000 | 60% | About how long is a spoon? [*6 inches / 1 inches / 6 feet] |
-| 3 | 1 | 44.9 | 7.0 | 1000 | 0% | How many inches are in a foot? [6 / 120 / *12 / 7] |
-| 3 | 2 | 43.2 | 7.0 | 1000 | 0% | How many cups are in a pint? [*2 / 1000 / 4 / 24] |
-| 3 | 3 | 48.9 | 7.0 | 36000 | 0% | How many minutes are in half an hour? [3 / 15 / 365 / *30] |
-| 4 | 1 | 65.2 | 5.0 | 960 | 0% | 2 feet = ? inches [*24 inches / 12 inches / 36 inches / 240 inches] |
-| 4 | 2 | 70.3 | 5.0 | 960 | 0% | 11 hours = ? minutes [*660 minutes / 720 minutes / 6,600 minutes / 66 minutes] |
-| 4 | 3 | 70.4 | 5.7 | 1840 | 0% | 3 kilometers 705 meters = ? meters [708 meters / *3,705 meters / 3,000 meters / 2,705 meters] |
-| 5 | 1 | 70.5 | 11.3 | 980 | 70% | The chart shows books for each day. / Which day had the most books? [Tue / Thu / *Wed / Mon] |
-| 5 | 2 | 75.9 | 11.8 | 994 | 50% | The chart shows laps for each day. / Which day had the most laps? [Wed / Thu / Mon / *Tue] |
-| 5 | 3 | 77.7 | 12.3 | 990 | 48% | 8.25 kilometers = ? meters [7,250 meters / 825 meters / *8,250 meters / 9,250 meters] |
+| K | 3 | 7.6 | 5.5 | 0 | 17% | Which one is the shortest? [book / *button / bed] |
+| 1 | 1 | 14.0 | 9.6 | 0 | 0% | Which unit is best to measure / a spoon? [miles / *inches / feet] |
+| 1 | 2 | 17.9 | 7.9 | 1 | 0% | What would you use to measure / how hot it is outside? [a measuring cup / a ruler / *a thermometer] |
+| 1 | 3 | 20.0 | 7.5 | 1 | 0% | What would you use to measure / how long recess lasts? [a measuring cup / *a clock / a ruler] |
+| 2 | 1 | 25.0 | 6.0 | 10000 | 46% | What temperature does the / thermometer show? [10°F / *30°F / 50°F] |
+| 2 | 2 | 29.0 | 6.7 | 10000 | 65% | What temperature does the / thermometer show? [70°F / *50°F / 60°F] |
+| 2 | 3 | 34.1 | 8.2 | 10000 | 68% | About how long is a spoon? [*6 inches / 1 inch / 6 feet] |
+| 3 | 1 | 42.9 | 7.0 | 600 | 0% | How many inches are in a foot? [*12 / 14 / 1 / 24] |
+| 3 | 2 | 44.6 | 7.1 | 1000 | 0% | How many cups are in a pint? [4 / *2 / 1 / 20] |
+| 3 | 3 | 56.5 | 7.1 | 36000 | 0% | How many inches are in 2 yards? [*72 / 62 / 108 / 36] |
+| 4 | 1 | 64.3 | 5.0 | 960 | 0% | 2 hours = ? minutes [*120 minutes / 60 minutes / 180 minutes / 12 minutes] |
+| 4 | 2 | 72.6 | 5.0 | 960 | 0% | 11 minutes = ? seconds [*660 seconds / 720 seconds / 6,600 seconds / 66 seconds] |
+| 4 | 3 | 74.8 | 5.7 | 960 | 0% | 5 tons = ? pounds [2,005 pounds / 8,000 pounds / 100,000 pounds / *10,000 pounds] |
+| 5 | 1 | 66.5 | 8.3 | 950 | 42% | 4.5 days = ? hours [84 hours / 11 hours / 45 hours / *108 hours] |
+| 5 | 2 | 73.2 | 11.8 | 990 | 34% | The chart shows stars for each day. / How many more stars on Thu than Wed? [12 / 19 / *11 / 10] |
+| 5 | 3 | 76.9 | 10.9 | 990 | 32% | 8.25 kilometers = ? meters [7,250 meters / 825 meters / *8,250 meters / 9,250 meters] |
 
 ### Letters (`letters`, reading)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
 | K | 1 | 10.0 | 6.0 | 0 | 100% | Which one is the letter T? [picture / picture / *picture] |
-| K | 2 | 18.4 | 7.2 | 0 | 100% | Which one is the letter P? [picture / *picture / picture] |
-| K | 3 | 24.2 | 6.8 | 0 | 100% | Which one is the letter K? [*picture / picture / picture] |
-| 1 | 1 | 29.9 | 7.4 | 0 | 100% | Which letter does "yak" start with? [*picture / picture / picture] |
-| 1 | 2 | 38.5 | 6.0 | 0 | 100% | Which letter comes right before E? [*picture / picture / picture] |
-| 1 | 3 | 42.1 | 6.3 | 0 | 100% | Which letter does "pot" start with? [picture / *picture / picture] |
+| K | 2 | 20.4 | 6.9 | 0 | 100% | Which one is little t? [picture / *picture / picture] |
+| K | 3 | 28.2 | 7.5 | 0 | 100% | Which letter does "Nap" start with? [picture / picture / *picture] |
+| 1 | 1 | 37.0 | 6.0 | 0 | 100% | Which letter comes right after X? [*picture / picture / picture] |
+| 1 | 2 | 38.0 | 6.0 | 0 | 100% | Which letter comes right before E? [picture / *picture / picture] |
+| 1 | 3 | 44.1 | 6.3 | 0 | 100% | Which letter comes between H and J? [picture / picture / *picture] |
 
 ### Vowel sounds (`vowels`, reading)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 1 | 3.1 | 14.3 | 0 | 0% | Which word has the same vowel sound as hen? [*leg / rug / fan] |
-| 1 | 2 | 8.9 | 14.2 | 0 | 0% | Which word has the same vowel sound as nose? [pot / hen / *goat] |
-| 1 | 3 | 12.0 | 13.7 | 0 | 0% | Which word has the same vowel sound as wave? [meat / bag / *train] |
-| 2 | 1 | 9.1 | 8.4 | 0 | 0% | Which word has the same vowel sound as pig? [leaf / pan / *bin] |
-| 2 | 2 | 13.9 | 8.0 | 0 | 0% | Which word has the long u sound? [rug / *tune / toe] |
-| 2 | 3 | 13.5 | 8.7 | 0 | 0% | Which word has a different vowel sound / from the others? [bus / tub / *fruit] |
+| 1 | 1 | 7.3 | 14.5 | 0 | 0% | Which word has the same vowel sound as desk? [hit / *hen / fan] |
+| 1 | 2 | 12.2 | 14.4 | 0 | 0% | Which word has the same vowel sound as bee? [*key / cup / fly] |
+| 1 | 3 | 16.9 | 10.8 | 0 | 0% | Snail is my word. Listen well! / Which word has the same vowel sound? / Say it slowly, then you can tell. [box / fan / *paint] |
+| 2 | 1 | 12.3 | 8.0 | 0 | 0% | Which word has the same vowel sound as clock? [goat / *fox / sheep] |
+| 2 | 2 | 17.3 | 7.9 | 0 | 0% | Which word has the long e sound? [*meat / net / pen] |
+| 2 | 3 | 25.0 | 9.8 | 0 | 0% | Which word has a different vowel sound / from the others? [school / *bone / pool] |
 
 ### Compound words (`compounds`, reading)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 1 | 17.5 | 20.0 | 0 | 0% | Foot + ball = football / Some + thing = something / Some + one = someone / Back + pack = ______. [backlash / *backpack / backstop] |
-| 1 | 2 | 25.3 | 20.0 | 0 | 0% | Play + time = playtime / Super + hero = superhero / Back + yard = backyard / Sea + shell = ______. [seahorse / seawall / *seashell] |
-| 1 | 3 | 28.3 | 20.0 | 0 | 0% | Bird + bath = birdbath / Pin + wheel = pinwheel / Wind + mill = windmill / News + paper = ______. [newsprint / wallpaper / *newspaper] |
-| 2 | 1 | 28.2 | 20.0 | 0 | 0% | Book + mark = bookmark / Corn + bread = cornbread / Grand + son = grandson / Cell + phone = ______. [*cellphone / earphone / smartphone] |
-| 2 | 2 | 33.8 | 20.0 | 0 | 0% | Step + brother = stepbrother / Ship + yard = shipyard / Copy + cat = copycat / Lamp + shade = ______. [lamppost / *lampshade / nightshade] |
-| 2 | 3 | 38.6 | 20.0 | 0 | 0% | Tooth + paste = toothpaste / Body + guard = bodyguard / Ear + phone = earphone / Ear + drum = ______. [*eardrum / earache / earring] |
-| 3 | 1 | 38.5 | 20.0 | 0 | 0% | Race + track = racetrack / Sky + line = skyline / Under + stand = understand / Sun + screen = ______. [*sunscreen / sundown / sunlight / sunset] |
-| 3 | 2 | 44.1 | 20.0 | 0 | 0% | Sound + track = soundtrack / Work + place = workplace / Work + shop = workshop / Land + slide = ______. [landmark / landlord / landfill / *landslide] |
-| 3 | 3 | 48.8 | 20.0 | 0 | 0% | Left + over = leftover / Cook + out = cookout / Girl + hood = girlhood / Under + ground = ______. [understand / background / undergo / *underground] |
-| 4 | 1 | 43.6 | 20.0 | 0 | 0% | Chair + man = chairman / Ball + room = ballroom / Out + line = outline / Down + wind = ______. [headwind / download / *downwind / downside] |
-| 4 | 2 | 49.9 | 17.1 | 0 | 0% | Which two words make "meltdown"? [*melt + down / cloak + room / check + mate / let + down] |
-| 4 | 3 | 51.5 | 12.9 | 0 | 0% | Which two words make "underground"? [cross + wind / girl + hood / under + stand / *under + ground] |
+| 1 | 1 | 20.2 | 20.0 | 0 | 0% | Race + car = racecar / Roof + top = rooftop / Sea + weed = seaweed / Bath + tub = ______. [bathroom / *bathtub / birdbath] |
+| 1 | 2 | 21.5 | 20.0 | 0 | 0% | Book + case = bookcase / Bath + robe = bathrobe / Sea + weed = seaweed / Out + side = ______. [*outside / sidewalk / inside] |
+| 1 | 3 | 24.0 | 20.0 | 0 | 0% | Down + hill = downhill / Bird + cage = birdcage / Tool + box = toolbox / Foot + print = ______. [*footprint / footpath / football] |
+| 2 | 1 | 30.9 | 20.0 | 0 | 0% | Tea + cup = teacup / Cow + boy = cowboy / Rain + bow = rainbow / Book + mark = ______. [bookcase / *bookmark / notebook] |
+| 2 | 2 | 32.8 | 20.0 | 0 | 0% | Gold + fish = goldfish / Day + light = daylight / Dog + house = doghouse / Black + bird = ______. [*blackbird / bluebird / blackboard] |
+| 2 | 3 | 34.9 | 20.0 | 0 | 0% | Bath + room = bathroom / Flower + pot = flowerpot / Cob + web = cobweb / Butter + fly = ______. [*butterfly / dragonfly / firefly] |
+| 3 | 1 | 41.3 | 20.0 | 0 | 0% | Jelly + bean = jellybean / Bean + bag = beanbag / Black + board = blackboard / Sun + roof = ______. [sundown / *sunroof / suntan / sunburn] |
+| 3 | 2 | 43.3 | 20.0 | 0 | 0% | Book + case = bookcase / Home + made = homemade / Drive + way = driveway / Wood + land = ______. [woodwork / *woodland / grassland / landslide] |
+| 3 | 3 | 47.5 | 15.3 | 0 | 0% | Paint + brush = paintbrush / Cook + book = cookbook / Tug + boat = tugboat / Space + walk = ______. [*spacewalk / crosswalk / spacecraft / spacesuit] |
+| 4 | 1 | 53.7 | 15.9 | 0 | 0% | Under + water = underwater / How + ever = however / Jig + saw = jigsaw / Over + load = ______. [overcome / *overload / overlook / overturn] |
+| 4 | 2 | 58.0 | 11.3 | 0 | 0% | Which two words make "guideline"? [pipe + line / *guide + line / border + line / hair + line] |
+| 4 | 3 | 63.7 | 5.0 | 0 | 0% | Which two words make "shortstop"? [short + hand / *short + stop / shorts + top / back + stop] |
 
 ### Opposites (`opposites`, reading)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 14.0 | 11.6 | 0 | 0% | What is the opposite of open? [happy / *closed / short] |
-| K | 2 | 14.1 | 11.3 | 0 | 0% | Which word means the opposite of go? [sit / take / *come] |
-| K | 3 | 19.7 | 11.2 | 0 | 0% | Which word means the opposite of land? [*sea / enemy / answer] |
-| 1 | 1 | 20.4 | 11.7 | 0 | 0% | Tall is the word I say. / Its opposite, please, today! [light / *short / small] |
-| 1 | 2 | 25.3 | 11.5 | 0 | 0% | Left is the word I say. / Its opposite, please, today! [land / *right / answer] |
-| 1 | 3 | 25.1 | 10.9 | 0 | 0% | Hard and soft, on and off: / Opposites, you see! / Now the opposite of idle, / Please pick it out for me. [*busy / hard / tame] |
-| 2 | 1 | 25.1 | 11.5 | 0 | 0% | Warm and cool, sun and moon: / Opposites, you see! / Now the opposite of strong, / Please pick it out for me. [mean / *weak / sick] |
-| 2 | 2 | 30.7 | 11.7 | 0 | 0% | The opposite of dead is ___. [*alive / dirty / noisy] |
-| 2 | 3 | 36.3 | 11.8 | 0 | 0% | Front and back, laugh and cry: / Opposites, you see! / Now the opposite of dull, / Please pick it out for me. [loose / right / *shiny] |
-| 3 | 1 | 36.2 | 6.3 | 0 | 0% | The opposite of melt is ___. [exhale / inhale / expand / *freeze] |
-| 3 | 2 | 36.4 | 6.3 | 0 | 0% | What is the opposite of dishonest? [public / gentle / *honest / simple] |
-| 3 | 3 | 41.8 | 6.3 | 0 | 0% | The opposite of honest is ___. [reluctant / *dishonest / impatient / different] |
-| 4 | 1 | 42.2 | 6.5 | 0 | 0% | Which word means the opposite of artificial? [ancient / *natural / fertile / patient] |
-| 4 | 2 | 47.6 | 6.5 | 0 | 0% | Which word is an antonym of expand? [exclude / increase / *contract / tighten] |
-| 4 | 3 | 51.0 | 6.3 | 0 | 0% | What is the opposite of approve? [borrow / permit / *reject / freeze] |
-| 5 | 1 | 47.8 | 6.5 | 0 | 0% | Which word means the opposite of positive? [*negative / arrogant / cheerful / impolite] |
-| 5 | 2 | 50.1 | 6.3 | 0 | 0% | Which word is an antonym of immature? [sturdy / *mature / scarce / barren] |
-| 5 | 3 | 51.3 | 6.3 | 0 | 0% | Which pair of words are opposites? [exciting / inferior / tumble / fall / *mature / immature / silently / quietly] |
+| K | 1 | 13.8 | 11.6 | 0 | 0% | What is the opposite of wet? [*dry / hot / big] |
+| K | 2 | 20.2 | 11.4 | 0 | 0% | Which word means the opposite of dark? [clean / awake / *light] |
+| K | 3 | 26.7 | 11.3 | 0 | 0% | Yes and no, give and take: / Opposites, you see! / Now the opposite of over, / Please pick it out for me. [more / *under / down] |
+| 1 | 1 | 33.0 | 11.1 | 0 | 0% | Come and go, safe and dangerous: / Opposites, you see! / Now the opposite of wide, / Please pick it out for me. [strong / silent / *narrow] |
+| 1 | 2 | 39.3 | 12.0 | 0 | 0% | Buy and sell, day and night: / Opposites, you see! / Now the opposite of deep, / Please pick it out for me. [healthy / crooked / *shallow] |
+| 1 | 3 | 46.0 | 11.8 | 0 | 0% | What is the opposite of floor? [winter / friend / *ceiling] |
+| 2 | 1 | 51.7 | 11.6 | 0 | 0% | What is the opposite of gloomy? [careless / *cheerful / exciting] |
+| 2 | 2 | 58.6 | 12.0 | 0 | 0% | Honest is the word I say. / Its opposite, please, today! [*dishonest / careless / impatient] |
+| 2 | 3 | 64.9 | 11.3 | 0 | 0% | Proud and ashamed, polite and rude: / Opposites, you see! / Now the opposite of ending, / Please pick it out for me. [entrance / solution / *beginning] |
+| 3 | 1 | 71.7 | 6.3 | 0 | 0% | The opposite of famous is ___. [*unknown / harmful / awkward / lengthy] |
+| 3 | 2 | 76.0 | 6.4 | 0 | 0% | What is the opposite of connect? [disagree / *separate / whisper / stretch] |
+| 3 | 3 | 84.1 | 6.3 | 0 | 0% | What is the opposite of softly? [rudely / *loudly / wisely / slowly] |
+| 4 | 1 | 89.1 | 6.5 | 0 | 0% | What is the opposite of encourage? [strengthen / *discourage / contract / construct] |
+| 4 | 2 | 96.1 | 6.5 | 0 | 0% | Which word is an antonym of abundant? [simple / *scarce / mature / barren] |
+| 4 | 3 | 106.8 | 6.3 | 0 | 0% | Which word means the opposite of barren? [sincere / *fertile / natural / precise] |
+| 5 | 1 | 107.6 | 6.5 | 0 | 0% | Which word is an antonym of fiction? [surplus / injustice / descendant / *nonfiction] |
+| 5 | 2 | 116.3 | 6.3 | 0 | 0% | The opposite of accelerate is ___. [understate / complicate / *decelerate / illuminate] |
+| 5 | 3 | 124.9 | 6.3 | 0 | 0% | Which pair of words are opposites? [*audible / inaudible / stingy / miserly / secluded / isolated / cautious / meticulous] |
 
 ### Synonyms (`synonyms`, reading)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 1 | 14.8 | 13.5 | 0 | 0% | Another word for angry: / Do you know one? Think it through. / Which word here means angry? / Pick it and I'll cheer for you! [wet / poky / *mad] |
-| 1 | 2 | 15.0 | 14.4 | 0 | 0% | Which word means about the same as home? [*house / road / sofa] |
-| 1 | 3 | 20.6 | 13.9 | 0 | 0% | Another word for small: / Do you know one? Think it through. / Which word here means small? / Pick it and I'll cheer for you! [bright / *little / unkind] |
-| 2 | 1 | 21.2 | 14.0 | 0 | 0% | Which word means almost the same as tiny? [silly / whole / *small] |
-| 2 | 2 | 25.2 | 14.4 | 0 | 0% | Another word for break: / Do you know one? Think it through. / Which word here means break? / Pick it and I'll cheer for you! [*shatter / predict / startle] |
-| 2 | 3 | 25.3 | 13.9 | 0 | 0% | Another word for snatch is ___. [*grab / show / exit] |
-| 3 | 1 | 30.7 | 7.3 | 0 | 0% | Which word means about the same as fake? [small / *false / happy / angry] |
-| 3 | 2 | 36.4 | 7.2 | 0 | 0% | Which word means almost the same as hide? [examine / inspect / *conceal / shatter] |
-| 3 | 3 | 36.3 | 7.4 | 0 | 0% | Which word means almost the same as locate? [assemble / persuade / frighten / *discover] |
-| 4 | 1 | 36.1 | 7.2 | 0 | 0% | Which word is a synonym of good? [modest / *superb / vacant / dismal] |
-| 4 | 2 | 43.3 | 8.1 | 0 | 0% | Another word for vacant is ___. [respectful / *unoccupied / charitable / delighted] |
-| 4 | 3 | 51.1 | 9.2 | 0 | 0% | Which word means about the same as obtain? [startle / examine / chuckle / *acquire] |
-| 5 | 1 | 47.0 | 7.2 | 0 | 0% | Which word means about the same as keen? [small / smart / empty / *eager] |
-| 5 | 2 | 49.0 | 8.2 | 0 | 0% | Another word for vanish is ___. [*fade / roam / show / need] |
-| 5 | 3 | 50.8 | 9.1 | 0 | 0% | Which word means about the same as keen? [empty / brave / short / *eager] |
+| 1 | 1 | 33.1 | 14.4 | 0 | 0% | Another word for quick: / Do you know one? Think it through. / Which word here means quick? / Pick it and I'll cheer for you! [*fast / tidy / sick] |
+| 1 | 2 | 38.9 | 14.7 | 0 | 0% | Which word means about the same as bag? [road / *sack / gift] |
+| 1 | 3 | 44.8 | 14.4 | 0 | 0% | Which word means almost the same as friendly? [*kind / loud / tidy] |
+| 2 | 1 | 51.1 | 13.6 | 0 | 0% | Which word means about the same as bold? [*brave / weird / needy] |
+| 2 | 2 | 58.0 | 14.2 | 0 | 0% | Another word for ask: / Do you know one? Think it through. / Which word here means ask? / Pick it and I'll cheer for you! [assist / snatch / *question] |
+| 2 | 3 | 64.0 | 13.8 | 0 | 0% | Toss, toss, toss! / Which word means the same? / Find it here and you will win / This little word game! [hurry / reply / *fling] |
+| 3 | 1 | 71.4 | 7.3 | 0 | 0% | Which word means about the same as sorrowful? [hot / bad / rude / *sad] |
+| 3 | 2 | 77.0 | 7.2 | 0 | 0% | Which word means about the same as courageous? [rapid / *brave / happy / tired] |
+| 3 | 3 | 82.1 | 7.3 | 0 | 0% | Another word for noise is ___. [danger / enemy / *racket / banquet] |
+| 4 | 1 | 89.1 | 7.3 | 0 | 0% | Another word for vital is ___. [*essential / unwilling / difficult / plentiful] |
+| 4 | 2 | 97.7 | 8.3 | 0 | 0% | Which word means almost the same as hostile? [difficult / *aggressive / unoccupied / charitable] |
+| 4 | 3 | 105.0 | 9.1 | 0 | 0% | Which word means about the same as weary? [peculiar / abundant / *fatigued / apparent] |
+| 5 | 1 | 107.2 | 7.2 | 0 | 0% | Another word for catastrophe is ___. [*disaster / opponent / argument / pinnacle] |
+| 5 | 2 | 116.4 | 8.2 | 0 | 0% | Which word is a synonym of finally? [purposely / completely / *ultimately / immediately] |
+| 5 | 3 | 123.9 | 8.9 | 0 | 0% | Which word is a synonym of frank? [placid / unclear / *candid / paltry] |
 
 ### Categories (`categories`, reading)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 12.4 | 7.2 | 10 | 0% | Which one is a baked treat? [*donut / banana / cucumber] |
-| K | 2 | 12.6 | 7.2 | 10 | 0% | Which one is a pet? [puzzle / *hamster / fly] |
-| K | 3 | 19.4 | 7.6 | 10 | 0% | Which one is a tool? [notebook / bed / *hammer] |
-| 1 | 1 | 19.2 | 5.6 | 10 | 0% | Which one is a room in a house? [*kitchen / knife / tape measure] |
-| 1 | 2 | 22.7 | 5.7 | 0 | 0% | Which one is a kind of weather? [*drizzle / spruce / oak] |
-| 1 | 3 | 23.5 | 8.1 | 0 | 0% | Which one is a baby animal? [wasp / hawk / *chick] |
-| 2 | 1 | 23.5 | 8.1 | 0 | 0% | Which one does not belong? / Two of these are tools. [screwdriver / drill / *couch] |
-| 2 | 2 | 29.6 | 9.0 | 63 | 0% | Which one does not belong? / Two of these are odd numbers. [1 / 13 / *14] |
-| 2 | 3 | 34.0 | 9.3 | 72 | 0% | Which one does not belong? / Two of these are countries. [Egypt / Italy / *Toronto] |
-| 3 | 1 | 33.6 | 8.2 | 72 | 0% | Which one is a country? [Sydney / Cairo / *Japan / Iowa] |
-| 3 | 2 | 39.0 | 6.0 | 72 | 0% | Juice, syrup, and oil / are all ___. [gases / kinds of rock / *liquids / metals] |
-| 3 | 3 | 42.7 | 6.1 | 72 | 0% | Which one does not belong? [Mercury / *wedge / Earth / Mars] |
-| 4 | 1 | 43.6 | 6.2 | 72 | 0% | Inclined plane, screw, and pulley / are all ___. [metals / *simple machines / planets / parts of a plant] |
-| 4 | 2 | 49.0 | 6.2 | 49 | 0% | Sydney, Paris, and Boston / are all ___. [U.S. states / oceans / *cities / continents] |
-| 4 | 3 | 49.2 | 6.3 | 37 | 0% | Wind power, solar power, and natural gas / are all ___. [simple machines / *energy sources / parts of a cell / parts of a plant] |
-| 5 | 1 | 49.1 | 6.2 | 37 | 0% | Silver, gold, and titanium / are all ___. [kinds of rock / *metals / gases / liquids] |
-| 5 | 2 | 49.7 | 6.6 | 49 | 0% | Which one does not belong? [the Greeks / the Aztecs / *skin / the Romans] |
-| 5 | 3 | 49.4 | 6.4 | 37 | 0% | Which one does not belong? [the Greeks / the Aztecs / *kidney / the Egyptians] |
+| K | 1 | 14.3 | 7.2 | 10 | 0% | Look at these three words. / Which one is a drink? [lettuce / pie / *lemonade] |
+| K | 2 | 15.3 | 7.4 | 10 | 0% | Look at these three words. / Which one is a shape? [6 / 10 / *triangle] |
+| K | 3 | 22.7 | 7.4 | 10 | 0% | Look at these three words. / Which one is a day of the week? [March / *Monday / February] |
+| 1 | 1 | 21.1 | 5.6 | 10 | 0% | Which one is a baby animal? [shark / clam / *puppy] |
+| 1 | 2 | 26.4 | 7.7 | 0 | 0% | Which one does not belong? / Two of these are kinds of weather. [*iris / sleet / rain] |
+| 1 | 3 | 27.5 | 8.9 | 0 | 0% | Which one does not belong? / Two of these are seasons. [summer / *September / spring] |
+| 2 | 1 | 25.3 | 8.1 | 0 | 0% | Which one does not belong? / Two of these are baby animals. [fawn / foal / *sardine] |
+| 2 | 2 | 32.6 | 9.0 | 0 | 0% | Which one does not belong? / Two of these are stars. [*coal / Rigel / Polaris] |
+| 2 | 3 | 37.8 | 9.6 | 63 | 0% | Which one does not belong? / Two of these are landforms. [volcano / *storm / peninsula] |
+| 3 | 1 | 35.1 | 7.7 | 72 | 0% | Which one is a solid? [juice / *rock / carbon dioxide / neon] |
+| 3 | 2 | 42.0 | 6.3 | 0 | 0% | Arctic, Pacific, and Atlantic / are all ___. [*oceans / state capitals / cities / countries] |
+| 3 | 3 | 47.5 | 6.9 | 58 | 0% | Which one does not belong? [timpani / marimba / *French horn / drum] |
+| 4 | 1 | 44.4 | 6.3 | 63 | 0% | Tin, zinc, and gold / are all ___. [stars / *metals / kinds of rock / gases] |
+| 4 | 2 | 51.6 | 6.7 | 37 | 0% | Sydney, Paris, and Boston / are all ___. [U.S. states / oceans / *cities / continents] |
+| 4 | 3 | 52.7 | 7.0 | 37 | 0% | 9, 6, and 4 / are all ___. [units of time / polygons / prime numbers / *composite numbers] |
+| 5 | 1 | 50.4 | 6.1 | 0 | 0% | Comma, period, and question mark / are all ___. [verbs / *punctuation marks / adverbs / consonants] |
+| 5 | 2 | 52.5 | 7.0 | 37 | 0% | Which one does not belong? [*brain / the Egyptians / the Persians / the Incas] |
+| 5 | 3 | 53.6 | 7.1 | 37 | 0% | Which one does not belong? [*cheetah / elephant / giraffe / rabbit] |
 
 ### Word associations (`associations`, reading)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 17.7 | 10.7 | 0 | 0% | What does a horse say? [*neigh / hee-haw / howl] |
-| K | 2 | 20.4 | 8.9 | 0 | 0% | Where does a mouse live? / Tell me if you can, / Then I will be / Your biggest fan! [den / *hole / castle] |
-| K | 3 | 23.5 | 8.5 | 0 | 0% | Listen, listen! What do you hear? / A cricket says ___, loud and clear! [buzz / gobble / *chirp] |
-| 1 | 1 | 22.8 | 8.8 | 0 | 0% | Where does a bear live? / Tell me if you can, / Then I will be / Your biggest fan! [lodge / *den / barn] |
-| 1 | 2 | 32.2 | 7.6 | 0 | 0% | Which one glows? [*lamp / balloon / key] |
-| 1 | 3 | 39.4 | 6.0 | 0 | 0% | What does a fisherman use? [*fishing rod / pen / camera] |
-| 2 | 1 | 39.1 | 6.2 | 0 | 0% | A baker works in a ___. [*bakery / ship / courtroom] |
-| 2 | 2 | 46.6 | 5.1 | 0 | 0% | What does a baseball player use? [*bat / hockey stick / fire hose] |
-| 2 | 3 | 49.0 | 5.0 | 0 | 0% | A miner works in a ___. [*mine / laboratory / dental office] |
-| 3 | 1 | 48.5 | 5.2 | 0 | 0% | An explorer uses a ___. [scissors / *map / mop / bat] |
-| 3 | 2 | 56.2 | 5.7 | 0 | 0% | Which one is part of a pizza? [collar / fin / wing / *crust] |
-| 3 | 3 | 57.3 | 5.7 | 0 | 0% | A petal is part of a ___. [*flower / trumpet / hand / house] |
-| 4 | 1 | 62.6 | 6.7 | 0 | 0% | Which one is part of a lamp? [*bulb / minute / collar / doorknob] |
-| 4 | 2 | 71.7 | 6.8 | 0 | 0% | What is a solar panel used for? [measuring distance driven / hearing a heartbeat / smoothing clothes / *making power from sunlight] |
-| 4 | 3 | 71.4 | 6.9 | 0 | 0% | Which one is part of a lamp? [sail / *bulb / sleeve / beak] |
-| 5 | 1 | 69.8 | 6.7 | 0 | 0% | Which one is used for / guiding ships? [*lighthouse / stapler / iron / helmet] |
-| 5 | 2 | 76.3 | 6.9 | 0 | 0% | Which one is used for / telling time? [umbrella / toaster / furnace / *clock] |
-| 5 | 3 | 76.8 | 7.1 | 0 | 0% | Which one is used for / seeing over obstacles? [protractor / solar panel / *periscope / plow] |
+| K | 1 | 18.9 | 10.7 | 0 | 0% | What does a dog say? [*woof / hee-haw / howl] |
+| K | 2 | 22.8 | 8.9 | 0 | 0% | Where does a rabbit live? / Tell me if you can, / Then I will be / Your biggest fan! [den / *burrow / castle] |
+| K | 3 | 26.1 | 8.0 | 0 | 0% | Listen, listen! What do you hear? / A goose says ___, loud and clear! [buzz / gobble / *honk] |
+| 1 | 1 | 24.5 | 9.2 | 0 | 0% | Where does a bee live? / Tell me if you can, / Then I will be / Your biggest fan! [barn / *hive / den] |
+| 1 | 2 | 35.2 | 7.7 | 0 | 0% | Which one sweeps? [*broom / balloon / key] |
+| 1 | 3 | 42.5 | 6.1 | 0 | 0% | What does a mail carrier use? [*mailbag / pen / camera] |
+| 2 | 1 | 40.3 | 6.1 | 0 | 0% | A baker works in a ___. [*bakery / ship / courtroom] |
+| 2 | 2 | 48.9 | 5.2 | 0 | 0% | What does a baseball player use? [*bat / hockey stick / fire hose] |
+| 2 | 3 | 57.8 | 5.4 | 0 | 0% | A tennis player uses a ___. [wand / *racket / baton] |
+| 3 | 1 | 49.9 | 5.0 | 0 | 0% | A weaver uses a ___. [scissors / *loom / mop / hockey stick] |
+| 3 | 2 | 58.7 | 5.8 | 0 | 0% | Which one is part of a house? [county / shell / chapter / *roof] |
+| 3 | 3 | 60.6 | 5.8 | 0 | 0% | A rung is part of a ___. [car / country / staircase / *ladder] |
+| 4 | 1 | 63.5 | 6.7 | 0 | 0% | Which one is part of a television? [*screen / branch / drawer / doorknob] |
+| 4 | 2 | 73.3 | 6.9 | 0 | 0% | What is a solar panel used for? [measuring distance driven / hearing a heartbeat / smoothing clothes / *making power from sunlight] |
+| 4 | 3 | 76.3 | 7.1 | 0 | 0% | Which one is used for / making electricity? [*generator / sundial / plow / measuring cup] |
+| 5 | 1 | 71.9 | 6.7 | 0 | 0% | Which one is used for / getting into a tin? [*can opener / toaster / vacuum cleaner / umbrella] |
+| 5 | 2 | 78.6 | 6.9 | 0 | 0% | Which one is used for / seeing how much flour? [umbrella / toaster / furnace / *measuring cup] |
+| 5 | 3 | 79.9 | 7.3 | 0 | 0% | Which one is used for / grinding grain? [stopwatch / generator / *windmill / plow] |
 
 ### Syllables (`syllables`, reading)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 1 | 25.0 | 5.0 | 2 | 0% | Which word has 2 syllables? [grandmother / crocodile / *music] |
-| 1 | 2 | 27.6 | 7.1 | 4 | 0% | Which word has 1 syllable? [*heart / giraffe / seven] |
-| 1 | 3 | 38.5 | 6.7 | 4 | 0% | How many syllables are in "piano"? [4 / 2 / *3] |
-| 2 | 1 | 38.5 | 6.9 | 4 | 0% | Which word has 3 syllables? [motorcycle / dog / *medicine] |
-| 2 | 2 | 41.0 | 8.6 | 4 | 0% | Clap it out, one beat at a time! / How many syllables in "carrot"? [1 / 4 / *2] |
-| 2 | 3 | 39.5 | 7.0 | 4 | 0% | Which word has 3 syllables? [*understand / photographer / apologize] |
-| 3 | 1 | 38.5 | 5.5 | 4 | 0% | How many syllables are in "ocean"? [*2 / 3 / 1 / 4] |
-| 3 | 2 | 52.0 | 6.0 | 4 | 0% | How many syllables are in "sheep"? [4 / 3 / 2 / *1] |
-| 3 | 3 | 50.8 | 5.5 | 4 | 0% | How many syllables are in "seven"? [1 / *2 / 4 / 3] |
+| 1 | 1 | 22.0 | 5.0 | 2 | 0% | Which word has 1 syllable? [water / jelly / *sleep] |
+| 1 | 2 | 23.7 | 7.1 | 3 | 0% | Which word has 2 syllables? [friend / violin / *finger] |
+| 1 | 3 | 36.0 | 7.0 | 4 | 0% | How many syllables are in "piano"? [4 / 2 / *3] |
+| 2 | 1 | 23.3 | 7.1 | 3 | 0% | Which word has 2 syllables? [school / oxygen / *carrot] |
+| 2 | 2 | 35.6 | 7.1 | 4 | 0% | How many syllables are in "magazine"? [*3 / 2 / 1] |
+| 2 | 3 | 44.3 | 6.6 | 4 | 0% | Which word has 4 syllables? [delicious / yesterday / *secretary] |
+| 3 | 1 | 35.8 | 5.5 | 4 | 0% | How many syllables are in "excellent"? [*3 / 4 / 2 / 1] |
+| 3 | 2 | 48.4 | 5.5 | 4 | 0% | How many syllables are in "tangerine"? [1 / 4 / *3 / 2] |
+| 3 | 3 | 48.7 | 5.5 | 4 | 0% | How many syllables are in "supermarket"? [*4 / 2 / 3 / 1] |
 
 ### Plurals and tenses (`plurals`, reading)
 
@@ -505,105 +505,105 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 | 3 | 1 | 35.4 | 8.4 | 0 | 0% | What is the plural of "tooth"? [tooths / tooth's / tooth / *teeth] |
 | 3 | 2 | 41.5 | 9.4 | 0 | 0% | What is the plural of "goose"? [*geese / geeses / goose / goose's] |
 | 3 | 3 | 45.3 | 9.0 | 0 | 0% | Today I hang the picture. / Yesterday I ___ the picture. [hanged / hunged / *hung / hanging] |
-| 4 | 1 | 45.7 | 8.6 | 0 | 0% | One piano, ten ___. [*pianos / piano's / pianoies / piano] |
-| 4 | 2 | 50.8 | 9.1 | 0 | 0% | What is the past tense of "tear"? [torn / *tore / teared / tear] |
-| 4 | 3 | 56.4 | 8.9 | 0 | 0% | What is the plural of "radius"? [radiusi / *radii / radius / radiis] |
-| 5 | 1 | 50.2 | 8.7 | 0 | 0% | I have one stimulus. / My friend has three ___. [stimulus / stimuluses / stimulus's / *stimuli] |
-| 5 | 2 | 56.6 | 9.1 | 0 | 0% | One nucleus, three ___. [nucleis / nucleus's / *nuclei / nucleus] |
-| 5 | 3 | 56.7 | 8.7 | 0 | 0% | Yesterday, my friends ___ the task. / Which word fills the blank? [*undertook / undertooked / undertaken / undertaking] |
+| 4 | 1 | 45.7 | 8.7 | 0 | 0% | One piano, ten ___. [*pianos / piano's / pianoies / piano] |
+| 4 | 2 | 49.9 | 8.6 | 0 | 0% | What is the past tense of "tear"? [torn / *tore / teared / tear] |
+| 4 | 3 | 56.3 | 8.8 | 0 | 0% | What is the plural of "radius"? [radiusi / *radii / radius / radiis] |
+| 5 | 1 | 50.2 | 8.9 | 0 | 0% | What is the plural of "stimulus"? [stimulus / stimuluses / stimulus's / *stimuli] |
+| 5 | 2 | 56.7 | 8.9 | 0 | 0% | What is the plural of "nucleus"? [nucleis / nucleus's / *nuclei / nucleus] |
+| 5 | 3 | 56.6 | 8.7 | 0 | 0% | Yesterday, the teacher ___ the task. / Which word fills the blank? [*undertook / undertooked / undertaken / undertaking] |
 
 ### Contractions (`contractions`, reading)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| 2 | 1 | 17.3 | 5.4 | 0 | 0% | Make "you will" shorter. / Which word is it? [*you'll / you're / they'll] |
-| 2 | 2 | 24.4 | 6.6 | 0 | 0% | "couldn't" means ___. [did not / are not / *could not] |
-| 2 | 3 | 30.2 | 7.2 | 0 | 0% | Which is the right way to write "how is"? [ho'ws / hows / *how's] |
-| 3 | 1 | 28.8 | 5.6 | 0 | 0% | "shouldn't" is short for ___. [will not / would not / *should not / does not] |
-| 3 | 2 | 33.7 | 6.8 | 0 | 0% | Which contraction means "there will"? [*there'll / that'll / they'll / who'll] |
-| 3 | 3 | 41.4 | 7.4 | 0 | 0% | Which contraction is spelled correctly? / It means "there will". [therell / ther'ell / therel'l / *there'll] |
+| 2 | 1 | 18.1 | 6.8 | 0 | 0% | Which contraction means "you will"? [you're / *you'll / it'll] |
+| 2 | 2 | 28.1 | 7.8 | 0 | 0% | "The dog was not here." / Which contraction fits the red words? [*wasn't / aren't / weren't] |
+| 2 | 3 | 30.1 | 7.5 | 0 | 0% | Which is the right way to write "I would"? [Id / *I'd / Id'] |
+| 3 | 1 | 29.6 | 7.2 | 0 | 0% | "there's" is short for ___. [how is / that is / *there is / what is] |
+| 3 | 2 | 38.0 | 7.6 | 0 | 0% | "we would" as a contraction. / Where does the apostrophe go? [wed' / w'ed / *we'd / wed] |
+| 3 | 3 | 41.0 | 7.3 | 0 | 0% | Which contraction is spelled correctly? / It means "might have". [mightve / migh'tve / mightv'e / *might've] |
 
 ### Homophones (`homophones`, reading)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| 2 | 1 | 23.3 | 10.0 | 0 | 0% | We ___ pizza for dinner. / Which spelling is right here? [*ate / buy / eight] |
-| 2 | 2 | 23.2 | 10.1 | 0 | 0% | I can ___ the bell ring. / Which spelling is right here? [bear / *hear / here] |
-| 2 | 3 | 28.5 | 10.2 | 0 | 0% | I will ___ milk at the store. / Which spelling is right here? [by / *buy / son] |
-| 3 | 1 | 34.4 | 10.6 | 0 | 0% | Fill in the blank: / The teacher wrote on the ___. [*board / bored / break / forth] |
-| 3 | 2 | 34.5 | 10.7 | 0 | 0% | I ate ___ much candy. / Which word fills the blank? [two / *too / to / its] |
-| 3 | 3 | 38.9 | 10.7 | 0 | 0% | We heard him ___ when he lost. / Which word fills the blank? [*groan / bored / grown / steal] |
-| 4 | 1 | 45.9 | 11.0 | 0 | 0% | "stationary" has a sound-alike word. / Which word is it? [principal / complement / compliment / *stationery] |
-| 4 | 2 | 45.6 | 11.0 | 0 | 0% | We had to ___ water out of the boat. / Which word fills the blank? [soul / *bail / bale / lead] |
-| 4 | 3 | 50.5 | 11.0 | 0 | 0% | The parked car was ___. / Which word fills the blank? [compliment / *stationary / complement / stationery] |
-| 5 | 1 | 50.8 | 11.2 | 0 | 0% | Fill in the blank: / Paris is the ___ of France. [guessed / bizarre / *capital / capitol] |
-| 5 | 2 | 55.5 | 11.2 | 0 | 0% | The painter mixed colors on her ___. / Which spelling is right here? [*palette / pallet / gorilla / palate] |
-| 5 | 3 | 55.5 | 11.2 | 0 | 0% | The nurse found a ___ in my arm. / Which spelling is right here? [vain / vane / idle / *vein] |
+| 2 | 1 | 25.5 | 10.0 | 0 | 0% | Fill in the blank: / I have ___ hands. [*two / tow / too] |
+| 2 | 2 | 28.9 | 10.3 | 0 | 0% | Fill in the blank: / I ___ how to swim. [week / *know / no] |
+| 2 | 3 | 35.8 | 10.4 | 0 | 0% | Fill in the blank: / Grandma ___ a quilt. [tail / maid / *made] |
+| 3 | 1 | 36.7 | 10.4 | 0 | 0% | The cut will ___ in a week. / Which spelling is right here? [pole / heel / past / *heal] |
+| 3 | 2 | 39.9 | 10.5 | 0 | 0% | The movie lasts one ___. / Which word fills the blank? [*hour / it's / fare / our] |
+| 3 | 3 | 45.9 | 10.8 | 0 | 0% | The class took a ___ on the best pizza. / Which spelling is right here? [fair / *poll / wait / pole] |
+| 4 | 1 | 48.7 | 10.9 | 0 | 0% | Which word sounds just like "principal" / but is spelled differently? [guerrilla / *principle / complement / presence] |
+| 4 | 2 | 50.8 | 10.6 | 0 | 0% | Fill in the blank: / The ___ soaked our tent. [rein / reign / *rain / sole] |
+| 4 | 3 | 58.4 | 11.2 | 0 | 0% | Fill in the blank: / A heart is a ___ of love. [cymbal / coarse / *symbol / serial] |
+| 5 | 1 | 52.8 | 10.9 | 0 | 0% | Fill in the blank: / The parked car was ___. [stationery / complement / compliment / *stationary] |
+| 5 | 2 | 60.7 | 11.0 | 0 | 0% | Fill in the blank: / Put your coat on a ___. [*hanger / burrow / strait / hangar] |
+| 5 | 3 | 63.5 | 11.4 | 0 | 0% | The boxer used a ___ to trick his opponent. / Which word fills the blank? [*feint / steak / minor / faint] |
 
 ### Prefixes and suffixes (`affixes`, reading)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| 3 | 1 | 37.5 | 7.9 | 0 | 0% | Which word means / "full of care"? [careness / carement / careable / *careful] |
-| 3 | 2 | 43.7 | 8.1 | 0 | 0% | Which word means / "one who sings"? [gladly / *singer / action / slowly] |
-| 3 | 3 | 50.0 | 8.3 | 0 | 0% | Which meaning fits "brightness"? [*the state of being bright / one who is bright / in a bright way / not bright] |
-| 4 | 1 | 50.3 | 8.2 | 0 | 0% | Add a prefix to "trust" to make a word that / means "to not trust". [misjudge / interact / misspell / *distrust] |
-| 4 | 2 | 54.7 | 8.1 | 0 | 0% | Which word means / "the act of improving"? [comfortable / celebration / *improvement / thoughtless] |
-| 4 | 3 | 60.8 | 8.2 | 0 | 0% | Which meaning fits "education"? [to educate again / able to be educated / one who educates / *the act of educating] |
-| 5 | 1 | 55.3 | 8.3 | 0 | 0% | In "readable", what does / the suffix -able mean? [without / the result of / *able to be / in a certain way] |
-| 5 | 2 | 61.2 | 8.4 | 0 | 0% | In "readable", what does / the suffix -able mean? [the result of / one who / *able to be / the state of being] |
-| 5 | 3 | 61.0 | 8.4 | 0 | 0% | Add a suffix to "move" to make a word that / means "able to be moved". [quickly / movement / *movable / payment] |
+| 3 | 1 | 37.7 | 8.0 | 0 | 0% | Which word means / "to fill again"? [unfill / disfill / misfill / *refill] |
+| 3 | 2 | 43.2 | 7.9 | 0 | 0% | Which word means / "one who sings"? [gladly / *singer / action / slowly] |
+| 3 | 3 | 50.0 | 8.5 | 0 | 0% | Which meaning fits "agreement"? [*the act of agreeing / to agree again / one who agrees / not agreeing] |
+| 4 | 1 | 50.0 | 7.8 | 0 | 0% | Add a prefix to "agree" to make a word that / means "to not agree". [reagree / subagree / *disagree / agreement] |
+| 4 | 2 | 54.7 | 8.2 | 0 | 0% | Which word means "the state of being fair"? [shipment / *fairness / unfair / movement] |
+| 4 | 3 | 61.5 | 8.9 | 0 | 0% | Which meaning fits "decoration"? [to decorate again / able to be decorated / one who decorates / *something used to decorate] |
+| 5 | 1 | 55.0 | 7.9 | 0 | 0% | In "subheading", what does / the prefix sub- mean? [not / *under / wrongly / between] |
+| 5 | 2 | 61.6 | 8.0 | 0 | 0% | In "enjoyable", what does / the suffix -able mean? [the state of being / *able to be / the act of / in a certain way] |
+| 5 | 3 | 61.5 | 8.3 | 0 | 0% | Add a suffix to "educate" to make a word that / means "the act of educating". [educately / educateer / educateable / *education] |
 
 ### Analogies (`analogies`, reading)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| 3 | 1 | 34.6 | 9.0 | 0 | 0% | Laugh is to cry as win is to ___. [first / race / *lose / prize] |
-| 3 | 2 | 39.5 | 9.0 | 0 | 0% | Red is to color / as square is to ___. [four / *shape / corner / box] |
-| 3 | 3 | 45.9 | 9.9 | 0 | 0% | Hammer is to tool / as violin is to ___. [*instrument / string / music / bow] |
-| 4 | 1 | 45.7 | 10.4 | 0 | 0% | lamp : light :: heater : ___ / Which word finishes the analogy? [*warmth / coal / fire / winter] |
-| 4 | 2 | 50.8 | 10.6 | 0 | 0% | abundant : scarce :: expand : ___ / Which word finishes the analogy? [stretch / *shrink / balloon / grow] |
-| 4 | 3 | 57.4 | 10.7 | 0 | 0% | Accept is to refuse / as include is to ___. [add / invite / *exclude / contain] |
-| 5 | 1 | 51.9 | 10.7 | 0 | 0% | bristle : brush :: blade : ___ / Which word finishes the analogy? [sword / sharp / *knife / cut] |
-| 5 | 2 | 58.1 | 10.8 | 0 | 0% | glance : stare :: tap : ___ / Which word finishes the analogy? [touch / *pound / knock / finger] |
-| 5 | 3 | 57.8 | 10.8 | 0 | 0% | reluctant : unwilling / Which pair goes together / in the same way? [pig : piglet / wave : ocean / chapter : novel / *furious : enraged] |
+| 3 | 1 | 36.1 | 9.0 | 0 | 0% | Thick is to thin as new is to ___. [clean / shiny / *old / fresh] |
+| 3 | 2 | 43.3 | 9.0 | 0 | 0% | Apple is to fruit / as carrot is to ___. [garden / *vegetable / orange / rabbit] |
+| 3 | 3 | 50.3 | 9.9 | 0 | 0% | Soccer is to sport / as chess is to ___. [*game / board / king / checkers] |
+| 4 | 1 | 47.2 | 10.5 | 0 | 0% | photographer : camera :: drummer : ___ / Which word finishes the analogy? [*drumsticks / beat / band / music] |
+| 4 | 2 | 54.6 | 10.6 | 0 | 0% | vacant : occupied :: permanent : ___ / Which word finishes the analogy? [lasting / *temporary / fixed / forever] |
+| 4 | 3 | 61.4 | 10.6 | 0 | 0% | Chapter is to novel as verse is to ___. [poet / song / rhyme / *poem] |
+| 5 | 1 | 53.2 | 10.7 | 0 | 0% | abundant : scarce :: expand : ___ / Which word finishes the analogy? [*shrink / stretch / balloon / grow] |
+| 5 | 2 | 60.8 | 10.7 | 0 | 0% | shallow : deep :: narrow : ___ / Which word finishes the analogy? [*wide / slim / tight / thin] |
+| 5 | 3 | 61.8 | 10.7 | 0 | 0% | bristle : brush / Which pair goes together / in the same way? [rabbit : burrow / *lens : camera / sweet : sour / enormous : gigantic] |
 
 ### ABC order (`alphabetical`, reading)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
 | 2 | 1 | 0.4 | 9.4 | 0 | 0% | Put these words in ABC order. / Which one comes first? [jump / *award / print] |
-| 2 | 2 | 3.5 | 9.4 | 0 | 0% | Which word comes FIRST in ABC order? [trunk / sleep / *fry] |
-| 2 | 3 | 8.3 | 9.3 | 0 | 0% | In a dictionary, which of these / words would you find last? [dad / strong / *vase] |
+| 2 | 2 | 8.4 | 9.4 | 0 | 0% | In a dictionary, which of these / words would you find first? [*bath / blaze / bear] |
+| 2 | 3 | 13.9 | 9.3 | 0 | 0% | In a dictionary, which of these / words would you find last? [*front / fan / flip] |
 | 3 | 1 | 15.0 | 9.3 | 0 | 0% | Put these words in ABC order. / Which one comes first? [elbow / end / exit / *egg] |
-| 3 | 2 | 16.3 | 9.2 | 0 | 0% | In a dictionary, which of these / words would you find last? [*stamp / snail / shine / skunk] |
-| 3 | 3 | 21.0 | 9.4 | 0 | 0% | In a dictionary, which of these / words would you find first? [lion / leaf / *lake / log] |
+| 3 | 2 | 20.9 | 9.4 | 0 | 0% | In a dictionary, which of these / words would you find last? [plum / pear / pot / *prince] |
+| 3 | 3 | 26.0 | 9.2 | 0 | 0% | Which word comes FIRST in ABC order? [*pen / pot / plug / plan] |
 | 4 | 1 | 25.0 | 9.3 | 0 | 0% | Which word comes FIRST in ABC order? [thick / thunder / *thaw / theme] |
-| 4 | 2 | 26.2 | 9.2 | 0 | 0% | Put these words in ABC order. / Which one comes last? [*crumb / crash / crib / crop] |
-| 4 | 3 | 31.4 | 9.3 | 0 | 0% | In a dictionary, which of these / words would you find last? [splash / *spy / sport / spend] |
+| 4 | 2 | 30.5 | 9.4 | 0 | 0% | Which word comes LAST in ABC order? [*grow / grade / great / grass] |
+| 4 | 3 | 36.2 | 9.3 | 0 | 0% | Which word comes LAST in ABC order? [stand / stage / *store / stem] |
 
 ### Sentence completion (`sentences`, reading)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 3.2 | 10.0 | 0 | 0% | I can ___ fast. / Which word goes in the blank? [*run / sit / eat] |
-| K | 2 | 3.6 | 10.1 | 0 | 0% | I sleep in my ___. / Which word goes in the blank? [*bed / sock / hat] |
-| K | 3 | 10.1 | 10.5 | 0 | 0% | I eat soup with a ___. / Which word goes in the blank? [sock / *spoon / hat] |
-| 1 | 1 | 13.9 | 9.9 | 0 | 0% | The rabbit has long ___. / Which word fills the blank? [*ears / wings / fins] |
-| 1 | 2 | 14.3 | 10.0 | 0 | 0% | The bunny ___ over the log. / Which word makes sense here? [sings / bakes / *hops] |
-| 1 | 3 | 21.2 | 11.9 | 0 | 0% | A fish lives in the ___. / Which word fills the blank? [barn / sky / *water] |
-| 2 | 1 | 24.3 | 14.1 | 0 | 0% | Fill in the blank: / My shoes got ___ when I stepped in the puddle. [*wet / dry / new] |
-| 2 | 2 | 25.4 | 13.6 | 0 | 0% | It was so ___ that we could not see the road. / Which word makes sense here? [*foggy / sunny / warm] |
-| 2 | 3 | 33.0 | 13.3 | 0 | 0% | Fill in the blank: / The ___ old house creaked in the wind. [shiny / *rickety / sturdy] |
-| 3 | 1 | 35.0 | 13.7 | 0 | 0% | Fill in the blank: / The magician's trick left the crowd ___. [angry / *amazed / sleepy / bored] |
-| 3 | 2 | 36.5 | 13.7 | 0 | 0% | The river was too ___ to cross on foot. / Which word fills the blank? [*deep / narrow / calm / shallow] |
-| 3 | 3 | 43.4 | 13.3 | 0 | 0% | The ___ old house creaked in the wind. / Which word makes sense here? [brand-new / sturdy / *rickety / shiny] |
-| 4 | 1 | 45.9 | 13.0 | 0 | 0% | Fill in the blank: / The ___ smell from the garbage made us leave. [*foul / pleasant / sweet / fresh] |
-| 4 | 2 | 47.0 | 12.9 | 0 | 0% | The cave was ___ with strange shadows. / Which word makes sense here? [cozy / *eerie / cheerful / ordinary] |
-| 4 | 3 | 55.2 | 13.2 | 0 | 0% | Fill in the blank: / The ___ lake was so clear we could see the / fish. [murky / *tranquil / stormy / choppy] |
-| 5 | 1 | 50.7 | 13.3 | 0 | 0% | The ___ crowd waited quietly for hours. / Which word fills the blank? [restless / *patient / absent / furious] |
-| 5 | 2 | 58.6 | 13.3 | 0 | 0% | The ___ explorer refused to give up. / Which word fills the blank? [*persistent / careless / lazy / timid] |
-| 5 | 3 | 59.6 | 13.1 | 0 | 0% | The rescue team worked ___ to free the trapped / hikers. / Which word fills the blank? [lazily / rarely / carelessly / *tirelessly] |
+| K | 1 | 4.1 | 9.9 | 0 | 0% | A bird can ___. / Pick the word that fits. [moo / read / *fly] |
+| K | 2 | 6.1 | 10.2 | 0 | 0% | I sleep in my ___. / Pick the word that fits. [hat / *bed / sock] |
+| K | 3 | 13.5 | 10.4 | 0 | 0% | The ___ has a shell. / Pick the word that fits. [*turtle / hen / cow] |
+| 1 | 1 | 14.9 | 10.2 | 0 | 0% | We ___ the ball with a bat. / Which word fills the blank? [*hit / bake / read] |
+| 1 | 2 | 16.9 | 9.8 | 0 | 0% | The apple is red and ___. / Which word fills the blank? [*sweet / furry / tall] |
+| 1 | 3 | 24.0 | 11.4 | 0 | 0% | The ___ delivered letters to every house. / Which word fills the blank? [*mail carrier / dentist / farmer] |
+| 2 | 1 | 25.4 | 14.5 | 0 | 0% | Fill in the blank: / Turn on the ___ so we can see in the dark. [fan / *lamp / radio] |
+| 2 | 2 | 27.1 | 13.8 | 0 | 0% | I put on a ___ because it was raining. / Which word makes sense here? [sunhat / T-shirt / *raincoat] |
+| 2 | 3 | 35.6 | 13.2 | 0 | 0% | She ___ the letter into the mailbox. / Which word fills the blank? [read / wrote / *dropped] |
+| 3 | 1 | 36.5 | 13.1 | 0 | 0% | Because the road was ___, the cars / drove slowly. / Which word fills the blank? [empty / *icy / straight / wide] |
+| 3 | 2 | 38.7 | 13.3 | 0 | 0% | Fill in the blank: / The ___ crowd cheered as the team scored. [sleepy / *excited / bored / silent] |
+| 3 | 3 | 46.6 | 13.1 | 0 | 0% | Fill in the blank: / The ___ crowd cheered as the team scored. [bored / silent / *excited / sleepy] |
+| 4 | 1 | 47.4 | 12.9 | 0 | 0% | Fill in the blank: / The ___ dog waited by the door every day for / its owner. [wild / lazy / *loyal / fierce] |
+| 4 | 2 | 49.0 | 13.0 | 0 | 0% | Fill in the blank: / The ___ traveler had visited twenty countries. [homesick / nervous / lost / *experienced] |
+| 4 | 3 | 57.5 | 13.0 | 0 | 0% | The rescue team worked ___ to free the / trapped hikers. / Which word makes sense here? [*tirelessly / carelessly / lazily / rarely] |
+| 5 | 1 | 52.4 | 13.2 | 0 | 0% | Fill in the blank: / Please ___ the dishes before you dry them. [wrap / *rinse / bake / freeze] |
+| 5 | 2 | 60.4 | 13.2 | 0 | 0% | The ___ of the volcano forced the villagers / to flee. / Which word fills the blank? [height / beauty / silence / *eruption] |
+| 5 | 3 | 62.3 | 13.5 | 0 | 0% | The ___ student asked question after question. / Which word fills the blank? [*inquisitive / bored / drowsy / indifferent] |
 
 ### Parts of speech (`partsofspeech`, reading)
 
@@ -623,199 +623,199 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| 3 | 1 | 37.0 | 4.5 | 0 | 0% | Which word means "strange or odd"? [famished / enormous / *peculiar / gigantic] |
-| 3 | 2 | 42.6 | 4.6 | 0 | 0% | What does "weary" mean? [angry / *tired / hungry / excited] |
-| 3 | 3 | 48.4 | 4.7 | 0 | 0% | Which word means "to surprise greatly"? [bewilder / *astonish / solitary / generous] |
-| 4 | 1 | 47.7 | 4.6 | 0 | 0% | What does "solitary" mean? [crowded / noisy / *alone / friendly] |
-| 4 | 2 | 52.8 | 4.7 | 0 | 0% | Which word means "danger"? [jubilant / *jeopardy / cautious / astonish] |
-| 4 | 3 | 60.6 | 4.8 | 0 | 0% | "resilient" means ___. [easily broken / slow to learn / *able to recover quickly / always tired] |
-| 5 | 1 | 53.0 | 4.7 | 0 | 0% | Which word means / "full of joy"? [solitary / *jubilant / diligent / astonish] |
-| 5 | 2 | 59.8 | 4.7 | 0 | 0% | Which word means / "extremely careful"? [scrutinize / benevolent / *meticulous / hypothesis] |
-| 5 | 3 | 60.6 | 4.8 | 0 | 0% | Which word means / "able to recover quickly"? [*resilient / tentative / adversary / voracious] |
+| 3 | 1 | 38.3 | 4.3 | 0 | 0% | Which word means / "to shine or sparkle"? [wander / *glisten / grumble / tremble] |
+| 3 | 2 | 44.3 | 4.4 | 0 | 0% | Which word means / "extremely happy"? [drowsy / seldom / *elated / hollow] |
+| 3 | 3 | 51.1 | 4.7 | 0 | 0% | Which word means / "willing to give"? [jubilant / *generous / cautious / obstacle] |
+| 4 | 1 | 48.9 | 4.3 | 0 | 0% | "loathe" means ___. [*to hate / to love / to follow / to forget] |
+| 4 | 2 | 56.1 | 4.7 | 0 | 0% | Which word means "fair and not taking sides"? [plausible / gratitude / hazardous / *impartial] |
+| 4 | 3 | 64.2 | 5.1 | 0 | 0% | Which word means / "meaning to do harm"? [nostalgic / pragmatic / tentative / *malicious] |
+| 5 | 1 | 55.1 | 4.4 | 0 | 0% | "resemble" means ___. [to argue with / *to look like / to build up / to run from] |
+| 5 | 2 | 61.9 | 4.9 | 0 | 0% | Which meaning fits "haughty"? [kind and gentle / humble and modest / sad and lonely / *arrogantly proud] |
+| 5 | 3 | 64.2 | 5.3 | 0 | 0% | Which word means "never done before"? [*unprecedented / superfluous / gregarious / apprehensive] |
 
 ### Odd one out (`oddoneout`, thinking)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 2.0 | 8.6 | 0 | 100% | Which one is a different colour? [picture / picture / *picture] |
+| K | 1 | 2.0 | 8.6 | 0 | 100% | Which one is a different color? [picture / picture / *picture] |
 | K | 2 | 4.0 | 8.5 | 0 | 100% | Which one is a different shape? [picture / *picture / picture] |
-| K | 3 | 7.0 | 8.7 | 0 | 66% | Look at the shapes. / Which shape is not like the others? [*picture / picture / picture] |
-| 1 | 1 | 11.0 | 12.1 | 0 | 22% | Which one is a different colour? [picture / *picture / picture] |
-| 1 | 2 | 15.0 | 9.6 | 0 | 0% | Two of these go together. / Which one is the odd one out? [*pig / ship / ferry] |
-| 1 | 3 | 17.6 | 9.8 | 0 | 0% | Which one does not belong? [*duck / piano / bell] |
-| 2 | 1 | 21.7 | 13.6 | 0 | 0% | Which one does not belong? [rock / ice / *pillow] |
-| 2 | 2 | 25.4 | 9.7 | 0 | 0% | Two of these go together. / Which one is the odd one out? [*cow / whale / crab] |
-| 2 | 3 | 28.6 | 9.5 | 0 | 0% | Which one does not belong? [anchor / brick / *feather] |
-| 3 | 1 | 32.9 | 10.1 | 0 | 0% | One of these is not like the others. / Which one is it? [lemon / banana / *corn / pineapple] |
-| 3 | 2 | 36.0 | 9.7 | 0 | 0% | Three of these go together. / Which one is the odd one out? [toast / soup / *ice cream / stew] |
-| 3 | 3 | 39.2 | 9.6 | 0 | 0% | Which one does not belong? [*rose / apple / raspberry / strawberry] |
-| 4 | 1 | 43.5 | 9.6 | 0 | 0% | One of these is not like the others. / Which one is it? [inch / metre / mile / *minute] |
-| 4 | 2 | 45.8 | 9.6 | 0 | 0% | One of these is not like the others. / Which one is it? [toddler / *adult / infant / newborn] |
-| 4 | 3 | 49.0 | 9.7 | 0 | 0% | Three of these go together. / Which one is the odd one out? [reply / response / answer / *question] |
-| 5 | 1 | 53.0 | 9.8 | 0 | 0% | Which one does not belong? [pint / *gram / cup / gallon] |
-| 5 | 2 | 55.9 | 9.9 | 0 | 0% | One of these is not like the others. / Which one is it? [nitrogen / *copper / oxygen / helium] |
-| 5 | 3 | 55.9 | 9.5 | 0 | 0% | Which one does not belong? [bat / dog / *lizard / whale] |
+| K | 3 | 6.0 | 7.6 | 0 | 100% | Count each group. / Which group has a different number? [picture / *picture / picture] |
+| 1 | 1 | 12.5 | 13.4 | 0 | 0% | Two of these go together. / Which one is the odd one out? / Hint: most of these are animals. [cow / pig / *car] |
+| 1 | 2 | 15.0 | 9.6 | 0 | 0% | Two of these go together. / Which one is the odd one out? [*shoe / nose / chin] |
+| 1 | 3 | 17.0 | 9.4 | 0 | 0% | Two of these go together. / Which one is the odd one out? [*chair / run / skip] |
+| 2 | 1 | 22.5 | 13.1 | 0 | 0% | One of these is not like the others. / Which one is it? / Hint: most of these are cold. [iceberg / *sun / ice cream] |
+| 2 | 2 | 25.0 | 9.7 | 0 | 0% | Two of these go together. / Which one is the odd one out? [*ant / elephant / rhino] |
+| 2 | 3 | 27.0 | 9.5 | 0 | 0% | Which one does not belong? [fox / *duck / lion] |
+| 3 | 1 | 32.5 | 12.9 | 0 | 0% | One of these is not like the others. / Which one is it? / Hint: most of these are citrus fruits. [lime / *strawberry / lemon / grapefruit] |
+| 3 | 2 | 35.0 | 9.7 | 0 | 0% | Three of these go together. / Which one is the odd one out? [ferry / motorboat / *rowboat / jet ski] |
+| 3 | 3 | 37.0 | 9.6 | 0 | 0% | One of these is not like the others. / Which one is it? [harp / guitar / *drum / cello] |
+| 4 | 1 | 42.5 | 12.6 | 0 | 0% | One of these is not like the others. / Which one is it? / Hint: most of these mean happy. [merry / cheerful / *sad / glad] |
+| 4 | 2 | 45.0 | 9.9 | 0 | 0% | One of these is not like the others. / Which one is it? [toddler / *adult / infant / newborn] |
+| 4 | 3 | 47.0 | 9.3 | 0 | 0% | Three of these go together. / Which one is the odd one out? [lunch / snack / breakfast / *Monday] |
+| 5 | 1 | 52.5 | 12.8 | 0 | 0% | One of these is not like the others. / Which one is it? / Hint: most of these are planets. [Saturn / *the sun / Mars / Venus] |
+| 5 | 2 | 55.0 | 9.6 | 0 | 0% | One of these is not like the others. / Which one is it? [freezing / *rusting / melting / evaporating] |
+| 5 | 3 | 57.0 | 9.6 | 0 | 0% | Which one does not belong? [pentagon / triangle / *fraction / square] |
 
 ### Riddles (`riddles`, thinking)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 3.4 | 20.0 | 0 | 0% | Listen close, here is a clue: / I have feathers and wings. / I lay eggs and say cluck! / Can you guess what I am? [a frog / a cat / *a hen] |
-| K | 2 | 3.4 | 20.2 | 0 | 0% | Listen close, here is a clue: / I am white and fluffy. / I float up in the sky. / Rain falls out of me. / Can you guess what I am? [a pillow / the sun / *a cloud] |
-| K | 3 | 6.7 | 20.4 | 0 | 0% | I am round. / You can kick me or throw me. / Tell me, what am I? [*a ball / a cup / a block] |
-| 1 | 1 | 11.2 | 20.0 | 0 | 0% | A riddle from the elf for you: / I have a long tail and whiskers. / I purr and say meow. / What am I? [a dog / *a cat / a mouse] |
-| 1 | 2 | 13.3 | 20.1 | 0 | 0% | A riddle from the elf for you: / I have numbers and two hands. / I tell you the time. / What am I? [a book / *a clock / a calendar] |
-| 1 | 3 | 16.7 | 20.2 | 0 | 0% | A riddle from the elf for you: / I have a long tail and whiskers. / I purr and say meow. / Do you know what I am? [*a cat / a dog / a mouse] |
-| 2 | 1 | 20.7 | 20.5 | 0 | 0% | I have a neck but no head / And arms but no hands. / Do you know what I am? [a snake / a giraffe / *a shirt] |
-| 2 | 2 | 23.4 | 20.6 | 0 | 0% | Riddle, riddle, guess me true! / I am full of holes / But I still hold water. / Do you know what I am? [*a sponge / a bucket / a cup] |
-| 2 | 3 | 25.9 | 18.4 | 0 | 0% | I have a bed but never sleep. / I have a mouth but never eat. / I run but never walk. / Tell me, what am I? [*a river / a lion / a road] |
-| 3 | 1 | 30.4 | 13.2 | 0 | 0% | What kind of tree can you carry / in your hand? [*a palm / an oak / a maple / a pine] |
-| 3 | 2 | 32.9 | 10.8 | 0 | 0% | A tricky riddle, climber! / What has one foot but no legs / and carries its house around? [a worm / a crab / *a snail / a turtle] |
-| 3 | 3 | 36.0 | 11.5 | 0 | 0% | What is so fragile / that saying its name breaks it? [*silence / glass / an egg / a bubble] |
-| 4 | 1 | 40.6 | 12.3 | 0 | 0% | What kind of cup cannot hold water? [a teacup / *a cupcake / a mug / a paper cup] |
-| 4 | 2 | 43.5 | 12.9 | 0 | 0% | What goes through towns and fields / but never moves? [a train / a horse / a cloud / *a road] |
-| 4 | 3 | 47.1 | 13.6 | 28 | 0% | What has keys but cannot open / a single lock? [a ring / a car / a safe / *a piano] |
-| 5 | 1 | 51.9 | 14.5 | 28 | 0% | If you drop a yellow hat in the Red Sea, / what does it become? [*wet / red / orange / dry] |
-| 5 | 2 | 54.3 | 15.4 | 28 | 0% | What invention lets you look / right through a wall? [a ladder / *a window / a mirror / a telescope] |
-| 5 | 3 | 54.3 | 14.8 | 28 | 0% | What five-letter word sounds / like it has only one letter? [*queue / quiet / cough / aisle] |
+| K | 1 | 1.5 | 19.2 | 0 | 0% | Listen close, here is a clue: / I say moo. / I give you milk to drink. / Can you guess what I am? [a duck / a pig / *a cow] |
+| K | 2 | 4.9 | 21.0 | 0 | 0% | Listen close, here is a clue: / I am hot and bright. / I sit on a birthday cake. / Can you guess what I am? [a plate / a cup / *a candle] |
+| K | 3 | 9.2 | 21.7 | 0 | 0% | I have a handle but no legs. / You drink warm cocoa from me. / Tell me, what am I? [*a mug / a fork / a plate] |
+| 1 | 1 | 9.4 | 19.7 | 0 | 0% | A riddle from the elf for you: / I light up the room / When you flip a switch. / What am I? [a fan / *a lamp / a radio] |
+| 1 | 2 | 12.9 | 21.5 | 0 | 0% | I am soft and squishy. / You rest your head on me at night. / What am I? [a spoon / a boot / *a pillow] |
+| 1 | 3 | 19.0 | 19.6 | 0 | 0% | A riddle from the elf for you: / I have a point and I write. / You can rub out my marks. / Do you know what I am? [*a pencil / a pen / a crayon] |
+| 2 | 1 | 19.0 | 20.6 | 0 | 0% | I have a trunk, tusks and big ears. / Do you know what I am? [a giraffe / a rhino / *an elephant] |
+| 2 | 2 | 23.0 | 20.8 | 0 | 0% | A riddle from the elf for you: / I have a bed but never sleep. / I have a mouth but never eat. / I run but never walk. / Tell me, what am I? [a pillow / *a river / a road] |
+| 2 | 3 | 28.7 | 17.9 | 0 | 0% | I have scales and a forked tongue / But no legs at all. / Tell me, what am I? [*a snake / a fish / a frog] |
+| 3 | 1 | 28.9 | 12.1 | 0 | 0% | What has bark but never bites? [*a tree / a dog / a fox / a seal] |
+| 3 | 2 | 32.8 | 13.6 | 0 | 0% | What kind of tree can you carry / in your hand? [a maple / an oak / a pine / *a palm] |
+| 3 | 3 | 38.9 | 10.6 | 0 | 0% | What has lots of eyes / but cannot see? [*a potato / a needle / a spider / a fly] |
+| 4 | 1 | 38.6 | 9.2 | 0 | 0% | What has many needles / but never sews? [a tailor / *a pine tree / a haystack / a doctor] |
+| 4 | 2 | 42.8 | 11.5 | 0 | 0% | What kind of coat is best put on wet? [*a coat of paint / a fur coat / a raincoat / a winter coat] |
+| 4 | 3 | 49.3 | 15.5 | 13 | 0% | What comes once in a minute, / twice in a moment, / but never in a thousand years? [the letter T / the letter N / the letter E / *the letter M] |
+| 5 | 1 | 49.3 | 11.4 | 13 | 0% | If you drop a yellow hat in the Red Sea, / what does it become? [*wet / red / orange / dry] |
+| 5 | 2 | 53.9 | 17.2 | 28 | 0% | Mary's father has five daughters: / Nana, Nene, Nini, Nono and ...? / What is the fifth daughter's name? [Nona / Nunu / *Mary / Nina] |
+| 5 | 3 | 58.4 | 18.2 | 17 | 0% | A rooster lays an egg on a roof. / Which way does the egg roll? [*roosters lay no eggs / to the left / to the right / straight down] |
 
 ### Animals (`animals`, thinking)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 1.5 | 7.0 | 0 | 0% | A chick is a baby ... [bear / *penguin / goose] |
-| K | 2 | 1.5 | 6.9 | 0 | 0% | Listen! I hear an animal. / It says "chirp". Which animal is it? [duck / *cricket / dog] |
-| K | 3 | 4.6 | 7.0 | 0 | 0% | Which animal says "oink"? [turkey / *pig / bat] |
-| 1 | 1 | 9.4 | 6.6 | 0 | 0% | Which animal lives in a flock? [chimpanzee / *turkey / ant] |
-| 1 | 2 | 11.9 | 6.2 | 0 | 0% | Where does a bee live? [in a web / in a nest / *in a hive] |
-| 1 | 3 | 15.3 | 6.6 | 0 | 0% | Which animal lives in a herd? [sheep / duck / *goat] |
-| 2 | 1 | 19.2 | 7.0 | 0 | 0% | A goat is ... [a reptile / *a mammal / an amphibian] |
-| 2 | 2 | 22.3 | 7.0 | 0 | 0% | Which of these is an insect? [*ant / monkey / newt] |
-| 2 | 3 | 26.5 | 7.2 | 0 | 0% | Which of these animals is cold-blooded? [*a lizard / a cat / a cow] |
-| 3 | 1 | 28.8 | 8.2 | 0 | 0% | Why does a camel have a hump? [to store water / to carry people / *to store fat for energy / to keep cool] |
-| 3 | 2 | 32.1 | 8.0 | 0 | 0% | Why do fish have fins? [to catch flies / *to swim and steer / to keep warm / to breathe] |
-| 3 | 3 | 36.8 | 7.6 | 0 | 0% | Why do camels have long eyelashes? [to see farther / to look pretty / to keep cool / *to keep out sand] |
-| 4 | 1 | 39.5 | 8.7 | 0 | 0% | Which animal lives in a forest? [ladybug / salmon / snail / *koala] |
-| 4 | 2 | 42.2 | 8.8 | 0 | 0% | Which animal lives in the ocean? [*crab / spider / sheep / grasshopper] |
-| 4 | 3 | 46.4 | 8.4 | 0 | 0% | Which of these animals is an amphibian? [*a newt / a turtle / a lizard / a snake] |
-| 5 | 1 | 50.0 | 8.8 | 0 | 0% | Which of these is an insect? [*butterfly / cat / hippo / duck] |
-| 5 | 2 | 52.6 | 8.6 | 0 | 0% | Riddle me this: / All the living things in a place, together / with their surroundings, are called ... [a food chain / a habitat / *an ecosystem / a population] |
-| 5 | 3 | 53.9 | 8.5 | 0 | 0% | All the living things in a place, together / with their surroundings, are called ... [a habitat / a population / *an ecosystem / a food chain] |
+| K | 1 | 2.0 | 7.9 | 0 | 0% | Here comes a crow! / What sound does it make? [croak / *caw / ribbit] |
+| K | 2 | 4.3 | 7.5 | 0 | 0% | Listen! I hear an animal. / It says "roar". Which animal is it? [*tiger / toad / donkey] |
+| K | 3 | 7.0 | 5.7 | 0 | 0% | Which animal has fur? [swan / shark / *sheep] |
+| 1 | 1 | 12.5 | 5.5 | 0 | 0% | Which animal lives in a burrow? [shark / pig / *mole] |
+| 1 | 2 | 14.8 | 6.2 | 0 | 0% | Where does an ant live? [in the soil / in a nest / *in an anthill] |
+| 1 | 3 | 17.3 | 6.4 | 0 | 0% | How many legs does a sloth have? [six / *four / none] |
+| 2 | 1 | 22.5 | 4.9 | 0 | 0% | Which of these is a bird? [*robin / wolf / koala] |
+| 2 | 2 | 24.8 | 5.7 | 0 | 0% | Which of these is a reptile? [*snake / monkey / bear] |
+| 2 | 3 | 27.0 | 7.5 | 0 | 0% | Which of these animals has a shell? [a shark / a frog / *a turtle] |
+| 3 | 1 | 32.7 | 9.2 | 0 | 0% | A puzzle for a clever climber! / How does a woodpecker find its food? [it digs in mud / it dives into water / it steals nests / *it pecks holes in trees] |
+| 3 | 2 | 35.0 | 9.2 | 0 | 0% | Let me see what you know. / Why do fish have fins? [to keep warm / to catch flies / *to swim and steer / to breathe] |
+| 3 | 3 | 37.5 | 7.3 | 0 | 0% | Why do many desert animals rest all day? [they cannot see / *the daytime is too hot / they like the moon / food only grows then] |
+| 4 | 1 | 42.5 | 6.4 | 0 | 0% | Where would you find a chimpanzee living? [in a garden / *in a rainforest / in Antarctica / in the ocean] |
+| 4 | 2 | 44.6 | 7.9 | 0 | 0% | Think hard, my friend! / Where does the energy in a food chain start? [the rain / the soil / the ocean / *the sun] |
+| 4 | 3 | 47.3 | 10.0 | 0 | 0% | Grass, then rabbit, then fox. A rabbit is ... [*prey for the fox / a decomposer / a producer / a predator] |
+| 5 | 1 | 52.7 | 9.1 | 0 | 0% | Here is a question for you. / Which animal is a marsupial? [a bear / *a kangaroo / a rabbit / a wolf] |
+| 5 | 2 | 55.1 | 9.0 | 0 | 0% | Riddle me this: / What do decomposers return to the soil? [oxygen / sunlight / *nutrients / sand] |
+| 5 | 3 | 57.5 | 8.9 | 0 | 0% | Let me see what you know. / What happens to energy up a food chain? [it turns into water / it doubles / it stays the same / *less is passed along] |
 
 ### Earth and sky (`earthsky`, thinking)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 1.6 | 10.5 | 0 | 0% | What is white and cold and falls in winter? [mud / *snow / leaves] |
-| K | 2 | 2.0 | 10.9 | 0 | 0% | Riddle me this: / In which season do leaves turn red and gold / and fall? [winter / *autumn / summer] |
-| K | 3 | 7.6 | 11.0 | 0 | 0% | A group of stars that makes a picture is / called ... [a galaxy / *a constellation / a comet] |
-| 1 | 1 | 9.0 | 8.8 | 0 | 0% | Which season is the hottest? [autumn / *summer / spring] |
-| 1 | 2 | 12.0 | 8.9 | 0 | 0% | Why can we see the moon shining at night? [it is on fire / it makes its own light / *it reflects sunlight] |
-| 1 | 3 | 17.7 | 10.6 | 0 | 0% | In which direction does the sun rise? [*in the east / in the west / in the north] |
-| 2 | 1 | 19.0 | 10.7 | 0 | 0% | What forms when water vapour cools into tiny / drops high in the sky? [thunder / *clouds / wind] |
-| 2 | 2 | 22.4 | 11.5 | 0 | 0% | What does a wind vane show? [how hot it is / how much rain fell / *which way the wind blows] |
-| 2 | 3 | 27.5 | 10.7 | 0 | 0% | Which tool measures how much rain has fallen? [a compass / *a rain gauge / a wind vane] |
-| 3 | 1 | 28.9 | 10.1 | 0 | 0% | Which planet comes right after Earth, going / away from the sun? [Mercury / Venus / *Mars / Jupiter] |
-| 3 | 2 | 32.2 | 9.5 | 0 | 0% | What causes day and night? [the sun moving / clouds rolling by / *Earth spinning around / the moon blocking it] |
-| 3 | 3 | 37.3 | 9.1 | 0 | 0% | Which of these is a dwarf planet? [Venus / Jupiter / Mars / *Pluto] |
-| 4 | 1 | 39.4 | 11.1 | 0 | 0% | Which rock forms in layers from sand, mud and / shells pressed together? [*sedimentary / volcanic / metamorphic / igneous] |
-| 4 | 2 | 42.6 | 11.1 | 0 | 0% | When we cannot see the moon at all, it is a / ... [full moon / crescent moon / blue moon / *new moon] |
-| 4 | 3 | 47.3 | 9.0 | 8 | 0% | Marble is which type of rock? [igneous / fossil / *metamorphic / sedimentary] |
-| 5 | 1 | 48.9 | 10.0 | 8 | 0% | About how long does sunlight take to reach / Earth? [*about 8 minutes / about 1 year / about 1 day / about 1 second] |
-| 5 | 2 | 52.2 | 9.0 | 8 | 0% | Think hard, my friend! / What happens when the plates of Earth's crust / suddenly slip? [*an earthquake / a tide / a hurricane / a rainbow] |
-| 5 | 3 | 54.0 | 8.1 | 8 | 0% | Riddle me this: / What is the closest star to Earth? [the North Star / Sirius / *the sun / Proxima Centauri] |
+| K | 1 | 1.6 | 10.6 | 0 | 0% | What do you wear when it is cold and snowy? [a swimsuit / *mittens / sandals] |
+| K | 2 | 4.9 | 12.0 | 0 | 0% | Riddle me this: / What can a strong wind do? [stop the rain / *blow your hat off / make it snow] |
+| K | 3 | 8.9 | 11.2 | 0 | 0% | Riddle me this: / How many seasons are there in a year? [two / three / *four] |
+| 1 | 1 | 9.0 | 9.1 | 0 | 0% | What do you hold up to stay dry in the rain? [a kite / *an umbrella / a fan] |
+| 1 | 2 | 12.8 | 10.1 | 0 | 0% | Let me see what you know. / Does the sun stay in one spot in the sky all / day? [no, it goes backward / yes, it never moves / *no, it seems to move] |
+| 1 | 3 | 18.9 | 10.4 | 0 | 0% | What are the water drops on the grass in the / morning called? [*dew / hail / sleet] |
+| 2 | 1 | 18.7 | 9.5 | 0 | 0% | Dark, heavy clouds usually bring ... [a rainbow / *rain / a clear sky] |
+| 2 | 2 | 23.3 | 12.7 | 0 | 0% | Think hard, my friend! / What is the sun's job in the water cycle? [*it warms the water / it makes clouds cold / it makes the wind] |
+| 2 | 3 | 29.1 | 10.5 | 0 | 0% | What keeps the whole water cycle going? [the wind / *the sun / the moon] |
+| 3 | 1 | 28.6 | 8.6 | 0 | 0% | Which planet is called the Red Planet? [Mercury / Venus / *Mars / Jupiter] |
+| 3 | 2 | 32.9 | 10.5 | 0 | 0% | How long does Earth take to spin around once? [one month / one year / one hour / *one day] |
+| 3 | 3 | 38.7 | 10.8 | 0 | 0% | Riddle me this: / What is the sun mostly made of? [rock / ice / *hot gases / liquid metal] |
+| 4 | 1 | 39.3 | 11.2 | 0 | 0% | What is melted rock called while it is still / inside the Earth? [*magma / sand / ash / lava] |
+| 4 | 2 | 43.3 | 11.3 | 0 | 0% | Let me see what you know. / What is it called when Earth spins on its / axis? [*rotation / gravity / eclipse / orbit] |
+| 4 | 3 | 48.7 | 10.4 | 0 | 0% | A puzzle for a clever climber! / Granite is which type of rock? [sedimentary / metamorphic / volcanic / *igneous] |
+| 5 | 1 | 48.7 | 9.5 | 0 | 0% | What keeps the moon in orbit around Earth? [*Earth's gravity / magnetism / the solar wind / the wind] |
+| 5 | 2 | 52.7 | 9.5 | 0 | 0% | Let me see what you know. / What happens when the plates of Earth's crust / suddenly slip? [a hurricane / *an earthquake / a rainbow / a tide] |
+| 5 | 3 | 57.8 | 10.4 | 8 | 0% | Here is a question for you. / What do we call the day of the year with the / most daylight? [the new year / *the summer solstice / the winter solstice / the equinox] |
 
 ### The body and senses (`body`, thinking)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 1.6 | 9.9 | 0 | 0% | Which body part do you feel soft things with? [your eyes / your ears / *your hands] |
-| K | 2 | 1.5 | 9.7 | 0 | 0% | You taste a sweet apple. Which sense is that? [*taste / hearing / sight] |
-| K | 3 | 5.2 | 9.5 | 0 | 0% | How many eyes do you have? [*two / three / four] |
-| 1 | 1 | 9.0 | 9.6 | 0 | 0% | A puzzle for a clever climber! / Which body part do you smell with? [*your nose / your feet / your ears] |
-| 1 | 2 | 12.4 | 9.8 | 0 | 0% | Think hard, my friend! / How many toes do you have altogether? [eight / *ten / five] |
-| 1 | 3 | 17.4 | 10.2 | 1000 | 0% | A puzzle for a clever climber! / Which joint joins your foot to your leg? [*ankle / neck / elbow] |
-| 2 | 1 | 18.8 | 9.3 | 1000 | 0% | How many teeth does a grown-up usually have? [*32 / 20 / 12] |
-| 2 | 2 | 22.3 | 9.8 | 1000 | 0% | Which bone protects your brain? [ankle / hip / *skull] |
-| 2 | 3 | 27.8 | 10.9 | 1000 | 0% | Which drink helps make strong bones and teeth? [sugary juice / coffee / *milk] |
-| 3 | 1 | 29.4 | 8.8 | 1000 | 0% | What is the heart made of? [bone / *muscle / skin / fat] |
-| 3 | 2 | 32.1 | 9.2 | 0 | 0% | Which organ pumps blood? [the liver / the lungs / *the heart / the kidney] |
-| 3 | 3 | 37.8 | 9.4 | 0 | 0% | Which blood vessels carry blood back to the / heart? [tendons / *veins / nerves / arteries] |
-| 4 | 1 | 39.3 | 8.8 | 0 | 0% | Think hard, my friend! / Which system is made of bones? [*skeletal / muscular / nervous / digestive] |
-| 4 | 2 | 42.2 | 8.7 | 0 | 0% | What do white blood cells do? [carry oxygen / *fight germs / grow bones / digest food] |
-| 4 | 3 | 47.9 | 9.7 | 0 | 0% | Think hard, my friend! / How does oxygen get from the lungs to the rest / of the body? [through the nerves / *in the blood / through the bones / in the food] |
-| 5 | 1 | 49.5 | 9.8 | 0 | 0% | What are the tiny building blocks of all / living things? [*cells / organs / bones / muscles] |
-| 5 | 2 | 52.6 | 10.4 | 0 | 0% | Which mineral makes bones and teeth strong? [sugar / iron / salt / *calcium] |
-| 5 | 3 | 55.3 | 11.2 | 0 | 0% | Which part of a cell releases most of its / energy? [the nucleus / *the mitochondria / the cell wall / the membrane] |
+| K | 1 | 1.3 | 8.7 | 0 | 0% | Which body part do you taste with? [your nose / your ears / *your tongue] |
+| K | 2 | 4.6 | 10.3 | 0 | 0% | How many toes do you have altogether? [*ten / eight / five] |
+| K | 3 | 8.9 | 9.3 | 0 | 0% | Which part of your body does the thinking? [*your brain / your foot / your hand] |
+| 1 | 1 | 8.8 | 8.8 | 0 | 0% | A puzzle for a clever climber! / Which body part do you smell with? [*your nose / your feet / your ears] |
+| 1 | 2 | 12.8 | 9.8 | 0 | 0% | Here is a question for you. / What does your body need every night to grow / well? [candy / loud music / *sleep] |
+| 1 | 3 | 18.9 | 9.5 | 50 | 0% | Which joint lets your hand turn and bend? [*the wrist / the knee / the hip] |
+| 2 | 1 | 18.7 | 8.6 | 50 | 0% | Which of these is a fruit? [*a banana / a carrot / a potato] |
+| 2 | 2 | 22.7 | 10.2 | 100 | 0% | How often should you brush your teeth? [once a month / *twice a day / once a day] |
+| 2 | 3 | 29.2 | 10.3 | 1000 | 0% | Riddle me this: / About how many bones are in a grown-up's body? [about 20 / about 1000 / *about 206] |
+| 3 | 1 | 29.2 | 7.6 | 50 | 0% | Where does digestion start? [in the stomach / *in the mouth / in the intestines / in the lungs] |
+| 3 | 2 | 33.0 | 10.4 | 1000 | 0% | Let me see what you know. / Does a baby have more bones or fewer bones / than a grown-up? [the same number / no bones at all / *more bones / fewer bones] |
+| 3 | 3 | 38.9 | 9.9 | 0 | 0% | Which system brings oxygen into the body? [*respiratory / skeletal / digestive / circulatory] |
+| 4 | 1 | 39.3 | 8.1 | 0 | 0% | Think hard, my friend! / Which system brings oxygen into the body? [*respiratory / digestive / circulatory / skeletal] |
+| 4 | 2 | 43.2 | 9.7 | 0 | 0% | Which system protects the body from germs? [muscular / digestive / *immune / skeletal] |
+| 4 | 3 | 49.2 | 10.3 | 0 | 0% | Think hard, my friend! / What carries messages between your brain and / your legs? [the spine bone / *the spinal cord / an artery / the windpipe] |
+| 5 | 1 | 49.3 | 8.6 | 0 | 0% | What are the tiny building blocks of all / living things? [*cells / organs / bones / muscles] |
+| 5 | 2 | 53.3 | 11.4 | 0 | 0% | A puzzle for a clever climber! / Many cells of the same kind working together / make ... [*a tissue / a bone / an organ / a system] |
+| 5 | 3 | 58.0 | 11.1 | 0 | 0% | Riddle me this: / Which parts of a cell release most of the / energy? [the nucleus / the membrane / the cell wall / *the mitochondria] |
 
 ### Matter and machines (`matter`, thinking)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 0.9 | 6.9 | 0 | 0% | Which one is hot? [ice / *a fire / a snowman] |
-| K | 2 | 1.2 | 6.9 | 0 | 0% | Here is a question for you. / Which one sinks in water? [a cork / *a rock / a beach ball] |
-| K | 3 | 6.0 | 7.2 | 0 | 0% | Which one is rough? [*sandpaper / ice / glass] |
-| 1 | 1 | 8.8 | 8.3 | 0 | 0% | When you open a drawer, you ... [drop it / *pull it / push it] |
-| 1 | 2 | 11.5 | 8.9 | 0 | 0% | Let me see what you know. / What is a wooden chair made of? [*wood / metal / water] |
-| 1 | 3 | 17.2 | 11.3 | 0 | 0% | Which is harder to push, a full cart or an / empty one? [neither can move / *a full cart / they are the same] |
-| 2 | 1 | 19.4 | 8.9 | 0 | 0% | Here is a question for you. / To make a wagon with a handle follow you, you / ... [lift it / *pull it / push it] |
-| 2 | 2 | 22.0 | 9.3 | 0 | 0% | Which of these is a gas? [sand / *air / a rock] |
-| 2 | 3 | 27.3 | 9.9 | 0 | 0% | Let me see what you know. / A doorknob is which simple machine? [a lever / *a wheel and axle / a wedge] |
-| 3 | 1 | 29.3 | 9.3 | 0 | 0% | Think hard, my friend! / What happens when you boil water? [*it turns into steam / it turns to ice / it freezes / it becomes solid] |
-| 3 | 2 | 32.2 | 10.0 | 0 | 0% | Riddle me this: / Which simple machine uses a rope over a wheel / to raise a flag? [*a pulley / a ramp / a lever / a wedge] |
-| 3 | 3 | 37.1 | 9.8 | 0 | 0% | A puzzle for a clever climber! / A higher pitch means the vibrations are ... [bigger / slower / louder / *faster] |
-| 4 | 1 | 39.0 | 9.2 | 0 | 0% | Which kinds of energy reach us from the sun? [chemical and sound / sound and wind / *light and heat / electrical only] |
-| 4 | 2 | 42.0 | 8.9 | 0 | 0% | What splits white light into a rainbow of / colours? [*a prism / a shadow / a mirror / a magnet] |
-| 4 | 3 | 47.0 | 9.2 | 0 | 0% | Which of these can sound NOT travel through? [metal / water / *empty space / air] |
-| 5 | 1 | 48.9 | 9.0 | 0 | 0% | What stores chemical energy to power a torch? [a bulb / a switch / *a battery / a wire] |
-| 5 | 2 | 52.2 | 8.8 | 0 | 0% | Let me see what you know. / Which material is an electrical insulator? [silver / iron / *rubber / copper] |
-| 5 | 3 | 54.3 | 8.3 | 0 | 0% | Which force slows down a sliding object? [electricity / gravity / *friction / magnetism] |
+| K | 1 | 0.9 | 6.5 | 0 | 0% | Which one is hot? [ice / *a fire / a snowman] |
+| K | 2 | 4.1 | 8.0 | 0 | 0% | Here is a question for you. / Which one is smooth? [sandpaper / *a mirror / a brick] |
+| K | 3 | 8.4 | 8.8 | 0 | 0% | Which one is heavier, a brick or a feather? [neither one / *a brick / they are the same] |
+| 1 | 1 | 8.6 | 7.7 | 0 | 0% | When you open a drawer, you ... [drop it / *pull it / push it] |
+| 1 | 2 | 12.6 | 9.0 | 0 | 0% | What can you pour from a cup? [a sock / *water / a spoon] |
+| 1 | 3 | 18.7 | 10.8 | 0 | 0% | Which material bends easily? [glass / brick / *rubber] |
+| 2 | 1 | 19.3 | 8.9 | 0 | 0% | Here is a question for you. / What is a grocery bag made of? [metal / *paper / glass] |
+| 2 | 2 | 22.6 | 9.6 | 0 | 0% | Why do we make raincoats out of plastic? [it is see-through / it soaks up water / *water runs off it] |
+| 2 | 3 | 28.9 | 10.7 | 0 | 0% | Think hard, my friend! / A seesaw is an example of a ... [screw / wedge / *lever] |
+| 3 | 1 | 29.2 | 8.5 | 0 | 0% | Think hard, my friend! / Which of these can you pour? [*juice / a crayon / a coin / a block] |
+| 3 | 2 | 33.4 | 11.9 | 0 | 0% | What happens when a north pole and a south / pole meet? [they melt / *they pull together / nothing happens / they push apart] |
+| 3 | 3 | 38.9 | 10.1 | 0 | 0% | Light travels in ... [spirals / circles / *straight lines / zigzags] |
+| 4 | 1 | 38.9 | 8.5 | 0 | 0% | Light travels in ... [zigzags / circles / *straight lines / spirals] |
+| 4 | 2 | 42.8 | 10.5 | 0 | 0% | Let me see what you know. / Which material is a good insulator that keeps / heat in? [aluminum / *wool / iron / copper] |
+| 4 | 3 | 49.1 | 10.8 | 0 | 0% | A louder sound is made by vibrations that are / ... [slower / faster / *bigger / smaller] |
+| 5 | 1 | 49.0 | 8.8 | 0 | 0% | Which material conducts electricity? [plastic / wood / *copper / rubber] |
+| 5 | 2 | 53.0 | 9.7 | 0 | 0% | Which color of shirt absorbs the most / sunlight? [silver / yellow / white / *black] |
+| 5 | 3 | 57.7 | 10.3 | 0 | 0% | Let me see what you know. / Which of these changes when you travel to the / moon? [your age / your height / your mass / *your weight] |
 
 ### Sequences of events (`events`, thinking)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 3.1 | 13.3 | 0 | 0% | A banana: peel the banana, eat the banana. / What do you do first? [both at the same time / eat the banana / *peel the banana] |
-| K | 2 | 3.1 | 13.4 | 0 | 0% | Going out: walk outside, open the door. / What do you do first? [walk outside / both at the same time / *open the door] |
-| K | 3 | 6.6 | 12.1 | 0 | 0% | First you climb into bed. / What do you do next? [brush your teeth / peel the banana / *go to sleep] |
-| 1 | 1 | 12.6 | 10.4 | 0 | 0% | After you sit down, what do you do next? [walk to the classroom / *listen to the teacher / line up] |
-| 1 | 2 | 15.7 | 9.4 | 0 | 0% | After you take out your book, what do you do / next? [*read the page / answer the questions / hand it in] |
-| 1 | 3 | 18.6 | 9.9 | 0 | 0% | Think about a school morning. / What happens first? [go to school / eat breakfast / *wake up] |
-| 2 | 1 | 23.2 | 10.7 | 0 | 0% | The life cycle of a butterfly. / This stage: caterpillar. / What comes next? [egg / butterfly / *chrysalis] |
-| 2 | 2 | 25.9 | 11.8 | 0 | 0% | How a plant makes seeds. / This stage: bees carry pollen. / What comes just before it? [seeds form / seeds fall down / *a flower blooms] |
-| 2 | 3 | 29.2 | 11.7 | 20 | 0% | The life cycle of a butterfly. / What is the last stage? [egg / caterpillar / *butterfly] |
-| 3 | 1 | 33.9 | 12.0 | 20 | 0% | Washing clothes. / What is the very first step? [put them in the machine / *sort the clothes / add the soap / start the machine] |
-| 3 | 2 | 36.8 | 12.2 | 20 | 0% | An experiment. / What is the last step? [*write the result / make a guess / ask a question / do the test] |
-| 3 | 3 | 38.7 | 11.4 | 20 | 0% | Baking a cake. / You have just done this: pour into a tin. / What do you do next? [eat the cake / *bake in the oven / mix flour and eggs / let it cool] |
-| 4 | 1 | 40.2 | 9.9 | 20 | 0% | Riddle me this: / The plant on the windowsill died. What was the / most likely cause? [*nobody watered it / it was near the window / the pot was blue / it had plenty of water] |
-| 4 | 2 | 41.8 | 9.2 | 0 | 0% | The tower of blocks fell over. Why? [*it was too tall and wobbly / it was made of blocks / it was very short / it was red] |
-| 4 | 3 | 48.1 | 14.4 | 0 | 0% | Why did the paper turn yellow and crinkly? [it was in a drawer / *it was left in the sun / someone wrote on it / it was brand new] |
-| 5 | 1 | 52.2 | 14.7 | 0 | 0% | Kim is faster than Cy. / Cy is faster than Uma. / Who is in the middle? [Kim / cannot tell / Uma / *Cy] |
-| 5 | 2 | 57.4 | 25.3 | 0 | 0% | Max is heavier than Wes. / Max is lighter than Ann. / Who is in the middle? [Ann / cannot tell / Wes / *Max] |
-| 5 | 3 | 59.0 | 30.3 | 0 | 0% | Fay, Lou and Sam each have one pet: a cat, a / dog and a fish. / Sam does not have the fish. / Fay has the fish. / Sam does not have the cat. / Who has the dog? [Fay / cannot tell / *Sam / Lou] |
+| K | 1 | 3.0 | 16.2 | 0 | 0% | Bedtime: brush your teeth, go to sleep, climb / into bed. / What do you do first? [go to sleep / climb into bed / *brush your teeth] |
+| K | 2 | 4.0 | 16.1 | 0 | 0% | Going out: walk outside, close the door, open / the door. / What do you do last? [walk outside / open the door / *close the door] |
+| K | 3 | 5.2 | 17.5 | 0 | 0% | Making toast: wait for the pop, put it in the / toaster, spread the butter, get the bread. / What do you do last? [wait for the pop / *spread the butter / get the bread] |
+| 1 | 1 | 14.5 | 9.3 | 0 | 0% | Think about homework. / What is the last thing you do? [*hand it in / take out your book / answer the questions] |
+| 1 | 2 | 17.0 | 14.5 | 0 | 0% | Think about a birthday cake. / After you sing happy birthday, what do you do / next? [eat the cake / light the candles / *blow out the candles] |
+| 1 | 3 | 18.0 | 14.5 | 0 | 0% | Think about homework. / What do you do just before you hand it in? [read the page / take out your book / *answer the questions] |
+| 2 | 1 | 24.3 | 10.1 | 0 | 0% | The life cycle of a duck. / What is the last stage? [*duck / egg / duckling] |
+| 2 | 2 | 27.0 | 12.5 | 0 | 0% | How a bean seed grows. / This stage: bean seed. / What comes next? [leaves open / shoot grows / *roots grow] |
+| 2 | 3 | 28.0 | 14.6 | 0 | 0% | The life cycle of a mosquito. / This stage: mosquito. / What comes just before it? [*pupa / egg / wriggler] |
+| 3 | 1 | 35.5 | 7.9 | 20 | 0% | Repotting a plant. / What is the very first step? [press the soil down / water it / *fill a pot with soil / make a hole in the soil] |
+| 3 | 2 | 38.0 | 15.8 | 20 | 0% | Popcorn. / You have just done this: / heat the pan. / What do you do next? [put on the lid / *add the kernels / wait for the pops / pour into a bowl] |
+| 3 | 3 | 39.0 | 17.9 | 20 | 0% | A snowman. / You are about to do this: / roll a big ball. / What did you do just before? [stack them / roll a smaller ball / *pack the snow / add a face] |
+| 4 | 1 | 41.1 | 7.6 | 0 | 0% | Why did the ice on the pond melt? [the wind stopped / *the weather got warmer / it snowed hard / ducks swam past] |
+| 4 | 2 | 44.2 | 8.7 | 0 | 0% | The snowman shrank by noon. Why? [*the day warmed up / the wind was icy / more snow fell / it was still night] |
+| 4 | 3 | 49.7 | 13.3 | 0 | 0% | Here is a puzzle for you. / Why do the rocks on the shore feel smooth? [fish polished them / the tide never moves / someone painted them / *waves wore them down] |
+| 5 | 1 | 57.0 | 19.5 | 0 | 0% | Ted is slower than Pat. / Oli is slower than Ted. / Eve is slower than Oli. / Who is the second fastest? [Pat / Oli / Eve / *Ted] |
+| 5 | 2 | 59.1 | 21.3 | 0 | 0% | Bea is lighter than Zoe. / Gil is heavier than Dev. / Dev is heavier than Zoe. / Who is the second heaviest? [Gil / Zoe / Bea / *Dev] |
+| 5 | 3 | 68.4 | 34.3 | 0 | 0% | Four friends: Fay, Kai, Pia, Oli. / Each eats one fruit: apple, pear, plum, fig. / Oli eats no pear. Oli eats no apple. / Fay eats the plum. Pia eats no pear. / Who eats the fig? [Kai / *Oli / Fay / Pia] |
 
 ### Bigger, heavier, faster (`comparisons`, thinking)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 1.0 | 8.3 | 0 | 0% | Which is longer: / a lion or an apple? [they are the same / *a lion / an apple] |
-| K | 2 | 2.0 | 6.8 | 0 | 0% | Which of these is the tallest? [a child / a giraffe / *a tall tree] |
-| K | 3 | 5.5 | 6.8 | 0 | 0% | Which of these is the tallest? [*a tall tree / a giraffe / a chair] |
-| 1 | 1 | 10.0 | 6.9 | 0 | 0% | Which is taller: / a ladder or a chair? [*a ladder / a chair / they are the same] |
-| 1 | 2 | 13.1 | 6.7 | 0 | 0% | Which one is the longest? [a bee / a dog / *a bus] |
-| 1 | 3 | 17.3 | 6.5 | 0 | 0% | Think about size and speed! / Which of these is the fastest? [a sparrow / *a train / an ant] |
-| 2 | 1 | 22.1 | 6.4 | 0 | 0% | Which one is the lightest? [a pig / a horse / *a bath tub] |
-| 2 | 2 | 25.7 | 5.9 | 0 | 0% | Which one is the tallest? [*a lighthouse / a house / a child] |
-| 2 | 3 | 27.9 | 6.0 | 5200 | 0% | Which of these is the longest? [a skateboard / a marble / *a classroom] |
-| 3 | 1 | 31.4 | 6.1 | 17000 | 0% | Which of these is the lightest? [an elephant / a pig / *a butterfly / a rowing boat] |
-| 3 | 2 | 33.0 | 6.2 | 10000 | 0% | About how long is a bottle of water? [2.5 cm / *25 cm / 2.5 m / 6.3 cm] |
-| 3 | 3 | 37.1 | 7.4 | 2800000 | 0% | About how heavy is an apple? [1.3 ounces / 3.3 pounds / 1.3 pounds / *5.3 ounces] |
-| 4 | 1 | 41.9 | 8.8 | 280000 | 0% | Which is heavier: / one dog or three bags of sugar? [three bags of sugar / cannot tell / *one dog / about the same] |
-| 4 | 2 | 44.9 | 9.3 | 2800000 | 0% | About how long is a mouse? [2.7 cm / *8 cm / 80 cm / 0.8 cm] |
-| 4 | 3 | 47.5 | 9.5 | 120000 | 0% | Which is heavier: / one sheep or ten laptops? [cannot tell / *one sheep / about the same / ten laptops] |
-| 5 | 1 | 52.6 | 9.8 | 90000 | 0% | A bus travels 400 km in 4 hours. / How far does it go in 12 hours? [*1200 km / 600 km / 2400 km / 800 km] |
-| 5 | 2 | 54.6 | 10.1 | 90000 | 0% | Which is longer: / 5 hours or 450 minutes? [cannot tell / they are the same / 5 hours / *450 minutes] |
-| 5 | 3 | 54.7 | 10.1 | 90000 | 0% | Which is heavier: / 4 kg or 4000 g? [cannot tell / 4 kg / 4000 g / *they are the same] |
+| K | 1 | 1.0 | 8.3 | 0 | 0% | Which is bigger: / a cat or a two-story house? [they are the same / a cat / *a two-story house] |
+| K | 2 | 3.0 | 5.5 | 0 | 0% | Which of these is the longest? [an egg / a pig / *a truck] |
+| K | 3 | 6.1 | 5.6 | 1 | 0% | Which one is the biggest? [*a mountain / a fridge / an oak tree] |
+| 1 | 1 | 9.3 | 7.1 | 1 | 0% | Which one is the heaviest? [an apple / a big dog / *an elephant] |
+| 1 | 2 | 13.0 | 5.9 | 1 | 0% | Which one is the heaviest? [a piano / a door / *a tractor] |
+| 1 | 3 | 16.2 | 5.9 | 1 | 0% | Which one is the longest? [a giant tortoise / *a train / a truck] |
+| 2 | 1 | 21.2 | 6.0 | 1 | 0% | Which of these is the slowest? [*an ant / a helicopter / a cow] |
+| 2 | 2 | 23.9 | 5.8 | 1 | 0% | Which of these is the smallest? [a football field / a mountain / *a fridge] |
+| 2 | 3 | 26.5 | 6.1 | 3500 | 0% | Which one is the fastest? [a grizzly bear / *a jet plane / a goldfish] |
+| 3 | 1 | 30.7 | 6.2 | 18000 | 0% | Which one is the tallest? [a door / a two-story house / a lighthouse / *a mountain] |
+| 3 | 2 | 32.7 | 6.3 | 15000 | 0% | About how long is a spoon? [0.15 cm / *15 cm / 1.5 m / 1.5 cm] |
+| 3 | 3 | 37.0 | 7.6 | 120000 | 0% | About how heavy is a backpack? [*7 pounds / 700 pounds / 10 ounces / 70 pounds] |
+| 4 | 1 | 42.0 | 8.8 | 120000 | 0% | Which is heavier: / one book or ten cups? [cannot tell / *ten cups / one book / about the same] |
+| 4 | 2 | 45.0 | 9.3 | 120000 | 0% | About how tall is a giraffe? [50 m / *5 m / 5 cm / 60 cm] |
+| 4 | 3 | 50.0 | 10.2 | 900000000 | 0% | Which is heavier: / one bus or three horses? [*one bus / about the same / cannot tell / three horses] |
+| 5 | 1 | 51.2 | 9.7 | 800000 | 0% | 4 apples cost $2.00. / How much do 16 apples cost? [*$8.00 / $4.00 / $16.00 / $5.00] |
+| 5 | 2 | 55.3 | 10.2 | 900000000 | 0% | A train travels 240 km in 6 hours. / How far does it go in 18 hours? [760 km / 258 km / *720 km / 1440 km] |
+| 5 | 3 | 59.8 | 10.9 | 900000000 | 0% | A car travels 160 km in 4 hours. / How far does it go in 9 hours? [260 km / *360 km / 1440 km / 400 km] |
 
 ## Mixed-play sample per grade
 
@@ -825,88 +825,88 @@ What a child sees over 12 riddles (tiers 1-3 as the levels go up), drawn by the 
 
 1. *(letters, tier 1)* Which one is the letter T? — picture, picture, **picture**
 2. *(shapes, tier 1)* Which shape is a triangle? — picture, picture, **picture**
-3. *(fractions, tier 1)* Which picture shows one half? — picture, picture, **picture**
-4. *(earthsky, tier 1)* When do we usually eat breakfast? — in the evening, **in the morning**, at bedtime
-5. *(riddles, tier 2)* Riddle, riddle, guess me true! I have four legs and a tail. I say woof, woof! What am I? — a cat, a cow, **a dog**
-6. *(rhymes, tier 2)* Top, stop, mop Please help me out this time. Cop, pop, drop And pick a word to rhyme. — yam, **hop**, skunk
-7. *(rhymes, tier 2)* Dam and ram, jam and clam Sound the same at the end. Which word rhymes with them? Tell me, my friend! — spun, **yam**, sing
-8. *(addsub, tier 2)* 6 + 1 = ? — 8, 5, **7**
-9. *(matter, tier 3)* Which one is rough? — a mirror, glass, **sandpaper**
-10. *(associations, tier 3)* Listen, listen! What do you hear? A chick says ___, loud and clear! — neigh, meow, **peep**
-11. *(time, tier 3)* When is it dark outside? — afternoon, morning, **night**
-12. *(addsub, tier 3)* 7 - 3 = ? — 10, **4**, 3
+3. *(fractions, tier 1)* Which shape is cut into halves? — picture, picture, **picture**
+4. *(riddles, tier 1)* Hear my riddle, if you please: I am yellow and bright. I shine in the sky all day. Do you know what I am? — **the sun**, a lamp, the moon
+5. *(body, tier 2)* You hear a bird sing. Which sense are you using? — **hearing**, taste, smell
+6. *(rhymes, tier 2)* Shed, led, wed Please help me out this time. Fed, bed, red And pick a word to rhyme. — **sled**, wet, smell
+7. *(sequences, tier 2)* What comes next in the pattern? — picture, **picture**, picture
+8. *(categories, tier 2)* Look at these three words. Which one is a shape? — **star**, 5, 10
+9. *(associations, tier 3)* What does a wolf say? — oink, squeak, **howl**
+10. *(wordproblems, tier 3)* 10 fish are in a tank. 6 swim away. How many fish are left? — 16, **4**, 3
+11. *(oddoneout, tier 3)* Which one shows a different number? — **picture**, picture, picture
+12. *(counting, tier 3)* What number comes right before 16? — **15**, 12, 17
 
 ### 1st grade
 
 1. *(placevalue, tier 1)* 4 tens and 6 ones = ? — 47, **46**, 36
-2. *(riddles, tier 1)* A riddle from the elf for you: I have teeth but I never bite. I fix your hair. What am I? — **a comb**, a towel, a hat
-3. *(sounds, tier 1)* Mix, ox, fix, ax These words all end with x. Do you see one more x word? Please pick it for me, then. — book, miss, **box**
-4. *(time, tier 1)* Which clock shows 9 o'clock? — picture, **picture**, picture
-5. *(events, tier 2)* Think about lunchtime. What happens first? — **eat lunch**, read a book, go back inside
-6. *(earthsky, tier 2)* Let me see what you know. Why can we see the moon shining at night? — **it reflects sunlight**, it makes its own light, it is very hot
-7. *(matter, tier 2)* Which material can you see through? — stone, **glass**, wood
-8. *(rhymes, tier 2)* Stuck, cluck, buck, duck All these words rhyme, you see. Find one more that rhymes And give it to me! — **truck**, nag, light
-9. *(time, tier 3)* Which clock shows half past 5? — **picture**, picture, picture
-10. *(rhymes, tier 3)* Moon, spoon, soon Please help me out this time. Raccoon, cartoon, noon And pick a word to rhyme. — **balloon**, pleasure, wrinkle
-11. *(vowels, tier 3)* Which word has the same vowel sound as net? — **leg**, fox, meat
-12. *(opposites, tier 3)* Which word means the opposite of sharp? — same, wide, **dull**
+2. *(riddles, tier 1)* A riddle from the elf for you: I have four legs but cannot walk. You sit on me. What am I? — **a chair**, a lamp, a door
+3. *(sounds, tier 1)* Ax, fix, mix, ox. These words all end with x. Which word ends with x as well? Pick it out and ring the bell! — mud, **wax**, kick
+4. *(time, tier 1)* Look at the clock. What time is it? — 8:00, 7:30, **7:00**
+5. *(placevalue, tier 2)* How many tens are in 17? — **1**, 0, 2
+6. *(sounds, tier 2)* Queen, quilt, quack, quiet. These words all begin with qu. Which word begins with qu too? Pick that one, and we are through! — **question**, cherry, chick
+7. *(letters, tier 2)* Which letter comes right after C? — **picture**, picture, picture
+8. *(syllables, tier 2)* Which word has 2 syllables? — tomato, street, **peanut**
+9. *(sequences, tier 3)* 9, 19, 29, 39, ... What number comes next? — 50, **49**, 46
+10. *(compare, tier 3)* Which number is the least? — **22**, 26, 29
+11. *(riddles, tier 3)* Hear my riddle, if you please: I have an eye but cannot see. I help you sew. What am I? — a pin, **a needle**, a button
+12. *(opposites, tier 3)* Rude is the word I say. Its opposite, please, today! — narrow, scared, **polite**
 
 ### 2nd grade
 
-1. *(rhymes, tier 1)* Trunk, chunk, bunk, junk All these words rhyme, you see. Find one more that rhymes And give it to me! — map, wake, **skunk**
-2. *(divide, tier 1)* 10 stars go into 2 bags equally. How many in each bag? — 7, **5**, 2
-3. *(riddles, tier 1)* A riddle from the elf for you: I have a tongue but I cannot talk. You tie me up every morning. Tell me, what am I? — a hat, **a shoe**, a glove
-4. *(measurement, tier 1)* What temperature does the thermometer show? — **20°F**, 40°F, 0°F
-5. *(earthsky, tier 2)* What is the sun's job in the water cycle? — **it warms the water**, it makes clouds cold, it freezes rivers
-6. *(animals, tier 2)* Which of these is a reptile? — donkey, horse, **lizard**
-7. *(rhymes, tier 2)* How, plow, now Please help me out this time. Cow, bow, vow And pick a word to rhyme. — brain, **wow**, jeep
-8. *(addsub, tier 2)* 37 + 8 = ? — 29, **45**, 40
-9. *(earthsky, tier 3)* Let me see what you know. What do we use to measure how hot or cold it is? — **a thermometer**, a clock, a scale
-10. *(sentences, tier 3)* Grandpa's ___ hands showed he had worked hard. Which word makes sense here? — clean, smooth, **rough**
-11. *(events, tier 3)* Posting a letter. You have just done this: add a stamp. What do you do next? — **post it**, write the letter, fold it
-12. *(counting, tier 3)* 20, 30, 40, 50, ... What number comes next? — 59, **60**, 61
+1. *(rhymes, tier 1)* Stump, dump, lump, jump All these words rhyme, you see. Find one more that rhymes And give it to me! — spool, keep, **plump**
+2. *(divide, tier 1)* Share 12 fish between 2 plates. How many on each plate? — **6**, 8, 7
+3. *(associations, tier 1)* What does a firefighter use? — **fire hose**, chalk, tractor
+4. *(compounds, tier 1)* Tree + house = treehouse Foot + path = footpath Pop + corn = popcorn Cook + book = ______. — bookcase, notebook, **cookbook**
+5. *(comparisons, tier 2)* Which of these is the biggest? — a table, **a bridge**, an Olympic pool
+6. *(addsub, tier 2)* 44 - 14 = ? — 58, **30**, 34
+7. *(events, tier 2)* The life cycle of an oak tree. This stage: young tree. What comes next? — seedling, acorn, **oak tree**
+8. *(time, tier 2)* Which clock shows 7 o'clock? — **picture**, picture, picture
+9. *(sentences, tier 3)* I wore ___ to keep my hands warm. Which word fills the blank? — **mittens**, sandals, sunglasses
+10. *(associations, tier 3)* Which one is part of a shirt? — string, leaf, **collar**
+11. *(wordproblems, tier 3)* Leo needs 50 flowers for a game. Leo has 6. How many more are needed? — **44**, 56, 45
+12. *(animals, tier 3)* Riddle me this: Which of these animals has a shell? — a shark, a mouse, **a turtle**
 
 ### 3rd grade
 
 1. *(placevalue, tier 1)* 2 thousands, 7 hundreds, 3 tens, 1 one = ? — **2,731**, 2,741, 13, 2,732
-2. *(associations, tier 1)* Where does a surgeon work? — pharmacy, garage, beach, **operating room**
-3. *(oddoneout, tier 1)* One of these is not like the others. Which one is it? — pineapple, banana, lemon, **corn**
-4. *(synonyms, tier 1)* Which word means almost the same as peaceful? — real, wary, weak, **calm**
-5. *(riddles, tier 2)* What starts with T, ends with T and has T in it? — a tent, a ticket, a toast, **a teapot**
-6. *(opposites, tier 2)* Which word means the opposite of modern? — **ancient**, fragile, private, obvious
-7. *(time, tier 2)* How much time passes from 2:30 to 8:30? — 8 hours, **6 hours**, 9 hours, 5 hours
-8. *(synonyms, tier 2)* Another word for estimate is ___. — **guess**, break, drift, leave
-9. *(evenodd, tier 3)* Which of these is an odd number? — 2054, 2058, 2100, **2079**
-10. *(body, tier 3)* Which organ makes bile to help digest fat? — **the liver**, the heart, the skin, the lungs
-11. *(rhymes, tier 3)* Candle, handle. These words rhyme. Pick one more word that rhymes. — **sandal**, gate, flower, slide
-12. *(shapes, tier 3)* A rectangle is 9 m long and 8 m wide. What is its perimeter? — 25 m, 32 m, 72 m, **34 m**
+2. *(associations, tier 1)* Where does a blacksmith work? — hospital, pharmacy, garage, **forge**
+3. *(oddoneout, tier 1)* One of these is not like the others. Which one is it? Hint: most of these are citrus fruits. — grapefruit, lemon, lime, **strawberry**
+4. *(synonyms, tier 1)* Another word for sad is ___. — courteous, scorching, brilliant, **sorrowful**
+5. *(comparisons, tier 2)* Which of these is the shortest? — a blue whale, a football field, **a school desk**, a bridge
+6. *(shapes, tier 2)* Each side of a square is 8 cm. What is its perimeter? — 64 cm, 24 cm, 16 cm, **32 cm**
+7. *(wordproblems, tier 2)* Ivy has 63¢ and buys 4 stickers at 5¢ each. How much money is left? — 58¢, 48¢, 59¢, **43¢**
+8. *(evenodd, tier 2)* What is the first odd number after 739? — **741**, 743, 742, 740
+9. *(events, tier 3)* Repotting a plant. You are about to do this: put the plant in. What did you do just before? — fill a pot with soil, **make a hole in the soil**, water it, press the soil down
+10. *(sentences, tier 3)* Fill in the blank: The ___ puppy chewed my shoes and dug up the garden. — calm, obedient, sleepy, **mischievous**
+11. *(multiply, tier 3)* 7 x 9 = ? — 70, 72, 54, **63**
+12. *(vocabulary, tier 3)* Which word means "to cry out suddenly"? — inquire, prosper, loathe, **exclaim**
 
 ### 4th grade
 
-1. *(associations, tier 1)* Which one is part of a solar system? — **planet**, keyboard, root, paragraph
-2. *(riddles, tier 1)* What has keys but cannot open a single lock? — a car, **a piano**, a ring, a safe
-3. *(plurals, tier 1)* Here is one echo. Here are five ___. — echo, **echoes**, echos, echose
-4. *(addsub, tier 1)* 1406 - 528 = ? — 818, 897, **878**, 1934
-5. *(wordproblems, tier 2)* Maya runs 16 km every day for 6 days. Ana runs 60 km in total. How many more km does Maya run? — 156 km, **36 km**, 52 km, 42 km
-6. *(earthsky, tier 2)* A thin curved sliver of moon is called a ... — quarter, **crescent**, full moon, gibbous
-7. *(synonyms, tier 2)* Which word means almost the same as tranquil? — idle, vast, **calm**, wary
-8. *(time, tier 2)* Jade's class starts at 1:40 and lasts 25 minutes. When does it end? — **2:05**, 3:05, 1:05, 2:15
-9. *(compare, tier 3)* Which fraction is the greatest? — 5/7, 2/7, 4/7, **6/7**
-10. *(addsub, tier 3)* 60697 + 6321 = ? — 66492, 54376, 69397, **67018**
-11. *(earthsky, tier 3)* A puzzle for a clever climber! What comes out of an erupting volcano? — sand and leaves, water and ice, **lava, ash and gas**, snow and hail
-12. *(associations, tier 3)* A day is part of a ___. — **week**, book, lamp, hand
+1. *(associations, tier 1)* Which one is part of a sofa? — root, **cushion**, day, paragraph
+2. *(opposites, tier 1)* The opposite of fail is ___. — conceal, include, **succeed**, approve
+3. *(events, tier 1)* Why did the ice cube melt? — it was cold outside, **it was left in the sun**, someone looked at it, it was in the freezer
+4. *(multiply, tier 1)* 17 x 4 = ? — **68**, 85, 21, 48
+5. *(synonyms, tier 2)* Which word means about the same as stingy? — antique, **miserly**, unfriendly, ungainly
+6. *(shapes, tier 2)* Which angle is a straight angle? — 75°, **180°**, 120°, 90°
+7. *(compare, tier 2)* Which decimal is the greatest? — 6.37, 6.24, 6.16, **6.64**
+8. *(oddoneout, tier 2)* One of these is not like the others. Which one is it? — quart, fluid ounce, pint, **gram**
+9. *(alphabetical, tier 3)* In a dictionary, which of these words would you find last? — **slip**, slice, slim, slide
+10. *(riddles, tier 3)* What gets sharper the more you use it? — a pencil, **your brain**, a knife, a spoon
+11. *(sentences, tier 3)* Fill in the blank: The ___ river flooded the fields after the rain. — dry, shallow, **swollen**, trickling
+12. *(wordproblems, tier 3)* 7 shelves hold 35 books each. Emma adds 29 more books. How many books are there now? — 216, 71, **274**, 448
 
 ### 5th grade
 
-1. *(analogies, tier 1)* vacant : occupied :: permanent : ___ Which word finishes the analogy? — **temporary**, forever, fixed, lasting
-2. *(earthsky, tier 1)* Let me see what you know. What is a comet? — a burning star, a small rocky planet, a piece of the moon, **a ball of ice and dust**
-3. *(matter, tier 1)* What stores chemical energy to power a torch? — a switch, a bulb, **a battery**, a wire
-4. *(sequences, tier 1)* 1, 2, 5, 14, ... What is the rule? — Multiply by 3, **Triple, then subtract 1**, Subtract 1, Add 6
-5. *(evenodd, tier 2)* Which number is prime? — 65, **53**, 42, 39
-6. *(addsub, tier 2)* 3.01 - 2.73 = ? — 0.30, **0.28**, 0.29, 5.74
-7. *(riddles, tier 2)* Which month has 28 days? — February, only leap years, **all of them**, none of them
-8. *(oddoneout, tier 2)* Three of these go together. Which one is the odd one out? — ruler, tape measure, trundle wheel, **thermometer**
-9. *(opposites, tier 3)* The opposite of flexible is ___. — fresh, messy, **rigid**, shiny
-10. *(affixes, tier 3)* Which meaning fits "subsoil"? — the top layer of soil, soil between rocks, **soil under the top layer**, soil that is used again
-11. *(fractions, tier 3)* 1 4/5 - 1 1/2 = ? — **3/10**, 1 3/10, 2/5, 9/10
-12. *(measurement, tier 3)* The chart shows books for each day. How many books in the whole week? — **40**, 55, 39, 36
+1. *(analogies, tier 1)* glance : stare :: sip : ___ Which word finishes the analogy? — taste, pour, **gulp**, drink
+2. *(shapes, tier 1)* Point A is at (7, 8). Point B is at (7, 5). How many units apart are they? — 2, 13, 4, **3**
+3. *(events, tier 1)* Hal is slower than Oli. Hal is faster than Raj. Gil is faster than Oli. Who is the second slowest? — Gil, **Hal**, Raj, Oli
+4. *(addsub, tier 1)* 30.1 - 27.3 = ? — 3.0, **2.8**, 2.9, 57.4
+5. *(earthsky, tier 2)* Which is Earth's hottest layer? — the crust, the mantle, the ocean, **the inner core**
+6. *(shapes, tier 2)* Start at (1, 0). Move 2 right and 4 up. Where are you now? — (4, 3), (3, 5), **(3, 4)**, (4, 4)
+7. *(riddles, tier 2)* What breaks but never falls, and what falls but never breaks? — glass and rain, **day and night**, waves and leaves, a cup and a ball
+8. *(opposites, tier 2)* Which word means the opposite of complicate? — **simplify**, advance, attract, conserve
+9. *(money, tier 3)* 5 yo-yos cost $5.50 altogether. How much does one yo-yo cost? — **$1.10**, $2.20, $1.05, $1.38
+10. *(shapes, tier 3)* Start at (1, 4). Move 3 right and 2 up. Where are you now? — (4, 2), **(4, 6)**, (6, 4), (4, 4)
+11. *(matter, tier 3)* Which of these is NOT a chemical change? — rusting a nail, **boiling water**, a firework going off, burning paper
+12. *(riddles, tier 3)* I am an odd number. Take away one letter and I become even. What am I? — nine, thirty, **seven**, eleven

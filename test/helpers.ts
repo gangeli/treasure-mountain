@@ -53,6 +53,14 @@ export function standardChecks(gens: Generator[], it: (name: string, fn: () => v
         expect(t3, `grade ${grade}: t1=${t1.toFixed(1)} t3=${t3.toFixed(1)}`).toBeGreaterThanOrEqual(t1 * 0.97 - 0.5)
       }
     })
+    it(`${gen.id}: tier 2 is a step up from tier 1`, () => {
+      // The defect this catches: two tiers drawing the same pool, so mountain levels 1 and 2 ask
+      // the same difficulty and only the scenery changes.
+      for (const grade of gen.grades) {
+        const t1 = avgMetric(grade, 1), t2 = avgMetric(grade, 2)
+        expect(t2, `grade ${grade}: t1=${t1.toFixed(1)} t2=${t2.toFixed(1)}`).toBeGreaterThan(t1 * 1.02)
+      }
+    })
     it(`${gen.id}: each grade's tier 1 is not easier than the previous grade's tier 1`, () => {
       const gs = gen.grades
       for (let i = 1; i < gs.length; i++) {

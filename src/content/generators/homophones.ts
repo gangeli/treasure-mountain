@@ -24,8 +24,8 @@ function inTier(sets: HomophoneSet[], tier: Tier): HomophoneSet[] {
   const out: HomophoneSet[] = []
   for (const group of byLevel.values()) {
     const m = group.length
-    const from = tier === 1 ? 0 : tier === 2 ? Math.floor(m * 0.3) : Math.floor(m * 0.55)
-    const to = tier === 1 ? Math.ceil(m * 0.6) : tier === 2 ? Math.ceil(m * 0.85) : m
+    const from = tier === 1 ? 0 : tier === 2 ? Math.floor(m * 0.38) : Math.floor(m * 0.62)
+    const to = tier === 1 ? Math.ceil(m * 0.5) : tier === 2 ? Math.ceil(m * 0.8) : m
     out.push(...group.slice(from, to))
   }
   return out.length ? out : sets
@@ -64,7 +64,7 @@ export const homophones: Generator = {
     const n = choiceCount(grade)
     const lv = levels(grade, tier)
     const set = rng.pick(inTier(HOMOPHONES.filter(s => lv.includes(s.level)), tier))
-    const rank = rankOf(set) * 6
+    const rank = rankOf(set) * 9
     const target = rng.pick(set.words)
     const others = set.words.filter(w => w !== target).map(w => w.word)
     const soundMode = rng.bool(grade === 2 ? 0.3 : 0.15)

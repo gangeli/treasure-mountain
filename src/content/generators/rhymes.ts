@@ -127,7 +127,10 @@ export const rhymes: Generator = {
       highlight: fam.varied ? undefined : [fam.end],
       choices, answer: idx,
       spoken: `${shown.join(', ')}. These words rhyme. Which word rhymes with them? ${choices.map(c => c.text).join(', ')}?`,
-      metric: fam.level * 10 + answer.length, grade, tier,
+      // Two tiers can draw the same family level (kindergarten's -at/-it then -op), so the metric
+      // also counts what else changes: whether the words are limited to simple CVC, and how far
+      // above the family the decoys are allowed to come from.
+      metric: fam.level * 10 + answer.length + (plan.cvcOnly ? 0 : 3) + Math.max(0, Math.max(...plan.decoyLevels) - fam.level) * 2, grade, tier,
     })
   },
 }

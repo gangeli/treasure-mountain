@@ -69,11 +69,16 @@ export const time: Generator = {
       }
       // Minute granularity by grade/tier. Grade 1 tier 3 is half-past only: on-the-hour clocks
       // there would be byte-identical to tier 1.
-      const minuteOpts = grade === 0 ? [0] : grade === 1 ? (tier === 1 ? [0] : [30]) : (tier === 1 ? [0, 5, 10, 20, 25, 35, 40, 50, 55] : tier === 2 ? [15, 45, 30, 5, 25, 35, 55] : [5, 10, 15, 20, 25, 35, 40, 45, 50, 55])
+      // Grade 2 climbs the way 2.MD.7 does: o'clock and half past, then the quarters, then every
+      // five-minute mark. It used to read five-minute marks at tier 1, so tiers 1 and 2 measured
+      // the same difficulty.
+      const minuteOpts = grade === 0 ? [0] : grade === 1 ? (tier === 1 ? [0] : [30]) : (tier === 1 ? [0, 0, 30] : tier === 2 ? [15, 45, 30, 0] : [5, 10, 20, 25, 35, 40, 50, 55])
       const h = rng.int(1, 12), m = rng.pick(minuteOpts)
       const ans = h * 60 + m
       /** Difficulty of showing `mins` past the hour at this grade. */
-      const readMetric = (mins: number) => grade === 0 ? 8 : grade === 1 ? 15 + (mins ? 4 : 0) : 25 + (mins % 5 ? 8 : 0) + (mins ? 4 : 0) + (mins % 30 ? 2 : 0)
+      // How fine the reading is: on the hour, half past, quarters, five-minute marks, every minute.
+      const readMetric = (mins: number) => grade === 0 ? 8 : grade === 1 ? 15 + (mins ? 4 : 0)
+        : 25 + (mins === 0 ? 0 : mins === 30 ? 4 : mins % 15 === 0 ? 7 : mins % 5 === 0 ? 10 : 14)
       const metric = grade === 0 ? (mode === 'whichClock' ? 7 : 9) : readMetric(m)
       const swapped = m === 0 ? 12 * 60 + h * 5 : Math.floor(m / 5) * 60 + h * 5
       const prefs = [ans + 60, ans - 60, swapped, ans + 30, ans - 30, ans + 5, ans - 5, ans + 15, ans - 15].filter(v => v !== ans)

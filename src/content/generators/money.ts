@@ -197,7 +197,7 @@ export const money: Generator = {
         const prompt = mode === 'add3'
           ? [`${me} buys ${article(item)} ${item} for ${dollars(a)}, ${article(item2)} ${item2}`, `for ${dollars(b)} and a snack for ${dollars(c)}.`, 'How much is that in all?']
           : rng.pick([[`${dollars(a)} + ${dollars(b)} = ?`], [`${me} has ${dollars(a)}. ${other} gives ${me}`, `${dollars(b)} more. How much does ${me} have?`], [`${cap(article(item))} ${item} costs ${dollars(a)} and ${article(item2)} ${item2}`, `costs ${dollars(b)}. What is the total?`]])
-        return mathRiddle({ family: 'money', skill: 'math: adding money', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 60 + Math.log2(total / 25) * 2 + (c ? 4 : 0) + (step === 1 ? 3 : 0), grade, tier }, `num:(${a}+${b}+${c})/100`)
+        return mathRiddle({ family: 'money', skill: 'math: adding money', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 60 + Math.log2(total / 25) * 2 + (c ? 4 : 0) + (step === 1 ? 6 : step === 5 ? 3 : 0), grade, tier }, `num:(${a}+${b}+${c})/100`)
       }
       const a = r(300, 1999), b = r(100, a - 50)
       const diff = a - b
@@ -206,13 +206,16 @@ export const money: Generator = {
       const prompt = mode === 'sub'
         ? rng.pick([[`${dollars(a)} - ${dollars(b)} = ?`], [`${cap(article(item))} ${item} costs ${dollars(a)}.`, `${cap(article(item2))} ${item2} costs ${dollars(b)}.`, `How much more does the ${item} cost?`]])
         : [`${me} has ${dollars(a)} and spends ${dollars(b)}`, `on ${article(item)} ${item}. How much is left?`]
-      return mathRiddle({ family: 'money', skill: 'math: subtracting money', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 60 + Math.log2(a / 25) * 2 + (step === 1 ? 3 : 0), grade, tier }, `num:(${a}-${b})/100`)
+      return mathRiddle({ family: 'money', skill: 'math: subtracting money', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 60 + Math.log2(a / 25) * 2 + (step === 1 ? 6 : step === 5 ? 3 : 0), grade, tier }, `num:(${a}-${b})/100`)
     }
 
     // grade 5: multi-step
     const [me] = twoNames(rng)
     const item = rng.pick(ITEMS), item2 = rng.pick(ITEMS.filter(i => i !== item))
-    const mode = rng.pick(tier === 1 ? ['multi', 'save', 'twoKinds'] : tier === 2 ? ['multiChange', 'twoKinds', 'save', 'half'] : ['multiChange', 'twoKinds', 'fracOff', 'unit'])
+    // Tier 1 is one operation (repeated buying, weekly saving, half price), tier 2 adds a second
+    // step (two kinds of item, buying then change), tier 3 fractions and unit price. Two-kind
+    // problems used to run in all three tiers, which flattened tiers 1 and 2 to the same measure.
+    const mode = rng.pick(tier === 1 ? ['multi', 'save', 'half', 'multi'] : tier === 2 ? ['multiChange', 'twoKinds', 'save', 'twoKinds'] : ['multiChange', 'twoKinds', 'fracOff', 'unit'])
     if (mode === 'multi' || mode === 'multiChange') {
       const k = rng.int(2, 6), price = rng.int(tier === 1 ? 5 : 3, tier === 1 ? 40 : 99) * 5
       const cost = k * price
