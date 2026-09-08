@@ -38,6 +38,7 @@ jobs:
           npx playwright install --with-deps chromium
           node e2e/screenshots.mjs e2e/out/shots
           node e2e/pwa.mjs
+          node e2e/fileurl.mjs
           node e2e/audio.mjs
           node e2e/playtest.mjs e2e/out/play 0,2,5
           node e2e/playtest.mjs e2e/out/play-hard 3 6
