@@ -80,12 +80,14 @@ Mountain Master (6), Champion (7: the crown is won).
 1. **Title.** The mountain (three terraces, clubhouse, castle), animated elves peeking, the logo,
    PLAY, sound/music toggles, Install (web only, when the browser offers it), About.
 2. **Grade select.** "Who is climbing today?" Six cards: K, 1st, 2nd, 3rd, 4th, 5th, each with its
-   stars and total treasures. A long-press/"reset" is under Options, not here.
+   stars, rank, total treasures and last prize. There is no way to erase a grade's progress from
+   inside the game: nothing here can be lost, and a reset button is a thing a child taps.
 3. **Clubhouse.** Rank poster (thresholds, star, rank name, total treasures), the prize shelf, and a
    START button. First visit shows the intro text ("The elves can help you...").
 4. **Level (play).** Side view, looping world of 6 screens (7680 logical px), the HUD below.
-   Entities: player, 6-9 elves (2-3 with scrolls at any time; a caught scroll elf respawns as a
-   plain elf and a new scroll appears elsewhere), scenery groups, tunnel, net rock, keyhole, exit.
+   Entities: player, 7-10 elves by rank (three carry scrolls at any time; a caught scroll elf
+   respawns as a plain elf and a new scroll appears elsewhere), scenery groups, tunnel, net rock,
+   keyhole, exit.
 5. **Riddle overlay.** Scroll panel, elf dancing at the right, prompt text (with any drawing: clock,
    coins, shapes, counters), choices in a column, selection box, speaker button.
 6. **Clue bubble.** "Good job, Super Solver! You have won a clue word to help you find the key: two".
@@ -95,9 +97,10 @@ Mountain Master (6), Champion (7: the crown is won).
    blasted out of the window, a prize pops out, then the slide down.
 9. **Rank screen.** The poster again, with the star moving up when a threshold is crossed. Then
    the clubhouse; the next ascent has one more treasure per level.
-10. **Crown ending.** At 300 treasures: the crown rises from the chest, fireworks, "You saved
-    Treasure Mountain!", the poster shows the crown.
-11. **Pause / options.** Resume, sound, music, how to play, change grade, quit to title.
+10. **Crown ending.** The first time a grade reaches 300 treasures: the crown floats over the
+    castle in a halo, sparkles rise, the elves dance, "You won back the crown! Treasure Mountain is
+    saved, 3rd grade Champion!". Shown once per grade; climbing carries on afterwards.
+11. **Pause.** Keep playing, how to play, sound, music, quit to title.
 
 Progress is saved after every clue, treasure, key and screen change, so closing the app mid-level
 resumes at the same point (the level layout is regenerated from its saved seed).
@@ -193,6 +196,10 @@ a count (1-4), a descriptor and a kind, drawn accordingly:
   long), signs (round, square, striped); colours for flowers, lanterns, shovels, gems, flags,
   crystals; a distinct feature for mushrooms (red, blue, yellow, spotted), nests and carts (small,
   big, empty). No descriptor names the default look of every instance (no "green bush").
+* Kindergarten and 1st grade do not get **boulders** or **gems**: each shares a level and a set of
+  descriptors with a kind that looks like a smaller or duller version of it (rocks, crystals), so
+  "two round boulders" standing next to two round rocks would ask a five-year-old a word question
+  rather than a looking question. Grade 2 up gets both.
 * number words: one, two, three, four (K-1 use one to three).
 
 The hunt target is a group whose (count, descriptor, kind) triple is unique; the generator then
@@ -224,9 +231,11 @@ object), exactly like the original's HUD.
   backpack, blue hoop net) with a 6-frame walk cycle, jump, net swing and "crouch to drop coin";
   elves (pointed caps in three colours, tunics, big shoes, scroll or balloon or dust pouch) with a
   4-frame run, a stunned "under the net" pose and a dance; the Master of Mischief (big round head,
-  wild orange hair, red nose, crown, purple robe) with steam and a blast-off.
-* Backgrounds are drawn once per level into an offscreen canvas per screen; entities are drawn
-  every frame. Parallax: one far layer (mountain silhouettes / sky) at 0.3x.
+  wild orange hair, a big nose, a mustache, crown, purple robe over sleeved arms) with steam and a
+  blast-off; his brows are level and smug until the chest is filled, then drive down into a scowl.
+* Everything is drawn every frame straight to the one canvas - the backdrop is a few hundred path
+  operations and the loop is 7680px wide, so there is nothing worth caching off-screen. Parallax:
+  far mountains at 0.3x the camera, clouds at 0.15x, the sun at 0.05x.
 * Text: a rounded sans-serif system stack for riddles, sized to fit - 46 px for a one-line question
   down to 24 px for a six-line grade-5 logic puzzle, always stopping short of the answer buttons - with letter-spacing
   and generous line height; red for the clue word and the highlighted rhyme letters, as the original.
