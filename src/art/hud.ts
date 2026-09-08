@@ -104,9 +104,6 @@ export function drawButtons(ctx: Ctx, buttons: Button[], g: Game): void {
     const fill = big ? P.green : b.toggled === false ? P.rockDark : onSky ? P.cream : P.blue
     const edge = big ? P.greenDark : b.toggled === false ? P.inkSoft : onSky ? '#d8c48c' : P.blueDark
     const label = big ? P.white : b.toggled === false ? P.white : onSky ? P.ink : P.white
-    // A soft drop shadow under the big call-to-action buttons: PLAY, "Let's go!" and Continue sit
-    // on the grass band on their screens, and green-on-green left only the outline to find.
-    if (big) { ctx.save(); ctx.fillStyle = 'rgba(10,20,40,0.28)'; rr(ctx, b.x - 7, b.y + 2, b.w + 14, b.h + 10, 20); ctx.fill(); ctx.restore() }
     roundRect(ctx, b.x, b.y + 4, b.w, b.h, 14, edge, P.ink, 3)
     roundRect(ctx, b.x, b.y, b.w, b.h - 4, 14, fill, P.ink, 3)
     // Gloss only over the top third, above the cap height, and faded so it cannot cut the text.

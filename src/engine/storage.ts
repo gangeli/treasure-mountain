@@ -5,7 +5,7 @@ export interface SaveData {
   grade: number | null
   bestScore: Record<string, number>   // per grade
   crowns: Record<string, number>      // per grade: times the crown was recovered
-  settings: { sound: boolean; music: boolean; reduceMotion: boolean }
+  settings: { sound: boolean; music: boolean }
   stats: Record<string, { asked: number; right: number }> // per grade+skill
   lastRun: unknown | null
 }
@@ -14,7 +14,7 @@ export const defaultSave = (): SaveData => ({
   grade: null,
   bestScore: {},
   crowns: {},
-  settings: { sound: true, music: true, reduceMotion: false },
+  settings: { sound: true, music: true },
   stats: {},
   lastRun: null,
 })
