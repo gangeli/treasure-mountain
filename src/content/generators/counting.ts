@@ -1,4 +1,4 @@
-import type { Generator, CounterItem, Choice } from '../types'
+import type { Generator, CounterItem } from '../types'
 import { riddle, shuffled, choiceCount, nearbyNumbers, numberWord } from '../types'
 
 const ITEMS: CounterItem[] = ['apple', 'star', 'ball', 'fish', 'flower', 'heart', 'balloon', 'bug', 'cookie', 'acorn']
