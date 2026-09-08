@@ -90,18 +90,21 @@ export function uiButtons(g: Game): Button[] {
       b.push({ id: 'net', x: cx, y, w, h, label: `Net`, icon: 'net', disabled: run.nets <= 0 })
       b.push({ id: 'coin', x: cx + w + 12, y, w, h, label: `Coin`, icon: 'coin', disabled: run.coins <= 0 })
       b.push({ id: 'jump', x: cx + 2 * (w + 12), y, w, h, label: 'Jump', icon: 'jump' })
-      b.push({ id: 'pause', x: W - 70, y: 12, w: 58, h: 58, label: '', icon: 'pause' })
+      b.push({ id: 'pause', x: W - 84, y: 8, w: 72, h: 72, label: '', icon: 'pause' })
       // Reads the clue words out. The three words are the only text a pre-reader has to act on,
-      // and they are what a child forgets while hunting the far side of the level.
-      b.push({ id: 'sayclues', x: 372, y: 636, w: 52, h: 48, label: '', icon: 'speaker' })
+      // and they are what a child forgets while hunting the far side of the level. Sized for the
+      // device this is played on: the game letterboxes 1280x720 into a phone's 800x360 CSS pixels,
+      // so everything on screen is half the size these numbers say. At 52x48 this button was 4.5mm
+      // across on a phone, which is smaller than a five-year-old's fingertip.
+      b.push({ id: 'sayclues', x: 348, y: 626, w: 76, h: 64, label: '', icon: 'speaker' })
       break
     }
     case 'castle':
-      b.push({ id: 'pause', x: W - 70, y: 12, w: 58, h: 58, label: '', icon: 'pause' })
+      b.push({ id: 'pause', x: W - 84, y: 8, w: 72, h: 72, label: '', icon: 'pause' })
       break
     case 'riddle': {
       const rv = g.riddle!
-      b.push({ id: 'speak', x: SCROLL.x + SCROLL.w - 104, y: SCROLL.y + 20, w: 64, h: 64, label: '', icon: 'speaker' })
+      b.push({ id: 'speak', x: SCROLL.x + SCROLL.w - 116, y: SCROLL.y + 14, w: 76, h: 76, label: '', icon: 'speaker' })
       if (rv.phase === 'ask') riddleChoiceRects(rv.riddle).forEach((r, i) => b.push({ id: 'choice' + i, ...r, label: rv.riddle.choices[i].text ?? '', disabled: rv.wrong.includes(i) }))
       else b.push({ id: 'goon', x: 470, y: HUD_Y + 70, w: 340, h: 74, label: rv.phase === 'wrong' ? 'Try again' : 'Go on', big: true })
       break
