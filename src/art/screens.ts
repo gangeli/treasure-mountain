@@ -107,10 +107,18 @@ function title(ctx: Ctx, g: Game): void {
 // ------------------------------------------------------------------ grade select
 /** Cream on dark fills, navy on light ones (relative luminance, WCAG weights). */
 function readableOn(hex: string): string {
-  const n = parseInt(hex.slice(1), 16)
-  const lin = (c: number) => { const s = c / 255; return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4) }
-  const L = 0.2126 * lin((n >> 16) & 255) + 0.7152 * lin((n >> 8) & 255) + 0.0722 * lin(n & 255)
-  return L > 0.42 ? P.ink : P.cream
+  const lum = (h: string): number => {
+    const n = parseInt(h.slice(1), 16)
+    const lin = (c: number) => { const s = c / 255; return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4) }
+    return 0.2126 * lin((n >> 16) & 255) + 0.7152 * lin((n >> 8) & 255) + 0.0722 * lin(n & 255)
+  }
+  // Whichever of the two actually contrasts more, not whichever side of a luminance line the colour
+  // falls on. A threshold of 0.42 sent cream onto the pink, orange and green cards, where it came
+  // out at 2.2-2.5:1 - below what anyone can comfortably read - when navy on those same three is
+  // 5.5-6.3:1. The crossover is near 0.21, and computing it is clearer than remembering that.
+  const bg = lum(hex)
+  const against = (fg: string): number => { const l = lum(fg); const hi = Math.max(l, bg), lo = Math.min(l, bg); return (hi + 0.05) / (lo + 0.05) }
+  return against(P.ink) >= against(P.cream) ? P.ink : P.cream
 }
 
 /** The Trainee badge: a little knapsack, so every grade card has something in the badge slot. */
@@ -327,7 +335,9 @@ function riddle(ctx: Ctx, g: Game, clueMode = false): void {
       const inside = !!c.visual || rc.w <= 500
       // -17, not -24: at -24 the badge for a full-width answer sat on the scroll's left roller.
       const bx = inside ? rc.x + 22 : rc.x - 17, by = c.visual ? rc.y + 22 : rc.y + rc.h / 2
-      circle(ctx, bx, by, inside ? 14 : 13, P.scrollEdge, P.ink, 2)
+      // Deep blue, not the scroll's own teal: white on that teal is 2.9:1, and this number is what
+      // the read-aloud voice names ("One, a bag of flour"), so it has to be readable.
+      circle(ctx, bx, by, inside ? 14 : 13, P.blueDark, P.ink, 2)
       text(ctx, String(i + 1), bx, by + 1, { size: 18, align: 'center', color: P.white, weight: 900 })
     }
   })
