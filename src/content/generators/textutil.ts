@@ -9,6 +9,16 @@ export function wrap(text: string, max = 46): string[] {
     else { lines.push(cur); cur = w }
   }
   if (cur) lines.push(cur)
+  // Avoid an orphan: a last line of one short word reads as a mistake on the scroll, so pull a word
+  // down from the line above it, which keeps the same number of lines.
+  const last = lines.length - 1
+  if (lines.length >= 2 && !lines[last].includes(' ') && lines[last].length <= 8) {
+    const above = lines[last - 1].split(' ')
+    if (above.length >= 3) {
+      lines[last] = above.pop()! + ' ' + lines[last]
+      lines[last - 1] = above.join(' ')
+    }
+  }
   return lines
 }
 
