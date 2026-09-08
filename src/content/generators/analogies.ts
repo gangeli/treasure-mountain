@@ -1,5 +1,5 @@
 import type { Generator, Grade, Tier } from '../types'
-import { riddle, shuffled, choiceCount, cap } from '../types'
+import { riddle, shuffled, choiceCount, cap, sayChoices} from '../types'
 import { ANALOGIES, type Analogy, type Relation } from '../data/analogies'
 import { tierWindow, rankIn } from './textutil'
 
@@ -53,7 +53,7 @@ export const analogies: Generator = {
       const prompt = [`${a.a} : ${a.b}`, 'Which pair goes together', 'in the same way?']
       return riddle({
         family: 'analogies', skill: `thinking: analogies (${RELATION_NAME[a.rel]})`, prompt, choices, answer: idx,
-        spoken: `${a.a} goes with ${a.b}. Which pair goes together in the same way? ${choices.map(c => c.text).join(', ')}?`,
+        spoken: `${a.a} goes with ${a.b}. Which pair goes together in the same way? ${sayChoices(choices)}?`,
         metric: a.level * 10 + a.d.length + 3 + rank, grade, tier,
         key: `analogies|pair|${a.a}|${a.b}`,
       })
@@ -67,7 +67,7 @@ export const analogies: Generator = {
       : rng.pick([[`${cap(a.a)} is to ${a.b}`, `as ${a.c} is to ___.`], [`${cap(a.a)} is to ${a.b} as ${a.c} is to ___.`]]).flatMap(l => l.length > 46 ? [l.slice(0, l.indexOf(' as ')), l.slice(l.indexOf(' as ') + 1)] : [l])
     return riddle({
       family: 'analogies', skill: `thinking: analogies (${RELATION_NAME[a.rel]})`, prompt, highlight: [a.a, a.b, a.c], choices, answer,
-      spoken: `${a.a} is to ${a.b} as ${a.c} is to blank. ${choices.map(c => c.text).join(', ')}?`,
+      spoken: `${a.a} is to ${a.b} as ${a.c} is to blank. ${sayChoices(choices)}?`,
       metric: a.level * 10 + a.d.length + (mode === 'colon' ? 1 : 0) + rank, grade, tier,
       key: `analogies|${a.a}|${a.b}|${a.c}|${mode}`,
     })

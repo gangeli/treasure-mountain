@@ -1,5 +1,5 @@
 import type { Generator, Grade, Tier } from '../types'
-import { riddle, shuffled, choiceCount } from '../types'
+import { riddle, shuffled, choiceCount, sayChoices} from '../types'
 import { SENTENCES, type Sentence } from '../data/sentences'
 import { wrap, spokenBlank, tierWindow, rankIn } from './textutil'
 
@@ -39,7 +39,7 @@ export const sentences: Generator = {
     const skill = grade <= 1 ? 'reading: sight words in sentences' : grade <= 3 ? 'reading: context clues' : 'vocabulary: words in context'
     return riddle({
       family: 'sentences', skill, prompt, choices, answer,
-      spoken: `${spokenBlank(s.text)} Which word fills the blank? ${choices.map(c => c.text).join(', ')}?`,
+      spoken: `${spokenBlank(s.text)} Which word fills the blank? ${sayChoices(choices)}?`,
       metric: s.level * 10 + s.answer.length + rankIn(pool.filter(x => x.level === s.level), s) * 4, grade, tier,
       key: `sentences|${s.text}`,
     })

@@ -1,5 +1,5 @@
 import type { Generator, Grade, Tier } from '../types'
-import { riddle, shuffled, choiceCount, nearbyNumbers } from '../types'
+import { riddle, shuffled, choiceCount, nearbyNumbers, sayChoices} from '../types'
 import { SYLLABLE_WORDS } from '../data/syllables'
 
 type Mode = 'which' | 'count'
@@ -49,7 +49,7 @@ export const syllables: Generator = {
         : [`How many syllables are in "${word}"?`]
       return riddle({
         family: 'syllables', skill: 'phonics: counting syllables', prompt, highlight: [word], choices, answer, key,
-        spoken: `How many syllables are in the word ${word}? ${choices.map(c => c.text).join(', ')}?`,
+        spoken: `How many syllables are in the word ${word}? ${sayChoices(choices)}?`,
         metric: k * 10 + word.length, grade, tier,
       })
     }
@@ -70,7 +70,7 @@ export const syllables: Generator = {
     const prompt = [`Which word has ${plural(k)}?`]
     return riddle({
       family: 'syllables', skill: 'phonics: counting syllables', prompt, choices, answer, key,
-      spoken: `Which word has ${plural(k)}? ${choices.map(c => c.text).join(', ')}?`,
+      spoken: `Which word has ${plural(k)}? ${sayChoices(choices)}?`,
       metric: k * 10 + word.length + 4, grade, tier,
     })
   },

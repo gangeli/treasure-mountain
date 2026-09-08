@@ -1,6 +1,6 @@
 import type { Rng } from '../../engine/rng'
 import type { Grade, Tier, Riddle } from '../types'
-import { riddle, shuffled, choiceCount } from '../types'
+import { riddle, shuffled, choiceCount, sayChoices} from '../types'
 
 /**
  * A fact-style question used by the thinking/science families.
@@ -101,7 +101,7 @@ export function factRiddle(family: string, skill: string, facts: readonly Fact[]
   const prompt = !f.verse && body.length <= 3 && rng.bool(0.35) ? [rng.pick(LEADS), ...body] : body
   return riddle({
     family, skill: f.skill ?? skill, prompt, verse: !!f.verse, choices, answer,
-    spoken: `${f.verse ? f.verse.join(' ') : f.q} ${choices.map(c => c.text).join(', ')}?`,
+    spoken: `${f.verse ? f.verse.join(' ') : f.q} ${sayChoices(choices)}?`,
     metric, grade, tier,
     key: `${family}|${f.q}`,
   })

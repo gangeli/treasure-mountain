@@ -1,5 +1,5 @@
 import type { Generator, Grade, Tier } from '../types'
-import { riddle, shuffled, choiceCount } from '../types'
+import { riddle, shuffled, choiceCount, sayChoices} from '../types'
 import { NOUNS, VERBS, type Noun, type Verb } from '../data/plurals'
 
 /** Noun levels per grade/tier: 1 regular -s, 2 -es/-ies, 3 irregular, 4 -ves/-oes, 5 Latin/Greek. */
@@ -95,7 +95,7 @@ export const plurals: Generator = {
       }
       return riddle({
         family: 'plurals', skill, prompt, highlight: mode === 'name' ? [] : hl, choices, answer,
-        spoken: `${spoken} ${choices.map(c => c.text).join(', ')}?`,
+        spoken: `${spoken} ${sayChoices(choices)}?`,
         metric: v.level * 10 + v.past.length + (mode === 'context' ? 3 : 0), grade, tier,
         // One riddle per verb: all four framings ask for the same past tense, and a child should
         // not be asked for "sat" twice in one climb because the sentence around it changed.
@@ -121,7 +121,7 @@ export const plurals: Generator = {
     const skill = noun.level <= 2 ? 'grammar: plural nouns' : 'grammar: irregular plurals'
     return riddle({
       family: 'plurals', skill, prompt, highlight: mode === 'name' ? [] : [noun.singular], choices, answer,
-      spoken: `${prompt.join(' ').replace('___', 'blank')} ${mode === 'name' ? '' : 'Which word fills the blank? '}${choices.map(c => c.text).join(', ')}?`,
+      spoken: `${prompt.join(' ').replace('___', 'blank')} ${mode === 'name' ? '' : 'Which word fills the blank? '}${sayChoices(choices)}?`,
       metric: noun.level * 10 + noun.plural.length, grade, tier,
       key: `plurals|noun|${noun.singular}`,
     })

@@ -1,5 +1,5 @@
 import type { Generator, Grade, Tier } from '../types'
-import { riddle, shuffled, choiceCount, cap } from '../types'
+import { riddle, shuffled, choiceCount, cap, sayChoices} from '../types'
 import { CATEGORIES, overlapping, allMembers, byId, type Category } from '../data/categories'
 import { tierWindow, rankIn } from './textutil'
 
@@ -60,7 +60,6 @@ function outsiders(rng: { shuffle<T>(a: readonly T[]): T[] }, cat: Category, gra
   return out
 }
 
-const list = (xs: string[]): string => xs.join(', ')
 
 /** Which is a fruit (K-1), which does not belong (2+), and naming the category (3-5). */
 export const categories: Generator = {
@@ -87,7 +86,7 @@ export const categories: Generator = {
       const prompt = grade === 0 && rng.bool(0.4) ? ['Look at these three words.', `Which one is ${cat.one}?`] : [`Which one is ${cat.one}?`]
       return riddle({
         family: 'categories', skill, prompt, choices, answer,
-        spoken: `Which one is ${cat.one}? ${list(choices.map(c => c.text ?? ''))}?`,
+        spoken: `Which one is ${cat.one}? ${sayChoices(choices)}?`,
         metric: cat.level * 10 + answerW.length / 2 + rank, grade, tier,
       })
     }
@@ -109,7 +108,7 @@ export const categories: Generator = {
       const prompt = hint ? ['Which one does not belong?', `${count} of these are ${cat.many}.`] : ['Which one does not belong?']
       return riddle({
         family: 'categories', skill, prompt, choices, answer,
-        spoken: `${prompt.join(' ')} ${list(choices.map(c => c.text ?? ''))}?`,
+        spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`,
         metric: cat.level * 10 + (hint ? 3 : 6) + outsider.length / 4 + rank, grade, tier,
       })
     }
@@ -130,7 +129,7 @@ export const categories: Generator = {
     const prompt = [line, shown.length === 3 ? 'are all ___.' : 'are both ___.']
     return riddle({
       family: 'categories', skill, prompt, highlight: shown, choices, answer,
-      spoken: `${shown.join(', ')}. These are all what? ${list(choices.map(c => c.text ?? ''))}?`,
+      spoken: `${shown.join(', ')}. These are all what? ${sayChoices(choices)}?`,
       metric: cat.level * 10 + 8 + cat.many.length / 4 + rank, grade, tier,
     })
   },

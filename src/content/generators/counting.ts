@@ -1,5 +1,5 @@
 import type { Generator, CounterItem, Grade, Tier } from '../types'
-import { riddle, shuffled, choiceCount, nearbyNumbers, numberWord } from '../types'
+import { riddle, shuffled, choiceCount, nearbyNumbers, numberWord, sayChoices} from '../types'
 
 const ITEMS: CounterItem[] = ['apple', 'star', 'ball', 'fish', 'flower', 'heart', 'balloon', 'bug', 'cookie', 'acorn']
 const plural: Record<CounterItem, string> = { apple: 'apples', star: 'stars', ball: 'balls', fish: 'fish', flower: 'flowers', coin: 'coins', block: 'blocks', heart: 'hearts', balloon: 'balloons', bug: 'bugs', cookie: 'cookies', acorn: 'acorns' }
@@ -50,7 +50,7 @@ export const counting: Generator = {
       return riddle({
         family: 'counting', skill: 'math: counting objects', prompt: [`How many ${plural[item]} do you see?`],
         visual: { kind: 'counters', item, count }, choices, answer,
-        spoken: `How many ${plural[item]} do you see? ${choices.map(c => c.text).join(', ')}?`, metric: count, grade, tier,
+        spoken: `How many ${plural[item]} do you see? ${sayChoices(choices)}?`, metric: count, grade, tier,
       })
     }
 
@@ -64,7 +64,7 @@ export const counting: Generator = {
       const prompt = [two ? 'How many dots are in the ten frames?' : 'How many dots are in the ten frame?']
       return riddle({
         family: 'counting', skill: 'math: ten frames', prompt,
-        visual: { kind: 'tenframe', count }, choices, answer, spoken: `How many dots are there? ${choices.map(c => c.text).join(', ')}?`, metric: 10 + count, grade, tier,
+        visual: { kind: 'tenframe', count }, choices, answer, spoken: `How many dots are there? ${sayChoices(choices)}?`, metric: 10 + count, grade, tier,
       })
     }
 
@@ -78,7 +78,7 @@ export const counting: Generator = {
       const prompt = mode === 'next' ? [`What number comes right after ${start}?`] : [`What number comes right before ${start}?`]
       return riddle({
         family: 'counting', skill: 'math: number order', prompt, choices, answer,
-        spoken: `${prompt[0]} ${choices.map(c => c.text).join(', ')}?`, metric: 5 + Math.log2(Math.max(2, start)) * 4, grade, tier,
+        spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: 5 + Math.log2(Math.max(2, start)) * 4, grade, tier,
       })
     }
 
@@ -92,7 +92,7 @@ export const counting: Generator = {
       const decoys = decoysN.map(d => asDigits ? String(d) : numberWord(d))
       const { choices, answer } = shuffled(rng, answerT, decoys, n)
       const prompt = asDigits ? [`Which number is "${numberWord(num)}"?`] : [`How do you write ${num} in words?`]
-      return riddle({ family: 'counting', skill: 'math: number words', prompt, choices, answer, spoken: `${prompt[0]} ${choices.map(c => c.text).join(', ')}?`, metric: 8 + num / 5, grade, tier })
+      return riddle({ family: 'counting', skill: 'math: number words', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: 8 + num / 5, grade, tier })
     }
 
     // Skip counting. Steps rise with grade and tier, and from grade 2 tier 2 the sequence no longer
@@ -121,7 +121,7 @@ export const counting: Generator = {
     const prompt = [`${seq.join(', ')}, ...`, 'What number comes next?']
     return riddle({
       family: 'counting', skill: 'math: skip counting', prompt, choices, answer,
-      spoken: `${seq.join(', ')}. What number comes next? ${choices.map(c => c.text).join(', ')}?`,
+      spoken: `${seq.join(', ')}. What number comes next? ${sayChoices(choices)}?`,
       metric: 20 + step * 2 + (backwards ? 10 : 0) + Math.log2(Math.max(2, answerN)) * 1.5, grade, tier,
     })
   },
@@ -176,7 +176,7 @@ export const addSub: Generator = {
       // The picture states the same equation as the text: two boxes of x and y for addition.
       visual: withPictures ? { kind: 'counters', item, count: add ? x + y : x, groups: add ? [x, y] : undefined, crossed: add ? undefined : y } : undefined,
       choices, answer,
-      spoken: `What is ${fmt(x)} ${add ? 'plus' : 'minus'} ${fmt(y)}? ${choices.map(c => c.text).join(', ')}?`,
+      spoken: `What is ${fmt(x)} ${add ? 'plus' : 'minus'} ${fmt(y)}? ${sayChoices(choices)}?`,
       metric: Math.log2(Math.max(2, x + y)) * 10 + decimals * 30, grade, tier,
     })
   },

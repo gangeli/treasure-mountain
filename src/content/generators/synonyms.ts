@@ -1,6 +1,6 @@
 import type { Generator, Grade, Tier } from '../types'
 import type { Rng } from '../../engine/rng'
-import { riddle, shuffled, choiceCount, cap } from '../types'
+import { riddle, shuffled, choiceCount, cap, sayChoices} from '../types'
 import { SYNONYMS, type SynGroup } from '../data/synonyms'
 import { OPPOSITES } from '../data/opposites'
 import { relatedTo, sameRoot, isAmbiguous, tooClose } from '../data/vocab'
@@ -87,7 +87,7 @@ export const synonyms: Generator = {
       const prompt = ['Which pair of words are synonyms?', '(Words that mean almost the same.)']
       return riddle({
         family: 'synonyms', skill: 'vocabulary: synonyms', prompt, choices, answer,
-        spoken: `Which pair of words are synonyms, words that mean almost the same? ${choices.map(c => (c.text ?? '').replace(' / ', ' and ')).join(', ')}?`,
+        spoken: `Which pair of words are synonyms, words that mean almost the same? ${sayChoices(choices, c => (c.text ?? '').replace(' / ', ' and '))}?`,
         metric: 10 + band * 6 + 8 + answerT.length / 2, grade, tier,
         key: `synonyms-pair|${grade}|${tier}|${answerT.split(' / ').sort().join('-')}`,
       })
@@ -112,7 +112,7 @@ export const synonyms: Generator = {
       decoys = [...decoys, ...pickDecoys(any, n + 1, banned, [...avoid, ...decoys])]
     }
     const { choices, answer } = shuffled(rng, answerW, decoys, n)
-    const list = choices.map(c => c.text).join(', ')
+    const list = sayChoices(choices)
 
     let prompt: string[]
     const glossLine = gloss ? [`(${word} = ${gloss})`] : []

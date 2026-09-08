@@ -1,5 +1,5 @@
 import type { Generator, Grade, Tier } from '../types'
-import { riddle, shuffled, choiceCount } from '../types'
+import { riddle, shuffled, choiceCount, sayChoices} from '../types'
 import { DERIVED, AFFIX_MEANING, PREFIXES, SUFFIXES, type Derived } from '../data/affixes'
 import { wrap, tierWindow } from './textutil'
 
@@ -44,7 +44,7 @@ export const affixes: Generator = {
       const prompt = rng.pick([[`What does "${w.word}" mean?`], [`"${w.word}" means ___.`], [`Which meaning fits "${w.word}"?`]])
       return riddle({
         family: 'affixes', skill: `vocabulary: ${w.kind}es`, prompt, highlight: [w.word], choices, answer,
-        spoken: `What does ${w.word} mean? ${choices.map(c => c.text).join(', ')}?`,
+        spoken: `What does ${w.word} mean? ${sayChoices(choices)}?`,
         metric: w.level * 10 + w.word.length, grade, tier,
         key: `affixes|meaning|${w.word}`,
       })
@@ -59,7 +59,7 @@ export const affixes: Generator = {
       const prompt = [`In "${w.word}", what does`, `the ${w.kind} ${show(w)} mean?`]
       return riddle({
         family: 'affixes', skill: `vocabulary: ${w.kind} meanings`, prompt, highlight: [w.word], choices, answer,
-        spoken: `In the word ${w.word}, what does the ${spokenAffix} mean? ${choices.map(c => c.text).join(', ')}?`,
+        spoken: `In the word ${w.word}, what does the ${spokenAffix} mean? ${sayChoices(choices)}?`,
         metric: w.level * 10 + w.word.length + 4, grade, tier,
         // One per affix, not per word: "what does -ly mean" is the same question every time.
         key: `affixes|affix|${w.affix}`,
@@ -79,7 +79,7 @@ export const affixes: Generator = {
       const prompt = wrap(`Add a ${w.kind} to "${w.base}" to make a word that means "${w.meaning}".`)
       return riddle({
         family: 'affixes', skill: `vocabulary: ${w.kind}es`, prompt, highlight: [w.base], choices, answer,
-        spoken: `Add a ${w.kind} to ${w.base} to make a word that means ${w.meaning}. ${choices.map(c => c.text).join(', ')}?`,
+        spoken: `Add a ${w.kind} to ${w.base} to make a word that means ${w.meaning}. ${sayChoices(choices)}?`,
         metric: w.level * 10 + w.word.length + 2, grade, tier,
         // form and which both have the derived word as their answer: asking for it from the base
         // and then from the meaning inside one climb is asking the same thing twice.
@@ -89,7 +89,7 @@ export const affixes: Generator = {
     const prompt = rng.pick([[`Which word means "${w.meaning}"?`], ['Which word means', `"${w.meaning}"?`]])
     return riddle({
       family: 'affixes', skill: `vocabulary: ${w.kind}es`, prompt, choices, answer,
-      spoken: `Which word means ${w.meaning}? ${choices.map(c => c.text).join(', ')}?`,
+      spoken: `Which word means ${w.meaning}? ${sayChoices(choices)}?`,
       metric: w.level * 10 + w.word.length + 1, grade, tier,
       key: `affixes|word|${w.word}`,
     })

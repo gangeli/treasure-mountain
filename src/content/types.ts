@@ -161,6 +161,20 @@ export function speakable(s: string): string {
     .trim()
 }
 
+const ORDINALS = ['One', 'Two', 'Three', 'Four']
+
+/**
+ * The choice list as the voice reads it. Every answer button carries a number, and the keyboard
+ * picks answers with 1-4, so the spoken list names those numbers: a kindergartener who cannot read
+ * "a bag of flour" hears which button it is instead of having to hold three phrases in order.
+ * Falls back to a plain list when a choice is a picture, where a number would point at nothing.
+ */
+export function sayChoices(choices: Choice[], say: (c: Choice) => string = c => c.text ?? ''): string {
+  const texts = choices.map(say)
+  if (!texts.every(t => t && t.trim())) return texts.filter(Boolean).join(', ')
+  return texts.map((t, i) => `${ORDINALS[i] ?? i + 1}, ${t}`).join('. ')
+}
+
 export function riddle(base: Omit<Riddle, 'key' | 'spoken'> & { spoken?: string; key?: string }): Riddle {
   const spoken = speakable(base.spoken ?? base.prompt.join(' '))
   // Choices are sorted for the key: the same question with its buttons shuffled is one riddle, so

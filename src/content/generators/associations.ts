@@ -1,5 +1,5 @@
 import type { Generator, Grade, Tier } from '../types'
-import { riddle, shuffled, choiceCount, cap, an } from '../types'
+import { riddle, shuffled, choiceCount, cap, an, sayChoices, Choice} from '../types'
 import { ASSOCIATIONS, type Assoc, type Rel } from '../data/associations'
 import { tierWindow, rankIn } from './textutil'
 
@@ -62,7 +62,7 @@ export const associations: Generator = {
     const verse = grade <= 2 && rng.bool(0.5)
     const metric = REL_RANK[rel] * 10 + p.level * 5 + (rev ? 3 : 0)
       + rankIn(ASSOCIATIONS.filter(x => x.rel === rel && x.level === p.level), p) * 4
-    const spokenList = (choices: { text?: string }[]) => choices.map(c => c.text ?? '').join(', ')
+    const spokenList = (choices: Choice[]): string => sayChoices(choices)
 
     if (rev) {
       // "Who lives in a nest?" — decoys are subjects for which the answer is not acceptable.

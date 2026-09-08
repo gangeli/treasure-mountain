@@ -1,6 +1,6 @@
 import type { Generator, Choice, ShapeName, CounterItem, Tier } from '../types'
 import type { Rng } from '../../engine/rng'
-import { riddle, shuffled, choiceCount } from '../types'
+import { riddle, shuffled, choiceCount, sayChoices} from '../types'
 import { ODD_SETS } from '../data/oddoneout'
 
 /** Colours the renderer can paint; picture items only ever differ on one attribute at a time. */
@@ -101,7 +101,7 @@ export const oddoneout: Generator = {
     const prompt = hint ? [...base, `Hint: most of these ${set.why}.`] : base
     return riddle({
       family: 'oddoneout', skill: grade <= 2 ? 'thinking: categories' : 'thinking: classifying', prompt, choices, answer,
-      spoken: `${base.join(' ')} ${choices.map(c => c.text).join(', ')}?`,
+      spoken: `${base.join(' ')} ${sayChoices(choices)}?`,
       metric: grade * 10 + tier * 2 + (hint ? 0 : 1), grade, tier,
       key: `oddoneout|${set.odd}|${[...others].sort().join(',')}`,
     })

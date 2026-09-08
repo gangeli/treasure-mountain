@@ -1,6 +1,6 @@
 import type { Generator, Grade, Tier, Riddle } from '../types'
 import type { Rng } from '../../engine/rng'
-import { riddle, shuffled, choiceCount, cap, numberWord, nearbyNumbers } from '../types'
+import { riddle, shuffled, choiceCount, cap, numberWord, nearbyNumbers, sayChoices, Choice} from '../types'
 import { THINGS, marginFor, canEstimate, EST_MARGIN, QTY_MARGIN, type Attr, type Thing } from '../data/comparisons'
 import { pickLevel, wrap } from './thinkingUtil'
 
@@ -69,7 +69,7 @@ export function measure(text: string): number | null {
   return m && s !== undefined ? Number(m[1]) * s : null
 }
 
-const texts = (cs: { text?: string }[]) => cs.map(c => c.text).join(', ')
+const texts = (cs: Choice[]): string => sayChoices(cs)
 const fits = (lines: string[]) => lines.every(l => l.length <= 46)
 
 // ------------------------------------------------------------------ the margin rule

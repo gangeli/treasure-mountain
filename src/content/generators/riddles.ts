@@ -1,5 +1,5 @@
 import type { Generator } from '../types'
-import { riddle, shuffled, choiceCount } from '../types'
+import { riddle, shuffled, choiceCount, sayChoices} from '../types'
 import { RIDDLES } from '../data/riddles'
 import { bandedSource } from './thinkingUtil'
 
@@ -35,7 +35,7 @@ export const riddles: Generator = {
     const clueText = clues.join(' ')
     return riddle({
       family: 'riddles', skill: 'thinking: riddles', prompt, verse: entry.verse, choices, answer,
-      spoken: `${clueText}${isQuestion ? '' : ' What am I?'} ${choices.map(c => c.text).join(', ')}?`,
+      spoken: `${clueText}${isQuestion ? '' : ' What am I?'} ${sayChoices(choices)}?`,
       metric: entry.level * 10 + (entry.band - 1) * 3 + Math.min(3, clueText.length / 30), grade, tier,
       key: `riddles|${entry.a}|${clues[0]}`,
     })

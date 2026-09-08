@@ -1,5 +1,5 @@
 import type { Generator, Grade, Tier } from '../types'
-import { riddle, shuffled, choiceCount, cap } from '../types'
+import { riddle, shuffled, choiceCount, cap, sayChoices} from '../types'
 import { FAMILIES, familyClass, classesOf, PROMPT_ONLY, isCvc, type Family } from '../data/phonics'
 
 /** Which families a grade/tier draws from, and how hard its decoys may be. */
@@ -137,7 +137,7 @@ export const rhymes: Generator = {
       // is spelled "merry, berry, cherry", so highlighting "ery" painted nothing at all.
       highlight: fam.varied ? undefined : sharedEnding(shown),
       choices, answer: idx,
-      spoken: `${shown.join(', ')}. These words rhyme. Which word rhymes with them? ${choices.map(c => c.text).join(', ')}?`,
+      spoken: `${shown.join(', ')}. These words rhyme. Which word rhymes with them? ${sayChoices(choices)}?`,
       // Two tiers can draw the same family level (kindergarten's -at/-it then -op), so the metric
       // also counts what else changes: whether the words are limited to simple CVC, and how far
       // above the family the decoys are allowed to come from.

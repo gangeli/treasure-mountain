@@ -1,5 +1,5 @@
 import type { Generator, Grade, Tier } from '../types'
-import { riddle, shuffled, choiceCount, cap } from '../types'
+import { riddle, shuffled, choiceCount, cap, sayChoices} from '../types'
 import { CONTRACTIONS, type Contraction } from '../data/contractions'
 
 function levels(grade: Grade, tier: Tier): number[] {
@@ -111,7 +111,7 @@ export const contractions: Generator = {
       const prompt = rng.pick([[`"${c.short}" is short for ___.`], [`What two words make "${c.short}"?`], [`"${c.short}" means ___.`]])
       return riddle({
         family: 'contractions', skill: 'grammar: contractions', prompt, highlight: [c.short], choices, answer, key,
-        spoken: `${c.short} is short for which words? ${choices.map(c => c.text).join(', ')}?`,
+        spoken: `${c.short} is short for which words? ${sayChoices(choices)}?`,
         metric: c.level * 10 + c.full.length, grade, tier,
       })
     }
@@ -121,7 +121,7 @@ export const contractions: Generator = {
       const prompt = rng.pick([[`Which contraction means "${c.full}"?`], [`Make "${c.full}" shorter.`, 'Which word is it?'], [`"${c.full}" can be written as ___.`]])
       return riddle({
         family: 'contractions', skill: 'grammar: contractions', prompt, highlight: [c.full], choices, answer, key,
-        spoken: `Which contraction means ${c.full}? ${choices.map(c => c.text).join(', ')}?`,
+        spoken: `Which contraction means ${c.full}? ${sayChoices(choices)}?`,
         metric: c.level * 10 + c.full.length + 2, grade, tier,
       })
     }
@@ -131,7 +131,7 @@ export const contractions: Generator = {
       return riddle({
         family: 'contractions', skill: 'grammar: contractions', prompt: [`"${sentence}"`, 'Which contraction fits the red words?'],
         highlight: [c.full], choices, answer, key,
-        spoken: `${sentence} Which contraction can replace ${c.full}? ${choices.map(c => c.text).join(', ')}?`,
+        spoken: `${sentence} Which contraction can replace ${c.full}? ${sayChoices(choices)}?`,
         metric: c.level * 10 + c.full.length + 3, grade, tier,
       })
     }
@@ -140,7 +140,7 @@ export const contractions: Generator = {
     const prompt = rng.pick([[`Which is the right way to write "${c.full}"?`], [`"${c.full}" as a contraction.`, 'Where does the apostrophe go?'], ['Which contraction is spelled correctly?', `It means "${c.full}".`]])
     return riddle({
       family: 'contractions', skill: 'grammar: apostrophes', prompt, highlight: [c.full], choices, answer, key,
-      spoken: `Which is the right way to write the contraction for ${c.full}? ${choices.map(c => c.text).join(', ')}?`,
+      spoken: `Which is the right way to write the contraction for ${c.full}? ${sayChoices(choices)}?`,
       metric: c.level * 10 + c.full.length + 4, grade, tier,
     })
   },

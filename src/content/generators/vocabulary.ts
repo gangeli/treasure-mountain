@@ -1,5 +1,5 @@
 import type { Generator, Grade, Tier } from '../types'
-import { riddle, shuffled, choiceCount } from '../types'
+import { riddle, shuffled, choiceCount, sayChoices} from '../types'
 import { VOCAB, type VocabWord } from '../data/vocabulary'
 import { tierWindow, rankIn } from './textutil'
 
@@ -47,7 +47,7 @@ export const vocabulary: Generator = {
       const prompt = rng.pick([[`Which word means "${w.def}"?`], ['Which word means', `"${w.def}"?`]])
       return riddle({
         family: 'vocabulary', skill: 'vocabulary: word meanings', prompt, choices, answer,
-        spoken: `Which word means ${w.def}? ${choices.map(c => c.text).join(', ')}?`,
+        spoken: `Which word means ${w.def}? ${sayChoices(choices)}?`,
         metric: w.level * 10 + w.word.length + 2 + rank, grade, tier,
         key: `vocabulary|word|${w.word}`,
       })
@@ -56,7 +56,7 @@ export const vocabulary: Generator = {
     const prompt = rng.pick([[`What does "${w.word}" mean?`], [`"${w.word}" means ___.`], [`Which meaning fits "${w.word}"?`]])
     return riddle({
       family: 'vocabulary', skill: 'vocabulary: word meanings', prompt, highlight: [w.word], choices, answer,
-      spoken: `What does ${w.word} mean? ${choices.map(c => c.text).join(', ')}?`,
+      spoken: `What does ${w.word} mean? ${sayChoices(choices)}?`,
       metric: w.level * 10 + w.word.length + rank, grade, tier,
       key: `vocabulary|def|${w.word}`,
     })

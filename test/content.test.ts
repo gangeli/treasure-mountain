@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { Rng } from '../src/engine/rng'
 import { GENERATORS } from '../src/content/generators'
-import { GRADES, TIERS, speakable, type Generator, type Riddle } from '../src/content/types'
+import { GRADES, TIERS, speakable, sayChoices, type Generator, type Riddle } from '../src/content/types'
 import { rhymes } from '../src/content/generators/rhymes'
 import { sounds } from '../src/content/generators/sounds'
 import { FAMILIES, PROMPT_ONLY, classesOf, isCvc, noInitialBlend, endSoundOf, endKeySound, beginSoundOf } from '../src/content/data/phonics'
@@ -217,4 +217,33 @@ describe('what the voice says', () => {
     ['I have 3 apples in a bag.', 'I have 3 apples in a bag.'],
   ]
   for (const [raw, want] of CASES) it(`says "${raw}" as "${want}"`, () => expect(speakable(raw)).toBe(want))
+})
+
+describe('the voice names the answer buttons', () => {
+  it('numbers text choices the way the buttons are numbered', () => {
+    expect(sayChoices([{ text: 'cold' }, { text: 'high' }, { text: 'open' }])).toBe('One, cold. Two, high. Three, open')
+    expect(sayChoices([{ text: 'a' }, { text: 'b' }, { text: 'c' }, { text: 'd' }])).toBe('One, a. Two, b. Three, c. Four, d')
+  })
+
+  it('does not number picture choices, which have no words to attach a number to', () => {
+    const pics = [{ visual: { kind: 'shape', name: 'circle' } }, { visual: { kind: 'shape', name: 'square' } }] as any
+    expect(sayChoices(pics)).toBe('')
+  })
+
+  // Every riddle whose answers are words has to name them by number, or a child who cannot read
+  // them has heard three phrases with nothing to tie them to the three buttons.
+  it('every family with word answers reads them out numbered', () => {
+    const missing: string[] = []
+    for (const gen of GENERATORS) {
+      for (const grade of gen.grades) {
+        const rng = new Rng(`num-${gen.id}-${grade}`)
+        for (let i = 0; i < 40; i++) {
+          const r = gen.make(grade, ((i % 3) + 1) as 1 | 2 | 3, rng)
+          if (!r.choices.every(c => c.text && c.text.trim())) continue
+          if (!/\bOne, /.test(r.spoken)) { missing.push(`${gen.id} g${grade}: ${r.spoken}`); break }
+        }
+      }
+    }
+    expect(missing.slice(0, 5)).toEqual([])
+  })
 })

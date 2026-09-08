@@ -1,5 +1,5 @@
 import type { Generator } from '../types'
-import { riddle, shuffled, choiceCount, cap } from '../types'
+import { riddle, shuffled, choiceCount, cap, sayChoices} from '../types'
 import { BEGINNING, ENDING, DIGRAPHS, ENDING_DIGRAPHS, BLENDS, FINAL_BLENDS, beginSoundOf, endKeySound, endSoundOf, noInitialBlend } from '../data/phonics'
 
 type Pos = 'start' | 'end'
@@ -86,7 +86,7 @@ export const sounds: Generator = {
       family: 'sounds', skill: task.skill, prompt, verse: true,
       highlight: task.pos === 'end' ? [key] : undefined,
       choices, answer: idx,
-      spoken: `${shown.join(', ')}. These words all ${task.pos === 'start' ? 'begin' : 'end'} with ${spell}. Which word ${verb} with ${spell}? ${choices.map(c => c.text).join(', ')}?`,
+      spoken: `${shown.join(', ')}. These words all ${task.pos === 'start' ? 'begin' : 'end'} with ${spell}. Which word ${verb} with ${spell}? ${sayChoices(choices)}?`,
       metric: task.weight + answer.length, grade, tier,
     })
   },

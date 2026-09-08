@@ -1,6 +1,6 @@
 import type { Rng } from '../../engine/rng'
 import type { Generator, Grade, Tier } from '../types'
-import { riddle, shuffled, choiceCount, cap } from '../types'
+import { riddle, shuffled, choiceCount, cap, sayChoices} from '../types'
 import { VOWEL_SOUNDS } from '../data/phonics'
 
 type Mode = 'same' | 'name' | 'odd'
@@ -81,7 +81,7 @@ export const vowels: Generator = {
       const prompt = ['Which word has a different vowel sound', 'from the others?']
       return riddle({
         family: 'vowels', skill: 'phonics: vowel sounds', prompt, choices, answer,
-        spoken: `Which word has a different vowel sound from the others? ${choices.map(c => c.text).join(', ')}?`,
+        spoken: `Which word has a different vowel sound from the others? ${sayChoices(choices)}?`,
         metric: base + MODE_BONUS.odd + outsider.length, grade, tier, key: `vowels|${outsider}`,
       })
     }
@@ -92,7 +92,7 @@ export const vowels: Generator = {
       const prompt = [`Which word has the ${sound.label} sound?`]
       return riddle({
         family: 'vowels', skill: 'phonics: vowel sounds', prompt, choices, answer,
-        spoken: `Which word has the ${sound.spoken}? ${choices.map(c => c.text).join(', ')}?`,
+        spoken: `Which word has the ${sound.spoken}? ${sayChoices(choices)}?`,
         metric: base + MODE_BONUS.name + answerW.length, grade, tier, key: `vowels|${answerW}`,
       })
     }
@@ -110,7 +110,7 @@ export const vowels: Generator = {
       : [`Which word has the same vowel sound as ${sample}?`]
     return riddle({
       family: 'vowels', skill: 'phonics: vowel sounds', prompt, verse, highlight: [shown], choices, answer,
-      spoken: `Which word has the same vowel sound as ${sample}? ${choices.map(c => c.text).join(', ')}?`,
+      spoken: `Which word has the same vowel sound as ${sample}? ${sayChoices(choices)}?`,
       metric: base + MODE_BONUS.same + answerW.length, grade, tier, key: `vowels|${answerW}`,
     })
   },

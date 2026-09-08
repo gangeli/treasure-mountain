@@ -38,10 +38,19 @@ jobs:
           npx playwright install --with-deps chromium
           node e2e/screenshots.mjs e2e/out/shots
           node e2e/pwa.mjs
+          node e2e/swupdate.mjs
           node e2e/fileurl.mjs
           node e2e/audio.mjs
+          node e2e/artbox.mjs
+          npx tsx e2e/textfit.ts 30
+          node e2e/fuzz.mjs 1500
           node e2e/playtest.mjs e2e/out/play 0,2,5
           node e2e/playtest.mjs e2e/out/play-hard 3 6
+      # Informational only: a shared runner's timings are too noisy to fail a build on, but the
+      # numbers land in the log so a frame that has doubled in cost is visible in the diff.
+      - name: Frame times (informational)
+        continue-on-error: true
+        run: node e2e/perf.mjs
       - uses: actions/setup-java@v4
         with:
           distribution: temurin

@@ -35,7 +35,7 @@ Mischief.
 | `src/art/` | Everything drawn: palette, drawing helpers, backdrops, characters, scenery, features, HUD, riddle pictures, screens. |
 | `android/` | A one-Activity WebView app that bundles `dist/index.html`. |
 | `docs/` | The GitHub Pages site (install instructions, screenshots) and the design and research documents. |
-| `e2e/` | Playwright tools: screenshots of every screen, the real-input playtest, the offline/PWA and `file://` checks, headless audio rendering, icon rendering, and the sample and difficulty dumps. |
+| `e2e/` | Playwright tools: screenshots of every screen, the real-input playtest, a random-input fuzzer, the offline/PWA and service-worker-update checks, the `file://` check, headless audio rendering, icon rendering, per-screen frame times, the prize bounding-box and riddle text-fit measurements, and the sample and difficulty dumps. |
 | `test/` | Vitest suites: content validity and difficulty ramps, level generation, game flow. |
 
 ## Building

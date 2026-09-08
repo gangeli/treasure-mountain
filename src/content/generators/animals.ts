@@ -1,6 +1,6 @@
 import type { Generator, Grade, Tier, Riddle } from '../types'
 import type { Rng } from '../../engine/rng'
-import { riddle, shuffled, choiceCount, cap, an, numberWord } from '../types'
+import { riddle, shuffled, choiceCount, cap, an, numberWord, sayChoices, Choice} from '../types'
 import { ANIMALS, ANIMAL_FACTS, KNOWN_BABIES, CLASS_NAMES, TRICKY, type Animal, type AnimalClass, type Habitat } from '../data/animals'
 import { factRiddle, wrap } from './thinkingUtil'
 
@@ -31,7 +31,7 @@ export const livesInHome = (a: Animal, home: string): boolean => a.home === home
 export const inGroup = (a: Animal, group: string): boolean => a.group === group || !!a.groupAlso?.includes(group)
 export const livesIn = (a: Animal, hab: Habitat): boolean => a.hab === hab || !!a.habAlso?.includes(hab)
 
-const texts = (cs: { text?: string }[]) => cs.map(c => c.text).join(', ')
+const texts = (cs: Choice[]): string => sayChoices(cs)
 
 /** Difficulty: the grade sets the band, the tier sets the step inside it, `extra` orders the types. */
 const metricFor = (grade: Grade, tier: Tier, extra: number) => grade * 10 + tier * 2 + extra

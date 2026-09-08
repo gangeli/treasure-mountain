@@ -1,5 +1,5 @@
 import type { Generator, Grade, Tier } from '../types'
-import { riddle, shuffled, choiceCount } from '../types'
+import { riddle, shuffled, choiceCount, sayChoices} from '../types'
 import { HOMOPHONES, type HomophoneSet } from '../data/homophones'
 import { wrap, spokenBlank } from './textutil'
 
@@ -79,7 +79,7 @@ export const homophones: Generator = {
       ])
       return riddle({
         family: 'homophones', skill: 'vocabulary: homophones', prompt, highlight: [target.word], choices, answer: idx,
-        spoken: `Which word sounds just like ${target.word} but is spelled differently? ${choices.map(c => c.text).join(', ')}?`,
+        spoken: `Which word sounds just like ${target.word} but is spelled differently? ${sayChoices(choices)}?`,
         metric: set.level * 10 + answer.length - 2 + rank, grade, tier,
         key: `homophones|sound|${target.word}|${answer}`,
       })
@@ -94,7 +94,7 @@ export const homophones: Generator = {
     ])
     return riddle({
       family: 'homophones', skill: 'vocabulary: homophones', prompt, choices, answer,
-      spoken: `${spokenBlank(target.sentence)} Which word fills the blank? ${choices.map(c => c.text).join(', ')}?`,
+      spoken: `${spokenBlank(target.sentence)} Which word fills the blank? ${sayChoices(choices)}?`,
       metric: set.level * 10 + target.word.length + rank, grade, tier,
       key: `homophones|${target.word}|${target.sentence}`,
     })

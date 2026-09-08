@@ -1,6 +1,6 @@
 import type { Generator, Grade, Tier, Riddle } from '../types'
 import type { Rng } from '../../engine/rng'
-import { riddle, shuffled, choiceCount, cap } from '../types'
+import { riddle, shuffled, choiceCount, cap, sayChoices} from '../types'
 import { SEQUENCES, CAUSE_SIMPLE, CAUSE_MEDIUM, CAUSE_HARD, type Sequence } from '../data/events'
 import type { Fact } from './thinkingUtil'
 import { wrap } from './thinkingUtil'
@@ -292,7 +292,7 @@ function logicRiddle(grade: Grade, tier: Tier, rng: Rng): Riddle {
   const nots = p.clues.filter(c => c.kind === 'not').length
   return riddle({
     family: 'events', skill: 'thinking: logical deduction', prompt: [...p.lines, p.question], choices, answer,
-    spoken: `${p.lines.join(' ')} ${p.question} ${choices.map(c => c.text).join(', ')}?`,
+    spoken: `${p.lines.join(' ')} ${p.question} ${sayChoices(choices)}?`,
     metric: 40 + p.names.length * 2 + p.clues.length * 2 + KIND_BONUS[p.kind] + (spec.shuffleClues ? 2 : 0) + (spec.mixDirection ? 1 : 0) + nots,
     grade, tier,
     key: `events|logic|${p.kind}|${p.lines.join('/')}|${p.question}`,
@@ -420,7 +420,7 @@ function sequenceQ(grade: Grade, tier: Tier, rng: Rng): Riddle {
   const skill = q.seq.skill ?? (level === 2 ? 'science: life cycles' : 'thinking: sequencing')
   return riddle({
     family: 'events', skill, prompt, choices, answer,
-    spoken: `${prompt.join(' ')} ${choices.map(c => c.text).join(', ')}?`,
+    spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`,
     metric: level * 10 + q.seq.steps.length + MODE_BONUS[q.mode], grade, tier,
     key: `events|seq|${level}|${q.seq.topic}|${q.mode}|${q.ref}`,
   })
@@ -439,7 +439,7 @@ function causeRiddle(grade: Grade, tier: Tier, rng: Rng): Riddle {
   const prompt = body.length === 1 && rng.bool(0.35) ? [rng.pick(CAUSE_LEADS), ...body] : body
   return riddle({
     family: 'events', skill: 'thinking: cause and effect', prompt, choices, answer,
-    spoken: `${f.q} ${choices.map(c => c.text).join(', ')}?`,
+    spoken: `${f.q} ${sayChoices(choices)}?`,
     metric: 40 + (tier - 1) * 3 + Math.min(3, f.q.length / 30), grade, tier,
     key: `events|cause|${f.q}`,
   })

@@ -1,5 +1,5 @@
 import type { Generator, Grade, Tier } from '../types'
-import { riddle, shuffled, choiceCount, an } from '../types'
+import { riddle, shuffled, choiceCount, an, sayChoices} from '../types'
 import { POS_LISTS, PURE_CONJUNCTIONS, TAGGED } from '../data/partsofspeech'
 import { wrap, tierWindow } from './textutil'
 
@@ -75,7 +75,7 @@ export const partsofspeech: Generator = {
       const prompt = [...body, `Which word is ${an(pos)}?`]
       return riddle({
         family: 'partsofspeech', skill: `grammar: ${pos}s`, prompt, choices, answer: idx,
-        spoken: `In the sentence ${t.text} which word is ${an(pos)}? ${choices.map(c => c.text).join(', ')}?`,
+        spoken: `In the sentence ${t.text} which word is ${an(pos)}? ${sayChoices(choices)}?`,
         metric: RANK[pos] * 10 + answer.length + 3, grade, tier,
         key: `partsofspeech|sentence|${t.text}|${pos}`,
       })
@@ -90,7 +90,7 @@ export const partsofspeech: Generator = {
       const prompt = [`What part of speech is "${word}"?`]
       return riddle({
         family: 'partsofspeech', skill: `grammar: ${pos}s`, prompt, highlight: [word], choices, answer,
-        spoken: `What part of speech is the word ${word}? ${choices.map(c => c.text).join(', ')}?`,
+        spoken: `What part of speech is the word ${word}? ${sayChoices(choices)}?`,
         metric: RANK[pos] * 10 + word.length + 5, grade, tier,
         key: `partsofspeech|identify|${word}`,
       })
@@ -102,7 +102,7 @@ export const partsofspeech: Generator = {
     const prompt = withDef ? [DEF[pos], `Which word is ${an(pos)}?`] : [`Which word is ${an(pos)}?`]
     return riddle({
       family: 'partsofspeech', skill: `grammar: ${pos}s`, prompt, choices, answer,
-      spoken: `Which word is ${an(pos)}? ${choices.map(c => c.text).join(', ')}?`,
+      spoken: `Which word is ${an(pos)}? ${sayChoices(choices)}?`,
       metric: RANK[pos] * 10 + word.length, grade, tier,
       // One riddle per word: "which word is a noun" with the same answer and different decoys is
       // the same question twice.

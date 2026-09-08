@@ -1,5 +1,5 @@
 import type { Generator, Grade, Tier } from '../types'
-import { riddle, shuffled, choiceCount, cap } from '../types'
+import { riddle, shuffled, choiceCount, cap, sayChoices} from '../types'
 import { COMPOUNDS, compoundWord, type Compound } from '../data/compounds'
 import { OPPOSITES } from '../data/opposites'
 import { SYNONYMS } from '../data/synonyms'
@@ -110,7 +110,7 @@ export const compounds: Generator = {
       const prompt = [`Which two words make "${word}"?`]
       return riddle({
         family: 'compounds', skill: 'vocabulary: compound words', prompt, highlight: [word], choices, answer,
-        spoken: `Which two words make the word ${word}? ${choices.map(c => (c.text ?? '').replace(' + ', ' plus ')).join(', ')}?`,
+        spoken: `Which two words make the word ${word}? ${sayChoices(choices, c => (c.text ?? '').replace(' + ', ' plus '))}?`,
         metric, grade, tier, key: `compounds|${word}`,
       })
     }
@@ -128,7 +128,7 @@ export const compounds: Generator = {
     const prompt = [...examples.map(e => `${cap(e.a)} + ${e.b} = ${compoundWord(e)}`), `${cap(target.a)} + ${target.b} = ______.`]
     return riddle({
       family: 'compounds', skill: 'vocabulary: compound words', prompt, highlight: [`${cap(target.a)} + ${target.b}`], choices, answer,
-      spoken: `${examples.map(e => `${e.a} plus ${e.b} is ${compoundWord(e)}`).join('. ')}. ${target.a} plus ${target.b} is what? ${choices.map(c => c.text).join(', ')}?`,
+      spoken: `${examples.map(e => `${e.a} plus ${e.b} is ${compoundWord(e)}`).join('. ')}. ${target.a} plus ${target.b} is what? ${sayChoices(choices)}?`,
       metric, grade, tier, key: `compounds|${word}`,
     })
   },

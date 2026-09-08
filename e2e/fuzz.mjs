@@ -50,12 +50,15 @@ const check = async () => page.evaluate(valid => {
 }, VALID)
 
 const STARTS = ['title', 'grade', 'clubhouse', 'level1', 'level2', 'level3', 'riddle', 'riddle-visual', 'clue', 'castle', 'throne', 'rank', 'crown', 'howto', 'pause']
+// Spread the re-seats over however many steps were asked for, so a short run still visits every
+// screen rather than stopping a third of the way down the list.
+const period = Math.max(40, Math.floor(steps / STARTS.length))
 const seen = new Set()
 for (let i = 0; i < steps; i++) {
   // Re-seat the fuzzer in a deep screen now and then: random clicking alone never reaches the
   // castle, so the states that matter most would go untested.
-  if (i % 250 === 0) {
-    const from = STARTS[(i / 250) % STARTS.length]
+  if (i % period === 0) {
+    const from = STARTS[(i / period) % STARTS.length]
     await page.evaluate(n => window.__tm.show(n), from)
     await page.waitForTimeout(80)
   }

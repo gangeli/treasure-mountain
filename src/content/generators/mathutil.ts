@@ -1,5 +1,5 @@
 import type { Rng } from '../../engine/rng'
-import type { Riddle, Choice } from '../types'
+import type { Riddle } from '../types'
 import { riddle, nearbyNumbers } from '../types'
 
 /**
@@ -29,7 +29,7 @@ export function mathRiddle(base: Omit<Riddle, 'key' | 'spoken'> & { spoken?: str
 }
 
 /** Reads the text choices out loud: "3, 5, 7". */
-export const sayChoices = (choices: Choice[]): string => choices.map(c => c.text ?? '').filter(Boolean).join(', ')
+export { sayChoices } from '../types'
 
 const digitCount = (v: number): number => String(Math.abs(Math.round(v))).length
 

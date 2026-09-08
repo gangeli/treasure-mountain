@@ -1,5 +1,5 @@
 import type { Generator } from '../types'
-import { riddle, shuffled, choiceCount } from '../types'
+import { riddle, shuffled, choiceCount, sayChoices} from '../types'
 import { WORDS } from '../data/wordlist'
 import type { Rng } from '../../engine/rng'
 
@@ -85,7 +85,7 @@ export const alphabetical: Generator = {
       // Only one of the three phrasings shouted FIRST/LAST; now the word that flips the answer is
       // red in all of them.
       highlight: [which, which.toLowerCase()],
-      spoken: `Which word comes ${which.toLowerCase()} in alphabetical order? ${choices.map(c => c.text).join(', ')}?`,
+      spoken: `Which word comes ${which.toLowerCase()} in alphabetical order? ${sayChoices(choices)}?`,
       metric: shared * 10 + gapTerm + (last ? 3 : 0), grade, tier,
       key: `alphabetical|${which}|${sorted.join(',')}`,
     })

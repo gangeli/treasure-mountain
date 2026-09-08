@@ -1,6 +1,6 @@
 import type { Rng } from '../../engine/rng'
 import type { Generator, Choice, Grade, Tier } from '../types'
-import { riddle, shuffled, choiceCount, cap } from '../types'
+import { riddle, shuffled, choiceCount, cap, sayChoices} from '../types'
 import { BEGINNING } from '../data/phonics'
 
 const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
@@ -32,7 +32,7 @@ function modesFor(grade: Grade, tier: Tier): Mode[] {
 
 const letterChoice = (ch: string): Choice => ({ visual: { kind: 'letter', text: ch, lower: ch === ch.toLowerCase() } })
 const say = (ch: string): string => ch === ch.toLowerCase() ? `little ${ch}` : `big ${ch}`
-const speakChoices = (choices: Choice[]): string => choices.map(c => say(c.visual && c.visual.kind === 'letter' ? c.visual.text : (c.text ?? ''))).join(', ')
+const speakChoices = (choices: Choice[]): string => sayChoices(choices, c => say(c.visual && c.visual.kind === 'letter' ? c.visual.text : (c.text ?? '')))
 
 /** Confusable siblings first, then random letters, all in the case of `ch`. */
 function letterDecoys(rng: Rng, ch: string, confusable: boolean): string[] {
