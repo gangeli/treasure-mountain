@@ -90,6 +90,22 @@ if (testMode) {
     shots: () => shots,
     drawTreasure,
     treasureNames: [...TREASURE_NAMES, 'medal'],
+    /**
+     * Mean milliseconds to draw one frame of the current screen (e2e/perf.mjs). Canvas 2D calls
+     * only queue work, so a bare timer around them measures nothing; reading one pixel back forces
+     * the queue to be rasterised, and the cost of the readback itself is measured and subtracted.
+     */
+    renderMs(n: number): number {
+      const flush = (): void => { stage.ctx.getImageData(0, 0, 1, 1) }
+      render(stage.begin(), game); flush()
+      const b0 = performance.now()
+      for (let i = 0; i < n; i++) flush()
+      const baseline = performance.now() - b0
+      const t0 = performance.now()
+      for (let i = 0; i < n; i++) { render(stage.begin(), game); flush() }
+      return Math.max(0, performance.now() - t0 - baseline) / n
+    },
+    backingPixels: (): number => stage.canvas.width * stage.canvas.height,
     show(name: string) {
       const g = game
       if (name.startsWith('sheet-')) { loop.stop(); drawSheet(stage.begin(), name, 0.3); return }

@@ -4,6 +4,8 @@
  */
 export const LOGICAL_W = 1280
 export const LOGICAL_H = 720
+/** Ceiling on the canvas backing store, in pixels. See resize(). */
+const MAX_PIXELS = 4.2e6
 
 export interface StageMetrics {
   scale: number
@@ -37,7 +39,14 @@ export class Stage {
     const cssH = Math.round(LOGICAL_H * scale)
     const offsetX = Math.floor((vw - cssW) / 2)
     const offsetY = Math.floor((vh - cssH) / 2)
-    this.dpr = Math.min(3, window.devicePixelRatio || 1)
+    // Render at the device's pixel ratio, but never at more than about 4.2 million pixels. Phones
+    // keep their full 3x (a letterboxed 16:9 canvas on a phone is only ~2 million pixels), while a
+    // 1280-CSS-pixel-wide canvas on a 4K laptop would otherwise be drawn at 3840x2160 - eight and a
+    // third million pixels of vector art, every frame, for no visible gain: the backdrop alone is
+    // most of the frame's cost and it is pure fill rate. Measured with e2e/perf.mjs.
+    const wanted = Math.min(3, window.devicePixelRatio || 1)
+    const budget = Math.sqrt(MAX_PIXELS / Math.max(1, cssW * cssH))
+    this.dpr = Math.max(1, Math.min(wanted, budget))
     this.canvas.style.width = cssW + 'px'
     this.canvas.style.height = cssH + 'px'
     this.canvas.style.left = offsetX + 'px'
