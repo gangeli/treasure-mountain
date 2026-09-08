@@ -123,9 +123,13 @@ function drawWall(ctx: Ctx, camX: number, th: Theme, no: LevelNo, t: number): vo
       ctx.fillStyle = 'rgba(255,255,255,0.25)'; ctx.beginPath(); ctx.ellipse(ex - rx * 0.3, ey - ry * 0.3, rx * 0.4, ry * 0.35, r1, 0, Math.PI * 2); ctx.fill()
     }
     if (no === 2 && r1 > 0.55) {
-      // timber props in the mine wall
-      ctx.fillStyle = P.woodDark; ctx.fillRect(x + 30 + r2 * 80, top + 40, 14, GROUND_Y - top - 40)
-      ctx.fillStyle = P.wood; ctx.fillRect(x + 32 + r2 * 80, top + 40, 6, GROUND_Y - top - 40)
+      // Timber props in the mine wall, with the cross-beam they hold up: without it the posts
+      // stood in mid-air supporting nothing.
+      const px = x + 30 + r2 * 80
+      ctx.fillStyle = P.woodDark; ctx.fillRect(px - 42, top + 30, 100, 14)
+      ctx.fillStyle = P.wood; ctx.fillRect(px - 40, top + 32, 96, 5)
+      ctx.fillStyle = P.woodDark; ctx.fillRect(px, top + 40, 14, GROUND_Y - top - 40)
+      ctx.fillStyle = P.wood; ctx.fillRect(px + 2, top + 40, 6, GROUND_Y - top - 40)
     }
     if (no === 3) {
       // snow lying on every ledge of the rock band's top edge
