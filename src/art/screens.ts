@@ -27,7 +27,7 @@ export function drawScreen(ctx: Ctx, g: Game, buttons: Button[]): void {
     case 'clue': riddle(ctx, g, true); drawHud(ctx, g, buttons); break
     case 'castle': castle(ctx, g); drawHud(ctx, g, buttons); break
     case 'throne': throne(ctx, g); drawHud(ctx, g, []); break
-    case 'rank': rank(ctx, g); drawHud(ctx, g, []); break
+    case 'rank': rank(ctx, g); ctx.fillStyle = P.frame; ctx.fillRect(0, PLAY_H, W, H - PLAY_H); break
     case 'crown': crown(ctx, g); break
     case 'howto': howto(ctx, g); break
     case 'about': about(ctx, g); break
@@ -360,7 +360,13 @@ function rank(ctx: Ctx, g: Game): void {
   poster(ctx, W / 2, 50, g, shown)
   const gained = g.rankTo - g.rankFrom
   text(ctx, `+${gained} treasures this climb!`, W / 2, PLAY_H - 40, { size: 30, align: 'center', color: P.yellow, weight: 900, outline: P.ink, outlineWidth: 6, font: DISPLAY })
-  if (starsForTotal(g.rankTo) > starsForTotal(g.rankFrom) && k >= 1) { ctx.save(); ctx.globalAlpha = 0.9; for (let i = 0; i < 12; i++) { const a = (i / 12) * Math.PI * 2 + g.time; star(ctx, W / 2 + Math.cos(a) * 380, 260 + Math.sin(a) * 200, 14, i % 2 ? P.yellow : P.white, P.ink, 2) } ctx.restore(); text(ctx, 'NEW STAR!', W / 2, 30, { size: 40, align: 'center', color: P.yellow, weight: 900, outline: P.ink, outlineWidth: 8, font: DISPLAY }) }
+  if (starsForTotal(g.rankTo) > starsForTotal(g.rankFrom) && k >= 1) {
+    // Celebration stars circle around the poster, never over its text.
+    ctx.save(); ctx.globalAlpha = 0.9
+    for (let i = 0; i < 14; i++) { const a = (i / 14) * Math.PI * 2 + g.time * 0.7; const sx = W / 2 + Math.cos(a) * 560, sy = 275 + Math.sin(a) * 300; if (Math.abs(sx - W / 2) < 330 && sy > 40 && sy < 510) continue; star(ctx, sx, sy, 14 + (i % 3) * 3, i % 2 ? P.yellow : P.white, P.ink, 2) }
+    ctx.restore()
+    text(ctx, 'NEW STAR!', W / 2, 30, { size: 40, align: 'center', color: P.yellow, weight: 900, outline: P.ink, outlineWidth: 8, font: DISPLAY })
+  }
   drawFrame(ctx)
 }
 
