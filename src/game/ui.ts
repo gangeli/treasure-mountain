@@ -43,7 +43,11 @@ export function riddleChoiceRects(r: Riddle): { x: number; y: number; w: number;
     // Stacked answers stop short of the prompt picture, which occupies x 690-1130. At the full 820
     // the first button reached under it: the bar chart lost Monday and Tuesday off its axis, the
     // balance scale lost the foot of its stand and the thermometer its bulb.
-    const long = r.prompt.length >= 5
+    // Four lines counts as long. At the roomier spacing a four-line prompt could only shrink to
+    // 24px, which still ran 15-25px under the first answer button on 426 of the 20,000 riddles
+    // e2e/textfit.ts measures - every compound-word chain, every three-line riddle-of-the-elf, and
+    // every rhyme that carries "Listen for the sound, not the spelling."
+    const long = r.prompt.length >= 4
     const h = long ? 60 : n === 4 ? 66 : 76, gap = long ? 8 : 10, w = r.visual ? 560 : 820
     const y0 = SCROLL.y + SCROLL.h - 30 - n * h - (n - 1) * gap
     for (let i = 0; i < n; i++) out.push({ x: SCROLL.x + 60, y: y0 + i * (h + gap), w, h })

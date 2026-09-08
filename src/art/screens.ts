@@ -275,7 +275,7 @@ function riddle(ctx: Ctx, g: Game, clueMode = false): void {
   // The biggest type at which the wrapped prompt still stops short of the first answer button. A
   // four-line prompt at 38px used to run underneath it, and the last line was unreadable.
   const ceiling = Math.min(...rects.map(rc => rc.y)) - 14
-  const SIZES = [46, 42, 38, 34, 30, 28, 26, 24]
+  const SIZES = [46, 42, 38, 34, 30, 28, 26, 24, 22, 20]
   const fits = (sz: number, rw: string[]): boolean => promptY - sz / 2 + rw.length * sz * 1.3 <= ceiling
   let size = 24
   let rows: string[] = []

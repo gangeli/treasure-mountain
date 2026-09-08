@@ -254,7 +254,7 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 | 2 | 1 | 25.4 | 5.7 | 3 | 100% | Which of these is a solid (3D) shape? [*picture / picture / picture] |
 | 2 | 2 | 28.0 | 6.3 | 4 | 77% | Which of these is a solid (3D) shape? [picture / *picture / picture] |
 | 2 | 3 | 30.8 | 7.0 | 9 | 81% | Which of these is a flat (2D) shape? [picture / picture / *picture] |
-| 3 | 1 | 41.0 | 10.8 | 30 | 72% | I am a shape with / 8 sides. / What am I? [*octagon / pentagon / square / triangle] |
+| 3 | 1 | 41.0 | 10.7 | 30 | 72% | I am a shape with / 8 sides. / What am I? [*octagon / pentagon / square / triangle] |
 | 3 | 2 | 46.4 | 11.4 | 144 | 72% | Which shape is NOT a quadrilateral? [picture / *picture / picture / picture] |
 | 3 | 3 | 51.8 | 15.4 | 144 | 48% | A rectangle has a perimeter of 32 m. / One side is 11 m. How long is / the side next to it? [6 m / *5 m / 16 m / 21 m] |
 | 4 | 1 | 53.3 | 8.5 | 63 | 100% | A rectangle is 3 in long and 2 in wide. / What is its area? [8 sq in / *6 sq in / 4 sq in / 9 sq in] |

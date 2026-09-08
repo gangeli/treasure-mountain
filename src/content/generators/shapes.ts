@@ -146,7 +146,10 @@ export const shapes: Generator = {
       if (mode === 'describe') {
         const facts: [string[], ShapeName][] = [
           [['4 equal sides and 4 square corners.'], 'square'],
-          [['4 square corners, and its opposite', 'sides are the same length.'], 'rectangle'],
+          // Not "opposite sides the same length": a square has that too, and a square IS a
+          // rectangle, so that clue had two right answers with the square sitting in the choices.
+          // Two long and two short sides rules the square out. ("its" was wrong after "I am" too.)
+          [['4 square corners, 2 long sides', 'and 2 short sides.'], 'rectangle'],
           [['4 equal sides but no square corners.'], 'rhombus'],
           [['exactly one pair of parallel sides.'], 'trapezoid'],
           [['3 sides and 3 corners.'], 'triangle'],
