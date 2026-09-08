@@ -483,3 +483,44 @@ describe('the right answer is not in a favourite place', () => {
     }
   })
 })
+
+/**
+ * How hard the *wording* of a question is, as opposed to what it asks. A kindergarten riddle is
+ * read out loud, but the child also sees it, and a question built out of words they have never met
+ * tests vocabulary by accident. Measured over every family, grade and tier, the load climbs
+ * steadily (1.15 syllables a word at K to 1.29 at grade 4, and 1.6% of words with three or more
+ * syllables to 5.5%), which is the ramp this pins. It caught the categories family asking a
+ * five-year-old "Which one is a consonant?".
+ */
+describe('the questions are worded for the grade that reads them', () => {
+  const syllables = (w: string): number => {
+    const s = w.toLowerCase().replace(/[^a-z]/g, '')
+    if (!s) return 0
+    return Math.max(1, (s.replace(/e$/, '').match(/[aeiouy]+/g) ?? ['x']).length)
+  }
+  it('reading load rises with the grade, and stays light at the bottom', () => {
+    const load = new Map<number, { words: number; sylls: number; hard: number }>()
+    for (const grade of GRADES) load.set(grade, { words: 0, sylls: 0, hard: 0 })
+    for (const gen of GENERATORS) for (const grade of gen.grades) for (const tier of TIERS) {
+      const rng = new Rng(`read-${gen.id}-${grade}-${tier}`)
+      const st = load.get(grade)!
+      for (let i = 0; i < 60; i++) {
+        const r = gen.make(grade, tier, rng)
+        for (const raw of r.prompt.join(' ').split(/\s+/)) {
+          const w = raw.replace(/^[^\w$]+|[^\w%]+$/g, '')
+          if (!/[a-zA-Z]/.test(w)) continue
+          const y = syllables(w)
+          st.words++; st.sylls += y; if (y >= 3) st.hard++
+        }
+      }
+    }
+    const mean = (g: number) => load.get(g)!.sylls / load.get(g)!.words
+    const hard = (g: number) => 100 * load.get(g)!.hard / load.get(g)!.words
+    // The youngest grades keep the long words out; only the top grades may lean on them.
+    expect(hard(0), `K prompts are ${hard(0).toFixed(1)}% long words`).toBeLessThan(2.5)
+    expect(hard(1), `grade 1 prompts are ${hard(1).toFixed(1)}% long words`).toBeLessThan(3.5)
+    // ...and the load does climb: a flat game is one that never stretches the older readers.
+    expect(Math.max(mean(4), mean(5)) - mean(0), `K reads at ${mean(0).toFixed(2)} syllables a word, grade 5 at ${mean(5).toFixed(2)}`).toBeGreaterThan(0.08)
+    for (const g of [1, 2, 3, 4]) expect(mean(g), `grade ${g} (${mean(g).toFixed(2)}) reads harder than grade ${g + 1}`).toBeLessThan(mean(g + 1) + 0.02)
+  })
+})

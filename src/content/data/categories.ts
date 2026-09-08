@@ -13,6 +13,9 @@ export interface Category {
   decoysFrom?: string[]
   /** A superset of other categories (animals, nouns): never offered as a decoy category name. */
   broad?: boolean
+  /** Lowest grade this may be asked in, when the level alone is too generous: "vowel" and
+   * "consonant" are level 2, but they are school words a kindergarten child has not met yet. */
+  from?: number
 }
 
 const k = (id: string, one: string, many: string, level: 1 | 2 | 3 | 4, domain: Domain, members: string[], opts: Partial<Category> = {}): Category => ({ id, one, many, level, domain, members, ...opts })
@@ -53,8 +56,8 @@ export const CATEGORIES: Category[] = [
   k('flowers', 'a flower', 'flowers', 2, 'nature', ['rose', 'tulip', 'daisy', 'lily', 'sunflower', 'daffodil', 'violet', 'orchid', 'poppy', 'iris', 'pansy', 'marigold']),
   k('trees', 'a tree', 'trees', 2, 'nature', ['oak', 'maple', 'pine', 'birch', 'willow', 'palm', 'cedar', 'elm', 'spruce', 'redwood', 'fir', 'sequoia']),
   k('instruments', 'a musical instrument', 'musical instruments', 2, 'arts', ['piano', 'guitar', 'drum', 'violin', 'flute', 'trumpet', 'harp', 'cello', 'clarinet', 'tuba', 'banjo', 'saxophone'], { broad: true }),
-  k('vowels', 'a vowel', 'vowels', 2, 'language', ['a', 'e', 'i', 'o', 'u'], { decoysFrom: ['consonants'] }),
-  k('consonants', 'a consonant', 'consonants', 2, 'language', ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r', 's', 't', 'v', 'w', 'z'], { decoysFrom: ['vowels'] }),
+  k('vowels', 'a vowel', 'vowels', 2, 'language', ['a', 'e', 'i', 'o', 'u'], { decoysFrom: ['consonants'], from: 1 }),
+  k('consonants', 'a consonant', 'consonants', 2, 'language', ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r', 's', 't', 'v', 'w', 'z'], { decoysFrom: ['vowels'], from: 1 }),
   k('even', 'an even number', 'even numbers', 3, 'math', ['2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '24', '30', '46', '58', '72'], { decoysFrom: ['odd'] }),
   k('odd', 'an odd number', 'odd numbers', 3, 'math', ['1', '3', '5', '7', '9', '11', '13', '15', '17', '19', '21', '25', '37', '49', '63'], { decoysFrom: ['even'] }),
   // level 3 (grade 3)

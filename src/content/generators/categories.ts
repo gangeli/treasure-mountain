@@ -33,20 +33,21 @@ function modesFor(grade: Grade, tier: Tier): Mode[] {
  */
 function outsiders(rng: { shuffle<T>(a: readonly T[]): T[] }, cat: Category, grade: number): string[] {
   const maxLevel = grade <= 1 ? 2 : cat.level + 1
+  const fits = (c: Category) => grade >= (c.from ?? 0)
   let banned: Set<string>
   let pools: string[][]
   if (cat.decoysFrom) {
     banned = new Set(allMembers(cat))
     const from = cat.decoysFrom.map(byId)
-    pools = [rng.shuffle(from.filter(c => c.level <= maxLevel).flatMap(c => c.members)), rng.shuffle(from.flatMap(c => c.members))]
+    pools = [rng.shuffle(from.filter(c => c.level <= maxLevel && fits(c)).flatMap(c => c.members)), rng.shuffle(from.filter(fits).flatMap(c => c.members))]
   } else {
     const over = new Set(overlapping(cat))
     banned = new Set([...over].flatMap(allMembers))
-    const ok = (c: Category) => !over.has(c) && c.level <= maxLevel && c.level >= cat.level - 1
+    const ok = (c: Category) => !over.has(c) && fits(c) && c.level <= maxLevel && c.level >= cat.level - 1
     pools = [
       rng.shuffle(CATEGORIES.filter(c => ok(c) && c.domain === cat.domain).flatMap(c => c.members)),
       rng.shuffle(CATEGORIES.filter(c => ok(c) && c.domain !== cat.domain).flatMap(c => c.members)),
-      rng.shuffle(CATEGORIES.filter(c => !over.has(c)).flatMap(c => c.members)),
+      rng.shuffle(CATEGORIES.filter(c => !over.has(c) && fits(c)).flatMap(c => c.members)),
     ]
   }
   const seen = new Set<string>()
@@ -72,7 +73,7 @@ export const categories: Generator = {
     const n = choiceCount(grade)
     const levels = levelsFor(grade, tier)
     const mode = rng.pick(modesFor(grade, tier))
-    const pool = CATEGORIES.filter(c => levels.includes(c.level) && c.members.length >= (mode === 'name' ? 3 : n))
+    const pool = CATEGORIES.filter(c => levels.includes(c.level) && grade >= (c.from ?? 0) && c.members.length >= (mode === 'name' ? 3 : n))
     // The category list runs from the ones a child names first (colors, animals) to the ones that
     // come later (instruments, minerals), so each tier takes its own window of the level.
     const window = levels.flatMap(l => tierWindow(pool.filter(c => c.level === l), tier))
@@ -120,7 +121,7 @@ export const categories: Generator = {
     if (line.length > 46) { shown = shown.slice(0, 2); line = `${cap(shown[0])} and ${shown[1]}` }
     // Decoy names: sibling categories (decoysFrom) first, then same-domain ones; never a superset like "animals".
     const over = new Set(overlapping(cat))
-    const okName = (c: Category) => !over.has(c) && !c.broad && c.many.length <= 26
+    const okName = (c: Category) => !over.has(c) && !c.broad && grade >= (c.from ?? 0) && c.many.length <= 26
     const siblings = cat.decoysFrom ? rng.shuffle(cat.decoysFrom.map(byId).filter(okName)) : []
     const rest = rng.shuffle(CATEGORIES.filter(c => okName(c) && !siblings.includes(c)))
       .sort((a, b) => (a.domain === cat.domain ? 0 : 1) - (b.domain === cat.domain ? 0 : 1))
