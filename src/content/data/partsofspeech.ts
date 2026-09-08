@@ -15,7 +15,11 @@ export const POS_LISTS: Record<'noun' | 'verb' | 'adjective' | 'adverb' | 'prono
   conjunction: ['and', 'but', 'or', 'so', 'yet', 'nor', 'because', 'although', 'since', 'unless', 'while', 'until', 'after', 'before', 'if', 'though', 'whereas', 'whenever', 'wherever', 'once', 'whether', 'than'],
 }
 
-/** Conjunctions that are never anything else, safe to use as decoys in other questions. */
+/**
+ * Conjunctions that are never anything else. Used as decoys in other questions, and as the only
+ * conjunctions asked about out of context: "after", "before", "since", "until", "while", "once" and
+ * "than" are prepositions or adverbs just as often, so on their own they have no single answer.
+ */
 export const PURE_CONJUNCTIONS = ['and', 'but', 'or', 'nor', 'because', 'although', 'unless', 'whereas', 'whether', 'if', 'though', 'whenever', 'wherever']
 
 export interface TaggedSentence { text: string; tags: Record<string, Pos> }
@@ -34,8 +38,8 @@ export const TAGGED: TaggedSentence[] = [
   T('I will stay inside if it rains.', { I: 'pronoun', stay: 'verb', inside: 'adverb', if: 'conjunction', rains: 'verb' }),
   T('The curious puppy sniffed the shoe.', { The: 'article', curious: 'adjective', puppy: 'noun', sniffed: 'verb', shoe: 'noun' }),
   T('He suddenly dropped the wet towel.', { He: 'pronoun', suddenly: 'adverb', dropped: 'verb', wet: 'adjective', towel: 'noun' }),
-  T('The shiny car stopped near the park.', { The: 'article', shiny: 'adjective', car: 'noun', stopped: 'verb', near: 'preposition', park: 'noun' }),
-  T('Birds sing sweetly every morning.', { Birds: 'noun', sing: 'verb', sweetly: 'adverb', every: 'adjective', morning: 'noun' }),
+  T('The shiny car stopped near the fence.', { The: 'article', shiny: 'adjective', car: 'noun', stopped: 'verb', near: 'preposition', fence: 'noun' }),
+  T('Birds sing sweetly every morning.', { Birds: 'noun', sing: 'verb', sweetly: 'adverb', every: 'article', morning: 'noun' }),
   T('We ate pizza and watched a movie.', { We: 'pronoun', ate: 'verb', pizza: 'noun', and: 'conjunction', watched: 'verb', movie: 'noun' }),
   T('The clever fox escaped easily.', { The: 'article', clever: 'adjective', fox: 'noun', escaped: 'verb', easily: 'adverb' }),
   T('She wanted juice, but there was only milk.', { She: 'pronoun', wanted: 'verb', juice: 'noun', but: 'conjunction', only: 'adverb', milk: 'noun' }),
