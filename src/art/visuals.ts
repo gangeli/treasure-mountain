@@ -1,5 +1,5 @@
 import { P } from './palette'
-import { type Ctx, circle, ellipse, poly, line, roundRect, text, star, heart, fillStroke, rr } from './draw'
+import { type Ctx, circle, ellipse, poly, line, roundRect, text, measure, star, heart, fillStroke, rr } from './draw'
 import type { Visual, CounterItem, ShapeName, CoinName } from '../content/types'
 
 /**
@@ -21,7 +21,13 @@ export function drawVisual(ctx: Ctx, v: Visual, x: number, y: number, w: number,
     case 'numberline': numberline(ctx, v.from, v.to, v.mark, v.step, x, y, w, h); break
     case 'angle': angle(ctx, v.degrees, x, y, w, h); break
     case 'letter': letterCard(ctx, v.text, x, y, w, h); break
-    case 'text': text(ctx, v.text, x + w / 2, y + h / 2, { size: Math.min(h * 0.6, 64), align: 'center', color: P.ink, weight: 900 }); break
+    case 'text': {
+      // Shrink to fit: "45 __ 54" at 64px ran off the right of its box.
+      let ts = Math.min(h * 0.6, 64)
+      while (ts > 16 && measure(ctx, v.text, ts, 900) > w - 16) ts -= 2
+      text(ctx, v.text, x + w / 2, y + h / 2, { size: ts, align: 'center', color: P.ink, weight: 900 })
+      break
+    }
     case 'thermometer': thermometer(ctx, v.degrees, v.unit, x, y, w, h); break
     case 'scale': scale(ctx, v.left, v.right, v.heavier, x, y, w, h); break
     case 'bars': bars(ctx, v.values, v.labels, x, y, w, h); break
@@ -210,13 +216,23 @@ function numberline(ctx: Ctx, from: number, to: number, mark: number | undefined
   line(ctx, x0 - 10, cy, x1 + 10, cy, P.ink, 4)
   poly(ctx, [[x1 + 10, cy - 7], [x1 + 22, cy], [x1 + 10, cy + 7]], P.ink, P.ink, 1)
   poly(ctx, [[x0 - 10, cy - 7], [x0 - 22, cy], [x0 - 10, cy + 7]], P.ink, P.ink, 1)
+  // Label size follows the tick spacing, and when the ticks are tight only every other one is
+  // labelled: at 20px on a 0-10 line the numbers ran into each other ("9" and "10" touched).
+  const gap = (x1 - x0) / n
+  const size = Math.max(11, Math.min(20, gap * 0.85))
+  const every = gap < 24 ? 2 : 1
   for (let i = 0; i <= n; i++) {
     const px = x0 + (i / n) * (x1 - x0)
     line(ctx, px, cy - 12, px, cy + 12, P.ink, 3)
+    if (i % every !== 0 && i !== n) continue
     const v = from + i * st
-    text(ctx, Number.isInteger(v) ? String(v) : v.toFixed(2).replace(/0+$/, '').replace(/\.$/, ''), px, cy + 30, { size: n > 12 ? 14 : 20, align: 'center', color: P.ink, weight: 800 })
+    text(ctx, Number.isInteger(v) ? String(v) : v.toFixed(2).replace(/0+$/, '').replace(/\.$/, ''), px, cy + 26 + size / 2, { size, align: 'center', color: P.ink, weight: 800 })
   }
-  if (mark !== undefined) { const px = x0 + ((mark - from) / (to - from)) * (x1 - x0); poly(ctx, [[px, cy - 16], [px - 12, cy - 40], [px + 12, cy - 40]], P.red, P.ink, 2.5) }
+  if (mark !== undefined) {
+    const px = x0 + ((mark - from) / (to - from)) * (x1 - x0)
+    const mw = Math.max(7, Math.min(12, gap * 0.55))
+    poly(ctx, [[px, cy - 16], [px - mw, cy - 40], [px + mw, cy - 40]], P.red, P.ink, 2.5)
+  }
 }
 
 function angle(ctx: Ctx, deg: number, x: number, y: number, w: number, h: number): void {
@@ -243,19 +259,33 @@ function thermometer(ctx: Ctx, deg: number, unit: 'F' | 'C', x: number, y: numbe
   ctx.fillStyle = P.red; ctx.fillRect(cx - tw / 2 + 7, level, tw - 14, bottom - level)
   circle(ctx, cx, bottom + 4, tw * 0.75, P.red, P.ink, 3)
   const stepT = unit === 'F' ? 10 : 5
-  const labelEvery = (bottom - top) > 220 ? stepT * 2 : stepT * 4
+  const labelEvery = (bottom - top) > 150 ? stepT * 2 : stepT * 4
   for (let v = lo; v <= hi; v += stepT) { const py = bottom - 10 - ((v - lo) / (hi - lo)) * (bottom - top - 30); const lab = (v - lo) % labelEvery === 0; line(ctx, cx + tw / 2, py, cx + tw / 2 + (lab ? 14 : 8), py, P.ink, 2); if (lab) text(ctx, String(v), cx + tw / 2 + 20, py, { size: 15, color: P.ink, weight: 800 }) }
   text(ctx, '°' + unit, cx, top - 4, { size: 18, align: 'center', color: P.ink, weight: 800 })
 }
 
 function scale(ctx: Ctx, left: string, right: string, heavier: 'left' | 'right' | 'none', x: number, y: number, w: number, h: number): void {
-  const cx = x + w / 2, base = y + h - 16, tilt = heavier === 'left' ? 0.18 : heavier === 'right' ? -0.18 : 0
+  // The heavier pan goes DOWN. A positive canvas rotation lifts the left end, so 'left' has to be
+  // the negative tilt: the picture used to show the heavy side rising.
+  const cx = x + w / 2, base = y + h - 16, tilt = heavier === 'left' ? -0.18 : heavier === 'right' ? 0.18 : 0
   poly(ctx, [[cx - 40, base], [cx + 40, base], [cx + 8, base - 30], [cx - 8, base - 30]], P.rockDark, P.ink, 3)
   line(ctx, cx, base - 30, cx, base - 90, P.ink, 8)
   ctx.save(); ctx.translate(cx, base - 90); ctx.rotate(tilt)
   line(ctx, -w * 0.38, 0, w * 0.38, 0, P.ink, 8); line(ctx, -w * 0.38, 0, w * 0.38, 0, P.gold, 4)
-  for (const s of [-1, 1]) { const px = s * w * 0.36; line(ctx, px, 0, px - 22, 40, P.ink, 2); line(ctx, px, 0, px + 22, 40, P.ink, 2); ctx.beginPath(); ctx.moveTo(px - 30, 40); ctx.quadraticCurveTo(px, 70, px + 30, 40); ctx.closePath(); fillStroke(ctx, P.gold, P.ink, 3); text(ctx, s < 0 ? left : right, px, 28, { size: 18, align: 'center', color: P.ink, weight: 800 }) }
+  for (const s of [-1, 1]) { const px = s * w * 0.36; line(ctx, px, 0, px - 22, 40, P.ink, 2); line(ctx, px, 0, px + 22, 40, P.ink, 2); ctx.beginPath(); ctx.moveTo(px - 30, 40); ctx.quadraticCurveTo(px, 70, px + 30, 40); ctx.closePath(); fillStroke(ctx, P.gold, P.ink, 3) }
   ctx.restore()
+  // Labels are drawn upright under each pan, not inside the tilted beam, where a long word ran off
+  // the pan at an angle and read as decoration rather than as the object being weighed.
+  for (const s of [-1, 1]) {
+    const px = cx + s * w * 0.36 * Math.cos(tilt), py = base - 90 + s * w * 0.36 * Math.sin(tilt)
+    const label = s < 0 ? left : right
+    let size = 18
+    while (size > 10 && measure(ctx, label, size, 800) > w * 0.34) size -= 1
+    // Kept inside the picture box: on a tilted beam the low pan pushed its label off the edge.
+    const half = measure(ctx, label, size, 800) / 2 + 4
+    const lx = Math.max(x + half, Math.min(x + w - half, px))
+    text(ctx, label, lx, Math.min(py + 72, base - 4), { size, align: 'center', color: P.ink, weight: 800 })
+  }
 }
 
 function bars(ctx: Ctx, values: number[], labels: string[], x: number, y: number, w: number, h: number): void {
