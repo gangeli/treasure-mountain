@@ -36,10 +36,12 @@ export function drawHud(ctx: Ctx, g: Game, buttons: Button[]): void {
   cols.forEach(([label, val], i) => {
     const cx = 854 + 70 + i * 137
     text(ctx, label, cx, BOX_Y + 22, { size: 20, color: P.white, weight: 800, align: 'center' })
-    if (i === 0) coinBag(ctx, cx, BOX_Y + 70)
-    else if (i === 1) { ctx.save(); ctx.translate(cx + 4, BOX_Y + 96); ctx.rotate(0.35); drawNet(ctx, 0.45); ctx.restore() }
-    else chest(ctx, cx, BOX_Y + 72, g.lvl && run ? g.lvl.level.groups.filter(gp => gp.hides === 'treasure' && run.searched.includes(gp.id)).length : 0, g.lvl ? g.lvl.level.treasures : 0, 0)
-    text(ctx, String(val), cx, BOX_Y + 110, { size: 28, color: P.white, weight: 900, align: 'center' })
+    // Icons above the numbers with a few pixels to spare: the coin bag used to hang 10px into the
+    // top of its own digit, and the net's handle ended between the 1 and the 0 of "10".
+    if (i === 0) coinBag(ctx, cx, BOX_Y + 60)
+    else if (i === 1) { ctx.save(); ctx.translate(cx + 4, BOX_Y + 88); ctx.rotate(0.35); drawNet(ctx, 0.42); ctx.restore() }
+    else chest(ctx, cx, BOX_Y + 64, g.lvl && run ? g.lvl.level.groups.filter(gp => gp.hides === 'treasure' && run.searched.includes(gp.id)).length : 0, g.lvl ? g.lvl.level.treasures : 0, 0)
+    text(ctx, String(val), cx, BOX_Y + 114, { size: 28, color: P.white, weight: 900, align: 'center' })
     if (i < 2) line(ctx, cx + 68, BOX_Y + 10, cx + 68, BOX_Y + BOX_H - 10, P.panelLine, 2)
   })
   drawButtons(ctx, buttons, g)
@@ -108,7 +110,9 @@ export function drawButtons(ctx: Ctx, buttons: Button[], g: Game): void {
     rr(ctx, b.x + 6, b.y + 5, b.w - 12, gh, 10); ctx.fillStyle = gg; ctx.fill()
     ctx.restore()
     const cx = b.x + b.w / 2, cy = b.y + (b.h - 4) / 2
-    if (b.icon === 'net') { ctx.save(); ctx.translate(cx - 4, cy + 22); ctx.rotate(0.6); drawNet(ctx, 0.34); ctx.restore(); text(ctx, b.label, cx, cy + 22, { size: 15, color: P.white, weight: 800, align: 'center' }) }
+    // The net hangs above the word, not through it: at cy+22 the handle ran down between the N and
+    // the e of "Net".
+    if (b.icon === 'net') { ctx.save(); ctx.translate(cx - 4, cy + 6); ctx.rotate(0.6); drawNet(ctx, 0.34); ctx.restore(); text(ctx, b.label, cx, cy + 22, { size: 15, color: P.white, weight: 800, align: 'center' }) }
     else if (b.icon === 'coin') { circle(ctx, cx, cy - 8, 15, P.gold, P.ink, 2.5); circle(ctx, cx, cy - 8, 8, P.goldDark, 'rgba(0,0,0,0)', 0); text(ctx, b.label, cx, cy + 22, { size: 15, color: P.white, weight: 800, align: 'center' }) }
     else if (b.icon === 'jump') { poly(ctx, [[cx, cy - 22], [cx + 14, cy - 6], [cx + 6, cy - 6], [cx + 6, cy + 6], [cx - 6, cy + 6], [cx - 6, cy - 6], [cx - 14, cy - 6]], P.white, P.ink, 2.5); text(ctx, b.label, cx, cy + 22, { size: 15, color: P.white, weight: 800, align: 'center' }) }
     else if (b.icon === 'pause') { ctx.fillStyle = P.white; ctx.fillRect(cx - 11, cy - 12, 8, 24); ctx.fillRect(cx + 3, cy - 12, 8, 24) }

@@ -42,7 +42,8 @@ export function drawPlayer(ctx: Ctx, x: number, y: number, facing: 1 | -1, state
   // ---- arms
   const armA = state === 'net' ? netSwing : walking ? -legSwing * 0.7 : jump ? -60 : climb ? Math.sin(t * 8 + 1.5) * 40 : state === 'drop' ? 45 : 0
   // back arm
-  drawArm(ctx, -22, -92, -armA * 0.6 - 20, P.cyan)
+  const backDeg = -armA * 0.6 - 20
+  drawArm(ctx, -22, -92, backDeg, P.cyan)
   // front arm with the net
   ctx.save()
   ctx.translate(22, -92)
@@ -52,7 +53,11 @@ export function drawPlayer(ctx: Ctx, x: number, y: number, facing: 1 | -1, state
   ctx.translate(0, 34)
   ctx.rotate(-Math.PI / 2 + 0.15)
   drawNet(ctx)
+  // Both hands close over the handle. Drawn before the net, the pole ran straight across the palms
+  // and each hand read as two skin crescents either side of the wood.
+  grip(ctx)
   ctx.restore()
+  ctx.save(); ctx.translate(-22, -92); ctx.rotate(backDeg * Math.PI / 180); ctx.translate(0, 36); grip(ctx); ctx.restore()
 
   // ---- head
   const hy = -112
@@ -99,6 +104,11 @@ function drawArmSeg(ctx: Ctx, color: string): void {
   roundRect(ctx, -8, -4, 16, 36, 7, color)
   circle(ctx, 0, 36, 8, P.skin, P.ink, 2.5)
 }
+/** A closed fist at the origin, with a crease for the fingers, drawn over whatever it holds. */
+function grip(ctx: Ctx): void {
+  circle(ctx, 0, 0, 8.5, P.skin, P.ink, 2.5)
+  line(ctx, -3.5, -5, -3.5, 5, P.ink, 1.5)
+}
 
 /** The hoop net, drawn along +y (handle) with the hoop at the end. Origin at the hand. */
 export function drawNet(ctx: Ctx, scale = 1): void {
@@ -139,9 +149,12 @@ export function drawElf(ctx: Ctx, x: number, y: number, facing: 1 | -1, pose: El
   // legs
   for (const s of [-1, 1]) {
     ctx.save(); ctx.translate(s * 7, -26); ctx.rotate((pose === 'caught' ? -60 * s : swing * s) * Math.PI / 180)
-    roundRect(ctx, -5, 0, 10, 22, 4, P.red, P.ink, 2.5)
+    // The far leg is a shade darker. Both shoes point the same way and are wider than the gap
+    // between the legs, so in the standing pose the two feet merged into one brown lump.
+    const far = s < 0
+    roundRect(ctx, -5, 0, 10, 22, 4, far ? P.redDark : P.red, P.ink, 2.5)
     // big shoe
-    ctx.beginPath(); ctx.moveTo(-6, 18); ctx.lineTo(-6, 28); ctx.lineTo(14, 28); ctx.quadraticCurveTo(18, 22, 10, 20); ctx.lineTo(6, 18); ctx.closePath(); fillStroke(ctx, P.brown, P.ink, 2.5)
+    ctx.beginPath(); ctx.moveTo(-6, 18); ctx.lineTo(-6, 28); ctx.lineTo(14, 28); ctx.quadraticCurveTo(18, 22, 10, 20); ctx.lineTo(6, 18); ctx.closePath(); fillStroke(ctx, far ? P.brownDark : P.brown, P.ink, 2.5)
     ctx.restore()
   }
   // tunic
@@ -150,10 +163,12 @@ export function drawElf(ctx: Ctx, x: number, y: number, facing: 1 | -1, pose: El
   // arms
   const armSwing = run ? -swing : pose === 'dance' ? 50 + Math.sin(t * 10) * 30 : pose === 'caught' ? 20 : 10
   ctx.save(); ctx.translate(-14, -52); ctx.rotate((armSwing * 0.8 + 25) * Math.PI / 180); roundRect(ctx, -4, 0, 9, 22, 4, tunic, P.ink, 2.5); circle(ctx, 0, 24, 5, P.elfSkin, P.ink, 2); ctx.restore()
-  ctx.save(); ctx.translate(14, -52); ctx.rotate((-armSwing * 0.8 - 25 - (item !== 'none' ? 40 : 0)) * Math.PI / 180); roundRect(ctx, -4, 0, 9, 22, 4, tunic, P.ink, 2.5); circle(ctx, 0, 24, 5, P.elfSkin, P.ink, 2)
-  // held item
-  if (item === 'scroll') { ctx.translate(0, 26); ctx.rotate(0.3); roundRect(ctx, -6, -18, 12, 32, 5, P.cream, P.ink, 2); ctx.fillStyle = P.yellowDark; ctx.fillRect(-6, -18, 12, 5); ctx.fillRect(-6, 9, 12, 5) }
-  if (item === 'dust') { ctx.translate(0, 28); roundRect(ctx, -8, -8, 16, 16, 6, P.purple, P.ink, 2); circle(ctx, 0, -9, 4, P.yellow, P.ink, 1.5) }
+  ctx.save(); ctx.translate(14, -52); ctx.rotate((-armSwing * 0.8 - 25 - (item !== 'none' ? 40 : 0)) * Math.PI / 180); roundRect(ctx, -4, 0, 9, 22, 4, tunic, P.ink, 2.5)
+  // held item, then the hand over it: with the hand drawn first the scroll covered it completely,
+  // so the sleeve ended in a stub and the scroll floated beside it.
+  if (item === 'scroll') { ctx.save(); ctx.translate(0, 26); ctx.rotate(0.3); roundRect(ctx, -6, -18, 12, 32, 5, P.cream, P.ink, 2); ctx.fillStyle = P.yellowDark; ctx.fillRect(-6, -18, 12, 5); ctx.fillRect(-6, 9, 12, 5); ctx.restore() }
+  if (item === 'dust') { ctx.save(); ctx.translate(0, 28); roundRect(ctx, -8, -8, 16, 16, 6, P.purple, P.ink, 2); circle(ctx, 0, -9, 4, P.yellow, P.ink, 1.5); ctx.restore() }
+  circle(ctx, 0, 24, 5.5, P.elfSkin, P.ink, 2)
   ctx.restore()
   if (item === 'balloon') {
     line(ctx, 18, -70, 28, -120, P.ink, 1.5)
@@ -173,6 +188,9 @@ export function drawElf(ctx: Ctx, x: number, y: number, facing: 1 | -1, pose: El
     circle(ctx, 6, hy - 2, 2.6, P.ink, P.ink, 0)
     ctx.strokeStyle = P.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(5, hy + 4, 5, 0.1, Math.PI - 0.4); ctx.stroke()
     circle(ctx, 12, hy + 3, 2.5, '#ff9aa8', '#ff9aa8', 0)
+    // A nose on the silhouette, like the Super Solver's: without it a round head with one eye reads
+    // as a face missing an eye rather than as a face in three-quarter view.
+    ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(13, hy - 1); ctx.lineTo(17, hy + 2); ctx.stroke()
   }
   // cap: tall pointed hat flopping back
   ctx.beginPath(); ctx.moveTo(-18, hy - 8); ctx.quadraticCurveTo(-10, hy - 30, -34, hy - 44); ctx.quadraticCurveTo(-6, hy - 40, 14, hy - 22); ctx.lineTo(19, hy - 9); ctx.closePath(); fillStroke(ctx, cap, P.ink, 2.5)

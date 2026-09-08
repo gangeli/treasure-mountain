@@ -20,9 +20,19 @@ export function riddleChoiceRects(r: Riddle): { x: number; y: number; w: number;
   const visualChoices = r.choices.some(c => c.visual)
   const out = []
   if (visualChoices) {
-    const w = 190, h = 150, gap = 24
-    const x0 = SCROLL.x + 60
-    for (let i = 0; i < n; i++) out.push({ x: x0 + i * (w + gap), y: SCROLL.y + SCROLL.h - h - 40, w, h })
+    // Picture answers take all the room the prompt leaves, and sit centred. Pinned at 190x150 in
+    // the bottom-left corner, "which group has the most flowers?" drew five flowers the size of
+    // raisins under 380px of empty scroll.
+    const gap = 24
+    const avail = SCROLL.w - 120 - 110 // margins, and the elf dancing at the right edge
+    const w = Math.min(300, Math.floor((avail - gap * (n - 1)) / n))
+    const bottom = SCROLL.y + SCROLL.h - 40
+    // A prompt picture owns the top right of the scroll down to y+280; otherwise allow the prompt
+    // its biggest type (46px) for the lines it has.
+    const top = SCROLL.y + (r.visual ? 294 : 40 + r.prompt.length * 62)
+    const h = Math.max(150, Math.min(260, bottom - top))
+    const x0 = SCROLL.x + 60 + Math.max(0, (avail - (n * w + (n - 1) * gap)) / 2)
+    for (let i = 0; i < n; i++) out.push({ x: x0 + i * (w + gap), y: bottom - h, w, h })
   } else if (r.prompt.length >= 5 && n === 4) {
     // A long prompt (the grade-5 logic puzzles run to six lines) needs the top of the scroll, so
     // four answers go in two columns instead of a stack that would run into the text.

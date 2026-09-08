@@ -139,9 +139,15 @@ export function richText(ctx: Ctx, s: string, x: number, y: number, size: number
   }
 }
 
+/**
+ * Contact shadow under something standing at (x, y). The ellipse hangs just below the contact
+ * point rather than being centred on it: centred, its whole top half was painted above the ground
+ * line - on the rock wall, or (on the title, intro and ending screens, where the hero stands right
+ * on the edge of the grass) as a blue-grey smudge floating in the sky behind his boots.
+ */
 export function shadowBlob(ctx: Ctx, x: number, y: number, rx: number, ry = rx * 0.35): void {
   ctx.save(); ctx.globalAlpha = 0.22; ctx.fillStyle = P.ink
-  ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore()
+  ctx.beginPath(); ctx.ellipse(x, y + ry * 0.8, rx, ry, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore()
 }
 
 /** Tiny deterministic hash for scattering details without an RNG. */
