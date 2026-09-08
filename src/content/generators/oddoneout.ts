@@ -5,6 +5,12 @@ import { ODD_SETS } from '../data/oddoneout'
 
 /** Colours the renderer can paint; picture items only ever differ on one attribute at a time. */
 const COLORS = ['red', 'blue', 'green', 'yellow', 'orange', 'purple']
+/**
+ * Pairs that a red-green colour-blind child (about one boy in twelve) cannot tell apart. The
+ * kindergarten colour sort never asks a child to separate one of these; they are still fine
+ * anywhere colour is decoration rather than the question.
+ */
+const CONFUSABLE = new Set(['red|green', 'green|red', 'orange|green', 'green|orange', 'green|yellow', 'yellow|green', 'red|orange', 'orange|red', 'blue|purple', 'purple|blue'])
 /** No rectangle: a square is a rectangle, so the two must never be sorted against each other. */
 const SHAPES: ShapeName[] = ['circle', 'square', 'triangle', 'star', 'heart', 'hexagon']
 const COUNTER_ITEMS: CounterItem[] = ['apple', 'star', 'ball', 'fish', 'flower', 'coin', 'block', 'heart', 'balloon', 'bug', 'cookie', 'acorn']
@@ -27,7 +33,8 @@ function pictures(tier: Tier, rng: Rng): ReturnType<typeof riddle> {
   if (tier === 1) {
     // Three different shapes; two share a colour. Shape gives no grouping at all.
     const [s1, s2, s3] = rng.sample(SHAPES, 3)
-    const [c1, c2] = rng.sample(COLORS, 2)
+    let [c1, c2] = rng.sample(COLORS, 2)
+    for (let i = 0; i < 12 && CONFUSABLE.has(`${c1}|${c2}`); i++) [c1, c2] = rng.sample(COLORS, 2)
     const odd: Choice = { visual: { kind: 'shape', name: s3, color: c2 } }
     const same: Choice[] = [{ visual: { kind: 'shape', name: s1, color: c1 } }, { visual: { kind: 'shape', name: s2, color: c1 } }]
     const { choices, answer } = shuffled(rng, odd, same, 3)
