@@ -5,7 +5,7 @@ import type { Game } from '../game/game'
 import { CASTLE_FLOORS, CASTLE_FLOOR_Y, CASTLE_FLOOR_H } from '../game/game'
 import type { Button } from '../game/ui'
 import { SCROLL, riddleChoiceRects, gradeCardRects } from '../game/ui'
-import { drawPlayer, drawElf, drawMaster, drawCrown, drawKey } from './characters'
+import { drawPlayer, drawElf, drawMaster, drawCrown, drawKey, drawNet } from './characters'
 import { drawHud, drawBubble, drawStars } from './hud'
 import { drawVisual } from './visuals'
 import { drawTreasure, scallop } from './features'
@@ -480,7 +480,11 @@ function crown(ctx: Ctx, g: Game): void {
   ctx.fillStyle = P.grass; ctx.fillRect(0, 600, W, H - 600)
   drawMountain(ctx, 640, 600, 0.62, t)
   const bob = Math.sin(t * 2) * 8
-  ctx.save(); ctx.globalAlpha = 0.45; circle(ctx, 640, 205 + bob, 100 + Math.sin(t * 3) * 8, P.yellow, 'rgba(0,0,0,0)', 0); ctx.restore()
+  // A glow that fades out, not a flat yellow disc at 45% - over the blue sky that came out olive.
+  const r = 150 + Math.sin(t * 3) * 10
+  const halo = ctx.createRadialGradient(640, 205 + bob, 10, 640, 205 + bob, r)
+  halo.addColorStop(0, 'rgba(255,226,120,0.85)'); halo.addColorStop(0.45, 'rgba(255,210,63,0.35)'); halo.addColorStop(1, 'rgba(255,210,63,0)')
+  ctx.save(); ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(640, 205 + bob, r, 0, Math.PI * 2); ctx.fill(); ctx.restore()
   drawCrown(ctx, 640, 235 + bob, 90)
   text(ctx, 'You won back the crown!', W / 2, 56, { size: 54, align: 'center', color: P.yellow, weight: 900, outline: P.ink, outlineWidth: 10, font: DISPLAY })
   text(ctx, `Treasure Mountain is saved, ${gradeName(g.grade)} Champion!`, W / 2, 110, { size: 26, align: 'center', color: P.white, weight: 800, outline: P.ink, outlineWidth: 5 })
@@ -490,8 +494,12 @@ function crown(ctx: Ctx, g: Game): void {
 
 // ------------------------------------------------------------------ help & about
 function howto(ctx: Ctx, g: Game): void {
+  const t = g.time
   sky(ctx, '#3c7dd9', '#9fd0ff')
   text(ctx, 'How to play', W / 2, 56, { size: 48, align: 'center', color: P.yellow, weight: 900, font: DISPLAY, outline: P.ink, outlineWidth: 8 })
+  // The steps sit on a cream card: white body text over the pale bottom of the sky gradient came
+  // out at about 2:1 contrast, which no child can read.
+  roundRect(ctx, 40, 92, W - 80, 560, 22, P.cream, P.ink, 4)
   const steps = [
     ['1', 'Catch an elf.', 'Tap an elf (or press Space) to swing your net. Each throw uses one net.'],
     ['2', 'Answer the riddle.', 'Elves with scrolls ask a riddle. A right answer wins a clue word and 2 coins.'],
@@ -501,13 +509,27 @@ function howto(ctx: Ctx, g: Game): void {
     ['6', 'Climb to the castle.', 'Fill the chest at the top, send the Master of Mischief packing, earn stars!'],
   ]
   steps.forEach(([n, head, body], i) => {
-    const y = 110 + i * 92
-    circle(ctx, 90, y + 22, 26, P.yellow, P.ink, 3); text(ctx, n, 90, y + 23, { size: 28, align: 'center', color: P.ink, weight: 900 })
-    text(ctx, head, 140, y + 8, { size: 26, color: P.white, weight: 900 })
-    text(ctx, body, 140, y + 42, { size: 21, color: P.white, weight: 700 })
+    const y = 118 + i * 88
+    if (i) line(ctx, 76, y - 16, W - 76, y - 16, P.scrollEdge, 2)
+    circle(ctx, 100, y + 22, 26, P.yellow, P.ink, 3); text(ctx, n, 100, y + 23, { size: 28, align: 'center', color: P.ink, weight: 900 })
+    text(ctx, head, 150, y + 8, { size: 26, color: P.blueDark, weight: 900 })
+    text(ctx, body, 150, y + 40, { size: 21, color: P.ink, weight: 700 })
+    howtoIcon(ctx, i, 1160, y + 24, t)
   })
-  text(ctx, 'Need more nets? Drop coins at the NETS rock. No nets and no coins? The rock helps you out.', W / 2, H - 40, { size: 20, align: 'center', color: P.cream, weight: 700 })
-  void g
+  text(ctx, 'Need more nets? Drop coins at the NETS rock. No nets and no coins? The rock helps you out.', W / 2, H - 36, { size: 20, align: 'center', color: P.white, weight: 800, outline: P.ink, outlineWidth: 5 })
+}
+
+/** The little picture beside each how-to-play step, so the page is not six lines of text. */
+function howtoIcon(ctx: Ctx, i: number, x: number, y: number, t: number): void {
+  ctx.save()
+  // Scaled to 0.75, or the elf's hat pokes out through the top of the card.
+  if (i === 0) { ctx.save(); ctx.translate(x - 18, y + 30); ctx.scale(0.75, 0.75); drawElf(ctx, 0, 0, -1, 'run', t, 1, 'none'); ctx.restore(); ctx.save(); ctx.translate(x + 32, y + 14); ctx.rotate(0.5); drawNet(ctx, 0.45); ctx.restore() }
+  else if (i === 1) { roundRect(ctx, x - 40, y - 26, 80, 52, 8, P.scroll, P.ink, 3); for (let k = 0; k < 3; k++) line(ctx, x - 28, y - 12 + k * 13, x + 28, y - 12 + k * 13, P.scrollEdge, 3) }
+  else if (i === 2) { drawTreasure(ctx, 'kite', x, y - 4, 0.68) }
+  else if (i === 3) { circle(ctx, x, y, 22, P.gold, P.ink, 3); circle(ctx, x, y, 12, P.goldDark, 'rgba(0,0,0,0)', 0) }
+  else if (i === 4) { drawKey(ctx, x, y - 6, 1.6, true) }
+  else { drawCrown(ctx, x, y + 10, 60) }
+  ctx.restore()
 }
 
 function about(ctx: Ctx, g: Game): void {
