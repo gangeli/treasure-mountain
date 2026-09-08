@@ -1,5 +1,5 @@
 import { P } from './palette'
-import { type Ctx, text, roundRect } from './draw'
+import { type Ctx, text, roundRect, measure } from './draw'
 import { W, H, GROUND_Y } from '../game/layout'
 import { drawPlayer, drawElf, drawMaster, drawCrown, drawKey } from './characters'
 import { drawKind } from './scenery'
@@ -34,19 +34,36 @@ export function drawSheet(ctx: Ctx, name: string, t: number): void {
       // Neutral page with a strip of the level's own ground under each row: on a full green page
       // the green bushes and trees were invisible.
       ctx.fillStyle = '#e8edf7'; ctx.fillRect(0, 0, W, H)
-      for (const gy of [215, 380, 545, 710]) { ctx.fillStyle = th.ground; ctx.fillRect(0, gy - 4, W, 30); ctx.fillStyle = th.groundDark; ctx.fillRect(0, gy - 4, W, 4) }
       text(ctx, `Scenery, level ${no}: every kind x descriptor`, 20, 24, { size: 22, weight: 900, color: P.ink, outline: P.white, outlineWidth: 4 })
+      // Drawn into a larger virtual page and scaled down to fit. At 1:1 the rows had to be 165px
+      // apart to fit them all, which is less than a big snowman is tall: the tall pines and the
+      // snowmen grew up through the row above and covered its labels, and the last row fell off
+      // the bottom of the sheet entirely.
+      const K = 0.74
+      const vw = W / K, vh = H / K
+      ctx.save(); ctx.scale(K, K)
+      const rows = [240, 470, 700, 930]
+      for (const gy of rows) { ctx.fillStyle = th.ground; ctx.fillRect(0, gy - 4, vw, 30); ctx.fillStyle = th.groundDark; ctx.fillRect(0, gy - 4, vw, 4) }
       const kinds = KINDS.filter(k => k.levels.includes(no))
-      let x = 60, y = 215
+      let x = 70, row = 0
       for (const k of kinds) {
         for (const d of k.descriptors) {
-          const w = Math.max(84, k.width * 0.95)
-          if (x + w > W - 20) { x = 60; y += 165 }
+          const w = Math.max(96, k.width * 0.95)
+          if (x + w > vw - 24) { x = 70; row++ }
+          const y = rows[Math.min(row, rows.length - 1)]
           drawKind(ctx, k.kind, d, x, y, t, x * 7 + y)
-          label(`${d} ${k.kind}`, x, y + 22)
-          x += w + 20
+          // Shrink a name that is wider than its slot, so "blue mushroom" and "yellow mushroom" do
+          // not run into each other and become one unreadable word.
+          const name = `${d} ${k.kind}`
+          let ls = 14
+          while (ls > 9 && measure(ctx, name, ls, 700) > w + 20) ls--
+          text(ctx, name, x, y + 24, { size: ls, align: 'center', color: P.inkSoft, weight: 700 })
+          x += w + 26
         }
       }
+      ctx.restore()
+      if (rows[row] === undefined) text(ctx, `(${row - rows.length + 1} row(s) did not fit)`, W / 2, H - 12, { size: 16, align: 'center', color: P.red, weight: 800 })
+      void vh
       break
     }
     case 'sheet-features': {

@@ -158,13 +158,21 @@ function fern(ctx: Ctx, x: number, y: number, s: number, t: number, r: number): 
   // A small fern gets three fronds, not five: at this size five overlapped into a dark scribble.
   const fronds = s < 0.8 ? 3 : 5
   for (let i = 0; i < fronds; i++) {
-    const a = -Math.PI / 2 + (i - (fronds - 1) / 2) * 0.42 + Math.sin(t + i + r * 6) * 0.04
+    // The small fern's three fronds fan wider, so they read as three fronds and not one clump.
+    const a = -Math.PI / 2 + (i - (fronds - 1) / 2) * (fronds === 3 ? 0.56 : 0.42) + Math.sin(t + i + r * 6) * 0.04
     const len = (40 + (i === (fronds - 1) / 2 ? 14 : 0)) * s
     const ex = x + Math.cos(a) * len, ey = y + Math.sin(a) * len
     ctx.beginPath(); ctx.moveTo(x, y); ctx.quadraticCurveTo(x + Math.cos(a) * len * 0.5 - 4, y + Math.sin(a) * len * 0.5, ex, ey); ctx.lineWidth = Math.max(2.5, 4 * s); ctx.strokeStyle = P.ink; ctx.stroke(); ctx.lineWidth = Math.max(1.5, 2 * s); ctx.strokeStyle = P.greenDark; ctx.stroke()
-    // Fewer, bigger leaflets on a small fern: at 6*s they merged into a dark scribble.
-    const leaves = s < 0.8 ? 3 : 4
-    for (let k = 1; k <= leaves; k++) { const f = k / (leaves + 1); const px = x + Math.cos(a) * len * f, py = y + Math.sin(a) * len * f; const ls = Math.max(5, 6 * s); leaf(ctx, px, py, ls, a - 1.2, P.greenLight); leaf(ctx, px, py, ls, a + 1.2 + Math.PI, P.green) }
+    // A leaflet is nine units long counting its outline, so three pairs spaced six units apart on a
+    // 24-unit frond drew a dark green scribble rather than a fern. The small one gets two pairs,
+    // set further out along the frond where there is room for them.
+    const leaves = s < 0.8 ? 2 : 4
+    const ls = Math.max(5, 6 * s)
+    for (let k = 1; k <= leaves; k++) {
+      const f = leaves === 2 ? 0.42 + (k - 1) * 0.38 : k / (leaves + 1)
+      const px = x + Math.cos(a) * len * f, py = y + Math.sin(a) * len * f
+      leaf(ctx, px, py, ls, a - 1.2, P.greenLight); leaf(ctx, px, py, ls, a + 1.2 + Math.PI, P.green)
+    }
   }
 }
 
