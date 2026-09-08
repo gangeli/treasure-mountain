@@ -476,7 +476,7 @@ function rank(ctx: Ctx, g: Game): void {
   if (starsForTotal(g.rankTo) > starsForTotal(g.rankFrom) && k >= 1) {
     // Celebration stars circle around the poster, never over its text.
     ctx.save(); ctx.globalAlpha = 0.9
-    for (let i = 0; i < 14; i++) { const a = (i / 14) * Math.PI * 2 + g.time * 0.7; const sx = W / 2 + Math.cos(a) * 545, sy = 280 + Math.sin(a) * 240; if (Math.abs(sx - W / 2) < 330 && sy > 40 && sy < 510) continue; star(ctx, sx, sy, 14 + (i % 3) * 3, i % 2 ? P.yellow : P.white, P.ink, 2) }
+    for (let i = 0; i < 14; i++) { const a = (i / 14) * Math.PI * 2 + g.time * 0.7; const sx = W / 2 + Math.cos(a) * 545, sy = 280 + Math.sin(a) * 240; if (Math.abs(sx - W / 2) < 400 && sy > 30 && sy < 545) continue; star(ctx, sx, sy, 14 + (i % 3) * 3, i % 2 ? P.yellow : P.white, P.ink, 2) }
     ctx.restore()
     text(ctx, 'NEW STAR!', W / 2, 38, { size: 40, align: 'center', color: P.yellow, weight: 900, outline: P.ink, outlineWidth: 8, font: DISPLAY })
   }
