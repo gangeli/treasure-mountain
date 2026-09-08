@@ -254,6 +254,51 @@ describe('a climb picked up from anywhere', () => {
   })
 })
 
+/**
+ * Everything the game asks a child to tap. The stage letterboxes 1280x720 into a phone's ~800x360
+ * CSS pixels, so a control is drawn at about half the size these numbers say: 64 logical pixels is
+ * 32 on the phone, which is about 8.5mm - a five-year-old's fingertip. Nothing may be smaller.
+ */
+describe('every button is big enough to hit', () => {
+  const MIN = 64
+  it('no control is under 64 logical pixels on any screen', () => {
+    const small: string[] = []
+    const check = (g: Game, where: string) => {
+      for (const b of g.buttons()) {
+        const least = Math.min(b.w, b.h)
+        if (least < MIN) small.push(`${where}: "${b.id}" is ${b.w}x${b.h}`)
+      }
+    }
+    for (const grade of [0, 3] as const) {
+      const g = new Game(null, { seed: 'buttons' + grade, fast: true })
+      check(g, 'title')
+      g.play(); check(g, 'grade')
+      g.chooseGrade(grade); check(g, 'clubhouse')
+      g.pressButton('howto'); check(g, 'howto'); g.back()
+      g.pressButton('about'); check(g, 'about'); g.back()
+      g.pressButton('start')
+      if (g.screen === 'intro') { check(g, 'intro'); g.advanceScene() }
+      check(g, 'level')
+      g.togglePause(); check(g, 'pause'); g.togglePause()
+      // A riddle of every shape the scroll can lay out: short, long, and with a picture.
+      const lvl = g.lvl!
+      for (let i = 0; i < 40; i++) {
+        const elf = lvl.elves.find(e => e.kind === 'scroll' && e.state === 'run')
+        if (!elf) { step(g, 1); continue }
+        lvl.player.x = wrapX(elf.x - 80); lvl.player.facing = 1; lvl.player.state = 'idle'; lvl.player.y = 0
+        elf.speed = 0
+        g.throwNet(); step(g, 0.6)
+        if ((g.screen as string) !== 'riddle') continue
+        const rv = g.riddle!
+        check(g, `riddle (${rv.riddle.family}, ${rv.riddle.prompt.length} lines, ${rv.riddle.choices.length} choices)`)
+        g.selectChoice(rv.riddle.answer, true); g.riddleContinue()
+        if ((g.screen as string) === 'clue') { check(g, 'clue'); g.closeClue() }
+      }
+    }
+    expect(small.slice(0, 5)).toEqual([])
+  })
+})
+
 describe('a long season of climbing', () => {
   it('40 ascents: progress adds up, and nothing grows without a bound', () => {
     const g = new Game(null, { seed: 'season', fast: true })
