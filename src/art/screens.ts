@@ -273,12 +273,22 @@ function riddle(ctx: Ctx, g: Game, clueMode = false): void {
   // The biggest type at which the wrapped prompt still stops short of the first answer button. A
   // four-line prompt at 38px used to run underneath it, and the last line was unreadable.
   const ceiling = Math.min(...rects.map(rc => rc.y)) - 14
+  const SIZES = [46, 42, 38, 34, 30, 28, 26, 24]
+  const fits = (sz: number, rw: string[]): boolean => promptY - sz / 2 + rw.length * sz * 1.3 <= ceiling
   let size = 24
   let rows: string[] = []
-  for (const sz of [46, 42, 38, 34, 30, 28, 26, 24]) {
+  // First choice: the biggest type at which no line the generator wrote has to wrap. Its breaks are
+  // better than the ones wrapping finds ("What temperature / does the / thermometer show?"). Only
+  // down to 34px, though - a 46-character line only stops wrapping at 24, which is far worse.
+  for (const sz of SIZES) {
+    if (sz < 34) break
+    const rw = r.prompt.flatMap(l => wrap(ctx, l, textW, sz))
+    if (rw.length === r.prompt.length && fits(sz, rw)) { size = sz; rows = rw; break }
+  }
+  if (!rows.length) for (const sz of SIZES) {
     size = sz
     rows = r.prompt.flatMap(l => wrap(ctx, l, textW, sz))
-    if (promptY - sz / 2 + rows.length * sz * 1.3 <= ceiling) break
+    if (fits(sz, rows)) break
   }
   let y = promptY
   for (const l of rows) { richText(ctx, l, promptX, y, size, P.ink, r.highlight ?? [], P.redDark); y += size * 1.3 }

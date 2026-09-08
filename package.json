@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "A from-scratch remake of the 1990 educational game Treasure Mountain! for the browser, home screens and Android.",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",

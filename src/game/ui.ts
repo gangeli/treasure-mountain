@@ -33,15 +33,18 @@ export function riddleChoiceRects(r: Riddle): { x: number; y: number; w: number;
     const h = Math.max(150, Math.min(260, bottom - top))
     const x0 = SCROLL.x + 60 + Math.max(0, (avail - (n * w + (n - 1) * gap)) / 2)
     for (let i = 0; i < n; i++) out.push({ x: x0 + i * (w + gap), y: bottom - h, w, h })
-  } else if (r.prompt.length >= 5 && n === 4) {
+  } else if (r.prompt.length >= 5 && n === 4 && !r.visual) {
     // A long prompt (the grade-5 logic puzzles run to six lines) needs the top of the scroll, so
     // four answers go in two columns instead of a stack that would run into the text.
     const w = 400, h = 66, gapX = 20, gapY = 10
     const y0 = SCROLL.y + SCROLL.h - 30 - (2 * h + gapY)
     for (let i = 0; i < n; i++) out.push({ x: SCROLL.x + 60 + (i % 2) * (w + gapX), y: y0 + Math.floor(i / 2) * (h + gapY), w, h })
   } else {
+    // Stacked answers stop short of the prompt picture, which occupies x 690-1130. At the full 820
+    // the first button reached under it: the bar chart lost Monday and Tuesday off its axis, the
+    // balance scale lost the foot of its stand and the thermometer its bulb.
     const long = r.prompt.length >= 5
-    const h = long ? 60 : n === 4 ? 66 : 76, gap = long ? 8 : 10, w = 820
+    const h = long ? 60 : n === 4 ? 66 : 76, gap = long ? 8 : 10, w = r.visual ? 560 : 820
     const y0 = SCROLL.y + SCROLL.h - 30 - n * h - (n - 1) * gap
     for (let i = 0; i < n; i++) out.push({ x: SCROLL.x + 60, y: y0 + i * (h + gap), w, h })
   }
