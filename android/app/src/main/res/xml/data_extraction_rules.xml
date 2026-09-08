@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The game promises that nothing leaves the device, and it holds no permissions at all - not even
+  INTERNET - so the one way progress could have left was Android's own backup, which would have
+  copied the WebView's localStorage to the player's Google account. Both transports are refused.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="root" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="root" />
+    </device-transfer>
+</data-extraction-rules>
