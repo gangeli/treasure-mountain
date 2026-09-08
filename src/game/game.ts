@@ -60,7 +60,7 @@ export class Game {
   time = 0
   installable = false
   isApp = false
-  /** Set by the presenter when the viewport is portrait and the game would be tiny. */
+  /** Called with the whole save whenever progress changes; the presenter writes it to storage. */
   onSave: ((data: SaveData) => void) | null = null
   private rng: Rng
   private fast: boolean
