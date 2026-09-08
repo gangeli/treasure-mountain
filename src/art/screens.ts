@@ -185,12 +185,14 @@ function clubhouse(ctx: Ctx, g: Game): void {
   poster(ctx, 640, 80, g)
   // prize shelf
   text(ctx, prizesLabel(g), 210, 318, { size: 20, align: 'center', color: P.cream, weight: 800 })
+  const prizes = g.profile().prizes.slice(-10)
+  // The prizes go on before the planks, so the board hides whatever hangs below each toy's feet.
+  // Drawn after, a shelf of toys with feet of different depths either floats (placed by the tallest)
+  // or sinks through the board (placed by the shortest); drawn behind, every one of them sits on the
+  // shelf exactly as if it were standing behind its front lip.
+  prizes.forEach((p, i) => drawTreasure(ctx, p, 84 + (i % 5) * 63, (i < 5 ? 400 : 480) - 12, 0.75))
   roundRect(ctx, 50, 400, 320, 16, 4, '#5c3a17', P.ink, 3)
   roundRect(ctx, 50, 480, 320, 16, 4, '#5c3a17', P.ink, 3)
-  const prizes = g.profile().prizes.slice(-10)
-  // Low enough that the prizes rest on the plank: at -28 they all floated a finger's width above
-  // the shelf they are supposed to be standing on.
-  prizes.forEach((p, i) => drawTreasure(ctx, p, 84 + (i % 5) * 63, (i < 5 ? 400 : 480) - 12, 0.75))
   // doorway to the mountain
   roundRect(ctx, 1030, 110, 200, 460, 26, P.woodDark, P.ink, 4)
   ctx.save(); ctx.beginPath(); rr(ctx, 1048, 128, 164, 442, 18); ctx.clip(); ctx.fillStyle = vgrad(ctx, 128, 570, P.skyTop, P.skyBottom); ctx.fillRect(1048, 128, 164, 442); ctx.fillStyle = P.grass; ctx.fillRect(1048, 440, 164, 130); ctx.fillStyle = P.grassDark; ctx.fillRect(1048, 440, 164, 6); drawMountain(ctx, 1160, 440, 0.32, t); ctx.restore()
@@ -472,7 +474,10 @@ function throne(ctx: Ctx, g: Game): void {
   // prize
   // Room for the tall prizes (the kite's tail, the jack-in-the-box's spring): at 300x140 with the
   // picture at 1.4 they ran out through the bottom of the card and across their own name.
-  if (step >= 6) { roundRect(ctx, 730, 106, 320, 180, 20, P.cream, P.ink, 4); text(ctx, 'Your prize:', 890, 136, { size: 24, align: 'center', color: P.inkSoft, weight: 800 }); drawTreasure(ctx, g.prize, 890, 205, 1.2); text(ctx, g.prize, 890, 268, { size: 22, align: 'center', color: P.ink, weight: 900 }) }
+  // Every treasure is drawn inside y -56..33 of its own origin (e2e/artbox.mjs holds that line), so
+  // at 1.2 the tallest of them - the kite's tail, the jack-in-the-box's spring - clears the caption
+  // above and its own name below.
+  if (step >= 6) { roundRect(ctx, 730, 106, 320, 180, 20, P.cream, P.ink, 4); text(ctx, 'Your prize:', 890, 132, { size: 22, align: 'center', color: P.inkSoft, weight: 800 }); drawTreasure(ctx, g.prize, 890, 214, 1.2); text(ctx, g.prize, 890, 270, { size: 22, align: 'center', color: P.ink, weight: 900 }) }
   // captions
   const cap = ['The throne room!', 'Time to fill the treasure chest.', `${treasures.length} treasure${treasures.length === 1 ? '' : 's'} go into the chest!`, 'The Master of Mischief is not happy...', 'The magic of the mountain wakes up!', 'Off he goes!', 'You keep one treasure as a prize.'][step] ?? ''
   if (cap) text(ctx, cap, W / 2, 40, { size: 34, align: 'center', color: P.yellow, weight: 900, outline: P.ink, outlineWidth: 6, font: DISPLAY })

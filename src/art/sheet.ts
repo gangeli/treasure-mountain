@@ -70,7 +70,9 @@ export function drawSheet(ctx: Ctx, name: string, t: number): void {
     }
     case 'sheet-treasures': {
       text(ctx, 'Treasures (prizes)', 20, 24, { size: 22, weight: 900 })
-      TREASURE_NAMES.forEach((n, i) => { const x = 100 + (i % 7) * 170, y = 130 + Math.floor(i / 7) * 160; roundRect(ctx, x - 60, y - 60, 120, 120, 12, P.white, P.inkSoft, 2); drawTreasure(ctx, n, x, y + 10, 1.4); label(n, x, y + 78) })
+      // Plus the medal, which is not in TREASURE_NAMES: it is the consolation prize for reaching
+      // the throne with nothing dug up, so it never hides in a group but does reach the shelf.
+      ;[...TREASURE_NAMES, 'medal'].forEach((n, i) => { const x = 100 + (i % 7) * 170, y = 130 + Math.floor(i / 7) * 160; roundRect(ctx, x - 60, y - 60, 120, 120, 12, P.white, P.inkSoft, 2); drawTreasure(ctx, n, x, y + 8, 1.1); label(n, x, y + 78) })
       break
     }
     case 'sheet-visuals': {

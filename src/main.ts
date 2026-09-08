@@ -5,6 +5,8 @@ import { AudioEngine } from './engine/audio'
 import { loadSave, writeSave } from './engine/storage'
 import { Game } from './game/game'
 import { render } from './art/render'
+import { drawTreasure } from './art/features'
+import { TREASURE_NAMES } from './game/world'
 import { drawSheet } from './art/sheet'
 import type { Grade } from './content/types'
 
@@ -86,6 +88,8 @@ if (testMode) {
     game,
     AudioEngine,
     shots: () => shots,
+    drawTreasure,
+    treasureNames: [...TREASURE_NAMES, 'medal'],
     show(name: string) {
       const g = game
       if (name.startsWith('sheet-')) { loop.stop(); drawSheet(stage.begin(), name, 0.3); return }

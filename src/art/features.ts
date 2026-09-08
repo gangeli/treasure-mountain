@@ -256,15 +256,20 @@ export function drawTreasure(ctx: Ctx, name: string, x: number, y: number, s = 1
     case 'kite': {
       // Sits 10px higher than it used to: with the tail hanging below, the kite's middle was well
       // under the origin, so on the prize card it pushed past the card and over its own name.
-      poly(ctx, [[0, -40], [18, -16], [0, 12], [-18, -16]], P.yellow)
-      line(ctx, 0, -40, 0, 12, P.ink, 1.5); line(ctx, -18, -16, 18, -16, P.ink, 1.5)
-      // A ribbon tail with outlined bows, at the same weight as everything else.
-      ctx.strokeStyle = P.ink; ctx.lineWidth = 2; ctx.lineCap = 'round'
-      ctx.beginPath(); ctx.moveTo(0, 12); ctx.bezierCurveTo(10, 20, -4, 28, 8, 38); ctx.stroke()
-      for (const [bx, by] of [[6, 20], [1, 29], [8, 38]]) {
-        poly(ctx, [[bx - 6, by - 4], [bx, by], [bx - 6, by + 4]], P.red, P.ink, 1.5)
-        poly(ctx, [[bx + 6, by - 4], [bx, by], [bx + 6, by + 4]], P.red, P.ink, 1.5)
+      poly(ctx, [[0, -52], [16, -30], [0, -6], [-16, -30]], P.yellow)
+      line(ctx, 0, -52, 0, -6, P.ink, 1.5); line(ctx, -16, -30, 16, -30, P.ink, 1.5)
+      // A waving ribbon tail. It used to be a thread with three bows tied along it, but the bows sat
+      // closer together than they were wide, so they hid the thread between them and the kite read
+      // as a diamond with three loose bowties falling away from it - and the lowest one hung out of
+      // the bottom of the prize card. A ribbon is one shape and stays inside the card.
+      const tail = (): void => {
+        ctx.beginPath(); ctx.moveTo(0, -6)
+        ctx.bezierCurveTo(11, 2, -9, 9, 1, 16)
+        ctx.bezierCurveTo(9, 21, 0, 25, 3, 30)
       }
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round'
+      tail(); ctx.strokeStyle = P.ink; ctx.lineWidth = 7; ctx.stroke()
+      tail(); ctx.strokeStyle = P.red; ctx.lineWidth = 3.5; ctx.stroke()
       break
     }
     case 'drum': ellipse(ctx, 0, 8, 22, 8, P.red); ctx.fillStyle = P.red; ctx.fillRect(-22, -12, 44, 20); line(ctx, -22, -12, -22, 8, P.ink, 3); line(ctx, 22, -12, 22, 8, P.ink, 3); ellipse(ctx, 0, -12, 22, 8, P.cream); break
@@ -312,7 +317,32 @@ export function drawTreasure(ctx: Ctx, name: string, x: number, y: number, s = 1
     }
     case 'paint set': roundRect(ctx, -26, -14, 52, 30, 4, P.rockLight); [P.red, P.yellow, P.blue, P.green].forEach((c, i) => circle(ctx, -18 + i * 12, 0, 5, c, P.ink, 1.5)); line(ctx, -20, 20, 10, -24, P.ink, 4); line(ctx, -20, 20, 10, -24, P.wood, 2); break
     case 'toy car': roundRect(ctx, -26, -8, 52, 20, 6, P.yellow); roundRect(ctx, -14, -22, 28, 16, 5, P.yellow); ctx.fillStyle = P.cyanPale; ctx.fillRect(-10, -19, 20, 10); circle(ctx, -14, 12, 7, P.ink, P.ink, 0); circle(ctx, 14, 12, 7, P.ink, P.ink, 0); break
-    case 'jack-in-the-box': roundRect(ctx, -20, -4, 40, 30, 3, P.red); roundRect(ctx, -22, -10, 44, 8, 2, P.blue); line(ctx, 0, -4, 0, -30, P.ink, 3); circle(ctx, 0, -38, 12, P.skin); poly(ctx, [[-12, -46], [0, -62], [12, -46]], P.green, P.ink, 2); break
+    case 'jack-in-the-box': {
+      // The straight stick this used to stand on read as a lollipop, and the blank head made the
+      // toy look broken rather than delighted: a jack-in-the-box is a spring and a grinning face.
+      roundRect(ctx, -20, 6, 40, 25, 3, P.red)
+      roundRect(ctx, -22, 0, 44, 8, 2, P.blue)
+      ctx.save(); ctx.strokeStyle = P.ink; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.lineJoin = 'round'
+      ctx.beginPath(); ctx.moveTo(0, 6)
+      for (let i = 0; i < 4; i++) { const y = 6 - i * 6; ctx.lineTo(i % 2 ? -7 : 7, y - 3); ctx.lineTo(0, y - 6) }
+      ctx.stroke(); ctx.restore()
+      circle(ctx, 0, -30, 12, P.skin)
+      circle(ctx, -4, -32, 1.8, P.ink, P.ink, 0); circle(ctx, 4, -32, 1.8, P.ink, P.ink, 0)
+      ctx.strokeStyle = P.ink; ctx.lineWidth = 1.8; ctx.lineCap = 'round'
+      ctx.beginPath(); ctx.arc(0, -28, 5, 0.35, Math.PI - 0.35); ctx.stroke()
+      poly(ctx, [[-12, -38], [0, -51], [12, -38]], P.green, P.ink, 2)
+      circle(ctx, 0, -52, 2.5, P.yellow, P.ink, 1.5)
+      break
+    }
+    // Awarded when a climb reaches the throne with no treasure dug up at all, so it has to read as
+    // a consolation prize and not as one more coin: a ribbon, then the disc.
+    case 'medal':
+      poly(ctx, [[-16, -34], [-4, -34], [2, -8], [-10, -6]], P.red, P.ink, 2)
+      poly(ctx, [[16, -34], [4, -34], [-2, -8], [10, -6]], P.blue, P.ink, 2)
+      circle(ctx, 0, 8, 18, P.gold)
+      circle(ctx, 0, 8, 13, P.goldDark, 'rgba(0,0,0,0)', 0)
+      star(ctx, 0, 8, 10, P.yellow, P.ink, 1.5)
+      break
     default: circle(ctx, 0, 0, 16 + (seed % 5), P.gold); star(ctx, 0, 0, 8, P.yellow, 'rgba(0,0,0,0)', 0)
   }
   ctx.restore()
