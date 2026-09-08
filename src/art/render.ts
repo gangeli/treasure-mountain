@@ -75,6 +75,10 @@ function drawLevel(ctx: Ctx, g: Game): void {
     const hidden = poof ? (poof.t < 1.0 ? Math.min(1, poof.t / 0.3) : Math.max(0, 1 - (poof.t - 1.0) / 0.4)) : 0
     drawGroup(ctx, grp, x, GROUND_Y, t, hidden)
   }
+  // The POOF cloud belongs where the scenery was - behind the player, who is standing in front of
+  // it. Drawn with the other effects, after the player, it swallowed him whole at the exact moment
+  // he was being told what he had found.
+  for (const e of poofs) drawPoof(ctx, sx(e.x), e.y, e.t)
   // Ground coins
   for (const c of lvl.groundCoins) drawGroundCoin(ctx, sx(c.x), GROUND_Y, t + c.x)
   // Elves
@@ -100,13 +104,16 @@ function drawLevel(ctx: Ctx, g: Game): void {
   for (const e of lvl.effects) {
     const x = sx(e.x)
     if (e.kind === 'poof') {
-      drawPoof(ctx, x, e.y, e.t)
+      // (the cloud itself is drawn with the scenery, above)
       // What was behind the scenery pops up in front of the cloud once it has cleared.
-      if (e.t > 0.5) {
+      // The key or treasure rises as the cloud fades, not through it: sharing the cloud, the word
+      // POOF came out with its middle behind whatever was coming up out of the ground.
+      if (e.t > 0.85) {
         const grp = level.groups.find(gp => Math.abs(loopDelta(gp.x, e.x)) < 10)
         const item = grp && (run.searched.includes(grp.id) || (pending && pending.group.id === grp.id)) ? grp : null
-        const rise = Math.min(1, (e.t - 0.5) / 0.4)
-        const y = GROUND_Y - 40 - rise * 90 + Math.sin(e.t * 6) * 4
+        const rise = Math.min(1, (e.t - 0.85) / 0.45)
+        // High enough to clear the Super Solver's cap: at 90 the key came to rest on his head.
+        const y = GROUND_Y - 40 - rise * 140 + Math.sin(e.t * 6) * 4
         if (item && item.hides === 'key') drawKey(ctx, x, y, 1.6, true)
         else if (item && item.hides === 'treasure') drawTreasure(ctx, item.treasure || 'ball', x, y, 1.4)
       }

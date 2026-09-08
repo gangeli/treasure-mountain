@@ -43,13 +43,22 @@ export function drawMountain(ctx: Ctx, x: number, y: number, s: number, t: numbe
   // rock body
   ctx.beginPath(); ctx.moveTo(-300, 0); ctx.quadraticCurveTo(-260, -160, -170, -300); ctx.quadraticCurveTo(-90, -430, -20, -470); ctx.quadraticCurveTo(80, -430, 150, -300); ctx.quadraticCurveTo(250, -150, 300, 0); ctx.closePath()
   fillStroke(ctx, P.rock, P.ink, 4)
-  ctx.save(); ctx.globalAlpha = 0.35; ctx.fillStyle = P.rockDark; ctx.beginPath(); ctx.moveTo(40, -420); ctx.quadraticCurveTo(140, -300, 300, 0); ctx.lineTo(120, 0); ctx.quadraticCurveTo(100, -200, 40, -420); ctx.closePath(); ctx.fill(); ctx.restore()
-  // three green terraces (paths) winding around
+  // The shaded face is the LEFT one: the sun sits in the upper right of every sky it is drawn on,
+  // and shading the sunward side made the light come from nowhere.
+  ctx.save(); ctx.globalAlpha = 0.35; ctx.fillStyle = P.rockDark; ctx.beginPath(); ctx.moveTo(-40, -420); ctx.quadraticCurveTo(-140, -300, -300, 0); ctx.lineTo(-120, 0); ctx.quadraticCurveTo(-100, -200, -40, -420); ctx.closePath(); ctx.fill(); ctx.restore()
+  // Three green terraces winding around, then the path across them, then the trees on top: drawn
+  // last, the path was stroked straight over the trees and across the clubhouse roof.
   const terraces = [[-280, -30, 560, 60], [-200, -170, 400, 50], [-120, -300, 240, 42]]
   terraces.forEach(([tx, ty, tw, th], i) => {
     ctx.beginPath(); ctx.ellipse(tx + tw / 2, ty, tw / 2, th / 2, 0, 0, Math.PI * 2); ctx.closePath(); fillStroke(ctx, i === 2 ? P.greenLight : P.green, P.ink, 3)
     ctx.fillStyle = P.greenDark; ctx.beginPath(); ctx.ellipse(tx + tw / 2, ty + th * 0.2, tw / 2 - 10, th * 0.2, 0, 0, Math.PI); ctx.fill()
-    // tiny trees on each terrace
+  })
+  // winding path
+  ctx.strokeStyle = P.cream; ctx.lineWidth = 8; ctx.lineCap = 'round'
+  ctx.beginPath(); ctx.moveTo(-200, 0); ctx.quadraticCurveTo(-120, -60, 80, -40); ctx.quadraticCurveTo(220, -60, 120, -150); ctx.quadraticCurveTo(0, -200, -150, -170); ctx.quadraticCurveTo(-200, -250, -40, -290); ctx.quadraticCurveTo(70, -300, 30, -340); ctx.stroke()
+  ctx.strokeStyle = P.ink; ctx.lineWidth = 1.5; ctx.setLineDash([6, 8]); ctx.stroke(); ctx.setLineDash([])
+  // tiny trees on each terrace
+  terraces.forEach(([tx, ty, tw], i) => {
     for (let k = 0; k < 4 + (2 - i) * 2; k++) { const px = tx + 30 + (k / (4 + (2 - i) * 2)) * (tw - 60); const ph = 26 - i * 4; poly(ctx, [[px - 10, ty], [px, ty - ph], [px + 10, ty]], P.greenDark, P.ink, 2) }
   })
   // snow cap
@@ -63,10 +72,7 @@ export function drawMountain(ctx: Ctx, x: number, y: number, s: number, t: numbe
   line(ctx, cx, cy - 60, cx, cy - 100, P.ink, 3); poly(ctx, [[cx, cy - 100], [cx + 26, cy - 92], [cx, cy - 84]], P.red, P.ink, 2)
   // clubhouse at the foot
   roundRect(ctx, -250, -20, 70, 40, 4, P.wood, P.ink, 3); poly(ctx, [[-260, -20], [-215, -50], [-170, -20]], P.woodDark, P.ink, 3)
-  // winding path
-  ctx.strokeStyle = P.cream; ctx.lineWidth = 8; ctx.lineCap = 'round'
-  ctx.beginPath(); ctx.moveTo(-200, 0); ctx.quadraticCurveTo(-120, -60, 80, -40); ctx.quadraticCurveTo(220, -60, 120, -150); ctx.quadraticCurveTo(0, -200, -150, -170); ctx.quadraticCurveTo(-200, -250, -40, -290); ctx.quadraticCurveTo(70, -300, 30, -340); ctx.stroke()
-  ctx.strokeStyle = P.ink; ctx.lineWidth = 1.5; ctx.setLineDash([6, 8]); ctx.stroke(); ctx.setLineDash([])
+  roundRect(ctx, -222, -8, 14, 28, 3, P.woodDark, P.ink, 2)
   // an elf peeking
   drawElf(ctx, -150 + Math.sin(t) * 6, -170, 1, 'dance', t, 1, 'scroll')
   ctx.restore()
@@ -182,7 +188,9 @@ function clubhouse(ctx: Ctx, g: Game): void {
   roundRect(ctx, 50, 400, 320, 16, 4, '#5c3a17', P.ink, 3)
   roundRect(ctx, 50, 480, 320, 16, 4, '#5c3a17', P.ink, 3)
   const prizes = g.profile().prizes.slice(-10)
-  prizes.forEach((p, i) => drawTreasure(ctx, p, 84 + (i % 5) * 63, (i < 5 ? 400 : 480) - 28, 0.75))
+  // Low enough that the prizes rest on the plank: at -28 they all floated a finger's width above
+  // the shelf they are supposed to be standing on.
+  prizes.forEach((p, i) => drawTreasure(ctx, p, 84 + (i % 5) * 63, (i < 5 ? 400 : 480) - 12, 0.75))
   // doorway to the mountain
   roundRect(ctx, 1030, 110, 200, 460, 26, P.woodDark, P.ink, 4)
   ctx.save(); ctx.beginPath(); rr(ctx, 1048, 128, 164, 442, 18); ctx.clip(); ctx.fillStyle = vgrad(ctx, 128, 570, P.skyTop, P.skyBottom); ctx.fillRect(1048, 128, 164, 442); ctx.fillStyle = P.grass; ctx.fillRect(1048, 440, 164, 130); ctx.fillStyle = P.grassDark; ctx.fillRect(1048, 440, 164, 6); drawMountain(ctx, 1160, 440, 0.32, t); ctx.restore()
@@ -305,8 +313,9 @@ function riddle(ctx: Ctx, g: Game, clueMode = false): void {
       // Inside the card for pictures and for the two-column layout, where a badge to the left of
       // the second column would sit on the first column's button.
       const inside = !!c.visual || rc.w <= 500
-      const bx = inside ? rc.x + 22 : rc.x - 24, by = c.visual ? rc.y + 22 : inside ? rc.y + rc.h / 2 : rc.y + rc.h / 2
-      circle(ctx, bx, by, 14, P.scrollEdge, P.ink, 2)
+      // -17, not -24: at -24 the badge for a full-width answer sat on the scroll's left roller.
+      const bx = inside ? rc.x + 22 : rc.x - 17, by = c.visual ? rc.y + 22 : rc.y + rc.h / 2
+      circle(ctx, bx, by, inside ? 14 : 13, P.scrollEdge, P.ink, 2)
       text(ctx, String(i + 1), bx, by + 1, { size: 18, align: 'center', color: P.white, weight: 900 })
     }
   })

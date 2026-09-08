@@ -597,7 +597,9 @@ export class Game {
 
   private updateLevel(dt: number): void {
     const lvl = this.lvl!, run = this.run!, p = lvl.player
-    lvl.effects = lvl.effects.filter(e => (e.t += dt) < (e.kind === 'text' ? 1.2 : e.kind === 'poof' ? 1.4 : 1.0))
+    // A POOF lives 2.2s: the cloud puffs and fades over the first 1.4, then what was hidden rises
+    // out of the empty air and is held on screen on its own for the rest.
+    lvl.effects = lvl.effects.filter(e => (e.t += dt) < (e.kind === 'text' ? 1.2 : e.kind === 'poof' ? 2.2 : 1.0))
     if (lvl.message && (lvl.message.t -= dt) <= 0) lvl.message = null
     const pr = (lvl as any).pendingReveal as { group: Group; t: number } | undefined
     if (pr && (pr.t -= dt) <= 0) { (lvl as any).pendingReveal = undefined; this.revealGroup(pr.group) }
@@ -783,7 +785,9 @@ export class Game {
       xs.forEach((x, i) => ladders.push({ floor: f, x, trick: i === trickIndex }))
     }
     const holes: CastleState['holes'] = []
-    if (stars >= 4) for (let f = 1; f < CASTLE_FLOORS; f++) holes.push({ floor: f, x: rng.pick([350, 640, 930]), t: rng.float(0, 2), active: false })
+    // Never 640: the Master's portraits hang at 160, 640 and 1120, and a hole there was drawn as a
+    // black disc on top of a gold picture frame.
+    if (stars >= 4) for (let f = 1; f < CASTLE_FLOORS; f++) holes.push({ floor: f, x: rng.pick([350, 450, 830, 930]), t: rng.float(0, 2), active: false })
     this.castle = { floor: 0, x: 100, y: 0, onLadder: null, ladders, holes, state: 'walk', t: 0, facing: 1, targetX: null, falls: 0 }
     this.goto('castle')
     this.showMessage([], 0)

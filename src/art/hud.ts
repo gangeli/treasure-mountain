@@ -24,7 +24,9 @@ export function drawHud(ctx: Ctx, g: Game, buttons: Button[]): void {
     const w = run?.clues[s]
     roundRect(ctx, 80, y - 14, 322, 28, 8, w ? P.panelDeep : P.panelDeep, w ? P.gold : P.panelLine, w ? 2.5 : 2)
     if (w) text(ctx, w, 96, y, { size: 24, color: P.gold, weight: 800 })
-    else { ctx.save(); ctx.globalAlpha = 0.5; text(ctx, ['number', 'what it looks like', 'what it is'][i], 96, y, { size: 16, color: P.bluePale, weight: 600 }); ctx.restore() }
+    // 0.7, not 0.5: the "what it looks like" hints are meant to read as not-yet-won, but at half
+    // alpha they were 3.3:1 on the slot and a child could not read what they were waiting for.
+    else { ctx.save(); ctx.globalAlpha = 0.7; text(ctx, ['number', 'what it looks like', 'what it is'][i], 96, y, { size: 16, color: P.bluePale, weight: 600 }); ctx.restore() }
   })
   // Middle: prompt box (buttons drawn by drawButtons)
   roundRect(ctx, 440, BOX_Y, 400, BOX_H, 10, P.panel, P.panelLine, 3)
@@ -49,11 +51,13 @@ export function drawHud(ctx: Ctx, g: Game, buttons: Button[]): void {
   const msg = g.lvl?.message
   if (msg && msg.text.length && g.screen === 'level' && g.lvl) {
     const L = 7680; let d = g.lvl.player.x - g.lvl.camX; d = ((d % L) + L) % L; if (d > L - 400) d -= L
-    // While a POOF is lifting a key or a treasure out of the scenery, the bubble gets out of the
+    // While a POOF is lifting a key or a treasure out of the scenery, the bubble eases out of the
     // way: at its usual height it cut the top off the tall prizes - the jack-in-the-box came up as
     // a plain red box with its jack behind the message naming it.
-    const reveal = g.lvl.effects.some(e => e.kind === 'poof' && e.t > 0.35)
-    drawBubble(ctx, msg.text, Math.max(200, Math.min(W - 200, d)), (reveal ? 148 : 300) - g.lvl.player.y, 'down')
+    const poof = g.lvl.effects.find(e => e.kind === 'poof')
+    const clamp01 = (v: number): number => Math.max(0, Math.min(1, v))
+    const lift = poof ? clamp01((poof.t - 0.2) / 0.35) * clamp01((2.2 - poof.t) / 0.35) : 0
+    drawBubble(ctx, msg.text, Math.max(200, Math.min(W - 200, d)), 300 - lift * 152 - g.lvl.player.y, 'down')
   }
 }
 
@@ -100,6 +104,9 @@ export function drawButtons(ctx: Ctx, buttons: Button[], g: Game): void {
     const fill = big ? P.green : b.toggled === false ? P.rockDark : onSky ? P.cream : P.blue
     const edge = big ? P.greenDark : b.toggled === false ? P.inkSoft : onSky ? '#d8c48c' : P.blueDark
     const label = big ? P.white : b.toggled === false ? P.white : onSky ? P.ink : P.white
+    // A soft drop shadow under the big call-to-action buttons: PLAY, "Let's go!" and Continue sit
+    // on the grass band on their screens, and green-on-green left only the outline to find.
+    if (big) { ctx.save(); ctx.fillStyle = 'rgba(10,20,40,0.28)'; rr(ctx, b.x - 7, b.y + 2, b.w + 14, b.h + 10, 20); ctx.fill(); ctx.restore() }
     roundRect(ctx, b.x, b.y + 4, b.w, b.h, 14, edge, P.ink, 3)
     roundRect(ctx, b.x, b.y, b.w, b.h - 4, 14, fill, P.ink, 3)
     // Gloss only over the top third, above the cap height, and faded so it cannot cut the text.
@@ -132,7 +139,9 @@ export function drawButtons(ctx: Ctx, buttons: Button[], g: Game): void {
     else if (b.id === 'back') { poly(ctx, [[b.x + 34, cy - 11], [b.x + 34, cy + 11], [b.x + 19, cy]], label, P.ink, 2); text(ctx, b.label, b.x + 46, cy, { size: 24, color: label, weight: 800 }) }
     else if (b.icon && b.label) { text(ctx, b.icon, b.x + 30, cy, { size: 28, color: label, weight: 800, align: 'center' }); text(ctx, b.label, b.x + 56, cy, { size: big ? 30 : 22, color: label, weight: 800 }) }
     else if (b.icon) { text(ctx, b.icon, cx, cy, { size: 30, color: label, weight: 800, align: 'center' }); if (b.toggled === false) line(ctx, cx - 14, cy + 14, cx + 14, cy - 14, P.red, 4) }
-    else text(ctx, b.label, cx, cy, { size: big ? 36 : 24, color: label, weight: 900, align: 'center', font: big ? '"Fredoka","Nunito","Trebuchet MS",sans-serif' : undefined, spacing: big ? 2 : 0 })
+    // The big buttons carry a navy outline on their label: white on the bright green face is only
+    // 2.7:1, and PLAY / "Let's go!" / Continue all sit on the grass band on their screens.
+    else text(ctx, b.label, cx, cy, { size: big ? 36 : 24, color: label, weight: 900, align: 'center', font: big ? '"Fredoka","Nunito","Trebuchet MS",sans-serif' : undefined, spacing: big ? 2 : 0, outline: big ? P.ink : undefined, outlineWidth: big ? 5 : 0 })
     ctx.restore()
   }
   void g

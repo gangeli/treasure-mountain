@@ -243,9 +243,13 @@ function numberline(ctx: Ctx, from: number, to: number, mark: number | undefined
 function angle(ctx: Ctx, deg: number, x: number, y: number, w: number, h: number): void {
   const cx = x + w * 0.35, cy = y + h * 0.75, len = Math.min(w * 0.55, h * 0.7)
   const a = -deg * Math.PI / 180
+  // The wedge goes down first, in white: as a half-transparent cyan it was the same value as the
+  // cyan card behind it, and drawn last it painted over both rays for their whole length near the
+  // vertex.
+  ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, len * 0.32, a, 0); ctx.closePath()
+  ctx.fillStyle = 'rgba(255,255,255,0.75)'; ctx.fill(); ctx.strokeStyle = P.cyanDark; ctx.lineWidth = 3; ctx.stroke()
   line(ctx, cx, cy, cx + len, cy, P.ink, 5)
   line(ctx, cx, cy, cx + Math.cos(a) * len, cy + Math.sin(a) * len, P.ink, 5)
-  ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, len * 0.35, a, 0); ctx.closePath(); ctx.fillStyle = 'rgba(57,214,232,0.5)'; ctx.fill(); ctx.strokeStyle = P.cyanDark; ctx.lineWidth = 3; ctx.stroke()
   if (Math.abs(deg - 90) < 0.5) { ctx.strokeStyle = P.ink; ctx.lineWidth = 3; ctx.strokeRect(cx, cy - 22, 22, 22) }
 }
 
@@ -295,7 +299,15 @@ function scale(ctx: Ctx, left: string, right: string, heavier: 'left' | 'right' 
   line(ctx, cx, base - 30, cx, base - 90, P.ink, 8)
   ctx.save(); ctx.translate(cx, base - 90); ctx.rotate(tilt)
   line(ctx, -w * 0.38, 0, w * 0.38, 0, P.ink, 8); line(ctx, -w * 0.38, 0, w * 0.38, 0, P.gold, 4)
-  for (const s of [-1, 1]) { const px = s * w * 0.36; line(ctx, px, 0, px - 22, 40, P.ink, 2); line(ctx, px, 0, px + 22, 40, P.ink, 2); ctx.beginPath(); ctx.moveTo(px - 30, 40); ctx.quadraticCurveTo(px, 70, px + 30, 40); ctx.closePath(); fillStroke(ctx, P.gold, P.ink, 3) }
+  // The pans hang level whatever the beam does: rotated with the beam they looked welded to it,
+  // and a tilted pan spills whatever it is weighing.
+  for (const s of [-1, 1]) {
+    const px = s * w * 0.36
+    ctx.save(); ctx.translate(px, 0); ctx.rotate(-tilt)
+    line(ctx, 0, 0, -22, 40, P.ink, 2); line(ctx, 0, 0, 22, 40, P.ink, 2)
+    ctx.beginPath(); ctx.moveTo(-30, 40); ctx.quadraticCurveTo(0, 70, 30, 40); ctx.closePath(); fillStroke(ctx, P.gold, P.ink, 3)
+    ctx.restore()
+  }
   ctx.restore()
   // Labels are drawn upright under each pan, not inside the tilted beam, where a long word ran off
   // the pan at an angle and read as decoration rather than as the object being weighed.

@@ -214,7 +214,9 @@ export function drawPoof(ctx: Ctx, x: number, y: number, t: number): void {
   ctx.fillStyle = P.cyanPale; ctx.strokeStyle = P.cyanDark; ctx.lineWidth = 3
   scallop(ctx, x, y, r * 1.05, r * 0.75, 9, t * 0.5)
   ctx.fill(); ctx.stroke()
-  text(ctx, 'POOF', x, y, { size: 34 + k * 10, align: 'center', color: P.magenta, weight: 900, outline: P.white, outlineWidth: 6, font: '"Fredoka","Nunito","Trebuchet MS",sans-serif' })
+  // High in the cloud, above the Super Solver's cap: he stands in front of the cloud, and centred
+  // the word lost its middle behind his head.
+  text(ctx, 'POOF', x, y - r * 0.42, { size: 34 + k * 10, align: 'center', color: P.magenta, weight: 900, outline: P.white, outlineWidth: 6, font: '"Fredoka","Nunito","Trebuchet MS",sans-serif' })
   ctx.restore()
 }
 

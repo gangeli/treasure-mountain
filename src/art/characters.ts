@@ -206,7 +206,13 @@ export function drawMaster(ctx: Ctx, x: number, y: number, t: number, mood: 'smu
   // robe
   ctx.beginPath(); ctx.moveTo(-48, 0); ctx.quadraticCurveTo(-56, -60, -30, -90); ctx.lineTo(30, -90); ctx.quadraticCurveTo(56, -60, 48, 0); ctx.closePath(); fillStroke(ctx, P.purple)
   ctx.fillStyle = P.purpleDark; ctx.fillRect(-40, -20, 80, 8)
-  // hands
+  // sleeves and hands. Without the sleeves the two skin circles were stuck on the outside of the
+  // robe, attached to nothing, and the Master appeared to have no arms.
+  for (const s of [-1, 1]) {
+    ctx.beginPath(); ctx.moveTo(s * 24, -84); ctx.lineTo(s * 45, -47); ctx.lineCap = 'round'
+    ctx.lineWidth = 24; ctx.strokeStyle = P.ink; ctx.stroke()
+    ctx.lineWidth = 18; ctx.strokeStyle = P.purple; ctx.stroke()
+  }
   circle(ctx, -46, -40, 9, P.skin, P.ink, 2.5); circle(ctx, 46, -40, 9, P.skin, P.ink, 2.5)
   // head
   const hy = -125
@@ -224,12 +230,15 @@ export function drawMaster(ctx: Ctx, x: number, y: number, t: number, mood: 'smu
   // brows and eyes
   const angry = mood !== 'smug'
   for (const s of [-1, 1]) {
-    ctx.beginPath(); ctx.moveTo(s * 8, hy - 16); ctx.lineTo(s * 24, hy - (angry ? 8 : 20)); ctx.lineWidth = 4; ctx.strokeStyle = P.ink; ctx.lineCap = 'round'; ctx.stroke()
+    // Brows were the wrong way round: 'smug' wore the steep angry V and 'angry' the worried arch.
+    // Smug is a calm, faintly arched brow; angry drives the inner ends down at the nose.
+    ctx.beginPath(); ctx.moveTo(s * 8, hy - (angry ? 10 : 18)); ctx.lineTo(s * 24, hy - (angry ? 24 : 20)); ctx.lineWidth = 4; ctx.strokeStyle = P.ink; ctx.lineCap = 'round'; ctx.stroke()
     circle(ctx, s * 16, hy - 4, 8, P.white, P.ink, 2.5)
     circle(ctx, s * 16 + (mood === 'blown' ? 0 : s * 2), hy - 3, 3.5, P.ink, P.ink, 0)
   }
-  // nose
-  circle(ctx, 0, hy + 10, 11, P.red, P.ink, 2.5)
+  // A big flesh nose, not a red ball: with the orange frizz and the crown the red one made him a
+  // circus clown rather than a villain.
+  circle(ctx, 0, hy + 10, 11, '#e8a578', P.ink, 2.5)
   // mouth / mustache
   ctx.strokeStyle = P.ink; ctx.lineWidth = 3
   if (mood === 'smug') { ctx.beginPath(); ctx.arc(0, hy + 18, 16, 0.3, Math.PI - 0.3); ctx.stroke() }
