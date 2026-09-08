@@ -18,6 +18,10 @@ const DROP_TIME = 0.6
 export const START_COINS = 5
 export const START_NETS = 10
 export const NETS_PER_PURCHASE = 5
+/** Rank at which each hazard appears, following the original's rank-up announcements. */
+export const DUST_STAR = 2          // "Look out for elf dust!"
+export const GAP_STAR = 4           // "Watch out for gaps in the path!"
+export const TRICK_LADDER_STAR = 3  // the castle's ladder maze grows with rank
 export const CASTLE_FLOORS = 4
 export const CASTLE_FLOOR_H = 118
 export const CASTLE_FLOOR_Y = (floor: number): number => PLAY_H - 40 - floor * CASTLE_FLOOR_H
@@ -171,7 +175,7 @@ export class Game {
     const n = 7 + Math.floor(stars / 2)
     lvl.elves = []
     for (let i = 0; i < n; i++) {
-      const kind: Elf['kind'] = i < 3 ? 'scroll' : (stars >= 2 && i === 3) ? 'dust' : (stars >= 4 && i === 4) ? 'dust' : i === n - 1 ? 'balloon' : 'plain'
+      const kind: Elf['kind'] = i < 3 ? 'scroll' : (stars >= DUST_STAR && i === 3) ? 'dust' : (stars >= DUST_STAR + 2 && i === 4) ? 'dust' : i === n - 1 ? 'balloon' : 'plain'
       lvl.elves.push(this.makeElf(i, kind, wrapX(lvl.player.x + 500 + (i * LOOP_W) / n)))
     }
   }
@@ -675,9 +679,9 @@ export class Game {
         if (use) { (p as any).useAt = null; const f = lvl.level.features.find(f => f.type === use && loopDist(f.x, p.x) < f.width / 2 + 40); if (f && p.y === 0) this.useFeature(f) }
       } else move = Math.sign(d)
     }
-    // Bridge gap (level 2, stars >= 3): stop auto-walk at the edge; walking in makes you fall.
+    // Gap in the path (level 2). The original warns about gaps at 4 stars: "Watch out for gaps in the path!"
     const bridge = lvl.level.features.find(f => f.type === 'bridge')
-    const gapActive = !!bridge && this.stars() >= 3
+    const gapActive = !!bridge && this.stars() >= GAP_STAR
     if (move !== 0) {
       const nx = wrapX(p.x + move * WALK_SPEED * dt)
       if (gapActive && bridge && p.y === 0 && p.targetX != null && loopDist(nx, bridge.x) < 95 && loopDist(p.x, bridge.x) >= 95) {
@@ -773,9 +777,9 @@ export class Game {
     const rng = this.rng
     const ladders: CastleState['ladders'] = []
     for (let f = 0; f < CASTLE_FLOORS - 1; f++) {
-      const n = 2 + (stars >= 3 ? 1 : 0)
+      const n = 2 + (stars >= TRICK_LADDER_STAR ? 1 : 0)
       const xs = rng.shuffle([220, 500, 780, 1060]).slice(0, n)
-      const trickIndex = stars >= 3 ? rng.int(0, n - 1) : -1
+      const trickIndex = stars >= TRICK_LADDER_STAR ? rng.int(0, n - 1) : -1
       xs.forEach((x, i) => ladders.push({ floor: f, x, trick: i === trickIndex }))
     }
     const holes: CastleState['holes'] = []

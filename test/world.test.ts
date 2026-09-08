@@ -44,6 +44,7 @@ describe('level generation', () => {
   })
   it('stars and thresholds', () => {
     expect(starsForTotal(0)).toBe(0); expect(starsForTotal(5)).toBe(1); expect(starsForTotal(24)).toBe(1); expect(starsForTotal(300)).toBe(7)
-    expect(treasuresForStars(0)).toBe(2); expect(treasuresForStars(4)).toBe(6); expect(treasuresForStars(7)).toBe(6)
+    // The original announces the count at every rank-up: 2,2,3,3,4,4 for Trainee..5 stars.
+    expect([0, 1, 2, 3, 4, 5, 6, 7].map(treasuresForStars)).toEqual([2, 2, 3, 3, 4, 4, 5, 5])
   })
 })

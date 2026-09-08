@@ -173,7 +173,7 @@ describe('game flow', () => {
     g.play(); g.chooseGrade(4)
     g.profile().total = 298
     playAscent(g)
-    expect(g.profile().total).toBe(298 + 18) // six treasures per level at seven stars
+    expect(g.profile().total).toBe(298 + 15) // five treasures per level at seven stars
     expect(g.profile().crown).toBe(true)
     expect(g.screen).toBe('crown')
     expect(STAR_THRESHOLDS.length).toBe(7)

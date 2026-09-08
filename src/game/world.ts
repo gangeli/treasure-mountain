@@ -20,6 +20,9 @@ export const KINDS: KindDef[] = [
   { kind: 'log', plural: 'logs', descriptors: ['short', 'long'], levels: [1], width: 120 },
   { kind: 'stump', plural: 'stumps', descriptors: ['small', 'big'], levels: [1, 3], width: 70 },
   { kind: 'fern', plural: 'ferns', descriptors: ['small', 'big'], levels: [1], width: 80 },
+  { kind: 'pinecone', plural: 'pinecones', descriptors: ['small', 'big'], levels: [1, 3], width: 45 },
+  { kind: 'acorn', plural: 'acorns', descriptors: ['small', 'big'], levels: [1], width: 42 },
+  { kind: 'berry bush', plural: 'berry bushes', descriptors: ['red', 'blue', 'purple'], levels: [1, 2], width: 90 },
   { kind: 'boulder', plural: 'boulders', descriptors: ['round', 'pointy', 'flat', 'cracked'], levels: [2], width: 120 },
   { kind: 'lantern', plural: 'lanterns', descriptors: ['red', 'yellow', 'green', 'blue'], levels: [2], width: 50 },
   { kind: 'sign', plural: 'signs', descriptors: ['round', 'square', 'striped'], levels: [2], width: 70 },
@@ -33,6 +36,8 @@ export const KINDS: KindDef[] = [
   { kind: 'icicle', plural: 'icicles', descriptors: ['long', 'short', 'thick'], levels: [3], width: 50 },
   { kind: 'gem', plural: 'gems', descriptors: ['red', 'blue', 'green', 'purple'], levels: [3], width: 60 },
   { kind: 'flag', plural: 'flags', descriptors: ['red', 'blue', 'yellow', 'green'], levels: [3], width: 50 },
+  { kind: 'sled', plural: 'sleds', descriptors: ['red', 'blue', 'yellow'], levels: [3], width: 90 },
+  { kind: 'snowball', plural: 'snowballs', descriptors: ['small', 'big'], levels: [3], width: 50 },
 ]
 
 export const NUMBER_WORDS = ['', 'one', 'two', 'three', 'four']
@@ -70,7 +75,7 @@ export const TREASURE_NAMES = ['lamp', 'balloon', 'boxcar', 'teddy bear', 'kite'
 const kindsFor = (level: LevelNo, grade: Grade): KindDef[] => {
   const base = KINDS.filter(k => k.levels.includes(level))
   // Youngest players get the most concrete kinds.
-  if (grade <= 1) return base.filter(k => ['tree', 'bush', 'rock', 'flower', 'mushroom', 'boulder', 'lantern', 'nest', 'fence', 'pine', 'shovel', 'snowman', 'gem', 'flag', 'log', 'stump', 'sign', 'cart', 'crystal', 'icicle', 'fern'].includes(k.kind))
+  if (grade <= 1) return base.filter(k => ['tree', 'bush', 'rock', 'flower', 'mushroom', 'boulder', 'lantern', 'nest', 'fence', 'pine', 'shovel', 'snowman', 'gem', 'flag', 'log', 'stump', 'sign', 'cart', 'crystal', 'icicle', 'fern', 'pinecone', 'acorn', 'sled', 'snowball'].includes(k.kind))
   return base
 }
 
@@ -228,7 +233,13 @@ export const groupLabel = (g: { count: number; descriptor: string; kind: string 
   return `${NUMBER_WORDS[g.count]} ${g.descriptor} ${g.count === 1 ? kd.kind : kd.plural}`
 }
 
-export const treasuresForStars = (stars: number): number => Math.min(6, 2 + stars)
+/**
+ * Treasures hidden per level, by rank. The original announces this at every rank-up ("As a 2-star
+ * Super Solver, you can find 3 treasures on each level of the mountain"), giving 2,2,3,3,4,4 for
+ * Trainee through 5 stars; 6 stars and Champion continue the pattern at 5.
+ */
+const TREASURES_BY_STAR = [2, 2, 3, 3, 4, 4, 5, 5]
+export const treasuresForStars = (stars: number): number => TREASURES_BY_STAR[Math.max(0, Math.min(7, stars))]
 export const STAR_THRESHOLDS = [5, 25, 70, 115, 170, 230, 300]
 export const RANK_NAMES = ['Trainee', 'Explorer', 'Pathfinder', 'Ranger', 'Trailblazer', 'Summiteer', 'Mountain Master', 'Champion']
 export const starsForTotal = (total: number): number => STAR_THRESHOLDS.filter(t => total >= t).length

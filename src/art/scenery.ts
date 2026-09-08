@@ -59,6 +59,11 @@ export function drawKind(ctx: Ctx, kind: string, desc: string, x: number, y: num
     case 'icicle': return icicle(ctx, x, y, desc === 'thick' ? 1.9 : 1, desc === 'long' ? 1.4 : desc === 'short' ? 0.7 : 1, P.ice)
     case 'gem': return gem(ctx, x, y, 1, colorFor(desc, P.red), r)
     case 'flag': return flag(ctx, x, y, 1, colorFor(desc, P.red), t)
+    case 'pinecone': return pinecone(ctx, x, y, s)
+    case 'acorn': return acorn(ctx, x, y, s)
+    case 'berry bush': return berryBush(ctx, x, y, colorFor(desc, P.red), r)
+    case 'sled': return sled(ctx, x, y, colorFor(desc, P.red))
+    case 'snowball': return snowball(ctx, x, y, s)
   }
 }
 
@@ -309,4 +314,89 @@ function flag(ctx: Ctx, x: number, y: number, tall: number, color: string, t: nu
   ctx.beginPath(); ctx.moveTo(x, y - h + 4); ctx.quadraticCurveTo(x + w * 0.5, y - h + 4 + wave, x + w, y - h + 2); ctx.lineTo(x + w - 6, y - h + fh / 2); ctx.lineTo(x + w, y - h + fh); ctx.quadraticCurveTo(x + w * 0.5, y - h + fh - wave, x, y - h + fh + 2); ctx.closePath()
   fillStroke(ctx, color, P.ink, 2.5)
   star(ctx, x + 18, y - h + 16, 7, P.white, 'rgba(0,0,0,0)', 0)
+}
+
+// ------------------------------------------------------------------ forest floor and snow toys
+function pinecone(ctx: Ctx, x: number, y: number, s: number): void {
+  const h = 52 * s, w = 20 * s
+  shadowBlob(ctx, x, y, w)
+  // A teardrop body, then rows of scales clipped inside it so the silhouette stays a pinecone.
+  ctx.save()
+  ctx.beginPath()
+  ctx.moveTo(x, y - h)
+  ctx.bezierCurveTo(x + w, y - h * 0.62, x + w, y - h * 0.16, x, y)
+  ctx.bezierCurveTo(x - w, y - h * 0.16, x - w, y - h * 0.62, x, y - h)
+  ctx.closePath()
+  ctx.fillStyle = P.brown; ctx.fill()
+  ctx.save(); ctx.clip()
+  ctx.strokeStyle = P.brownDark; ctx.lineWidth = 2
+  for (let row = 0; row < 6; row++) {
+    const ry = y - 3 - row * (h / 6)
+    const n = 3
+    for (let i = 0; i < n; i++) {
+      const px = x + (i - 1) * w * 0.62 + (row % 2 ? w * 0.31 : 0)
+      ctx.beginPath(); ctx.arc(px, ry, w * 0.42, Math.PI, 0); ctx.closePath()
+      ctx.fillStyle = row % 2 ? P.brownLight : P.brown; ctx.fill(); ctx.stroke()
+    }
+  }
+  ctx.restore()
+  // Re-trace the body for the outline: after the clip block the current path is the last scale.
+  ctx.beginPath()
+  ctx.moveTo(x, y - h)
+  ctx.bezierCurveTo(x + w, y - h * 0.62, x + w, y - h * 0.16, x, y)
+  ctx.bezierCurveTo(x - w, y - h * 0.16, x - w, y - h * 0.62, x, y - h)
+  ctx.closePath()
+  ctx.lineWidth = 2.5; ctx.strokeStyle = P.ink; ctx.stroke()
+  ctx.restore()
+  line(ctx, x, y - h + 2, x, y - h - 7 * s, P.brownDark, 3)
+}
+
+function acorn(ctx: Ctx, x: number, y: number, s: number): void {
+  const r = 16 * s
+  shadowBlob(ctx, x, y, r)
+  ctx.beginPath(); ctx.moveTo(x - r, y - r * 0.9); ctx.quadraticCurveTo(x - r * 0.9, y, x, y); ctx.quadraticCurveTo(x + r * 0.9, y, x + r, y - r * 0.9); ctx.closePath()
+  fillStroke(ctx, P.brownLight, P.ink, 2.5)
+  ctx.beginPath(); ctx.arc(x, y - r * 0.9, r, Math.PI, 0); ctx.closePath(); fillStroke(ctx, P.brown, P.ink, 2.5)
+  ctx.strokeStyle = P.brownDark; ctx.lineWidth = 1.5
+  for (let i = -2; i <= 2; i++) { ctx.beginPath(); ctx.moveTo(x + i * r * 0.4, y - r * 0.9); ctx.lineTo(x + i * r * 0.4, y - r * 1.5); ctx.stroke() }
+  line(ctx, x, y - r * 1.75, x, y - r * 2.2, P.brownDark, 3)
+}
+
+function berryBush(ctx: Ctx, x: number, y: number, color: string, r: number): void {
+  const w = 84, h = 56
+  shadowBlob(ctx, x, y, w / 2)
+  ctx.beginPath(); ctx.moveTo(x - w / 2, y); ctx.quadraticCurveTo(x - w / 2, y - h, x, y - h); ctx.quadraticCurveTo(x + w / 2, y - h, x + w / 2, y); ctx.closePath()
+  fillStroke(ctx, P.greenDark)
+  ctx.save(); ctx.globalAlpha = 0.35; ctx.fillStyle = P.greenLight
+  ctx.beginPath(); ctx.ellipse(x - w * 0.16, y - h * 0.6, w * 0.2, h * 0.2, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore()
+  for (let i = 0; i < 7; i++) {
+    const a = (i / 7) * Math.PI * 2 + r * 6
+    const bx = x + Math.cos(a) * w * 0.3, by = y - h * 0.55 + Math.sin(a) * h * 0.3
+    circle(ctx, bx, by, 6, color, P.ink, 2)
+    circle(ctx, bx - 2, by - 2, 1.8, 'rgba(255,255,255,0.55)', 'rgba(0,0,0,0)', 0)
+  }
+}
+
+function sled(ctx: Ctx, x: number, y: number, color: string): void {
+  const w = 84, h = 30
+  shadowBlob(ctx, x, y, w / 2)
+  // runners, curling up at the front
+  ctx.strokeStyle = P.ink; ctx.lineWidth = 6; ctx.lineCap = 'round'
+  ctx.beginPath(); ctx.moveTo(x - w / 2, y - 4); ctx.lineTo(x + w * 0.34, y - 4); ctx.quadraticCurveTo(x + w / 2, y - 4, x + w * 0.48, y - h * 0.8); ctx.stroke()
+  ctx.strokeStyle = P.rockLight; ctx.lineWidth = 3; ctx.stroke()
+  roundRect(ctx, x - w / 2 + 4, y - h, w - 20, h - 10, 4, color)
+  ctx.strokeStyle = P.ink; ctx.lineWidth = 1.5
+  for (let i = 1; i < 4; i++) { const px = x - w / 2 + 4 + i * (w - 20) / 4; ctx.beginPath(); ctx.moveTo(px, y - h + 3); ctx.lineTo(px, y - 13); ctx.stroke() }
+  ctx.strokeStyle = P.brownDark; ctx.lineWidth = 2.5
+  ctx.beginPath(); ctx.moveTo(x + w * 0.46, y - h * 0.7); ctx.quadraticCurveTo(x + w * 0.7, y - h * 0.4, x + w * 0.62, y - 4); ctx.stroke()
+}
+
+function snowball(ctx: Ctx, x: number, y: number, s: number): void {
+  const r = 22 * s
+  shadowBlob(ctx, x, y, r)
+  circle(ctx, x, y - r * 0.85, r, P.snow, P.ink, 2.5)
+  ctx.save(); ctx.globalAlpha = 0.5; circle(ctx, x - r * 0.3, y - r * 1.2, r * 0.3, '#ffffff', 'rgba(0,0,0,0)', 0); ctx.restore()
+  ctx.save(); ctx.globalAlpha = 0.35; ctx.fillStyle = P.snowShade
+  ctx.beginPath(); ctx.ellipse(x + r * 0.25, y - r * 0.5, r * 0.45, r * 0.28, 0.3, 0, Math.PI * 2); ctx.fill(); ctx.restore()
+  ctx.fillStyle = P.snow; ctx.beginPath(); ctx.ellipse(x, y, r * 1.1, 5, 0, 0, Math.PI * 2); ctx.fill()
 }

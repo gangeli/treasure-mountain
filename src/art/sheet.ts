@@ -33,7 +33,7 @@ export function drawSheet(ctx: Ctx, name: string, t: number): void {
       ctx.fillStyle = th.ground; ctx.fillRect(0, 0, W, H)
       text(ctx, `Scenery, level ${no}: every kind x descriptor`, 20, 24, { size: 22, weight: 900, color: P.white, outline: P.ink, outlineWidth: 4 })
       const kinds = KINDS.filter(k => k.levels.includes(no))
-      let x = 60, y = 150
+      let x = 60, y = 215
       for (const k of kinds) {
         for (const d of k.descriptors) {
           const w = Math.max(84, k.width * 0.95)
