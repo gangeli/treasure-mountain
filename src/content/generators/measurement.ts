@@ -188,7 +188,20 @@ export const measurement: Generator = {
         const e = rng.pick(ESTIMATES)
         const txt = (v: number, u: string) => `${v} ${v === 1 && (u === 'inches' || u === 'feet') ? singular(u) : u}`
         const other = OTHER_UNIT[e.unit]
-        const decoys = rng.shuffle([txt(e.v * 10, e.unit), txt(e.v, other), txt(Math.max(1, Math.round(e.v / 10)), e.unit), txt(e.v * 100, e.unit)].filter(t => t !== txt(e.v, e.unit)))
+        // Two decoys must never be the same length in different words: "2500 cm" and "25 m" are one
+        // wrong answer written twice, and it costs the question a choice.
+        const FACTOR: Record<string, number> = { cm: 1, m: 100, inches: 1, feet: 12 }
+        const asBase = (v: number, u: string): number => v * (FACTOR[u] ?? 1)
+        const cands: [number, string][] = [[e.v * 10, e.unit], [e.v, other], [Math.max(1, Math.round(e.v / 10)), e.unit], [e.v * 100, e.unit]]
+        const seenLen = new Set([asBase(e.v, e.unit)])
+        const decoys: string[] = []
+        for (const [v, u] of cands) {
+          const base = asBase(v, u)
+          if (seenLen.has(base)) continue
+          seenLen.add(base)
+          decoys.push(txt(v, u))
+        }
+        rng.shuffle(decoys)
         const { choices, answer } = shuffled(rng, txt(e.v, e.unit), decoys, n)
         const prompt = [`About how ${e.tall ? 'tall' : 'long'} is ${e.thing}?`]
         return mathRiddle({ family: 'measurement', skill: 'math: estimating length', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: 22 + tier * 3, grade, tier }, '')

@@ -236,7 +236,9 @@ function quantityQ(grade: Grade, tier: Tier, rng: Rng): Riddle {
       const line = `${one} or ${many}?`
       if (one.length > 26 || many.length > 26 || !fits([line])) continue
       const answer = heavy.mass! > lots ? one : many
-      const { choices, answer: idx } = shuffled(rng, answer, [answer === one ? many : one, 'about the same', 'cannot tell'], n)
+      // No "cannot tell": it is never the right answer here, so a child who notices that has one
+      // fewer option to think about, which is the opposite of what a decoy is for.
+      const { choices, answer: idx } = shuffled(rng, answer, [answer === one ? many : one, 'about the same', `${numberWord(k * 2)} ${light.plural}`], n)
       const prompt = ['Which is heavier:', line]
       return riddle({
         family: 'comparisons', skill: 'thinking: reasoning with quantities', prompt, choices, answer: idx,
@@ -303,7 +305,10 @@ function unitQ(grade: Grade, tier: Tier, rng: Rng): Riddle {
     const B = same ? A * u.f : Math.round(A * u.f * rng.pick([0.5, 0.75, 1.25, 1.5, 2]))
     const big = amount(A, u.big, u.bigWord), small = amount(B, u.small, u.smallWord)
     const answer = same ? 'they are the same' : A * u.f > B ? big : small
-    const { choices, answer: idx } = shuffled(rng, answer, [big, small, 'they are the same', 'cannot tell'].filter(x => x !== answer), n)
+    // Same here: with both amounts written out you can always tell, so "cannot tell" was a choice
+    // that was never right. Half and double the smaller amount are wrong in a way a child can be
+    // wrong: they are what a mis-converted unit looks like.
+    const { choices, answer: idx } = shuffled(rng, answer, [big, small, 'they are the same', amount(B * 2, u.small, u.smallWord), amount(Math.max(1, Math.round(B / 2)), u.small, u.smallWord)].filter(x => x !== answer), n)
     const prompt = [`Which is ${u.what}:`, `${big} or ${small}?`]
     return riddle({
       family: 'comparisons', skill: 'thinking: units', prompt, choices, answer: idx,

@@ -353,3 +353,66 @@ describe('people work in the right prepositions', () => {
     expect([...new Set(bad)].slice(0, 3)).toEqual([])
   })
 })
+
+describe('no two choices are the same answer twice', () => {
+  const LEN: Record<string, number> = { mm: 1, cm: 10, m: 1000, km: 1e6, in: 25.4, inch: 25.4, inches: 25.4, ft: 304.8, foot: 304.8, feet: 304.8, yd: 914.4, mi: 1609344 }
+  const MASS: Record<string, number> = { g: 1, kg: 1000, oz: 28.35, lb: 453.6 }
+  const VOL: Record<string, number> = { mL: 1, L: 1000 }
+  /** A choice as a comparable value, tagged by dimension, or null for words. */
+  const valueOf = (t: string): string | null => {
+    const s = t.trim().replace(/[$,]/g, '')
+    let m = /^(-?\d+(?:\.\d+)?)\s*(mm|cm|km|m|inches|inch|in|feet|foot|ft|yd|mi)$/.exec(s)
+    if (m) return `len:${(Number(m[1]) * LEN[m[2]]).toFixed(4)}`
+    m = /^(-?\d+(?:\.\d+)?)\s*(kg|g|oz|lb)$/.exec(s)
+    if (m) return `mass:${(Number(m[1]) * MASS[m[2]]).toFixed(4)}`
+    m = /^(-?\d+(?:\.\d+)?)\s*(mL|L)$/.exec(s)
+    if (m) return `vol:${(Number(m[1]) * VOL[m[2]]).toFixed(4)}`
+    m = /^(\d+)\s+(\d+)\/(\d+)$/.exec(s)
+    if (m) return `num:${(Number(m[1]) + Number(m[2]) / Number(m[3])).toFixed(6)}`
+    m = /^(\d+)\/(\d+)$/.exec(s)
+    if (m) return `num:${(Number(m[1]) / Number(m[2])).toFixed(6)}`
+    m = /^(-?\d+(?:\.\d+)?)¢$/.exec(s)
+    if (m) return `money:${Number(m[1]).toFixed(2)}`
+    m = /^(-?\d+(?:\.\d+)?)$/.exec(s)
+    if (m) return `num:${Number(m[1]).toFixed(6)}`
+    return null
+  }
+
+  /**
+   * Two buttons worth the same amount are one wrong answer written twice - or, if one of them is
+   * right, two right answers. "About how long is a book? 2500 cm / 25 cm / 25 m" had the first and
+   * the last as the same length; "2/4" once sat beside "1/2".
+   * The exception is a question that asks whether two amounts are equal, where naming both is the
+   * whole point: "Which is longer, 5 km or 5000 m?"
+   */
+  it('never offers two choices worth the same', () => {
+    const bad: string[] = []
+    for (const gen of GENERATORS) for (const grade of gen.grades) for (const tier of TIERS) {
+      const rng = new Rng(`same-${gen.id}-${grade}-${tier}`)
+      for (let i = 0; i < 120; i++) {
+        const r = gen.make(grade, tier, rng)
+        if (r.choices.some(c => /they are the same/.test(c.text ?? ''))) continue
+        const vals = r.choices.map(c => (c.text ? valueOf(c.text) : null))
+        for (let x = 0; x < vals.length; x++) for (let y = x + 1; y < vals.length; y++) {
+          if (vals[x] && vals[x] === vals[y]) bad.push(`${gen.id} g${grade}: ${r.prompt.join(' / ')} :: ${r.choices.map(c => c.text).join(' | ')}`)
+        }
+      }
+    }
+    expect([...new Set(bad)].slice(0, 3)).toEqual([])
+  })
+
+  it('never offers a choice that is never right', () => {
+    // "cannot tell" was on 631 of the comparison riddles and was the answer to none of them.
+    const bad: string[] = []
+    for (const gen of GENERATORS) for (const grade of gen.grades) for (const tier of TIERS) {
+      const rng = new Rng(`dead-${gen.id}-${grade}-${tier}`)
+      for (let i = 0; i < 120; i++) {
+        const r = gen.make(grade, tier, rng)
+        if (r.choices.some(c => /cannot tell|both at the same time|none of these/i.test(c.text ?? ''))) {
+          bad.push(`${gen.id} g${grade}: ${r.choices.map(c => c.text).join(' | ')}`)
+        }
+      }
+    }
+    expect([...new Set(bad)].slice(0, 3)).toEqual([])
+  })
+})

@@ -337,9 +337,9 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 | 1 | 1 | 14.0 | 9.6 | 0 | 0% | Which unit is best to measure / a spoon? [miles / *inches / feet] |
 | 1 | 2 | 17.9 | 7.9 | 1 | 0% | What would you use to measure / how hot it is outside? [a measuring cup / a ruler / *a thermometer] |
 | 1 | 3 | 20.0 | 7.5 | 1 | 0% | What would you use to measure / how long recess lasts? [a measuring cup / *a clock / a ruler] |
-| 2 | 1 | 25.0 | 6.0 | 10000 | 46% | What temperature does the / thermometer show? [10°F / *30°F / 50°F] |
-| 2 | 2 | 29.0 | 6.7 | 10000 | 65% | What temperature does the / thermometer show? [70°F / *50°F / 60°F] |
-| 2 | 3 | 34.1 | 8.2 | 10000 | 68% | About how long is a spoon? [*6 inches / 1 inch / 6 feet] |
+| 2 | 1 | 25.0 | 6.0 | 1000 | 45% | What temperature does the / thermometer show? [10°F / *30°F / 50°F] |
+| 2 | 2 | 28.9 | 6.7 | 1000 | 64% | What temperature does the / thermometer show? [70°F / *50°F / 60°F] |
+| 2 | 3 | 34.1 | 8.1 | 1000 | 69% | About how long is a spoon? [*6 inches / 6 feet / 60 inches] |
 | 3 | 1 | 42.9 | 7.0 | 600 | 0% | How many inches are in a foot? [*12 / 14 / 1 / 24] |
 | 3 | 2 | 44.8 | 8.2 | 1000 | 19% | How many minutes are in an hour? [6 / 58 / *60 / 30] |
 | 3 | 3 | 55.1 | 9.0 | 36000 | 24% | How many days are in a year? [465 / 3650 / *365 / 37] |
@@ -810,9 +810,9 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 | 3 | 1 | 30.7 | 6.2 | 18000 | 0% | Which one is the tallest? [a door / a two-story house / a lighthouse / *a mountain] |
 | 3 | 2 | 32.7 | 6.3 | 15000 | 0% | About how long is a spoon? [0.15 cm / *15 cm / 1.5 m / 1.5 cm] |
 | 3 | 3 | 37.0 | 7.6 | 120000 | 0% | About how heavy is a backpack? [*7 pounds / 700 pounds / 10 ounces / 70 pounds] |
-| 4 | 1 | 42.0 | 8.8 | 120000 | 0% | Which is heavier: / one book or ten cups? [cannot tell / *ten cups / one book / about the same] |
+| 4 | 1 | 42.0 | 8.8 | 120000 | 0% | Which is heavier: / one book or ten cups? [twenty cups / *ten cups / one book / about the same] |
 | 4 | 2 | 45.0 | 9.3 | 120000 | 0% | About how tall is a giraffe? [50 m / *5 m / 5 cm / 60 cm] |
-| 4 | 3 | 50.0 | 10.2 | 900000000 | 0% | Which is heavier: / one bus or three horses? [*one bus / about the same / cannot tell / three horses] |
+| 4 | 3 | 50.0 | 10.2 | 900000000 | 0% | Which is heavier: / one bus or three horses? [*one bus / about the same / six horses / three horses] |
 | 5 | 1 | 51.2 | 9.7 | 800000 | 0% | 4 apples cost $2.00. / How much do 16 apples cost? [*$8.00 / $4.00 / $16.00 / $5.00] |
 | 5 | 2 | 55.3 | 10.2 | 900000000 | 0% | A train travels 240 km in 6 hours. / How far does it go in 18 hours? [760 km / 258 km / *720 km / 1440 km] |
 | 5 | 3 | 59.8 | 10.9 | 900000000 | 0% | A car travels 160 km in 4 hours. / How far does it go in 9 hours? [260 km / *360 km / 1440 km / 400 km] |
