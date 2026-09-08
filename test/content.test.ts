@@ -187,6 +187,35 @@ describe('the picker varies what it asks', () => {
   })
 })
 
+/**
+ * Content nobody sees was not worth writing. Over a long play at each grade every family the grade
+ * offers has to come up, and none may crowd the others out: measured, the rarest family at any
+ * grade still gets 1.1% of the riddles and the commonest 4.9%, so a child meets each of the 25 to
+ * 38 families their grade has.
+ */
+describe('every family a grade offers actually gets asked', () => {
+  it('no family is starved, and none crowds out the rest', () => {
+    for (const grade of GRADES) {
+      const gens = generatorsFor(grade)
+      const rng = new Rng(`cover-${grade}`)
+      const seen = new Set<string>(); const recent: string[] = []
+      const count = new Map<string, number>()
+      const N = 3000
+      for (let i = 0; i < N; i++) {
+        const r = pickRiddle(grade, ((i % 3) + 1) as 1 | 2 | 3, rng, seen, recent)
+        seen.add(r.key); if (seen.size > 200) seen.clear()
+        recent.push(recentEntry(r)); if (recent.length > 8) recent.shift()
+        count.set(r.family, (count.get(r.family) ?? 0) + 1)
+      }
+      const shares = gens.map(g => [g.id, 100 * (count.get(g.id) ?? 0) / N] as const).sort((a, b) => a[1] - b[1])
+      const [rarest, low] = shares[0]
+      const [commonest, high] = shares[shares.length - 1]
+      expect(low, `grade ${grade}: ${rarest} is only ${low.toFixed(2)}% of the riddles`).toBeGreaterThan(0.5)
+      expect(high / low, `grade ${grade}: ${commonest} (${high.toFixed(1)}%) against ${rarest} (${low.toFixed(1)}%)`).toBeLessThan(6)
+    }
+  })
+})
+
 describe('what the voice says', () => {
   // Every one of these was read wrong before speakable learned it: the symbol was dropped and the
   // sentence lost its meaning, or an abbreviation was spelled out letter by letter.
