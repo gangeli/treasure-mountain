@@ -1,5 +1,5 @@
 import { P } from './palette'
-import { type Ctx, roundRect, circle, text, line, rr, fillStroke, star, poly } from './draw'
+import { type Ctx, roundRect, circle, text, line, rr, fillStroke, star, poly, measure } from './draw'
 import { W, H, HUD_Y, HUD_H } from '../game/layout'
 import type { Game } from '../game/game'
 import type { Button } from '../game/ui'
@@ -100,7 +100,7 @@ export function drawButtons(ctx: Ctx, buttons: Button[], g: Game): void {
 
 /** White speech bubble with a tail. */
 export function drawBubble(ctx: Ctx, lines: string[], x: number, y: number, tail: 'down' | 'right' | 'none' = 'down', size = 24, minW = 320): void {
-  const w = Math.max(minW, ...lines.map(l => { ctx.font = `700 ${size}px "Nunito", "Trebuchet MS", sans-serif`; return ctx.measureText(l).width })) + 56
+  const w = Math.max(minW, ...lines.map(l => measure(ctx, l, size))) + 56
   const h = lines.length * (size * 1.35) + 34
   const bx = Math.max(16, Math.min(W - w - 16, x - w / 2)), by = y - h
   ctx.beginPath()

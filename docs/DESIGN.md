@@ -17,8 +17,9 @@ how the screens, art and sound are laid out.
    each grade, with a difficulty ramp inside a grade (mountain level 1 -> 2 -> 3, and by rank).
 3. **Made for small hands.** Tap-to-walk, big buttons, three (K-2) or four (3-5) answer choices,
    an optional read-aloud button, no time pressure, no way to lose.
-4. **Tiny and private.** One self-contained HTML file; all art is drawn with Canvas 2D, all sound
-   is synthesised. No network after first load, nothing leaves the device.
+4. **Tiny and private.** One self-contained HTML file (about 580 KB, 185 KB over the wire; the
+   signed APK is under 200 KB); all art is drawn with Canvas 2D, all sound is synthesised. No
+   network after first load, nothing leaves the device.
 
 ## 2. What is kept from the original (verbatim rules)
 
@@ -78,7 +79,7 @@ Mountain Master (6), Champion (7: the crown is won).
    stars and total treasures. A long-press/"reset" is under Options, not here.
 3. **Clubhouse.** Rank poster (thresholds, star, rank name, total treasures), the prize shelf, and a
    START button. First visit shows the intro text ("The elves can help you...").
-4. **Level (play).** Side view, looping world of 4 screens (5120 logical px), the HUD below.
+4. **Level (play).** Side view, looping world of 6 screens (7680 logical px), the HUD below.
    Entities: player, 6-9 elves (2-3 with scrolls at any time; a caught scroll elf respawns as a
    plain elf and a new scroll appears elsewhere), scenery groups, tunnel, net rock, keyhole, exit.
 5. **Riddle overlay.** Scroll panel, elf dancing at the right, prompt text (with any drawing: clock,
@@ -181,9 +182,13 @@ a count (1-4), a descriptor and a kind, drawn accordingly:
 * kinds by level: **1** trees, bushes, rocks, flowers, mushrooms, logs, stumps, ferns;
   **2** rocks, boulders, lanterns, signs, nests, flowers, fences, carts, crystals;
   **3** pines, shovels, snowmen, icicles, gems, stumps, flags, rocks.
-* descriptors: size (small, big, tall, short), colour (red, yellow, blue, purple, white, brown),
-  shape (round, pointy, striped, spotted). Only descriptors the art can show are used; a group
-  never has a descriptor shared by every group of that kind on the level.
+* descriptors: each kind uses ONE dimension only, so its descriptors are mutually exclusive and a
+  child can always tell which group a clue word means: sizes/shapes for trees (small, big, tall,
+  round), rocks (small, big, round, flat), boulders (round, pointy, flat, cracked), logs, stumps,
+  ferns, pines (small, tall, snowy), snowmen, icicles (long, short, thick), fences (short, tall,
+  long), signs (round, square, striped); colours for flowers, lanterns, shovels, gems, flags,
+  crystals; a distinct feature for mushrooms (red, blue, yellow, spotted), nests and carts (small,
+  big, empty). No descriptor names the default look of every instance (no "green bush").
 * number words: one, two, three, four (K-1 use one to three).
 
 The hunt target is a group whose (count, descriptor, kind) triple is unique; the generator then
@@ -241,5 +246,9 @@ seed, coins, nets, clue words found, treasures found, position). Nothing else is
 * `test/world.test.ts`: level generation constraints for all ranks and seeds.
 * `test/game.test.ts`: the pure game state machine, driven headless: full ascent with a perfect
   player, a player who fails every riddle (still finishes: free nets, ground coins), save/restore.
-* `e2e/playtest.mjs`: Playwright plays a full ascent at each grade in the real build and writes
-  screenshots; `e2e/screenshots.mjs` renders every screen and art sheet for review.
+* `e2e/playtest.mjs`: Playwright plays a full ascent at each grade in the real build through real
+  taps and key presses (optionally at a preset rank, to exercise elf dust, the broken bridge, trick
+  ladders and the Master's arm) and writes screenshots; `e2e/screenshots.mjs` renders every screen
+  and art sheet for review; `e2e/pwa.mjs` checks the service worker, manifest, saved progress and
+  an offline reload; `e2e/difficulty.mjs` writes `DIFFICULTY.md`; `e2e/samples.mjs` dumps riddles
+  per family x grade x tier for review.
