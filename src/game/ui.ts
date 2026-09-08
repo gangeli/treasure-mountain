@@ -91,7 +91,7 @@ export function uiButtons(g: Game): Button[] {
       break
     case 'riddle': {
       const rv = g.riddle!
-      b.push({ id: 'speak', x: SCROLL.x + SCROLL.w - 90, y: SCROLL.y + 20, w: 64, h: 64, label: '', icon: 'speaker' })
+      b.push({ id: 'speak', x: SCROLL.x + SCROLL.w - 104, y: SCROLL.y + 20, w: 64, h: 64, label: '', icon: 'speaker' })
       if (rv.phase === 'ask') riddleChoiceRects(rv.riddle).forEach((r, i) => b.push({ id: 'choice' + i, ...r, label: rv.riddle.choices[i].text ?? '', disabled: rv.wrong.includes(i) }))
       else b.push({ id: 'goon', x: 470, y: HUD_Y + 70, w: 340, h: 74, label: rv.phase === 'wrong' ? 'Try again' : 'Go on', big: true })
       break

@@ -78,13 +78,14 @@ function tunnel(ctx: Ctx, x: number, y: number, no: LevelNo): void {
     ctx.beginPath(); ctx.moveTo(x - w * 0.36, y); ctx.quadraticCurveTo(x - w * 0.4, y - h * 0.6, x - w * 0.1, y - h * 0.76); ctx.quadraticCurveTo(x + w * 0.2, y - h * 0.8, x + w * 0.38, y - h * 0.45); ctx.lineTo(x + w * 0.36, y); ctx.closePath()
     fillStroke(ctx, P.ink, P.ink, 3)
     if (no === 3) {
-      // gems glint inside the ice cave
-      for (let i = 0; i < 4; i++) { const gx = x - 30 + i * 22, gy = y - 30 - (i % 2) * 34; poly(ctx, [[gx - 7, gy], [gx, gy - 12], [gx + 7, gy], [gx, gy + 6]], [P.cyan, P.pink, P.green, P.yellow][i], 'rgba(0,0,0,0)', 0) }
-      for (let i = 0; i < 5; i++) poly(ctx, [[x - 50 + i * 26, y - h * 0.7], [x - 42 + i * 26, y - h * 0.45 + (i % 2) * 8], [x - 34 + i * 26, y - h * 0.7]], P.ice, P.ink, 1.5)
-    } else {
-      // moss over the mouth
-      ctx.fillStyle = P.greenDark; ctx.beginPath(); ctx.ellipse(x, y - h * 0.82, w * 0.3, 10, 0, 0, Math.PI * 2); ctx.fill()
+      // Icicles first and following the arch of the roof (they used to hang off one flat line, and
+      // the gems were then drawn through their tips), then the gems glinting below them.
+      for (let i = 0; i < 5; i++) { const bx = x - 50 + i * 26, by = y - h * 0.72 + Math.abs(i - 2) * 7; poly(ctx, [[bx, by], [bx + 8, by + h * 0.25 + (i % 2) * 8], [bx + 16, by]], P.ice, P.ink, 1.5) }
+      for (let i = 0; i < 4; i++) { const gx = x - 30 + i * 22, gy = y - 26 - (i % 2) * 26; poly(ctx, [[gx - 7, gy], [gx, gy - 12], [gx + 7, gy], [gx, gy + 6]], [P.cyan, P.pink, P.green, P.yellow][i], 'rgba(0,0,0,0)', 0) }
     }
+    // (There used to be a green ellipse here, "moss over the mouth". Wherever it was put it read
+    // as a second hole inside the first, or as a disc balanced on the rock; the arch and its dark
+    // opening say "cave" on their own.)
   }
 }
 
@@ -132,14 +133,15 @@ function keyholeTree(ctx: Ctx, x: number, y: number, hasKey: boolean, progress: 
   fillStroke(ctx, P.green)
   ctx.save(); ctx.globalAlpha = 0.5; ctx.fillStyle = P.greenLight
   scallop(ctx, x - 46, y - trunkH - 30, 78, 32, 6, 0.4); ctx.fill(); ctx.restore()
-  // keyhole plate
-  roundRect(ctx, x - 22, y - 120, 44, 56, 8, P.gold)
-  ctx.fillStyle = P.ink; ctx.beginPath(); ctx.arc(x, y - 100, 8, 0, Math.PI * 2); ctx.fill(); ctx.fillRect(x - 4, y - 100, 8, 22)
+  // Keyhole low on the trunk, where a child would put the key in, with the rungs starting above
+  // it: at y-120 the second rung ran straight through the middle of the keyhole.
+  roundRect(ctx, x - 22, y - 78, 44, 56, 8, P.gold)
+  ctx.fillStyle = P.ink; ctx.beginPath(); ctx.arc(x, y - 58, 8, 0, Math.PI * 2); ctx.fill(); ctx.fillRect(x - 4, y - 58, 8, 22)
   // rungs grow with progress (0..1)
   const rungs = 8
   for (let i = 0; i < rungs; i++) {
     if ((i + 1) / rungs > progress + 0.001) break
-    const ry = y - 60 - i * 40
+    const ry = y - 106 - i * 40
     roundRect(ctx, x - 34, ry - 6, 68, 12, 4, P.rockLight)
   }
   if (hasKey && progress === 0) drawKey(ctx, x + 50, y - 150 + Math.sin(Date.now() / 300) * 4, 1.2, true)
@@ -174,9 +176,13 @@ function castleDoor(ctx: Ctx, x: number, y: number, hasKey: boolean, progress: n
   // stone arch wall
   ctx.beginPath(); ctx.moveTo(x - w / 2 - 40, y); ctx.lineTo(x - w / 2 - 40, y - h + 40); ctx.quadraticCurveTo(x - w / 2 - 40, y - h - 40, x, y - h - 40); ctx.quadraticCurveTo(x + w / 2 + 40, y - h - 40, x + w / 2 + 40, y - h + 40); ctx.lineTo(x + w / 2 + 40, y); ctx.closePath()
   fillStroke(ctx, P.rock)
-  // stones
+  // Stones, clipped to the arch: unclipped, a whole column of them was drawn in mid-air off the
+  // right-hand side of the wall.
+  ctx.save()
+  ctx.beginPath(); ctx.moveTo(x - w / 2 - 40, y); ctx.lineTo(x - w / 2 - 40, y - h + 40); ctx.quadraticCurveTo(x - w / 2 - 40, y - h - 40, x, y - h - 40); ctx.quadraticCurveTo(x + w / 2 + 40, y - h - 40, x + w / 2 + 40, y - h + 40); ctx.lineTo(x + w / 2 + 40, y); ctx.closePath(); ctx.clip()
   ctx.strokeStyle = P.rockDark; ctx.lineWidth = 2
   for (let r = 0; r < 7; r++) for (let c = 0; c < 5; c++) { const sx = x - w / 2 - 34 + c * 56 + (r % 2) * 28, sy = y - 18 - r * 40; if (Math.abs(sx - x) < w / 2 - 20 && sy > y - h + 20) continue; ctx.strokeRect(sx, sy - 30, 48, 30) }
+  ctx.restore()
   // door opening (dark) with the door leaf swinging open by progress
   ctx.beginPath(); ctx.moveTo(x - w / 2, y); ctx.lineTo(x - w / 2, y - h + 60); ctx.quadraticCurveTo(x - w / 2, y - h, x, y - h); ctx.quadraticCurveTo(x + w / 2, y - h, x + w / 2, y - h + 60); ctx.lineTo(x + w / 2, y); ctx.closePath()
   fillStroke(ctx, P.ink, P.ink, 3)
