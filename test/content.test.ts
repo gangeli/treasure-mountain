@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { Rng } from '../src/engine/rng'
 import { GENERATORS } from '../src/content/generators'
-import { GRADES, TIERS, type Generator, type Riddle } from '../src/content/types'
+import { GRADES, TIERS, speakable, type Generator, type Riddle } from '../src/content/types'
 import { rhymes } from '../src/content/generators/rhymes'
 import { sounds } from '../src/content/generators/sounds'
 import { FAMILIES, PROMPT_ONLY, classesOf, isCvc, noInitialBlend, endSoundOf, endKeySound, beginSoundOf } from '../src/content/data/phonics'
@@ -179,4 +179,42 @@ describe('the picker varies what it asks', () => {
       }
     }
   })
+})
+
+describe('what the voice says', () => {
+  // Every one of these was read wrong before speakable learned it: the symbol was dropped and the
+  // sentence lost its meaning, or an abbreviation was spelled out letter by letter.
+  const CASES: [string, string][] = [
+    ['3/4', '3 fourths'],
+    ['1/2', '1 half'],
+    ['5/16', '5 over 16'],
+    ['60 km/h', '60 kilometers per hour'],
+    ['3¢', '3 cents'],
+    ['1¢', '1 cent'],
+    ['$1.00', '1 dollar'],
+    ['$0.94', '94 cents'],
+    ['$0.05', '5 cents'],
+    ['$11.75', '11 dollars and 75 cents'],
+    ['$3', '3 dollars'],
+    ['30°', '30 degrees'],
+    ['72°F', '72 degrees Fahrenheit'],
+    ['0°C', '0 degrees Celsius'],
+    ['736 < 737', '736 is less than 737'],
+    ['736 > 737', '736 is greater than 737'],
+    ['736 = 737', '736 equals 737'],
+    ['3 groups of 4 = ?', '3 groups of 4 equals what?'],
+    ['24 ÷ 3 = ?', '24 divided by 3 equals what?'],
+    ['6 × 7 = ?', '6 times 7 equals what?'],
+    ['$11.75 - $10.00 = ?', '11 dollars and 75 cents minus 10 dollars equals what?'],
+    ['3,000 + 600 + 9', '3,000 plus 600 plus 9'],
+    ['6 sq in', '6 square inches'],
+    ['1 sq ft', '1 square foot'],
+    ['4 cm', '4 centimeters'],
+    ['1 cm', '1 centimeter'],
+    ['3 in long and 1 in wide.', '3 inches long and 1 inch wide.'],
+    // "in" is a word too, and this is the sentence that made that obvious.
+    ['Which number has a 5 in the ones place?', 'Which number has a 5 in the ones place?'],
+    ['I have 3 apples in a bag.', 'I have 3 apples in a bag.'],
+  ]
+  for (const [raw, want] of CASES) it(`says "${raw}" as "${want}"`, () => expect(speakable(raw)).toBe(want))
 })

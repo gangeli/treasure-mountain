@@ -221,7 +221,7 @@ export const fractions: Generator = {
       const decoys = textDecoys(rng, r, den, n + 2, [[r, den * 2], [add ? a - b : a + b, den], [r + 1, den], [r - 1, den], [a * b, den]], [den, den * 2]).filter(d => d !== ans)
       const { choices, answer } = shuffled(rng, ans, decoys, n)
       const prompt = [`${a}/${den} ${add ? '+' : '-'} ${b}/${den} = ?`, ...(gcd(r, den) !== 1 ? ['(Give the answer in simplest form.)'] : [])]
-      return mathRiddle({ family: 'fractions', skill: add ? 'math: adding fractions' : 'math: subtracting fractions', prompt, choices, answer, spoken: `What is ${a} over ${den} ${add ? 'plus' : 'minus'} ${b} over ${den}? ${sayChoices(choices)}?`, metric: 50 + den + (gcd(r, den) !== 1 ? 4 : 0), grade, tier }, `num:${a}/${den}${add ? '+' : '-'}${b}/${den}`)
+      return mathRiddle({ family: 'fractions', skill: add ? 'math: adding fractions' : 'math: subtracting fractions', prompt, choices, answer, spoken: `What is ${a}/${den} ${add ? 'plus' : 'minus'} ${b}/${den}? ${sayChoices(choices)}?`, metric: 50 + den + (gcd(r, den) !== 1 ? 4 : 0), grade, tier }, `num:${a}/${den}${add ? '+' : '-'}${b}/${den}`)
     }
 
     // grade 5 -- "fraction of a number" is the gentlest item here, so it stays in tier 1.
@@ -258,7 +258,7 @@ export const fractions: Generator = {
       const decoys = textDecoys(rng, rn, L, n + 2, [[add ? a + b : a - b, d1 + d2], [add ? a + b : Math.abs(a - b), Math.max(d1, d2)], [rn + 1, L], [rn - 1, L], [add ? a + b : a - b, L]], [L, d1 + d2, L * 2], rn < L).filter(d => d !== ans)
       const { choices, answer } = shuffled(rng, ans, decoys, n)
       const prompt = [`${a}/${d1} ${add ? '+' : '-'} ${b}/${d2} = ?`]
-      return mathRiddle({ family: 'fractions', skill: add ? 'math: adding fractions' : 'math: subtracting fractions', prompt, choices, answer, spoken: `What is ${a} over ${d1} ${add ? 'plus' : 'minus'} ${b} over ${d2}? ${sayChoices(choices)}?`, metric: 62 + L + tier * 2, grade, tier }, `num:${a}/${d1}${add ? '+' : '-'}${b}/${d2}`)
+      return mathRiddle({ family: 'fractions', skill: add ? 'math: adding fractions' : 'math: subtracting fractions', prompt, choices, answer, spoken: `What is ${a}/${d1} ${add ? 'plus' : 'minus'} ${b}/${d2}? ${sayChoices(choices)}?`, metric: 62 + L + tier * 2, grade, tier }, `num:${a}/${d1}${add ? '+' : '-'}${b}/${d2}`)
     }
     // mixed numbers
     const add = mode === 'mixedAdd'
@@ -277,6 +277,6 @@ export const fractions: Generator = {
     const decoys = textDecoys(rng, rn, L, n + 2, [[wrongWhole, L], [rn + L, L], [rn - L, L], [rn + 1, L], [rn - 1, L], [add ? (w1 + w2) * (d1 + d2) + a + b : 1, d1 + d2]], [L, L * 2], false).filter(d => d !== ans)
     const { choices, answer } = shuffled(rng, ans, decoys, n)
     const prompt = [`${mixed(w1, a, d1)} ${add ? '+' : '-'} ${mixed(w2, b, d2)} = ?`]
-    return mathRiddle({ family: 'fractions', skill: 'math: mixed numbers', prompt, choices, answer, spoken: `What is ${w1} and ${a} over ${d1} ${add ? 'plus' : 'minus'} ${w2} and ${b} over ${d2}? ${sayChoices(choices)}?`, metric: 66 + L + tier * 2 + (add ? 0 : 4), grade, tier }, `num:${w1}+${a}/${d1}${add ? '+' : '-'}(${w2}+${b}/${d2})`)
+    return mathRiddle({ family: 'fractions', skill: 'math: mixed numbers', prompt, choices, answer, spoken: `What is ${w1} and ${a}/${d1} ${add ? 'plus' : 'minus'} ${w2} and ${b}/${d2}? ${sayChoices(choices)}?`, metric: 66 + L + tier * 2 + (add ? 0 : 4), grade, tier }, `num:${w1}+${a}/${d1}${add ? '+' : '-'}(${w2}+${b}/${d2})`)
   },
 }

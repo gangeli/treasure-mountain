@@ -17,6 +17,13 @@ export function validateRiddle(r: Riddle, grade: number, gen: string): string[] 
   // km/h -> "K M slash H") and a blank line is read as "underscore underscore underscore".
   if (r.spoken?.includes('/')) errs.push(`spoken has a slash: ${r.spoken}`)
   if (r.spoken?.includes('_')) errs.push(`spoken has a blank: ${r.spoken}`)
+  // Symbols a speech synthesiser drops on the floor, taking the meaning with them: "3¢" comes out
+  // "three", "30°" comes out "thirty", and 736 = 737 / 736 < 737 / 736 > 737 all come out the same.
+  const mute = r.spoken?.match(/[¢°$×÷=<>≤≥]|\s[-−]\s/)
+  if (mute) errs.push(`spoken has a symbol the voice drops (${mute[0].trim()}): ${r.spoken}`)
+  // Unit abbreviations are spelled out, not read: "6 sq cm" comes out "six S Q C M".
+  const abbrev = r.spoken?.match(/\b\d+\s(sq\s)?(mm|cm|km|ft|yd|mi|lb|oz|kg|mL|L)\b/)
+  if (abbrev) errs.push(`spoken has an unread unit (${abbrev[0]}): ${r.spoken}`)
   if (!r.key) errs.push('key missing')
   if (typeof r.metric !== 'number' || Number.isNaN(r.metric)) errs.push('metric missing')
   if (r.family !== gen) errs.push(`family ${r.family} != ${gen}`)

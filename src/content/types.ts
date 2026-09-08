@@ -98,9 +98,26 @@ export const choiceCount = (grade: Grade): number => grade <= 2 ? 3 : 4
 
 const DENOMS = ['', '', 'half', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth']
 
+/** Unit abbreviations, as [singular, plural], read out after a number. */
+const UNITS: Record<string, [string, string]> = {
+  mm: ['millimeter', 'millimeters'], cm: ['centimeter', 'centimeters'], m: ['meter', 'meters'],
+  km: ['kilometer', 'kilometers'], in: ['inch', 'inches'], ft: ['foot', 'feet'],
+  yd: ['yard', 'yards'], mi: ['mile', 'miles'], lb: ['pound', 'pounds'], oz: ['ounce', 'ounces'],
+  kg: ['kilogram', 'kilograms'], g: ['gram', 'grams'], mL: ['milliliter', 'milliliters'],
+  L: ['liter', 'liters'],
+}
+// "in" is a word as well as a unit, so it is only read as inches where a unit can stand: at the end
+// of a clause, or in front of the handful of words that follow a measurement ("3 in long").
+const UNIT_NAMES = Object.keys(UNITS).filter(u => u !== 'in').join('|')
+const UNIT_RE = new RegExp(`(\\d+)\\s(sq\\s)?(${UNIT_NAMES})\\b`, 'g')
+const INCH_RE = /(\d+)\s(sq\s)?in\b(?=\s*[.,;:?!]|$|\s(long|wide|tall|high|deep|by|and|each|per)\b)/g
+
 /**
- * Written maths read as words. Speech synthesis says "three slash four" for 3/4 and spells out
- * "km/h", which is noise to the kindergartener and 1st-grader who hear every riddle read to them.
+ * Written maths read as words. Speech synthesis says "three slash four" for 3/4, spells out "km/h",
+ * and simply drops every symbol it does not know: "3¢" is read "three", "30°" is read "thirty", and
+ * the three answers to "which is true?" - 736 = 737, 736 < 737, 736 > 737 - all come out as
+ * "seven three six seven three seven". That is noise to the kindergartener and 1st-grader who hear
+ * every riddle read to them, and it makes some riddles unanswerable by ear at any grade.
  */
 export function speakable(s: string): string {
   return s
@@ -111,6 +128,37 @@ export function speakable(s: string): string {
       const name = DENOMS[d]
       return name ? `${n} ${name}${n === 1 ? '' : 's'}` : `${n} over ${d}`
     })
+    // Money, before the bare-number rules below can touch the digits. Under a dollar is said in
+    // cents, the way the price is said out loud and the way the coin riddles write it.
+    .replace(/\$(\d+)\.(\d\d)\b/g, (_m, d: string, c: string) => {
+      const cents = parseInt(c)
+      const centWords = `${cents} cent${cents === 1 ? '' : 's'}`
+      if (d === '0') return centWords
+      const dollars = `${d} dollar${d === '1' ? '' : 's'}`
+      return cents === 0 ? dollars : `${dollars} and ${centWords}`
+    })
+    .replace(/\$(\d+)\b/g, (_m, d: string) => `${d} dollar${d === '1' ? '' : 's'}`)
+    .replace(/(\d+)¢/g, (_m, c: string) => `${c} cent${c === '1' ? '' : 's'}`)
+    .replace(/(\d+)°\s*([FC])\b/g, (_m, d: string, u: string) => `${d} degrees ${u === 'F' ? 'Fahrenheit' : 'Celsius'}`)
+    .replace(/(\d+)°/g, '$1 degrees')
+    .replace(UNIT_RE, (_m, n: string, sq: string | undefined, u: string) => {
+      const [one, many] = UNITS[u]
+      return `${n} ${sq ? 'square ' : ''}${n === '1' ? one : many}`
+    })
+    .replace(INCH_RE, (_m, n: string, sq: string | undefined) => `${n} ${sq ? 'square ' : ''}${n === '1' ? 'inch' : 'inches'}`)
+    // "3 groups of 4 = ?" has to become a question, not trail off on a symbol nothing reads.
+    .replace(/\s=\s*\?/g, ' equals what?')
+    .replace(/\s×\s/g, ' times ')
+    .replace(/\s÷\s/g, ' divided by ')
+    .replace(/\s\+\s/g, ' plus ')
+    .replace(/\s[-−]\s/g, ' minus ')
+    .replace(/\s=\s/g, ' equals ')
+    .replace(/\s<\s/g, ' is less than ')
+    .replace(/\s>\s/g, ' is greater than ')
+    .replace(/\s≥\s/g, ' is at least ')
+    .replace(/\s≤\s/g, ' is at most ')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
 }
 
 export function riddle(base: Omit<Riddle, 'key' | 'spoken'> & { spoken?: string; key?: string }): Riddle {
