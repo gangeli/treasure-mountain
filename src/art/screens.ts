@@ -133,7 +133,7 @@ function clubhouse(ctx: Ctx, g: Game): void {
   ctx.save(); ctx.beginPath(); rr(ctx, 60, 60, 300, 220, 14); ctx.clip(); ctx.fillStyle = P.skyBottom; ctx.fillRect(60, 160, 300, 120); drawMountainSmall(ctx, 210, 280, 0.42, t); ctx.restore()
   line(ctx, 210, 60, 210, 280, P.ink, 5); line(ctx, 60, 170, 360, 170, P.ink, 5)
   // rank poster
-  poster(ctx, 640, 40, g)
+  poster(ctx, 640, 80, g)
   // prize shelf
   text(ctx, prizesLabel(g), 210, 318, { size: 20, align: 'center', color: P.cream, weight: 800 })
   roundRect(ctx, 50, 400, 320, 16, 4, '#5c3a17', P.ink, 3)
@@ -147,7 +147,7 @@ function clubhouse(ctx: Ctx, g: Game): void {
   text(ctx, 'to the mountain →', 1130, 92, { size: 20, align: 'center', color: P.cream, weight: 800 })
   // the Super Solver waiting by the door
   drawPlayer(ctx, 940, 570, 1, 'idle', t, 0)
-  if (!g.profile().ascents) drawBubble(ctx, ['Welcome to the clubhouse!', 'The Master of Mischief stole the crown.', "Let's climb Treasure Mountain!"], 640, 560, 'none', 24)
+  if (!g.profile().ascents && !g.canResume()) drawBubble(ctx, ['Welcome to the clubhouse, Super Solver!', "The Master of Mischief stole the crown. Let's climb the mountain!"], 640, 96, 'none', 21, 700)
 }
 
 function drawMountainSmall(ctx: Ctx, x: number, y: number, s: number, t: number): void { drawMountain(ctx, x, y, s, t) }

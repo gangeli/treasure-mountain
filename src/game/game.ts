@@ -54,6 +54,8 @@ export class Game {
   private rng: Rng
   private fast: boolean
   private lastSaveAt = 0
+  /** Grade of the saved, unfinished climb (if any), so choosing that grade again offers to continue it. */
+  savedRunGrade: Grade | null = null
   /** Set when the pause overlay is open. */
   paused = false
   pauseIndex = 0
@@ -72,7 +74,7 @@ export class Game {
     if (p) this.profiles = p
     if (save.grade !== null && save.grade !== undefined) this.grade = save.grade as Grade
     const run = (save.lastRun as any) as { run: Run; grade: Grade; screen: Screen } | null
-    if (run && run.run) { this.run = run.run; this.grade = run.grade }
+    if (run && run.run) { this.run = run.run; this.grade = run.grade; this.savedRunGrade = run.grade }
     this.firstRun = !p || Object.keys(p).length === 0
   }
 
@@ -119,8 +121,8 @@ export class Game {
     this.grade = grade
     this.profile(grade)
     this.sfx('click')
-    if (this.run && this.run.levelNo && (this as any)._resumeGrade === grade) { /* handled by resume() */ }
-    this.run = null
+    // Keep an unfinished climb only for the grade it belongs to.
+    if (this.savedRunGrade !== grade) this.run = null
     this.goto('clubhouse')
     this.save()
   }
@@ -140,6 +142,7 @@ export class Game {
       levelNo: 1, seed, coins: START_COINS, nets: START_NETS, treasures: [], clues: {}, hasKey: false, searched: [], secretUsed: false,
       groundCoinsSpawned: 0, riddlesAsked: 0, riddlesRight: 0, seen: [], recentAreas: [], playerX: 130,
     }
+    this.savedRunGrade = this.grade
     if (this.profile().ascents === 0 && this.firstRun) { this.goto('intro'); return }
     this.startLevel(1, seed)
   }
@@ -877,6 +880,7 @@ export class Game {
     prof.prizes.push(this.prize)
     if (prof.prizes.length > 60) prof.prizes.shift()
     this.run = null
+    this.savedRunGrade = null
     this.lvl = null
     this.castle = null
     this.sfx(starsForTotal(this.rankTo) > starsForTotal(this.rankFrom) ? 'crown' : 'fanfare')

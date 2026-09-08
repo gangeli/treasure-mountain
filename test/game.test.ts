@@ -154,6 +154,20 @@ describe('game flow', () => {
     expect(g2.lvl!.level.seed).toBe(g.lvl!.level.seed)
   })
 
+  it('re-choosing the saved grade keeps the climb; another grade does not', () => {
+    const g = new Game(null, { seed: 'keep', fast: true })
+    let saved: any = null
+    g.onSave = d => { saved = JSON.parse(JSON.stringify(d)) }
+    g.play(); g.chooseGrade(2); g.pressButton('start'); if (g.screen === 'intro') g.advanceScene()
+    g.togglePause()
+    const g2 = new Game(saved, { seed: 'keep2', fast: true })
+    g2.play(); g2.chooseGrade(2)
+    expect(g2.canResume()).toBe(true)
+    const g3 = new Game(saved, { seed: 'keep3', fast: true })
+    g3.play(); g3.chooseGrade(4)
+    expect(g3.canResume()).toBe(false)
+  })
+
   it('rank thresholds award stars and the crown at 300', () => {
     const g = new Game(null, { seed: 'rank', fast: true })
     g.play(); g.chooseGrade(4)
