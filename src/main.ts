@@ -125,14 +125,22 @@ if (testMode) {
      * large part of the screen, and photosensitive epilepsy is commonest between ages 7 and 19.
      */
     luma(n: number): number[] {
+      // Averaged by drawing the frame into a 64x36 canvas rather than by reading back three and a
+      // half megabytes of pixels per frame: a downscale is an average, and it is what makes this
+      // affordable to run 240 times on twenty screens.
+      const small = document.createElement('canvas')
+      small.width = 64; small.height = 36
+      // (No willReadFrequently hint: the minifier writes it as 1, which Chromium rejects as an enum.)
+      const sctx = small.getContext('2d')!
       const out: number[] = []
       for (let i = 0; i < n; i++) {
         game.update(1 / 60)
         render(stage.begin(), game)
-        const d = stage.ctx.getImageData(0, 0, stage.canvas.width, stage.canvas.height).data
-        let sum = 0, count = 0
-        for (let p = 0; p < d.length; p += 4 * 37) { sum += 0.2126 * d[p] + 0.7152 * d[p + 1] + 0.0722 * d[p + 2]; count++ }
-        out.push(sum / count / 255)
+        sctx.drawImage(stage.canvas, 0, 0, 64, 36)
+        const d = sctx.getImageData(0, 0, 64, 36).data
+        let sum = 0
+        for (let p = 0; p < d.length; p += 4) sum += 0.2126 * d[p] + 0.7152 * d[p + 1] + 0.0722 * d[p + 2]
+        out.push(sum / (64 * 36) / 255)
       }
       return out
     },
