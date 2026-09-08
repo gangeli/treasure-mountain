@@ -334,15 +334,18 @@ function riddle(ctx: Ctx, g: Game, clueMode = false): void {
   // feedback bubbles
   if (clueMode || rv.phase === 'right') {
     const lines = rv.clueWord ? ['Good job, Super Solver!', 'You have won a clue word', 'to help you find the key:'] : ['Good job, Super Solver!', 'You earned 2 coins.']
-    bigBubble(ctx, lines, rv.clueWord)
-  } else if (rv.phase === 'wrong') bigBubble(ctx, ['Oops, not that one.', rv.triesLeft > 0 ? `Try again! (${rv.triesLeft} ${rv.triesLeft === 1 ? 'try' : 'tries'} left)` : ''])
-  else if (rv.phase === 'reveal') bigBubble(ctx, ['The answer was:', '', 'The elf runs away. Catch another', 'elf to try a new riddle!'], r.choices[r.answer].text ?? '(picture)', 1)
+    bigBubble(ctx, lines, ceiling, rv.clueWord)
+  } else if (rv.phase === 'wrong') bigBubble(ctx, ['Oops, not that one.', rv.triesLeft > 0 ? `Try again! (${rv.triesLeft} ${rv.triesLeft === 1 ? 'try' : 'tries'} left)` : ''], ceiling)
+  else if (rv.phase === 'reveal') bigBubble(ctx, ['The answer was:', '', 'The elf runs away. Catch another', 'elf to try a new riddle!'], ceiling, r.choices[r.answer].text ?? '(picture)', 1)
   drawFrame(ctx)
 }
 
-function bigBubble(ctx: Ctx, lines: string[], word?: string, wordLine = lines.length): void {
-  // Sits above the answer buttons (which start at y 258), so the child can still see which choice
-  // was the right one while the bubble congratulates them.
+function bigBubble(ctx: Ctx, lines: string[], fadeTo: number, word?: string, wordLine = lines.length): void {
+  // Fade the prompt out first. The cloud is an oval, so the corners of a full-width prompt stuck
+  // out past it and the riddle read as a sentence chopped in half: "Pine and li" beside a cloud.
+  roundRect(ctx, SCROLL.x + 16, SCROLL.y + 12, SCROLL.w - 32, Math.max(60, fadeTo - SCROLL.y - 8), 20, 'rgba(255,255,255,0.72)', 'rgba(0,0,0,0)', 0)
+  // Sits above the answer buttons, so the child can still see which choice was the right one while
+  // the bubble congratulates them.
   const w = 760, h = 214, x = W / 2 - w / 2, y = 34
   scallop(ctx, x + w / 2, y + h / 2, w / 2 - 30, h / 2 - 14, 16)
   fillStroke(ctx, P.white, P.ink, 3)
@@ -519,7 +522,14 @@ function rank(ctx: Ctx, g: Game): void {
 function crown(ctx: Ctx, g: Game): void {
   const t = g.time
   sky(ctx, '#1b3a5c', '#5fb0ff')
-  for (let i = 0; i < 40; i++) { const k = ((t * 0.3 + i * 0.13) % 1); const x = (i * 331) % W, y = H - k * H; star(ctx, x, y, 6 + (i % 3) * 3, [P.yellow, P.pink, P.cyan, P.white][i % 4], 'rgba(0,0,0,0)', 0, 4) }
+  for (let i = 0; i < 40; i++) {
+    const k = ((t * 0.3 + i * 0.13) % 1)
+    const x = (i * 331) % W, y = H - k * H
+    // Keep clear of the two lines of caption at the top. A rising star that stopped beside a letter
+    // read as part of the word: one landed on the "o" and the screen congratulated a "Champion".
+    if (y > 20 && y < 136 && Math.abs(x - W / 2) < 520) continue
+    star(ctx, x, y, 6 + (i % 3) * 3, [P.yellow, P.pink, P.cyan, P.white][i % 4], 'rgba(0,0,0,0)', 0, 4)
+  }
   ctx.fillStyle = P.grass; ctx.fillRect(0, 600, W, H - 600)
   drawMountain(ctx, 640, 600, 0.62, t)
   const bob = Math.sin(t * 2) * 8
