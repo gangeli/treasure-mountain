@@ -2,18 +2,19 @@
 const KEY = 'treasure-mountain-v1'
 
 export interface SaveData {
+  /** The grade last chosen, so the clubhouse opens on it next time. */
   grade: number | null
-  bestScore: Record<string, number>   // per grade
-  crowns: Record<string, number>      // per grade: times the crown was recovered
   settings: { sound: boolean; music: boolean }
+  /** Per-grade progress, shaped by the game layer (Profile in src/game/types.ts). */
+  profiles: Record<string, unknown>
+  /** The climb in progress, so closing the app mid-level resumes where it was. */
   lastRun: unknown | null
 }
 
 export const defaultSave = (): SaveData => ({
   grade: null,
-  bestScore: {},
-  crowns: {},
   settings: { sound: true, music: true },
+  profiles: {},
   lastRun: null,
 })
 

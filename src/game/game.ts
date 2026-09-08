@@ -76,7 +76,7 @@ export class Game {
   // ------------------------------------------------------------------ persistence
   loadSave(save: SaveData): void {
     this.settings = { ...this.settings, ...save.settings }
-    const p = (save as any).profiles as Record<number, Profile> | undefined
+    const p = save.profiles as Record<number, Profile> | undefined
     if (p) this.profiles = p
     if (save.grade !== null && save.grade !== undefined) this.grade = save.grade as Grade
     const run = (save.lastRun as any) as { run: Run; grade: Grade; screen: Screen } | null
@@ -86,7 +86,7 @@ export class Game {
 
   toSave(): SaveData {
     const base = defaultSave()
-    return { ...base, grade: this.grade, settings: this.settings, profiles: this.profiles, lastRun: this.run ? { run: this.run, grade: this.grade, screen: this.screen } : null } as SaveData
+    return { ...base, grade: this.grade, settings: this.settings, profiles: this.profiles, lastRun: this.run ? { run: this.run, grade: this.grade, screen: this.screen } : null }
   }
 
   private save(): void { this.onSave?.(this.toSave()) }
