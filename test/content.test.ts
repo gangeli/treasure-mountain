@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { describe, it, expect } from 'vitest'
 import { Rng } from '../src/engine/rng'
 import { GENERATORS } from '../src/content/generators'
@@ -601,5 +602,37 @@ describe('no family rewards a rule about how the choices look', () => {
     const best = Object.entries(allRules).sort((a, b) => b[1] - a[1])[0]
     const overall = 100 * best[1] / allRiddles - 100 * allChance / allRiddles
     expect(overall, `across the whole game "${best[0]}" gains ${overall.toFixed(1)} points`).toBeLessThan(1)
+  })
+})
+
+/**
+ * The design document's per-grade tables are the only prose description of what each family asks,
+ * and prose does not fail a build when the code moves. This checks the two things about them that
+ * can be checked: every family has a row, and every row's dashes agree with the grades that family
+ * is actually offered at. It found the two families (vowel sounds and vocabulary) that had no row
+ * at all under a heading promising "every family is listed below".
+ */
+describe('the design document describes the game that exists', () => {
+  it('every family has a row, and its dashes match the grades it is offered at', () => {
+    const doc = readFileSync(new URL('../docs/DESIGN.md', import.meta.url), 'utf8')
+    const rows = new Map<string, string[]>()
+    for (const line of doc.split('\n')) {
+      const m = /^\|\s*(.+?)\s*\(`([a-z]+)`\)\s*\|(.*)\|\s*$/.exec(line)
+      if (m) rows.set(m[2], m[3].split('|').map(c => c.trim()))
+    }
+    const problems: string[] = []
+    for (const gen of GENERATORS) {
+      const cells = rows.get(gen.id)
+      if (!cells) { problems.push(`${gen.id} has no row in docs/DESIGN.md`); continue }
+      if (cells.length !== GRADES.length) { problems.push(`${gen.id}: ${cells.length} grade columns, expected ${GRADES.length}`); continue }
+      for (const grade of GRADES) {
+        const blank = cells[grade] === '--' || cells[grade] === ''
+        if (blank === gen.grades.includes(grade)) {
+          problems.push(`${gen.id} grade ${grade}: the table says ${blank ? 'nothing' : `"${cells[grade]}"`}, the generator ${gen.grades.includes(grade) ? 'does' : 'does not'} offer it`)
+        }
+      }
+    }
+    expect(problems).toEqual([])
+    expect(rows.size, 'rows in the tables').toBe(GENERATORS.length)
   })
 })

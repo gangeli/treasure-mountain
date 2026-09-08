@@ -60,7 +60,8 @@ Mountain Master (6), Champion (7: the crown is won).
   (see section 5), so the game never runs dry and each grade sees age-appropriate work.
 * **Answer feedback.** The original gave the clue word on a correct answer. We add: on a wrong
   answer the choice is crossed out with a short hint ("Try again!"); a second miss reveals the
-  answer and the elf runs off (no clue word, no coin loss). K and 1 get a third try.
+  answer and the elf runs off (no clue word, no coin loss). Two tries at every grade: a third
+  against K's three choices would hand the answer to a child who had ruled out the other two.
 * **Read-aloud.** A speaker button reads the riddle with the browser's speech synthesis where it
   exists (Chrome, Safari, most Android WebViews). Silent fallback. K and 1st hear every riddle
   without asking. A second speaker beside the clue-word slots reads back the words won so far -
@@ -125,57 +126,59 @@ each grade; the exact number ranges are in `src/content/generators/*.ts` and are
 
 | Family | K | 1 | 2 | 3 | 4 | 5 |
 | --- | --- | --- | --- | --- | --- | --- |
-| Rhymes | CVC word families (cat/hat), 3 choices with a clear non-rhyme | CVC + blends (ship/chip) | vowel teams (rain/train) | multi-syllable rhymes | slant and multi-syllable | rare rhymes / near rhymes flagged |
-| Beginning/ending sounds | first letter of picture-words (b: ball, bat, bug) | ending sounds; digraphs (sh, ch) | blends (str, pl) | -- | -- | -- |
-| Letters | "Which is the letter B?" / big-little matching | alphabet order neighbours | -- | -- | -- | -- |
-| Compound words | -- | sun + shine | bird + bath (three worked examples then a blank) | harder pairs, decoys share a half | split a compound | -- |
-| Opposites | hot/cold, big/small | up/down, fast/slow, more | wide/narrow, ancient/modern-lite | precise pairs (shallow/deep) | abstract (generous/stingy) | academic (abundant/scarce) |
-| Synonyms | -- | big/large | happy/glad | shades (angry/furious) | tier-2 vocabulary | tier-3 vocabulary |
-| Categories | Which is an animal? | Which is a fruit/vehicle? | Which does not belong? | subtler categories (mammals vs reptiles) | abstract categories | odd-one-out with two plausible answers |
-| Where it lives / what it does | bird-nest, fish-water | bee-hive, bear-den | tool-job (hammer-nail) | worker-place | part-whole | function-object |
-| Plurals and tenses | -- | cat-cats | mouse-mice, child-children | run-ran | irregular past | tense in context |
-| Contractions | -- | -- | can't, I'm | won't, they've | -- | -- |
-| Syllables | -- | 1 vs 2 syllables | count to 3 | count to 4 | -- | -- |
-| Homophones | -- | -- | sea/see, two/too | their/there/they're | more pairs, context sentence | subtle pairs |
-| Prefixes and suffixes | -- | -- | -- | un-, re-, -ful | pre-, dis-, -less, -ness | mis-, inter-, -able, -tion |
-| Analogies | -- | -- | -- | hot:cold :: up:__ | part/whole, worker/tool | function, degree |
-| Alphabetical order | -- | -- | first letter | second letter | third letter | -- |
-| Sentence completion | I see a __ (sight words) | short sentence, picture-word | context clue | context clue, harder word | vocabulary in context | academic vocabulary |
-| Parts of speech | -- | -- | -- | noun/verb | adjective/adverb | pronoun, conjunction |
+| Rhymes (`rhymes`) | CVC word families (cat/hat), 3 choices with a clear non-rhyme | CVC + blends (ship/chip) | vowel teams (rain/train) | multi-syllable rhymes | slant and multi-syllable | rare rhymes / near rhymes flagged |
+| Beginning/ending sounds (`sounds`) | first letter of picture-words (b: ball, bat, bug) | ending sounds; digraphs (sh, ch) | blends (str, pl) | -- | -- | -- |
+| Vowel sounds (`vowels`) | -- | short vowels (cat/map), then long vowels, then a long vowel against its short partner | the same by name ("the short a sound"), then the /yoo/ (cube) and /oo/ (moon) families that most often collide | -- | -- | -- |
+| Letters (`letters`) | "Which is the letter B?" / big-little matching | alphabet order neighbours | -- | -- | -- | -- |
+| Compound words (`compounds`) | -- | sun + shine | bird + bath (three worked examples then a blank) | harder pairs, decoys share a half | split a compound | -- |
+| Opposites (`opposites`) | hot/cold, big/small | up/down, fast/slow, more | wide/narrow, ancient/modern-lite | precise pairs (shallow/deep) | abstract (generous/stingy) | academic (abundant/scarce) |
+| Synonyms (`synonyms`) | -- | big/large | happy/glad | shades (angry/furious) | tier-2 vocabulary | tier-3 vocabulary |
+| Categories (`categories`) | Which is an animal? | Which is a fruit/vehicle? | Which does not belong? | subtler categories (mammals vs reptiles) | abstract categories | odd-one-out with two plausible answers |
+| Where it lives / what it does (`associations`) | bird-nest, fish-water | bee-hive, bear-den | tool-job (hammer-nail) | worker-place | part-whole | function-object |
+| Plurals and tenses (`plurals`) | -- | cat-cats | mouse-mice, child-children | run-ran | irregular past | tense in context |
+| Contractions (`contractions`) | -- | -- | can't, I'm | won't, they've | -- | -- |
+| Syllables (`syllables`) | -- | 1 vs 2 syllables | count to 3 | count to 4 | -- | -- |
+| Homophones (`homophones`) | -- | -- | sea/see, two/too | their/there/they're | more pairs, context sentence | subtle pairs |
+| Prefixes and suffixes (`affixes`) | -- | -- | -- | un-, re-, -ful | pre-, dis-, -less, -ness | mis-, inter-, -able, -tion |
+| Analogies (`analogies`) | -- | -- | -- | hot:cold :: up:__ | part/whole, worker/tool | function, degree |
+| Alphabetical order (`alphabetical`) | -- | -- | first letter | second letter | third letter | -- |
+| Sentence completion (`sentences`) | I see a __ (sight words) | short sentence, picture-word | context clue | context clue, harder word | vocabulary in context | academic vocabulary |
+| Parts of speech (`partsofspeech`) | -- | -- | -- | noun/verb | adjective/adverb | pronoun, conjunction |
+| Vocabulary (`vocabulary`) | -- | -- | -- | the meaning of a word, or the word for a meaning | tier-2 academic words | tier-3 academic words, more often naming the word from its meaning |
 
 ### Math
 
 | Family | K | 1 | 2 | 3 | 4 | 5 |
 | --- | --- | --- | --- | --- | --- | --- |
-| Counting | count 1-10 drawn objects; which number comes next | count to 20; ten-frames | count by 2s/5s/10s to 100 | skip counting from any number | -- | -- |
+| Counting (`counting`) | count 1-10 drawn objects; which number comes next | count to 20; ten-frames | count by 2s/5s/10s to 100 | skip counting from any number | -- | -- |
 | Number words | one..ten | eleven..twenty | to one hundred | -- | -- | -- |
-| Compare | which is more (pictures); bigger number to 10 | to 100 | to 1000 | 4-digit; < > = | fractions with like denominators; decimals tenths | fractions unlike denominators; decimals thousandths |
-| Add | within 5 with objects | within 20 | within 100 | 3-digit | multi-digit; decimals tenths | decimals; fractions |
+| Compare (`compare`) | which is more (pictures); bigger number to 10 | to 100 | to 1000 | 4-digit; < > = | fractions with like denominators; decimals tenths | fractions unlike denominators; decimals thousandths |
+| Add (`addsub`) | within 5 with objects | within 20 | within 100 | 3-digit | multi-digit; decimals tenths | decimals; fractions |
 | Subtract | within 5 with objects | within 20 | within 100 | 3-digit | multi-digit; decimals | decimals; fractions |
-| Multiply | -- | -- | equal groups (2 x 3 as pictures) | facts to 10x10 | 2-digit x 1-digit; x 10s | 2-digit x 2-digit; decimals |
-| Divide | -- | -- | share equally (pictures) | facts | 3-digit by 1-digit, remainders | 2-digit divisors |
-| Sequences | shape patterns ABAB | number patterns +1/+2 | +5/+10, backwards | x2, +/-7, +/-9 | two-step rules | squares, Fibonacci-like |
-| Place value | -- | tens and ones | hundreds | thousands; round to 10/100 | to millions; round | decimals place value |
-| Time | day/night, clock hours | hours and half hours | five minutes | to the minute; elapsed time (hours) | elapsed time (minutes) | elapsed across hours |
-| Money | penny/nickel/dime names | count pennies, nickels, dimes | quarters, make a dollar | make change under $1 | dollars and cents add | multi-step money |
-| Shapes | circle/square/triangle names; sides | sides and corners | 2D vs 3D names | quadrilaterals; perimeter | angles; area of rectangles | volume; coordinate grid |
-| Fractions | halves (pictures) | halves and quarters | thirds; which picture shows 1/3 | compare unit fractions | equivalent fractions | add/subtract fractions |
-| Word problems | one-step add within 5 | one-step within 20 | one-step within 100 | two-step; multiplication | multi-step | multi-step with fractions/decimals |
-| Even/odd, factors | -- | -- | even or odd | even/odd to 100 | factors, multiples | prime, GCF |
-| Measurement | longer/shorter; heavier | inches vs feet vs miles (which unit) | cm/m estimates; thermometers | minutes in an hour; bar charts | unit conversions; bar charts | conversions with decimals; bar charts |
+| Multiply (`multiply`) | -- | -- | equal groups (2 x 3 as pictures) | facts to 10x10 | 2-digit x 1-digit; x 10s | 2-digit x 2-digit; decimals |
+| Divide (`divide`) | -- | -- | share equally (pictures) | facts | 3-digit by 1-digit, remainders | 2-digit divisors |
+| Sequences (`sequences`) | shape patterns ABAB | number patterns +1/+2 | +5/+10, backwards | x2, +/-7, +/-9 | two-step rules | squares, Fibonacci-like |
+| Place value (`placevalue`) | -- | tens and ones | hundreds | thousands; round to 10/100 | to millions; round | decimals place value |
+| Time (`time`) | day/night, clock hours | hours and half hours | five minutes | to the minute; elapsed time (hours) | elapsed time (minutes) | elapsed across hours |
+| Money (`money`) | penny/nickel/dime names | count pennies, nickels, dimes | quarters, make a dollar | make change under $1 | dollars and cents add | multi-step money |
+| Shapes (`shapes`) | circle/square/triangle names; sides | sides and corners | 2D vs 3D names | quadrilaterals; perimeter | angles; area of rectangles | volume; coordinate grid |
+| Fractions (`fractions`) | halves (pictures) | halves and quarters | thirds; which picture shows 1/3 | compare unit fractions | equivalent fractions | add/subtract fractions |
+| Word problems (`wordproblems`) | one-step add within 5 | one-step within 20 | one-step within 100 | two-step; multiplication | multi-step | multi-step with fractions/decimals |
+| Even/odd, factors (`evenodd`) | -- | -- | even or odd | even/odd to 100 | factors, multiples | prime, GCF |
+| Measurement (`measurement`) | longer/shorter; heavier | inches vs feet vs miles (which unit) | cm/m estimates; thermometers | minutes in an hour; bar charts | unit conversions; bar charts | conversions with decimals; bar charts |
 
 ### Thinking and science
 
 | Family | K | 1 | 2 | 3 | 4 | 5 |
 | --- | --- | --- | --- | --- | --- | --- |
-| Odd one out | color/shape | category | attribute | two-attribute | abstract | conceptual |
-| Riddles ("I have hands but no arms") | very concrete | concrete | classic riddles | wordplay | multi-clue | lateral |
-| Animals | sounds, babies | homes, groups | classes (mammal/bird) | adaptations | food chains | ecosystems |
-| Earth and sky | day/night, seasons, weather | sun/moon/stars | water cycle words | planets order | moon phases, rock types | solar system facts, gravity |
-| The body and senses | five senses | body parts | teeth/bones | organs | systems | cells |
-| Matter and machines | hot/cold, wet/dry | float/sink | solid/liquid/gas | magnets, simple machines | energy forms | electricity, forces |
-| Sequences of events | first/next/last with pictures-in-words | daily routine | life cycles | procedures | cause and effect | logical deduction |
-| Which is bigger/heavier/faster | concrete | concrete | relative | estimation | real quantities | unit reasoning |
+| Odd one out (`oddoneout`) | color/shape | category | attribute | two-attribute | abstract | conceptual |
+| Riddles ("I have hands but no arms") (`riddles`) | very concrete | concrete | classic riddles | wordplay | multi-clue | lateral |
+| Animals (`animals`) | sounds, babies | homes, groups | classes (mammal/bird) | adaptations | food chains | ecosystems |
+| Earth and sky (`earthsky`) | day/night, seasons, weather | sun/moon/stars | water cycle words | planets order | moon phases, rock types | solar system facts, gravity |
+| The body and senses (`body`) | five senses | body parts | teeth/bones | organs | systems | cells |
+| Matter and machines (`matter`) | hot/cold, wet/dry | float/sink | solid/liquid/gas | magnets, simple machines | energy forms | electricity, forces |
+| Sequences of events (`events`) | first/next/last with pictures-in-words | daily routine | life cycles | procedures | cause and effect | logical deduction |
+| Which is bigger/heavier/faster (`comparisons`) | concrete | concrete | relative | estimation | real quantities | unit reasoning |
 
 ### Difficulty ramp checks (enforced by tests)
 
@@ -218,8 +221,8 @@ object), exactly like the original's HUD.
 
 * Start: 5 coins, 10 nets. Elf caught: +1 coin. Riddle solved: +2 coins. Coin drop: -1.
   Net shop: 4 coins for 5 nets (3 at star 5+ when elf dust is around).
-* Coins on the ground appear (one at a time, at most 3 per level) whenever coins < 2 and nets = 0,
-  so the player can always buy nets.
+* Coins on the ground appear (one at a time, at most 3 per level) whenever the player has no nets
+  and cannot afford a handful, so the player can always buy nets.
 * Elf dust (star 2+): a dusting elf throws a puff; if it hits, -1 coin (never below 0).
 * Score isn't shown; treasures are the score, like the original.
 * Average ascent (tested by the automated playtest with a perfect player): about 9-12 riddles.
@@ -241,15 +244,20 @@ object), exactly like the original's HUD.
   operations and the loop is 7680px wide, so there is nothing worth caching off-screen. Parallax:
   far mountains at 0.3x the camera, clouds at 0.15x, the sun at 0.05x.
 * Text: a rounded sans-serif system stack for riddles, sized to fit - 46 px for a one-line question
-  down to 24 px for a six-line grade-5 logic puzzle, always stopping short of the answer buttons - with letter-spacing
-  and generous line height; red for the clue word and the highlighted rhyme letters, as the original.
+  down to 28 px for the longest, always stopping short of the answer buttons - with letter-spacing
+  and generous line height; red for the clue word and the highlighted rhyme letters, as the
+  original. `e2e/textfit.ts` measures every riddle against the real layout in a real browser and
+  fails if any line runs out of its box or any question is set below 28 px.
 
 ## 9. Sound
 
 All synthesized (see `src/engine/audio.ts`): a title march, one loop per level (pastoral,
-brisk mine, airy summit), a castle theme and a victory loop; effects for steps, jump, net swing,
-catch, miss, scroll open, right/wrong, coin, clue, poof/dig, treasure, key, ladder, fanfare,
-elf laugh, dust, gate, crown.
+brisk mine, airy summit), a castle theme and a victory loop; and twenty-two effects - steps,
+jump, landing, net swing, catch, miss, scroll open, right, wrong, coin, clue, poof/dig, nothing
+found, treasure, ladder, gate, fanfare, crown, the elf's laugh, a button click, a selection tick
+and the Master's lose sting. `e2e/audio.mjs` renders every one of them through an
+`OfflineAudioContext` and checks it is neither silence nor clipping, and that the busiest possible
+moment still leaves headroom.
 
 ## 10. Persistence
 
@@ -261,14 +269,28 @@ they got wrong.
 
 ## 11. Testing
 
-* `test/content.test.ts`: every generator x grade x tier x 300 seeds is valid, choices unique,
-  answer present, decoys never also correct, prompts fit the scroll, ramp monotonic.
-* `test/world.test.ts`: level generation constraints for all ranks and seeds.
-* `test/game.test.ts`: the pure game state machine, driven headless: full ascent with a perfect
-  player, a player who fails every riddle (still finishes: free nets, ground coins), save/restore.
-* `e2e/playtest.mjs`: Playwright plays a full ascent at each grade in the real build through real
-  taps and key presses (optionally at a preset rank, to exercise elf dust, the broken bridge, trick
-  ladders and the Master's arm) and writes screenshots; `e2e/screenshots.mjs` renders every screen
-  and art sheet for review; `e2e/pwa.mjs` checks the service worker, manifest, saved progress and
-  an offline reload; `e2e/difficulty.mjs` writes `DIFFICULTY.md`; `e2e/samples.mjs` dumps riddles
-  per family x grade x tier for review.
+Around 1800 unit tests and a dozen browser harnesses. The unit tests:
+
+* `test/content.test.ts` plus `reading`, `reading2`, `math` and `thinking`: every generator x grade
+  x tier x 150 seeds is valid - choices unique, answer present, decoys never also correct, nothing
+  that answers itself, prompts short enough for the scroll, ramp monotonic within and across
+  grades - and, across all of them, that no rule about how a choice *looks* (longest, first,
+  the one with a decimal point, the one with an article) beats guessing.
+* `test/world.test.ts`: level generation for every rank and seed - exactly the right number of
+  two-word matches, one unique three-word target, no pair of groups a colour-blind child cannot
+  tell apart, every clue word true of the group it describes.
+* `test/game.test.ts`: the game state machine, driven headless - a full ascent at every grade, a
+  player who fails every riddle (still finishes: free nets, ground coins), a whole climb played
+  from the keyboard, 60 castles at each of the 8 ranks all climbable, save and restore.
+* `test/save.test.ts` and `test/fuzz.test.ts`: a corrupt or hostile save file never crashes the
+  game, and random input never leaves it on an unknown screen.
+
+The browser harnesses run against the real build in headless Chromium: `playtest.mjs` plays a full
+ascent at each grade through real taps and key presses (optionally at a preset rank, to exercise
+elf dust, the broken bridge, trick ladders and the Master's arm); `screenshots.mjs` renders every
+screen and art sheet for review; `textfit.ts` measures the type; `contrast.mjs` checks every
+text-on-background pair against WCAG; `artbox.mjs` measures the ink of every prize; `audio.mjs`
+renders every sound; `fuzz.mjs` hammers the UI; `pwa.mjs`, `swupdate.mjs` and `fileurl.mjs` check
+the service worker, an update reaching a running copy, and the `file://` load the APK uses;
+`perf.mjs` times frames on three device profiles; `difficulty.mjs` writes `DIFFICULTY.md` and
+`samples.mjs` dumps riddles per family x grade x tier for review.
