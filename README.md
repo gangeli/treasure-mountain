@@ -17,7 +17,7 @@ Mischief.
   time, money, shapes, measurement, word problems, animals, earth and sky, the body, matter and
   machines, riddles, odd one out, and more) comes in a version for each grade, and gets harder as
   the child earns stars.
-* **Size:** the whole game is one HTML file - 200 KB gzipped over the wire; the signed APK is 215 KB.
+* **Size:** the whole game is one HTML file - 207 KB gzipped over the wire; the signed APK is 217 KB.
   All art is vector, drawn with Canvas 2D; all sound is synthesized. Nothing leaves the device.
 
 ## Layout

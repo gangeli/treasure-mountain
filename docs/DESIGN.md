@@ -17,8 +17,8 @@ how the screens, art and sound are laid out.
    each grade, with a difficulty ramp inside a grade (mountain level 1 -> 2 -> 3, and by rank).
 3. **Made for small hands.** Tap-to-walk, big buttons, three (K-2) or four (3-5) answer choices,
    an optional read-aloud button, no time pressure, no way to lose.
-4. **Tiny and private.** One self-contained HTML file (about 580 KB, 185 KB over the wire; the
-   signed APK is 215 KB); all art is drawn with Canvas 2D, all sound is synthesized. No
+4. **Tiny and private.** One self-contained HTML file (about 670 KB, 207 KB over the wire; the
+   signed APK is 217 KB); all art is drawn with Canvas 2D, all sound is synthesized. No
    network after first load, nothing leaves the device.
 
 ## 2. What is kept from the original (verbatim rules)
