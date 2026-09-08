@@ -675,7 +675,7 @@ export class Game {
     const gapActive = !!bridge && this.stars() >= 3
     if (move !== 0) {
       const nx = wrapX(p.x + move * WALK_SPEED * dt)
-      if (gapActive && bridge && p.y === 0 && p.targetX != null && loopDist(nx, bridge.x) < bridge.width / 2 - 20 && loopDist(p.x, bridge.x) >= bridge.width / 2 - 20) {
+      if (gapActive && bridge && p.y === 0 && p.targetX != null && loopDist(nx, bridge.x) < 95 && loopDist(p.x, bridge.x) >= 95) {
         p.targetX = null; move = 0
         this.showMessage(['The bridge is out! Jump across.'], 2.5)
       }
@@ -693,10 +693,10 @@ export class Game {
       p.y += p.vy * dt
       if (p.y <= 0) { p.y = 0; p.vy = 0; if (p.state === 'jump' || p.state === 'fall') { p.state = 'idle'; p.t = 0; this.sfx('land') } }
     }
-    if (gapActive && bridge && p.y === 0 && loopDist(p.x, bridge.x) < bridge.width / 2 - 40 && p.state !== 'fall') {
-      // Fell into the gap: back to the near edge.
+    if (gapActive && bridge && p.y === 0 && loopDist(p.x, bridge.x) < 55 && p.state !== 'fall') {
+      // Fell into the gap (110 px wide; a jump covers about 200): back to the near edge.
       const side = loopDelta(bridge.x, p.x) < 0 ? -1 : 1
-      p.x = wrapX(bridge.x + side * (bridge.width / 2 + 10))
+      p.x = wrapX(bridge.x + side * 110)
       p.state = 'fall'; p.t = 0; p.targetX = null
       this.sfx('miss'); this.showMessage(['Whoa! Jump over the broken bridge.'], 2.5)
       p.state = 'idle'

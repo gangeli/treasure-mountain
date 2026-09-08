@@ -107,8 +107,8 @@ function bridge(ctx: Ctx, x: number, y: number, gap: boolean): void {
   const planks = 11
   for (let i = 0; i < planks; i++) {
     const px = x - w / 2 + 24 + i * ((w - 48) / planks)
-    const broken = gap && i >= 3 && i <= 7
-    if (broken) { if (i === 3 || i === 7) { ctx.save(); ctx.translate(px + 10, y + 2); ctx.rotate(i === 3 ? 0.9 : -0.9); roundRect(ctx, -10, 0, 20, 30, 3, P.wood, P.ink, 2.5); ctx.restore() } continue }
+    const broken = gap && i >= 4 && i <= 6
+    if (broken) { if (i === 4 || i === 6) { ctx.save(); ctx.translate(px + 10, y + 2); ctx.rotate(i === 4 ? 0.9 : -0.9); roundRect(ctx, -10, 0, 20, 30, 3, P.wood, P.ink, 2.5); ctx.restore() } continue }
     roundRect(ctx, px, y - 8, (w - 48) / planks - 4, 12, 2, P.wood, P.ink, 2.5)
   }
   // rope rails and posts

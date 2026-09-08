@@ -39,26 +39,26 @@ export function drawKind(ctx: Ctx, kind: string, desc: string, x: number, y: num
   const s = sizeFor(desc), tall = tallFor(desc), r = h1(seed)
   switch (kind) {
     case 'tree': return tree(ctx, x, y, s, tall, desc === 'round', r)
-    case 'bush': return bush(ctx, x, y, s, desc === 'round', colorFor(desc, P.green), r)
-    case 'rock': return rock(ctx, x, y, s * 0.9, desc === 'round', colorFor(desc, P.rock), r)
-    case 'boulder': return rock(ctx, x, y, s * 1.5, desc === 'round', colorFor(desc, P.rock), r)
-    case 'flower': return flower(ctx, x, y, desc === 'small' ? 0.7 : 1, tall, colorFor(desc, P.pink), r)
-    case 'mushroom': return mushroom(ctx, x, y, s, colorFor(desc, P.red), desc === 'spotted', r)
-    case 'log': return log(ctx, x, y, s)
+    case 'bush': return bush(ctx, x, y, s, desc === 'round', P.green, r)
+    case 'rock': return rock(ctx, x, y, s * 0.9, desc === 'round' ? 'round' : desc === 'flat' ? 'flat' : 'plain', P.rock, r)
+    case 'boulder': return rock(ctx, x, y, 1.5, desc === 'round' ? 'round' : desc === 'flat' ? 'flat' : desc === 'pointy' ? 'pointy' : 'cracked', P.rock, r)
+    case 'flower': return flower(ctx, x, y, 1, 1, colorFor(desc, P.pink), r)
+    case 'mushroom': return mushroom(ctx, x, y, 1, desc === 'spotted' ? P.cream : colorFor(desc, P.red), desc === 'spotted', r)
+    case 'log': return log(ctx, x, y, desc === 'long' ? 1.4 : 0.75)
     case 'stump': return stump(ctx, x, y, s)
     case 'fern': return fern(ctx, x, y, s, t, r)
-    case 'lantern': return lantern(ctx, x, y, s, tall, colorFor(desc, P.orange), t)
-    case 'sign': return sign(ctx, x, y, s, tall, desc === 'round', colorFor(desc, P.cream), r)
-    case 'nest': return nest(ctx, x, y, s, desc === 'round', r)
-    case 'fence': return fence(ctx, x, y, s, tall, colorFor(desc, P.wood))
-    case 'cart': return cart(ctx, x, y, s, colorFor(desc, P.wood))
-    case 'crystal': return crystal(ctx, x, y, s, tall, colorFor(desc, P.purplePale), r)
-    case 'pine': return pine(ctx, x, y, s, tall, desc === 'snowy', r)
-    case 'shovel': return shovel(ctx, x, y, tall, colorFor(desc, P.blue))
+    case 'lantern': return lantern(ctx, x, y, 1, 1, colorFor(desc, P.orange), t)
+    case 'sign': return sign(ctx, x, y, 1, 1, desc === 'round' ? 'round' : desc === 'striped' ? 'striped' : 'square', P.cream, r)
+    case 'nest': return nest(ctx, x, y, desc === 'empty' ? 1 : s, desc !== 'empty', r)
+    case 'fence': return fence(ctx, x, y, desc === 'long' ? 1.6 : 1, desc === 'tall' ? 1.6 : desc === 'short' ? 0.7 : 1, P.wood)
+    case 'cart': return cart(ctx, x, y, desc === 'empty' ? 1 : s, P.wood, desc !== 'empty')
+    case 'crystal': return crystal(ctx, x, y, 1, 1, colorFor(desc, P.purplePale), r)
+    case 'pine': return pine(ctx, x, y, desc === 'small' ? 0.62 : 1, desc === 'tall' ? 1.6 : 1, desc === 'snowy', r)
+    case 'shovel': return shovel(ctx, x, y, 1, colorFor(desc, P.blue))
     case 'snowman': return snowman(ctx, x, y, s, r)
-    case 'icicle': return icicle(ctx, x, y, s, desc === 'long' ? 1.4 : desc === 'short' ? 0.7 : 1, colorFor(desc, P.ice))
-    case 'gem': return gem(ctx, x, y, s, colorFor(desc, P.red), r)
-    case 'flag': return flag(ctx, x, y, tall, colorFor(desc, P.red), t)
+    case 'icicle': return icicle(ctx, x, y, desc === 'thick' ? 1.9 : 1, desc === 'long' ? 1.4 : desc === 'short' ? 0.7 : 1, P.ice)
+    case 'gem': return gem(ctx, x, y, 1, colorFor(desc, P.red), r)
+    case 'flag': return flag(ctx, x, y, 1, colorFor(desc, P.red), t)
   }
 }
 
@@ -105,7 +105,7 @@ function bush(ctx: Ctx, x: number, y: number, s: number, round: boolean, color: 
   // little leaf marks
   ctx.strokeStyle = P.greenDark; ctx.lineWidth = 2
   for (let i = 0; i < 4; i++) { const lx = x - w * 0.3 + i * w * 0.2, ly = y - h * (0.3 + (i % 2) * 0.3); ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(lx + 6, ly - 8); ctx.stroke() }
-  if (r > 0.6) for (let i = 0; i < 3; i++) circle(ctx, x - w * 0.25 + i * w * 0.25, y - h * (0.45 + (i % 2) * 0.25), 4 * s, P.blue, P.ink, 1.5)
+  void r
 }
 
 function flower(ctx: Ctx, x: number, y: number, s: number, tall: number, color: string, r: number): void {
@@ -125,7 +125,7 @@ function mushroom(ctx: Ctx, x: number, y: number, s: number, color: string, spot
   ctx.beginPath(); ctx.moveTo(x - capW / 2, y - stemH + 4); ctx.quadraticCurveTo(x - capW / 2, y - stemH - 34 * s, x, y - stemH - 36 * s); ctx.quadraticCurveTo(x + capW / 2, y - stemH - 34 * s, x + capW / 2, y - stemH + 4); ctx.closePath()
   fillStroke(ctx, color)
   // Spots only for "spotted": descriptors must be reliable clue words.
-  if (spotted) { circle(ctx, x - 12 * s, y - stemH - 12 * s, 5 * s, P.white, P.ink, 1.5); circle(ctx, x + 8 * s, y - stemH - 22 * s, 4 * s, P.white, P.ink, 1.5); circle(ctx, x + 14 * s, y - stemH - 6 * s, 3.5 * s, P.white, P.ink, 1.5); circle(ctx, x - 4 * s, y - stemH - 28 * s, 3 * s, P.white, P.ink, 1.5) }
+  if (spotted) { circle(ctx, x - 12 * s, y - stemH - 12 * s, 5 * s, P.red, P.ink, 1.5); circle(ctx, x + 8 * s, y - stemH - 22 * s, 4 * s, P.red, P.ink, 1.5); circle(ctx, x + 14 * s, y - stemH - 6 * s, 3.5 * s, P.red, P.ink, 1.5); circle(ctx, x - 4 * s, y - stemH - 28 * s, 3 * s, P.red, P.ink, 1.5) }
   else { ctx.save(); ctx.globalAlpha = 0.25; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.ellipse(x - 10 * s, y - stemH - 20 * s, 10 * s, 5 * s, -0.4, 0, Math.PI * 2); ctx.fill(); ctx.restore() }
   void r
 }
@@ -173,16 +173,20 @@ function pine(ctx: Ctx, x: number, y: number, s: number, tall: number, snowy: bo
 }
 
 // ------------------------------------------------------------------ rocks and minerals
-function rock(ctx: Ctx, x: number, y: number, s: number, round: boolean, color: string, r: number): void {
-  const w = 70 * s, h = (round ? 56 : 46) * s
+function rock(ctx: Ctx, x: number, y: number, s: number, shape: 'plain' | 'round' | 'flat' | 'pointy' | 'cracked', color: string, r: number): void {
+  const w = (shape === 'flat' ? 96 : 70) * s, h = (shape === 'round' ? 56 : shape === 'flat' ? 24 : shape === 'pointy' ? 74 : 46) * s
   shadowBlob(ctx, x, y, w / 2)
   ctx.beginPath()
-  if (round) ctx.ellipse(x, y - h / 2 + 4, w / 2, h / 2, 0, 0, Math.PI * 2)
+  if (shape === 'round') ctx.ellipse(x, y - h / 2 + 4, w / 2, h / 2, 0, 0, Math.PI * 2)
+  else if (shape === 'flat') { ctx.moveTo(x - w / 2, y); ctx.lineTo(x - w * 0.45, y - h); ctx.lineTo(x + w * 0.42, y - h); ctx.lineTo(x + w / 2, y); ctx.closePath() }
+  else if (shape === 'pointy') { ctx.moveTo(x - w / 2, y); ctx.lineTo(x - w * 0.3, y - h * 0.5); ctx.lineTo(x - w * 0.05, y - h); ctx.lineTo(x + w * 0.2, y - h * 0.6); ctx.lineTo(x + w / 2, y); ctx.closePath() }
   else { ctx.moveTo(x - w / 2, y); ctx.lineTo(x - w * 0.42, y - h * 0.7); ctx.lineTo(x - w * 0.1, y - h); ctx.lineTo(x + w * 0.3, y - h * 0.85); ctx.lineTo(x + w / 2, y - h * 0.35); ctx.lineTo(x + w * 0.45, y); ctx.closePath() }
   fillStroke(ctx, color)
   ctx.save(); ctx.globalAlpha = 0.45; ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.ellipse(x - w * 0.18, y - h * 0.62, w * 0.2, h * 0.14, -0.4, 0, Math.PI * 2); ctx.fill(); ctx.restore()
   ctx.save(); ctx.globalAlpha = 0.3; ctx.fillStyle = P.ink; ctx.beginPath(); ctx.ellipse(x + w * 0.15, y - h * 0.22, w * 0.25, h * 0.14, 0.3, 0, Math.PI * 2); ctx.fill(); ctx.restore()
-  if (r > 0.5) { ctx.strokeStyle = P.rockDark; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x + w * 0.1, y - h * 0.8); ctx.lineTo(x + w * 0.2, y - h * 0.5); ctx.lineTo(x + w * 0.1, y - h * 0.3); ctx.stroke() }
+  // A crack only for "cracked" (it is a clue word).
+  if (shape === 'cracked') { ctx.strokeStyle = P.ink; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(x + w * 0.05, y - h * 0.95); ctx.lineTo(x - w * 0.08, y - h * 0.65); ctx.lineTo(x + w * 0.1, y - h * 0.45); ctx.lineTo(x - w * 0.05, y - h * 0.15); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x - w * 0.08, y - h * 0.65); ctx.lineTo(x - w * 0.25, y - h * 0.55); ctx.stroke() }
+  void r
 }
 
 function crystal(ctx: Ctx, x: number, y: number, s: number, tall: number, color: string, r: number): void {
@@ -204,7 +208,7 @@ function gem(ctx: Ctx, x: number, y: number, s: number, color: string, r: number
 
 function icicle(ctx: Ctx, x: number, y: number, s: number, len: number, color: string): void {
   // an ice spike growing from the ground (a frozen drip)
-  const h = 70 * s * len, w = 22 * s
+  const h = 70 * len, w = 22 * s
   shadowBlob(ctx, x, y, w)
   poly(ctx, [[x - w, y], [x - w * 0.5, y - h * 0.5], [x, y - h], [x + w * 0.5, y - h * 0.55], [x + w, y]], color)
   ctx.save(); ctx.globalAlpha = 0.6; ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.moveTo(x - w * 0.55, y - h * 0.15); ctx.lineTo(x - w * 0.25, y - h * 0.8); ctx.lineTo(x - w * 0.1, y - h * 0.3); ctx.closePath(); ctx.fill(); ctx.restore()
@@ -225,44 +229,46 @@ function lantern(ctx: Ctx, x: number, y: number, s: number, tall: number, color:
   roundRect(ctx, x + 22 - 14 * s, ly + 42 * s, 28 * s, 6, 2, P.ink, P.ink, 0)
 }
 
-function sign(ctx: Ctx, x: number, y: number, s: number, tall: number, round: boolean, color: string, r: number): void {
+function sign(ctx: Ctx, x: number, y: number, s: number, tall: number, shape: 'round' | 'square' | 'striped', color: string, r: number): void {
   const poleH = 70 * s * tall
   line(ctx, x, y, x, y - poleH, P.ink, 8); line(ctx, x, y, x, y - poleH, P.wood, 4)
   const bw = 60 * s, bh = 36 * s
-  if (round) circle(ctx, x, y - poleH - bh * 0.5, bw * 0.55, color)
+  if (shape === 'round') circle(ctx, x, y - poleH - bh * 0.5, bw * 0.55, color)
   else roundRect(ctx, x - bw / 2, y - poleH - bh, bw, bh, 5, color)
+  if (shape === 'striped') { ctx.save(); ctx.beginPath(); ctx.rect(x - bw / 2 + 2, y - poleH - bh + 2, bw - 4, bh - 4); ctx.clip(); ctx.fillStyle = P.red; for (let i = -3; i < 6; i++) { ctx.beginPath(); ctx.moveTo(x - bw / 2 + i * 16, y - poleH - bh); ctx.lineTo(x - bw / 2 + i * 16 + 8, y - poleH - bh); ctx.lineTo(x - bw / 2 + i * 16 + 8 + bh * 0.5, y - poleH); ctx.lineTo(x - bw / 2 + i * 16 + bh * 0.5, y - poleH); ctx.closePath(); ctx.fill() } ctx.restore(); return }
   const words = ['ELF XING', 'MINE', 'KEEP OUT', 'SLOW', 'TRAIL', 'CAVE']
   const w = words[Math.floor(r * words.length) % words.length]
   ctx.fillStyle = P.ink; ctx.font = `800 ${Math.round(12 * s)}px "Nunito", "Trebuchet MS", sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
   ctx.fillText(w, x, y - poleH - bh * 0.5)
 }
 
-function nest(ctx: Ctx, x: number, y: number, s: number, round: boolean, r: number): void {
-  const w = 62 * s, h = (round ? 34 : 26) * s
+function nest(ctx: Ctx, x: number, y: number, s: number, withEggs: boolean, r: number): void {
+  const w = 62 * s, h = 28 * s
   shadowBlob(ctx, x, y, w / 2)
   ctx.beginPath(); ctx.ellipse(x, y - h / 2, w / 2, h / 2, 0, 0, Math.PI * 2); ctx.closePath(); fillStroke(ctx, P.brownLight)
   ctx.strokeStyle = P.brownDark; ctx.lineWidth = 2
   for (let i = 0; i < 6; i++) { ctx.beginPath(); ctx.moveTo(x - w * 0.4 + i * w * 0.16, y - h * 0.15); ctx.lineTo(x - w * 0.3 + i * w * 0.16, y - h * 0.8); ctx.stroke() }
   ellipse(ctx, x, y - h * 0.75, w * 0.4, h * 0.3, P.brownDark, P.ink, 2)
-  const eggs = 1 + Math.floor(r * 3)
+  const eggs = withEggs ? 2 + Math.floor(r * 2) : 0
   for (let i = 0; i < eggs; i++) ellipse(ctx, x - (eggs - 1) * 8 * s + i * 16 * s, y - h * 0.8, 7 * s, 9 * s, P.cyanPale, P.ink, 2)
 }
 
 function fence(ctx: Ctx, x: number, y: number, s: number, tall: number, color: string): void {
   const w = 100 * s, h = 46 * tall
-  for (let i = 0; i < 4; i++) { const px = x - w / 2 + i * (w / 3); roundRect(ctx, px - 6, y - h, 12, h, 3, color); poly(ctx, [[px - 6, y - h], [px, y - h - 8], [px + 6, y - h]], color, P.ink, 2.5) }
+  const posts = s > 1.2 ? 6 : 4
+  for (let i = 0; i < posts; i++) { const px = x - w / 2 + i * (w / (posts - 1)); roundRect(ctx, px - 6, y - h, 12, h, 3, color); poly(ctx, [[px - 6, y - h], [px, y - h - 8], [px + 6, y - h]], color, P.ink, 2.5) }
   roundRect(ctx, x - w / 2 - 6, y - h * 0.75, w + 12, 9, 2, color)
   roundRect(ctx, x - w / 2 - 6, y - h * 0.35, w + 12, 9, 2, color)
 }
 
-function cart(ctx: Ctx, x: number, y: number, s: number, color: string): void {
+function cart(ctx: Ctx, x: number, y: number, s: number, color: string, loaded = true): void {
   const w = 96 * s, h = 44 * s
   shadowBlob(ctx, x, y, w / 2)
   circle(ctx, x - w * 0.3, y - 12 * s, 13 * s, P.rockDark); circle(ctx, x + w * 0.3, y - 12 * s, 13 * s, P.rockDark)
   poly(ctx, [[x - w / 2, y - h - 14], [x + w / 2, y - h - 14], [x + w * 0.4, y - 18], [x - w * 0.4, y - 18]], color)
   ctx.fillStyle = P.brownDark; ctx.fillRect(x - w / 2 + 4, y - h - 4, w - 8, 4); ctx.fillRect(x - w * 0.42, y - 32, w * 0.84, 4)
-  // cargo: gold nuggets
-  for (let i = 0; i < 4; i++) circle(ctx, x - w * 0.3 + i * w * 0.2, y - h - 16 - (i % 2) * 6, 8 * s, P.gold, P.ink, 2)
+  // cargo: gold nuggets (none when empty)
+  if (loaded) for (let i = 0; i < 4; i++) circle(ctx, x - w * 0.3 + i * w * 0.2, y - h - 16 - (i % 2) * 6, 8 * s, P.gold, P.ink, 2)
 }
 
 function shovel(ctx: Ctx, x: number, y: number, tall: number, color: string): void {

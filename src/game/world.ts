@@ -7,28 +7,32 @@ export type LevelNo = 1 | 2 | 3
 /** Scenery kinds, by level. Singular and plural names; which descriptors can be drawn for them. */
 export interface KindDef { kind: string; plural: string; descriptors: string[]; levels: LevelNo[]; width: number }
 
+/**
+ * Descriptors within a kind are mutually exclusive (one dimension per kind: sizes/shapes OR
+ * colours OR a distinct feature) so a child can always tell which group a clue word means.
+ */
 export const KINDS: KindDef[] = [
   { kind: 'tree', plural: 'trees', descriptors: ['small', 'big', 'tall', 'round'], levels: [1], width: 110 },
-  { kind: 'bush', plural: 'bushes', descriptors: ['small', 'big', 'round', 'green'], levels: [1, 2], width: 90 },
-  { kind: 'rock', plural: 'rocks', descriptors: ['small', 'big', 'round', 'grey', 'brown'], levels: [1, 2, 3], width: 80 },
-  { kind: 'flower', plural: 'flowers', descriptors: ['red', 'yellow', 'blue', 'purple', 'tall', 'small'], levels: [1, 2], width: 50 },
-  { kind: 'mushroom', plural: 'mushrooms', descriptors: ['red', 'blue', 'spotted', 'small', 'big'], levels: [1], width: 60 },
-  { kind: 'log', plural: 'logs', descriptors: ['short', 'long', 'brown'], levels: [1], width: 120 },
-  { kind: 'stump', plural: 'stumps', descriptors: ['small', 'big', 'brown'], levels: [1, 3], width: 70 },
-  { kind: 'fern', plural: 'ferns', descriptors: ['green', 'small', 'big'], levels: [1], width: 80 },
-  { kind: 'boulder', plural: 'boulders', descriptors: ['big', 'round', 'grey', 'brown'], levels: [2], width: 120 },
-  { kind: 'lantern', plural: 'lanterns', descriptors: ['red', 'yellow', 'green', 'small', 'tall'], levels: [2], width: 50 },
-  { kind: 'sign', plural: 'signs', descriptors: ['round', 'yellow', 'blue', 'small', 'tall'], levels: [2], width: 70 },
-  { kind: 'nest', plural: 'nests', descriptors: ['small', 'big', 'round', 'brown'], levels: [2], width: 80 },
-  { kind: 'fence', plural: 'fences', descriptors: ['short', 'tall', 'brown', 'white'], levels: [2], width: 120 },
-  { kind: 'cart', plural: 'carts', descriptors: ['small', 'big', 'red', 'brown'], levels: [2], width: 110 },
-  { kind: 'crystal', plural: 'crystals', descriptors: ['purple', 'blue', 'green', 'tall', 'small'], levels: [2, 3], width: 60 },
-  { kind: 'pine', plural: 'pines', descriptors: ['small', 'tall', 'snowy', 'green'], levels: [3], width: 100 },
-  { kind: 'shovel', plural: 'shovels', descriptors: ['red', 'blue', 'yellow', 'tall', 'short'], levels: [3], width: 50 },
-  { kind: 'snowman', plural: 'snowmen', descriptors: ['small', 'big', 'round'], levels: [3], width: 90 },
-  { kind: 'icicle', plural: 'icicles', descriptors: ['long', 'short', 'blue', 'white'], levels: [3], width: 50 },
-  { kind: 'gem', plural: 'gems', descriptors: ['red', 'blue', 'green', 'big', 'small'], levels: [3], width: 60 },
-  { kind: 'flag', plural: 'flags', descriptors: ['red', 'blue', 'yellow', 'tall', 'short'], levels: [3], width: 50 },
+  { kind: 'bush', plural: 'bushes', descriptors: ['small', 'big', 'round'], levels: [1, 2], width: 90 },
+  { kind: 'rock', plural: 'rocks', descriptors: ['small', 'big', 'round', 'flat'], levels: [1, 2, 3], width: 80 },
+  { kind: 'flower', plural: 'flowers', descriptors: ['red', 'yellow', 'blue', 'purple', 'white'], levels: [1, 2], width: 50 },
+  { kind: 'mushroom', plural: 'mushrooms', descriptors: ['red', 'blue', 'yellow', 'spotted'], levels: [1], width: 60 },
+  { kind: 'log', plural: 'logs', descriptors: ['short', 'long'], levels: [1], width: 120 },
+  { kind: 'stump', plural: 'stumps', descriptors: ['small', 'big'], levels: [1, 3], width: 70 },
+  { kind: 'fern', plural: 'ferns', descriptors: ['small', 'big'], levels: [1], width: 80 },
+  { kind: 'boulder', plural: 'boulders', descriptors: ['round', 'pointy', 'flat', 'cracked'], levels: [2], width: 120 },
+  { kind: 'lantern', plural: 'lanterns', descriptors: ['red', 'yellow', 'green', 'blue'], levels: [2], width: 50 },
+  { kind: 'sign', plural: 'signs', descriptors: ['round', 'square', 'striped'], levels: [2], width: 70 },
+  { kind: 'nest', plural: 'nests', descriptors: ['small', 'big', 'empty'], levels: [2], width: 80 },
+  { kind: 'fence', plural: 'fences', descriptors: ['short', 'tall', 'long'], levels: [2], width: 120 },
+  { kind: 'cart', plural: 'carts', descriptors: ['small', 'big', 'empty'], levels: [2], width: 110 },
+  { kind: 'crystal', plural: 'crystals', descriptors: ['purple', 'blue', 'green', 'pink'], levels: [2, 3], width: 60 },
+  { kind: 'pine', plural: 'pines', descriptors: ['small', 'tall', 'snowy'], levels: [3], width: 100 },
+  { kind: 'shovel', plural: 'shovels', descriptors: ['red', 'blue', 'yellow', 'green'], levels: [3], width: 50 },
+  { kind: 'snowman', plural: 'snowmen', descriptors: ['small', 'big'], levels: [3], width: 90 },
+  { kind: 'icicle', plural: 'icicles', descriptors: ['long', 'short', 'thick'], levels: [3], width: 50 },
+  { kind: 'gem', plural: 'gems', descriptors: ['red', 'blue', 'green', 'purple'], levels: [3], width: 60 },
+  { kind: 'flag', plural: 'flags', descriptors: ['red', 'blue', 'yellow', 'green'], levels: [3], width: 50 },
 ]
 
 export const NUMBER_WORDS = ['', 'one', 'two', 'three', 'four']
@@ -71,7 +75,7 @@ const kindsFor = (level: LevelNo, grade: Grade): KindDef[] => {
 }
 
 const descriptorsFor = (k: KindDef, grade: Grade): string[] => {
-  if (grade <= 1) return k.descriptors.filter(d => ['small', 'big', 'tall', 'red', 'yellow', 'blue', 'green', 'round', 'short', 'long', 'white', 'purple', 'brown', 'snowy', 'spotted', 'grey'].includes(d))
+  if (grade <= 1) return k.descriptors.filter(d => ['small', 'big', 'tall', 'red', 'yellow', 'blue', 'green', 'round', 'short', 'long', 'white', 'purple', 'pink', 'snowy', 'spotted', 'empty', 'square'].includes(d))
   return k.descriptors
 }
 
