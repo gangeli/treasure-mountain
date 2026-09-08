@@ -69,7 +69,10 @@ export const analogies: Generator = {
       family: 'analogies', skill: `thinking: analogies (${RELATION_NAME[a.rel]})`, prompt, highlight: [a.a, a.b, a.c], choices, answer,
       spoken: `${a.a} is to ${a.b} as ${a.c} is to blank. ${sayChoices(choices)}?`,
       metric: a.level * 10 + a.d.length + (mode === 'colon' ? 1 : 0) + rank, grade, tier,
-      key: `analogies|${a.a}|${a.b}|${a.c}|${mode}`,
+      // The notation is not the question: "scissors : cut :: broom : ___" and "Scissors is to cut
+      // as broom is to ___" are one analogy, and a session that counted them separately asked the
+      // same one twice.
+      key: `analogies|${a.a}|${a.b}|${a.c}`,
     })
   },
 }

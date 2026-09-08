@@ -217,7 +217,9 @@ function estimateQ(grade: Grade, tier: Tier, level: Grade, rng: Rng): Riddle {
     return riddle({
       family: 'comparisons', skill: 'thinking: estimating', prompt: wrap(q), choices, answer: idx,
       spoken: `${q} ${texts(choices)}?`, metric: level * 10 + 2 + (attr === 'speed' ? 3 : 0), grade, tier,
-      key: `comparisons|estimate|${t.n}|${attr}|${imperial ? 'i' : 'm'}`,
+      // Feet or metres is not a different question: "About how long is a bicycle?" asked twice in
+      // one climb, once in each system, is the same question twice.
+      key: `comparisons|estimate|${t.n}|${attr}`,
     })
   }
   throw new Error(`comparisons: no estimation item for level ${level}`)
