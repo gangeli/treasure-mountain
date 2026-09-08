@@ -54,7 +54,8 @@ Mountain Master (6), Champion (7: the crown is won).
 * **Grade selection.** The original was one game for ages 5-9. We add a first screen that picks
   the grade (K, 1, 2, 3, 4, 5). Each grade keeps its own rank, treasures and prize shelf.
 * **Riddle content.** The original had a few dozen fixed riddle templates for one age band. We
-  generate riddles from 26 puzzle families, each parameterised per grade and per tier
+  generate riddles from 41 puzzle families (19 reading, 14 math, 8 thinking), each parameterised
+  per grade and per tier
   (see section 5), so the game never runs dry and each grade sees age-appropriate work.
 * **Answer feedback.** The original gave the clue word on a correct answer. We add: on a wrong
   answer the choice is crossed out with a short hint ("Try again!"); a second miss reveals the
