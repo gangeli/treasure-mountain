@@ -4,6 +4,7 @@ import { W, H, PLAY_H } from '../game/layout'
 import type { Game } from '../game/game'
 import { CASTLE_FLOORS, CASTLE_FLOOR_Y, CASTLE_FLOOR_H } from '../game/game'
 import type { Button } from '../game/ui'
+import type { Riddle } from '../content/types'
 import { SCROLL, riddleChoiceRects, gradeCardRects } from '../game/ui'
 import { drawPlayer, drawElf, drawMaster, drawCrown, drawKey, drawNet } from './characters'
 import { drawHud, drawBubble, drawStars } from './hud'
@@ -255,6 +256,23 @@ function intro(ctx: Ctx, g: Game): void {
 }
 
 // ------------------------------------------------------------------ riddle scroll
+/**
+ * Where the riddle's question goes on the scroll, and the type sizes it may be set in. Exported
+ * because `e2e/textfit.ts` measures this same layout in a real browser: while it kept its own copy
+ * of these numbers they drifted, and it was checking a scroll 70px wider than the one on screen.
+ */
+export const PROMPT_SIZES = [46, 42, 38, 34, 30, 28, 26, 24, 22, 20]
+export function promptGeom(r: Riddle): { x: number; y: number; textW: number; ceiling: number } {
+  return {
+    x: SCROLL.x + 60,
+    y: SCROLL.y + 60,
+    textW: r.visual ? 570 : SCROLL.w - 250,
+    // The biggest type at which the wrapped prompt still stops short of the first answer button. A
+    // four-line prompt at 38px used to run underneath it, and the last line was unreadable.
+    ceiling: Math.min(...riddleChoiceRects(r).map(rc => rc.y)) - 14,
+  }
+}
+
 function riddle(ctx: Ctx, g: Game, clueMode = false): void {
   const rv = g.riddle!
   const r = rv.riddle
@@ -276,14 +294,9 @@ function riddle(ctx: Ctx, g: Game, clueMode = false): void {
   // the elf dancing at the right edge
   drawElf(ctx, S.x + S.w - 110, S.y + S.h - 40, -1, rv.phase === 'reveal' ? 'run' : 'dance', t, ((rv as any).elfId ?? 0) % 3, 'none')
   // prompt text (with visual)
-  const hasVisual = !!r.visual
-  const promptX = S.x + 60, promptY = S.y + 60
-  const textW = hasVisual ? 570 : S.w - 250
   const rects = riddleChoiceRects(r)
-  // The biggest type at which the wrapped prompt still stops short of the first answer button. A
-  // four-line prompt at 38px used to run underneath it, and the last line was unreadable.
-  const ceiling = Math.min(...rects.map(rc => rc.y)) - 14
-  const SIZES = [46, 42, 38, 34, 30, 28, 26, 24, 22, 20]
+  const { x: promptX, y: promptY, textW, ceiling } = promptGeom(r)
+  const SIZES = PROMPT_SIZES
   const fits = (sz: number, rw: string[]): boolean => promptY - sz / 2 + rw.length * sz * 1.3 <= ceiling
   let size = 24
   let rows: string[] = []

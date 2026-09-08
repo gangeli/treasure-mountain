@@ -6,7 +6,8 @@
 import { Rng } from '../src/engine/rng'
 import { GENERATORS } from '../src/content/generators/index'
 import { TIERS, type Grade, type Tier, type Riddle } from '../src/content/types'
-import { riddleChoiceRects, SCROLL } from '../src/game/ui'
+import { riddleChoiceRects } from '../src/game/ui'
+import { promptGeom, PROMPT_SIZES } from '../src/art/screens'
 import { serve, launch, playwright } from './lib.mjs'
 
 declare const process: { argv: string[]; exit(code: number): never }
@@ -37,14 +38,15 @@ interface Fit { gen: string; grade: Grade; tier: Tier; size: number; rows: numbe
 
 const cases: Case[] = riddles.map(({ gen, grade, tier, r }) => {
   const rects = riddleChoiceRects(r)
+  const geom = promptGeom(r)
   return {
     gen, grade, tier,
     prompt: r.prompt,
     hasVisual: !!r.visual,
-    promptX: SCROLL.x + 60,
-    promptY: SCROLL.y + (r.verse ? 74 : 64),
-    textW: (r.visual ? 600 : 1040) - 20,
-    ceiling: Math.min(...rects.map(rc => rc.y)) - 14,
+    promptX: geom.x,
+    promptY: geom.y,
+    textW: geom.textW,
+    ceiling: geom.ceiling,
     choices: r.choices.map((c, i) => ({ text: c.text ?? null, w: rects[i].w, h: rects[i].h })),
   }
 })
@@ -59,7 +61,7 @@ await page.waitForFunction(() => (window as any).__tm && (window as any).__tm.re
 // helper that does not exist inside the page. Defining it there is cheaper than fighting the loader.
 await page.evaluate('window.__name = (f) => f')
 
-const out: Fit[] = await page.evaluate((cases: Case[]) => {
+const out: Fit[] = await page.evaluate(([cases, SIZES]: [Case[], number[]]) => {
   const FONT = '"Nunito", "Fredoka", "Trebuchet MS", "Segoe UI", Verdana, system-ui, sans-serif'
   const cv = document.createElement('canvas')
   const ctx = cv.getContext('2d')!
@@ -75,7 +77,6 @@ const out: Fit[] = await page.evaluate((cases: Case[]) => {
     }
     return lines
   }
-  const SIZES = [46, 42, 38, 34, 30, 28, 26, 24]
   const res: Fit[] = []
   for (const c of cases) {
     const fits = (sz: number, rw: string[]): boolean => c.promptY - sz / 2 + rw.length * sz * 1.3 <= c.ceiling
@@ -102,11 +103,11 @@ const out: Fit[] = await page.evaluate((cases: Case[]) => {
     res.push({ gen: c.gen, grade: c.grade, tier: c.tier, size, rows: rows.length, promptOver, widest, worstChoice, clipped, sample: c.prompt.join(' / ') })
   }
   return res
-}, cases)
+}, [cases, PROMPT_SIZES] as [Case[], number[]])
 
 const over = out.filter(o => o.promptOver > 0.5 || o.widest > 0.5 || o.clipped > 0)
 const tiny = out.filter(o => o.worstChoice < 20)
-const small = out.filter(o => o.size <= 26)
+const small = out.filter(o => o.size < 28)
 console.log(`checked ${out.length} riddles`)
 console.log(`prompt or answer text that does not fit: ${over.length}`)
 const byCell: Record<string, { n: number; worst: number; sample: string }> = {}
@@ -120,7 +121,12 @@ for (const o of over) {
 for (const [k, v] of Object.entries(byCell).sort((a, b) => b[1].worst - a[1].worst)) console.log(`  ${k}: ${v.n} over, worst ${v.worst.toFixed(0)}px - ${v.sample}`)
 console.log(`answers shrunk below 20px: ${tiny.length}`)
 for (const o of tiny.slice(0, 6)) console.log(`  ${o.gen} g${o.grade}t${o.tier} answer at ${o.worstChoice}px: ${o.sample}`)
-console.log(`prompts at 26px or smaller: ${small.length}`)
-for (const o of small.slice(0, 0)) console.log(`  ${o.gen} g${o.grade}t${o.tier} ${o.size}px x${o.rows}: ${o.sample}`)
+const bySize: Record<number, number> = {}
+for (const o of out) bySize[o.size] = (bySize[o.size] ?? 0) + 1
+console.log('prompt type sizes: ' + Object.keys(bySize).map(Number).sort((a, b) => b - a).map(k => `${k}px x${bySize[k]}`).join(', '))
+console.log(`prompts smaller than 28px: ${small.length}`)
+for (const o of small.slice(0, 8)) console.log(`  ${o.gen} g${o.grade}t${o.tier} ${o.size}px x${o.rows}: ${o.sample}`)
 await browser.close(); server.close()
-process.exit(over.length ? 1 : 0)
+// A prompt set smaller than 26px is 13 CSS pixels on a phone, which is too small for the child
+// this game is for: the fix is a shorter question, not smaller type.
+process.exit(over.length || tiny.length || small.length ? 1 : 0)

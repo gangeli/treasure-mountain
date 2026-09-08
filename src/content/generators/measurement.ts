@@ -1,6 +1,6 @@
 import type { Generator, Grade, Tier, Riddle } from '../types'
 import type { Rng } from '../../engine/rng'
-import { shuffled, choiceCount } from '../types'
+import { shuffled, choiceCount, cap } from '../types'
 import { mathRiddle, sayChoices, numDecoys, fmtInt, fmtDec, wrap, NAMES } from './mathutil'
 
 // K: ordered triples [least, middle, most]. The heaviest item is always unambiguous ("rock" was not:
@@ -94,7 +94,9 @@ const BIG_VALUES = [2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 16, 18, 20]
 function barChart(mode: string, grade: Grade, tier: Tier, rng: Rng, n: number, base: number, pool: number[]): Riddle {
   const what = rng.pick(CHART)
   const values = rng.sample(pool, 5)
-  const prompt0 = `The chart shows ${what} for each day.`
+  // A caption, not a sentence: "The chart shows stickers for each day." wrapped to a third line
+  // beside the chart and drove the whole question down to 26px type.
+  const prompt0 = `${cap(what)} each day:`
   const vis = { kind: 'bars', values, labels: DAYS } as const
   if (mode === 'bars') {
     const most = rng.bool()
