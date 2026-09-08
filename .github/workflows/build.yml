@@ -17,9 +17,8 @@ permissions:
   pages: write
   id-token: write
 
-# The browser step plays whole ascents in a real Chromium, so a run takes the better part of an
-# hour; without this, a handful of pushes queues a handful of hour-long runs and only the last one
-# matters anyway.
+# The browser step plays whole ascents in a real Chromium, so a run takes twenty minutes or so;
+# without this, a handful of pushes queues a handful of them and only the last one matters anyway.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -54,9 +53,8 @@ jobs:
           npx tsx e2e/contrast.mjs
           npx tsx e2e/textfit.ts 30
           node e2e/fuzz.mjs 1500
-          # Kindergarten and 5th: the picture-led end of the game and the text-led one. The local
-          # run (npm run e2e) plays all six.
-          node e2e/playtest.mjs e2e/out/play 0,5
+          # Kindergarten, 2nd and 5th; the local run (npm run e2e) plays all six.
+          node e2e/playtest.mjs e2e/out/play 0,2,5
           node e2e/playtest.mjs e2e/out/play-hard 3 6
       # Informational only: a shared runner's timings are too noisy to fail a build on, but the
       # numbers land in the log so a frame that has doubled in cost is visible in the diff.
