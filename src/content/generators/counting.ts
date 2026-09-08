@@ -121,7 +121,7 @@ export const addSub: Generator = {
     const item = rng.pick(['apple', 'star', 'ball', 'fish', 'cookie', 'acorn'] as const)
     return riddle({
       family: 'addsub', skill: add ? 'math: addition' : 'math: subtraction', prompt,
-      visual: withPictures ? { kind: 'counters', item, count: add ? x + y : x, groups: add ? 2 : undefined, crossed: add ? undefined : y } : undefined,
+      visual: withPictures ? { kind: 'counters', item, count: add ? x + y : x, groups: add ? [x, y] : undefined, crossed: add ? undefined : y } : undefined,
       choices, answer,
       spoken: `What is ${fmt(x)} ${add ? 'plus' : 'minus'} ${fmt(y)}? ${choices.map(c => c.text).join(', ')}?`,
       metric: Math.log2(Math.max(2, x + y)) * 10 + decimals * 30, grade, tier,

@@ -50,29 +50,43 @@ export function drawItem(ctx: Ctx, item: CounterItem, x: number, y: number, r: n
 
 function counters(ctx: Ctx, v: Extract<Visual, { kind: 'counters' }>, x: number, y: number, w: number, h: number): void {
   const n = v.count
-  const groups = v.groups ?? 1
-  // Lay out in rows of up to 5 (or per group)
+  // Group sizes: explicit array, or n split into equal groups, or one group.
+  const gcount = typeof v.groups === 'number' ? v.groups : 0
+  const sizes: number[] = Array.isArray(v.groups) ? v.groups.filter(g => g > 0) : gcount > 1 ? Array.from({ length: gcount }, (_, i) => Math.floor(n / gcount) + (i < n % gcount ? 1 : 0)) : [n]
+  if (sizes.length > 1) {
+    // Each group is a dashed box of up to 5 per row; boxes sit side by side with a "+" between.
+    const rowsOf = (k: number) => Math.ceil(k / 5)
+    const cols = sizes.map(k => Math.min(5, k))
+    const rows = Math.max(...sizes.map(rowsOf))
+    const gapUnits = 0.7
+    const cell = Math.min(w / (cols.reduce((a, b) => a + b, 0) + (sizes.length - 1) * gapUnits + 0.4), h / (rows + 0.3), 110)
+    const r = cell * 0.34
+    const totalW = cols.reduce((a, b) => a + b, 0) * cell + (sizes.length - 1) * gapUnits * cell
+    let gx = x + (w - totalW) / 2
+    const y0 = y + (h - rows * cell) / 2 + cell / 2
+    let drawn = 0
+    sizes.forEach((k, gi) => {
+      const gw = cols[gi] * cell
+      rr(ctx, gx - 6, y0 - cell / 2 - 6, gw + 12, rowsOf(k) * cell + 12, 14); ctx.strokeStyle = P.inkSoft; ctx.lineWidth = 2; ctx.setLineDash([8, 6]); ctx.stroke(); ctx.setLineDash([])
+      for (let i = 0; i < k; i++) {
+        const crossed = v.crossed !== undefined && drawn >= n - v.crossed
+        drawItem(ctx, v.item, gx + (i % 5) * cell + cell / 2, y0 + Math.floor(i / 5) * cell, r, crossed)
+        drawn++
+      }
+      if (gi < sizes.length - 1) text(ctx, '+', gx + gw + gapUnits * cell / 2, y0 + (rows - 1) * cell / 2, { size: cell * 0.6, align: 'center', color: P.ink, weight: 900, outline: P.scroll, outlineWidth: 6 })
+      gx += gw + gapUnits * cell
+    })
+    return
+  }
   const perRow = n <= 5 ? n : n <= 10 ? 5 : n <= 12 ? 6 : 7
   const rows = Math.ceil(n / perRow)
-  const cell = Math.min(w / (perRow + (groups > 1 ? groups * 0.6 : 0)), h / rows, n <= 3 ? 130 : n <= 6 ? 110 : 90)
+  const cell = Math.min(w / perRow, h / rows, n <= 3 ? 130 : n <= 6 ? 110 : 90)
   const r = cell * 0.34
-  const totalW = perRow * cell + (groups > 1 ? (groups - 1) * cell * 0.6 : 0)
-  const x0 = x + (w - totalW) / 2 + cell / 2, y0 = y + (h - rows * cell) / 2 + cell / 2
-  const per = Math.ceil(n / groups)
+  const x0 = x + (w - perRow * cell) / 2 + cell / 2, y0 = y + (h - rows * cell) / 2 + cell / 2
   for (let i = 0; i < n; i++) {
-    const gi = groups > 1 ? Math.floor(i / per) : 0
-    const idx = groups > 1 ? i - gi * per : i
-    const row = Math.floor(idx / perRow), col = idx % perRow
-    const cx = x0 + col * cell + gi * (per * cell + cell * 0.6) - (groups > 1 ? (per - perRow) * 0 : 0)
+    const row = Math.floor(i / perRow), col = i % perRow
     const crossed = v.crossed !== undefined && i >= n - v.crossed
-    drawItem(ctx, v.item, groups > 1 ? x0 + (i % per) * cell + gi * (per * cell + cell * 0.6) : cx, y0 + (groups > 1 ? 0 : row * cell), r, crossed)
-  }
-  if (groups > 1) {
-    for (let gi = 0; gi < groups; gi++) {
-      const gx = x0 - cell / 2 + gi * (per * cell + cell * 0.6)
-      rr(ctx, gx - 6, y0 - cell / 2 - 6, per * cell + 12, cell + 12, 14); ctx.strokeStyle = P.inkSoft; ctx.lineWidth = 2; ctx.setLineDash([8, 6]); ctx.stroke(); ctx.setLineDash([])
-      if (gi < groups - 1) text(ctx, '+', gx + per * cell + cell * 0.36, y0, { size: cell * 0.6, align: 'center', color: P.ink, weight: 900, outline: P.scroll, outlineWidth: 6 })
-    }
+    drawItem(ctx, v.item, x0 + col * cell, y0 + row * cell, r, crossed)
   }
 }
 

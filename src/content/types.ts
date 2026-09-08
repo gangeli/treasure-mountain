@@ -19,7 +19,8 @@ export type CoinName = 'penny' | 'nickel' | 'dime' | 'quarter'
  * The renderer decides sizes; generators only say what to show.
  */
 export type Visual =
-  | { kind: 'counters'; item: CounterItem; count: number; groups?: number; crossed?: number }
+  /** `groups` = equal groups (a number) or explicit group sizes (an array, e.g. [3, 2] for 3 + 2). */
+  | { kind: 'counters'; item: CounterItem; count: number; groups?: number | number[]; crossed?: number }
   | { kind: 'clock'; hour: number; minute: number }
   | { kind: 'coins'; coins: CoinName[] }
   | { kind: 'fraction'; shape: 'circle' | 'bar'; parts: number; shaded: number }
