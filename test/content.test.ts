@@ -524,3 +524,82 @@ describe('the questions are worded for the grade that reads them', () => {
     for (const g of [1, 2, 3, 4]) expect(mean(g), `grade ${g} (${mean(g).toFixed(2)}) reads harder than grade ${g + 1}`).toBeLessThan(mean(g + 1) + 0.02)
   })
 })
+
+/**
+ * Surface tells: a rule about how a choice *looks*, applied without reading it. Longest and
+ * shortest are checked above; this covers the rest of the ways a choice can stand out — a capital
+ * letter, a digit, a decimal point, a comma, a hyphen, an apostrophe, a second word, a plural -s, a
+ * symbol, a leading "a/an/the" or "your". For each, the strategy is: when exactly one choice has
+ * it, pick that one (or, the other way round, never pick it); otherwise guess. Across the whole
+ * game the best of those rules wins 28.8% against 28.6% for guessing.
+ *
+ * It found three: the estimate that was never the one with a decimal point (94 times in 100), the
+ * lateral riddle whose answer was the only "your ..." among three "a ...", and the science fact
+ * whose answer was the only one that carried an article.
+ *
+ * Word overlap with the question is left out of the per-family check on purpose: contractions,
+ * plurals and affixes are *about* the word in the question coming back in the answer, and there is
+ * no way to write "that's is short for ___" whose answer does not contain "that".
+ */
+describe('no family rewards a rule about how the choices look', () => {
+  const FEATURES: Record<string, (t: string, r: Riddle) => boolean> = {
+    capital: t => /^[A-Z]/.test(t),
+    digit: t => /\d/.test(t),
+    decimal: t => /\d\.\d/.test(t),
+    comma: t => t.includes(','),
+    hyphen: t => t.includes('-'),
+    multiword: t => t.trim().includes(' '),
+    plural: t => /[a-z]s$/.test(t),
+    apostrophe: t => /['’]/.test(t),
+    symbol: t => /[%¢$°×÷/]/.test(t),
+    parens: t => /[()]/.test(t),
+    article: t => /^(a|an|the) /i.test(t),
+    possessive: t => /^(your|my|his|her|their) /i.test(t),
+    overlap: (t, r) => {
+      const asked = new Set(r.prompt.join(' ').toLowerCase().match(/[a-z]+/g) ?? [])
+      return (t.toLowerCase().match(/[a-z]+/g) ?? []).some(w => w.length >= 4 && asked.has(w))
+    },
+  }
+  it('picking (or avoiding) the odd-looking choice is no better than guessing', () => {
+    const bad: string[] = []
+    let allRiddles = 0, allChance = 0
+    const allRules: Record<string, number> = {}
+    for (const gen of GENERATORS) {
+      const score: Record<string, { pick: number; avoid: number }> = {}
+      for (const name of Object.keys(FEATURES)) score[name] = { pick: 0, avoid: 0 }
+      let riddles = 0, chance = 0
+      for (const grade of gen.grades) for (const tier of TIERS) {
+        const rng = new Rng(`look-${gen.id}-${grade}-${tier}`)
+        for (let i = 0; i < 100; i++) {
+          const r = gen.make(grade, tier, rng)
+          const texts = r.choices.map(c => c.text ?? '')
+          if (texts.some(t => !t)) continue
+          const k = texts.length
+          riddles++; chance += 1 / k
+          for (const [name, has] of Object.entries(FEATURES)) {
+            const odd = texts.map((t, j) => has(t, r) ? j : -1).filter(j => j >= 0)
+            const s = score[name]
+            if (odd.length !== 1) { s.pick += 1 / k; s.avoid += 1 / k }
+            else if (odd[0] === r.answer) s.pick += 1
+            else s.avoid += 1 / (k - 1)
+          }
+        }
+      }
+      if (!riddles) continue
+      allRiddles += riddles; allChance += chance
+      for (const [name, s] of Object.entries(score)) {
+        allRules[`${name}, pick`] = (allRules[`${name}, pick`] ?? 0) + s.pick
+        allRules[`${name}, avoid`] = (allRules[`${name}, avoid`] ?? 0) + s.avoid
+        if (name === 'overlap') continue
+        for (const [how, won] of [['pick', s.pick], ['avoid', s.avoid]] as const) {
+          const gain = 100 * won / riddles - 100 * chance / riddles
+          if (gain > 8) bad.push(`${gen.id}: "${how} the one with a ${name}" wins ${(100 * won / riddles).toFixed(0)}% against ${(100 * chance / riddles).toFixed(0)}% for guessing`)
+        }
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+    const best = Object.entries(allRules).sort((a, b) => b[1] - a[1])[0]
+    const overall = 100 * best[1] / allRiddles - 100 * allChance / allRiddles
+    expect(overall, `across the whole game "${best[0]}" gains ${overall.toFixed(1)} points`).toBeLessThan(1)
+  })
+})

@@ -195,15 +195,21 @@ function estimateQ(grade: Grade, tier: Tier, level: Grade, rng: Rng): Riddle {
     // Every decoy is a wrong power of ten: at least EST_MARGIN times away from the answer, so no
     // real-world variation in the thing itself can make a decoy defensible.
     const factors = [10, 0.1, rng.bool() ? 100 : 0.01, 1000, 0.001, 20, 0.05]
-    const decoys: string[] = []
+    const found: string[] = []
     for (const f of factors) {
       const text = fmt(v * f)
       const m = measure(text)
-      if (m === null || text === answer || decoys.includes(text) || text.startsWith('0.0')) continue
+      if (m === null || text === answer || found.includes(text) || text.startsWith('0.0')) continue
       if (Math.max(m, shown) / Math.min(m, shown) < EST_MARGIN) continue
-      decoys.push(text)
-      if (decoys.length >= n) break
+      // A grade that has not met decimals should not be shown one, not even to reject it.
+      if (level <= 3 && text.includes('.')) continue
+      found.push(text)
     }
+    // "Never pick the one with a decimal point" was right 94 times in 100: the answer was a whole
+    // number of a sensible unit and the tenth-of-it decoy was not, so the estimate could be found
+    // without estimating. Every choice now reads the same way, and the point carries nothing.
+    const dec = (x: string) => x.includes('.')
+    const decoys = found.filter(x => dec(x) === dec(answer)).slice(0, n)
     if (decoys.length < n - 1) continue
     const { choices, answer: idx } = shuffled(rng, answer, decoys, n)
     const q = attr === 'len' ? (t.tall ? `About how tall is ${t.n}?` : `About how long is ${t.n}?`) : attr === 'mass' ? `About how heavy is ${t.n}?` : `About how fast can ${t.n} go?`

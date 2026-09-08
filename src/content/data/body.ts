@@ -173,7 +173,7 @@ export const BODY_FACTS: Fact[] = [
   F(5, 3, 'Which parts of a cell release most of the energy?', 'the mitochondria', ['the nucleus', 'the membrane', 'the cell wall']),
   F(5, 3, 'Which vitamin does your body make when your skin is in sunlight?', 'vitamin D', ['vitamin A', 'vitamin C', 'vitamin K']),
   F(5, 3, 'Which mineral helps red blood cells carry oxygen?', 'iron', ['calcium', 'sugar', 'gold']),
-  F(5, 3, 'Which of these foods has the most vitamin C?', 'an orange', ['bread', 'cheese', 'rice']),
+  F(5, 3, 'Which of these foods has the most vitamin C?', 'orange', ['bread', 'cheese', 'rice']),
   F(5, 3, 'What is the jelly-like substance that fills a cell?', 'cytoplasm', ['the nucleus', 'the cell wall', 'enamel']),
   F(5, 3, 'How does a living thing grow more cells?', 'cells divide in two', ['cells melt together', 'cells swallow food', 'cells stop working']),
   F(5, 3, 'Which nutrients does your body need only in tiny amounts?', 'vitamins', ['carbohydrates', 'fats', 'water']),
