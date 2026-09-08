@@ -7,6 +7,11 @@ const VALUE: Record<CoinName, number> = { penny: 1, nickel: 5, dime: 10, quarter
 const COINS: CoinName[] = ['penny', 'nickel', 'dime', 'quarter']
 const sum = (cs: CoinName[]) => cs.reduce((s, c) => s + VALUE[c], 0)
 const ITEMS = ['toy', 'pencil', 'sticker', 'eraser', 'apple', 'cookie', 'balloon', 'ring', 'card', 'marble', 'notebook', 'yo-yo', 'kite', 'book', 'hat', 'ball']
+/**
+ * Things that can plausibly cost a few dollars. Grades 4 and 5 price everything in dollars, and
+ * "an apple costs $12.70" is a distraction in the middle of a subtraction.
+ */
+const DEARER = ['toy', 'ring', 'card', 'notebook', 'yo-yo', 'kite', 'book', 'hat', 'ball']
 
 /** Random handful of coins from `kinds`, at most `max` coins. */
 function handful(rng: Rng, kinds: CoinName[], min: number, max: number): CoinName[] {
@@ -188,7 +193,7 @@ export const money: Generator = {
 
     if (grade === 4) {
       const [me, other] = twoNames(rng)
-      const item = rng.pick(ITEMS), item2 = rng.pick(ITEMS.filter(i => i !== item))
+      const item = rng.pick(DEARER), item2 = rng.pick(DEARER.filter(i => i !== item))
       const mode = rng.pick(tier === 1 ? ['add', 'sub'] : tier === 2 ? ['add', 'sub', 'left'] : ['add3', 'left', 'sub', 'add'])
       const step = tier === 1 ? 25 : tier === 2 ? 5 : 1
       const r = (lo: number, hi: number) => rng.int(Math.ceil(lo / step), Math.floor(hi / step)) * step
@@ -216,7 +221,7 @@ export const money: Generator = {
 
     // grade 5: multi-step
     const [me] = twoNames(rng)
-    const item = rng.pick(ITEMS), item2 = rng.pick(ITEMS.filter(i => i !== item))
+    const item = rng.pick(DEARER), item2 = rng.pick(DEARER.filter(i => i !== item))
     // Tier 1 is one operation (repeated buying, weekly saving, half price), tier 2 adds a second
     // step (two kinds of item, buying then change), tier 3 fractions and unit price. Two-kind
     // problems used to run in all three tiers, which flattened tiers 1 and 2 to the same measure.
