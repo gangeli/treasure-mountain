@@ -20,6 +20,19 @@ export function render(ctx: Ctx, g: Game): void {
     if (g.screen !== 'castle') drawButtons(ctx, buttons, g)
   }
   if (g.paused) drawPause(ctx, g.buttons(), g)
+  if (g.portraitHint) drawRotateHint(ctx)
+}
+
+/** Shown when a phone is held upright: the letterboxed game would be unreadably small. */
+function drawRotateHint(ctx: Ctx): void {
+  ctx.fillStyle = 'rgba(11,26,44,0.92)'; ctx.fillRect(0, 0, W, 720)
+  ctx.save(); ctx.translate(W / 2, 300); ctx.rotate(-0.35)
+  ctx.fillStyle = '#ffffff'; ctx.strokeStyle = P.ink; ctx.lineWidth = 6
+  ctx.beginPath(); ctx.roundRect(-70, -120, 140, 240, 18); ctx.fill(); ctx.stroke()
+  ctx.fillStyle = P.skyTop; ctx.fillRect(-56, -100, 112, 200)
+  ctx.restore()
+  text(ctx, 'Turn your device sideways', W / 2, 500, { size: 44, align: 'center', color: P.yellow, weight: 900, outline: P.ink, outlineWidth: 8 })
+  text(ctx, 'Treasure Mountain is a wide game', W / 2, 560, { size: 26, align: 'center', color: '#ffffff', weight: 700 })
 }
 
 export function drawLevelScene(ctx: Ctx, g: Game): void { drawLevel(ctx, g) }

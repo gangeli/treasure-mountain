@@ -50,6 +50,8 @@ export class Game {
   time = 0
   installable = false
   isApp = false
+  /** Set by the presenter when the viewport is portrait and the game would be tiny. */
+  portraitHint = false
   onSave: ((data: SaveData) => void) | null = null
   private rng: Rng
   private fast: boolean

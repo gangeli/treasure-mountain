@@ -36,14 +36,17 @@ export function drawHud(ctx: Ctx, g: Game, buttons: Button[]): void {
     text(ctx, label, cx, BOX_Y + 22, { size: 20, color: P.white, weight: 800, align: 'center' })
     if (i === 0) coinBag(ctx, cx, BOX_Y + 70)
     else if (i === 1) { ctx.save(); ctx.translate(cx + 4, BOX_Y + 96); ctx.rotate(0.35); drawNet(ctx, 0.45); ctx.restore() }
-    else chest(ctx, cx, BOX_Y + 72, run ? run.treasures.length : 0, g.lvl ? g.lvl.level.treasures : 0, run ? run.searched.length : 0)
+    else chest(ctx, cx, BOX_Y + 72, g.lvl && run ? g.lvl.level.groups.filter(gp => gp.hides === 'treasure' && run.searched.includes(gp.id)).length : 0, g.lvl ? g.lvl.level.treasures : 0, 0)
     text(ctx, String(val), cx, BOX_Y + 110, { size: 28, color: P.white, weight: 900, align: 'center' })
     if (i < 2) line(ctx, cx + 68, BOX_Y + 10, cx + 68, BOX_Y + BOX_H - 10, P.panelLine, 2)
   })
   drawButtons(ctx, buttons, g)
-  // Message bubble above the HUD prompt box
+  // Message bubble above the player's head (clamped to the screen)
   const msg = g.lvl?.message
-  if (msg && msg.text.length && g.screen === 'level') drawBubble(ctx, msg.text, 640, HUD_Y - 60, 'down')
+  if (msg && msg.text.length && g.screen === 'level' && g.lvl) {
+    const L = 7680; let d = g.lvl.player.x - g.lvl.camX; d = ((d % L) + L) % L; if (d > L - 400) d -= L
+    drawBubble(ctx, msg.text, Math.max(200, Math.min(W - 200, d)), 300 - g.lvl.player.y, 'down')
+  }
 }
 
 function hudPrompt(g: Game): string[] {

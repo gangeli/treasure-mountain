@@ -21,6 +21,7 @@ const input = new Input(stage)
 const audio = new AudioEngine()
 const save = testMode ? null : loadSave()
 const game = new Game(save, testMode ? { seed: params.get('seed') ?? 'test', fast: params.has('fast') } : {})
+if (testMode && params.has('stars')) { const totals = [0, 5, 25, 70, 115, 170, 230, 300]; const total = totals[Math.min(7, parseInt(params.get('stars') || '0'))]; for (let g = 0; g <= 5; g++) game.profile(g as Grade).total = total }
 game.isApp = !!(window.AndroidHost && window.AndroidHost.isApp())
 game.onSave = data => { if (!testMode) writeSave(data) }
 audio.setSound(game.settings.sound)
@@ -46,6 +47,7 @@ function speak(text: string): void {
 
 function update(dt: number): void {
   const { pointer, keys } = input.drain()
+  game.portraitHint = window.innerHeight > window.innerWidth * 1.1 && stage.metrics.scale < 0.55
   for (const k of keys) { if (k.kind === 'down' && !k.repeat) game.keyDown(k.key); else if (k.kind === 'up') game.keyUp(k.key) }
   for (const p of pointer) if (p.kind === 'down') game.tap(p.x, p.y)
   game.update(dt)

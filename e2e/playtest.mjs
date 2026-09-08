@@ -7,6 +7,7 @@ import { serve, launch, playwright } from './lib.mjs'
 
 const out = process.argv[2] || 'e2e/out/play'
 const grades = (process.argv[3] || '0,1,2,3,4,5').split(',').map(Number)
+const stars = parseInt(process.argv[4] || '0')   // preset rank: 3+ breaks the bridge and adds trick ladders, 2+ elf dust, 4+ the Master's arm
 mkdirSync(out, { recursive: true })
 const pw = await playwright()
 const { server, url } = await serve('dist')
@@ -52,13 +53,18 @@ async function playLevel(grade) {
   // 2. Walk to every group that matches >= 2 clue words and drop a coin (the child's deduction).
   const groups = await page.evaluate(() => { const g = window.__tm.game, lv = g.lvl.level; const t = lv.target; return lv.groups.map(x => ({ id: x.id, x: x.x, m: (x.count === t.count) + (x.descriptor === t.descriptor) + (x.kind === t.kind), hides: x.hides })).filter(x => x.m >= 2) })
   for (const grp of groups) {
-    await walkTo(grp.x)
-    s = await state()
-    if (s.run.coins === 0) { await earnCoins(); await walkTo(grp.x) }
-    await ensureLevel()
-    await btn('coin')
-    await settle(1500)
-    stats.coins++
+    // A child taps COIN in front of the group; if an elf's dust or a riddle interrupted, tap again.
+    for (let attempt = 0; attempt < 4; attempt++) {
+      await walkTo(grp.x)
+      s = await state()
+      if (s.run.coins === 0) { await earnCoins(); await walkTo(grp.x) }
+      await ensureLevel()
+      await btn('coin')
+      await settle(1500)
+      stats.coins++
+      const searched = await page.evaluate(id => window.__tm.game.run.searched.includes(id), grp.id)
+      if (searched) break
+    }
   }
   s = await state()
   if (!s.run.hasKey) throw new Error('no key after searching all 2+ matches: ' + JSON.stringify(groups))
@@ -85,6 +91,15 @@ async function ensureLevel() {
 async function walkTo(wx) {
   for (let i = 0; i < 60; i++) {
     await ensureLevel()
+    // Broken bridge in the way (stars >= 3): walk to its edge, then jump over with the keyboard.
+    const br = await page.evaluate(wx => { const g = window.__tm.game; if (g.stars() < 3 || !g.lvl) return null; const b = g.lvl.level.features.find(f => f.type === 'bridge'); if (!b) return null; const L = 7680; const d = (a, c) => { let x = c - a; x = ((x % L) + L) % L; if (x > L / 2) x -= L; return x }; const toB = d(g.lvl.player.x, b.x), toT = d(g.lvl.player.x, wx); if (Math.sign(toB) !== Math.sign(toT) || Math.abs(toB) > Math.abs(toT) || Math.abs(toB) < 60) return null; return { edge: b.x - Math.sign(toB) * 150, dir: Math.sign(toB) } }, wx)
+    if (br) {
+      const d0 = await page.evaluate(x => { const g = window.__tm.game; const L = 7680; let d = x - g.lvl.player.x; d = ((d % L) + L) % L; if (d > L / 2) d -= L; return d }, br.edge)
+      if (Math.abs(d0) > 20) { const sx = await screenX(br.edge); if (sx > 30 && sx < 1250) { await tap(sx, 440); await settle(Math.abs(d0) / 300 * 1000 + 300) } }
+      const key = br.dir > 0 ? 'ArrowRight' : 'ArrowLeft'
+      await page.keyboard.down(key); await settle(120); await page.keyboard.press('ArrowUp'); await settle(900); await page.keyboard.up(key)
+      continue
+    }
     const d = await page.evaluate(wx => { const g = window.__tm.game; const L = 7680; let x = wx - g.lvl.player.x; x = ((x % L) + L) % L; if (x > L / 2) x -= L; return x }, wx)
     if (Math.abs(d) < 14) return
     const sx = await screenX(wx)
@@ -151,7 +166,7 @@ async function playCastle(grade) {
 
 for (const grade of grades) {
   log('=== grade', grade)
-  await page.goto(url + `?test=1&seed=play${grade}`)
+  await page.goto(url + `?test=1&seed=play${grade}${stars ? '&stars=' + stars : ''}`)
   await page.waitForFunction(() => window.__tm && window.__tm.ready)
   await settle(200)
   await tap(640, 300)               // title: anywhere in the picture starts
@@ -189,7 +204,9 @@ for (const grade of grades) {
   await btn('continue'); await settle(200)
   s = await state()
   log('ascent complete; total treasures', s.total, 'screen', s.screen)
-  if (s.total !== 6) throw new Error('expected 6 treasures, got ' + s.total)
+  const expectPer = Math.min(6, 2 + stars)
+  const totals = [0, 5, 25, 70, 115, 170, 230, 300]
+  if (s.total !== totals[stars] + expectPer * 3) throw new Error(`expected ${totals[stars] + expectPer * 3} treasures, got ${s.total}`)
 }
 log('stats', JSON.stringify(stats))
 await browser.close()
