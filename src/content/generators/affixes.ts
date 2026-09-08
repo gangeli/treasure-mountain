@@ -1,7 +1,7 @@
 import type { Generator, Grade, Tier } from '../types'
 import { riddle, shuffled, choiceCount } from '../types'
 import { DERIVED, AFFIX_MEANING, PREFIXES, SUFFIXES, type Derived } from '../data/affixes'
-import { wrap } from './textutil'
+import { wrap, tierWindow } from './textutil'
 
 function levels(grade: Grade, tier: Tier): number[] {
   const table: Partial<Record<Grade, number[][]>> = {
@@ -31,7 +31,9 @@ export const affixes: Generator = {
   make(grade, tier, rng) {
     const n = choiceCount(grade)
     const lv = levels(grade, tier)
-    const w = rng.pick(DERIVED.filter(x => lv.includes(x.level)))
+    const pool = DERIVED.filter(x => lv.includes(x.level))
+    const window = lv.flatMap(l => tierWindow(pool.filter(x => x.level === l), tier))
+    const w = rng.pick(window.length >= 5 ? window : pool)
     type Mode = 'meaning' | 'form' | 'which' | 'affix'
     const modes: Mode[] = grade === 3 ? (tier === 1 ? ['meaning', 'form', 'which'] : ['meaning', 'form', 'which', 'affix']) : ['meaning', 'form', 'which', 'affix', 'affix']
     const mode = rng.pick(modes)
@@ -44,6 +46,7 @@ export const affixes: Generator = {
         family: 'affixes', skill: `vocabulary: ${w.kind}es`, prompt, highlight: [w.word], choices, answer,
         spoken: `What does ${w.word} mean? ${choices.map(c => c.text).join(', ')}?`,
         metric: w.level * 10 + w.word.length, grade, tier,
+        key: `affixes|meaning|${w.word}`,
       })
     }
     if (mode === 'affix') {
@@ -58,6 +61,8 @@ export const affixes: Generator = {
         family: 'affixes', skill: `vocabulary: ${w.kind} meanings`, prompt, highlight: [w.word], choices, answer,
         spoken: `In the word ${w.word}, what does the ${spokenAffix} mean? ${choices.map(c => c.text).join(', ')}?`,
         metric: w.level * 10 + w.word.length + 4, grade, tier,
+        // One per affix, not per word: "what does -ly mean" is the same question every time.
+        key: `affixes|affix|${w.affix}`,
       })
     }
     // 'form' and 'which': the answer is the derived word itself.
@@ -76,6 +81,9 @@ export const affixes: Generator = {
         family: 'affixes', skill: `vocabulary: ${w.kind}es`, prompt, highlight: [w.base], choices, answer,
         spoken: `Add a ${w.kind} to ${w.base} to make a word that means ${w.meaning}. ${choices.map(c => c.text).join(', ')}?`,
         metric: w.level * 10 + w.word.length + 2, grade, tier,
+        // form and which both have the derived word as their answer: asking for it from the base
+        // and then from the meaning inside one climb is asking the same thing twice.
+        key: `affixes|word|${w.word}`,
       })
     }
     const prompt = rng.pick([[`Which word means "${w.meaning}"?`], ['Which word means', `"${w.meaning}"?`]])
@@ -83,6 +91,7 @@ export const affixes: Generator = {
       family: 'affixes', skill: `vocabulary: ${w.kind}es`, prompt, choices, answer,
       spoken: `Which word means ${w.meaning}? ${choices.map(c => c.text).join(', ')}?`,
       metric: w.level * 10 + w.word.length + 1, grade, tier,
+      key: `affixes|word|${w.word}`,
     })
   },
 }

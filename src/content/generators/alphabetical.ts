@@ -82,6 +82,9 @@ export const alphabetical: Generator = {
     const gapTerm = shared === 0 ? 5 - Math.min(5, minGap(words)) : 5
     return riddle({
       family: 'alphabetical', skill: 'reading: alphabetical order', prompt, choices, answer: idx,
+      // Only one of the three phrasings shouted FIRST/LAST; now the word that flips the answer is
+      // red in all of them.
+      highlight: [which, which.toLowerCase()],
       spoken: `Which word comes ${which.toLowerCase()} in alphabetical order? ${choices.map(c => c.text).join(', ')}?`,
       metric: shared * 10 + gapTerm + (last ? 3 : 0), grade, tier,
       key: `alphabetical|${which}|${sorted.join(',')}`,

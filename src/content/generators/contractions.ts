@@ -18,8 +18,10 @@ export function misspellings(short: string): string[] {
   const bare = short.replace("'", '')
   const pos = short.indexOf("'")
   const out = [bare]
-  // Apostrophe one step off (do'nt), at the end (dont'), then two steps off; most plausible first.
-  for (const i of [pos - 1, pos + 1, bare.length, pos - 2, pos + 2]) {
+  // The errors children actually make: no apostrophe (dont), one step off (do'nt, whos') and one at
+  // the very end (dont'). Two steps off gives junk like "wh'os", which nobody writes and which any
+  // child rules out on sight, so it is left out.
+  for (const i of [pos - 1, pos + 1, bare.length]) {
     if (i < 1 || i > bare.length || i === pos) continue
     const w = bare.slice(0, i) + "'" + bare.slice(i)
     if (!out.includes(w)) out.push(w)
@@ -89,7 +91,6 @@ export const contractions: Generator = {
       : tier === 2 ? ['expand', 'contract', 'spell', 'sentence']
       : ['contract', 'spell', 'expand', 'sentence']
     let mode = rng.pick(modes)
-    if (mode === 'spell' && misspellings(c.short).length < n - 1) mode = 'contract'
     if (mode === 'sentence' && !sentence) mode = 'contract'
     const first = c.full.split(' ')[0].toLowerCase()
     const last = c.full.split(' ').slice(-1)[0].toLowerCase()
@@ -134,7 +135,7 @@ export const contractions: Generator = {
         metric: c.level * 10 + c.full.length + 3, grade, tier,
       })
     }
-    const decoys = misspellings(c.short)
+    const decoys = [...misspellings(c.short), ...ranked.map(x => x.short)]
     const { choices, answer } = shuffled(rng, c.short, decoys, n)
     const prompt = rng.pick([[`Which is the right way to write "${c.full}"?`], [`"${c.full}" as a contraction.`, 'Where does the apostrophe go?'], ['Which contraction is spelled correctly?', `It means "${c.full}".`]])
     return riddle({

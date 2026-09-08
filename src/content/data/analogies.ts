@@ -84,8 +84,8 @@ export const ANALOGIES: Analogy[] = [
   A('clock', 'time', 'thermometer', 'temperature', 'object/function', 4, ['fever', 'weather', 'mercury']),
   A('shovel', 'dig', 'hammer', 'pound', 'object/function', 4, ['nail', 'wood', 'tool']),
   A('lamp', 'light', 'heater', 'warmth', 'object/function', 4, ['fire', 'winter', 'coal']),
-  A('ruler', 'measure', 'eraser', 'erase', 'object/function', 4, ['pencil', 'mistake', 'write']),
-  A('key', 'unlock', 'ladder', 'climb', 'object/function', 4, ['roof', 'rung', 'tall']),
+  A('ruler', 'measure', 'scale', 'weigh', 'object/function', 4, ['cook', 'pour', 'lift']),
+  A('key', 'unlock', 'ladder', 'climb', 'object/function', 4, ['fall', 'build', 'paint']),
   A('umbrella', 'rain', 'helmet', 'crash', 'object/function', 4, ['bike', 'head', 'hat']),
   A('boat', 'float', 'plane', 'fly', 'object/function', 4, ['sink', 'drive', 'swim']),
   // level 4: category
@@ -107,7 +107,7 @@ export const ANALOGIES: Analogy[] = [
   A('pond', 'lake', 'hill', 'mountain', 'degree', 5, ['valley', 'rock', 'slope']),
   A('tired', 'exhausted', 'hungry', 'starving', 'degree', 5, ['lunch', 'full', 'snack']),
   A('damp', 'soaked', 'cool', 'freezing', 'degree', 5, ['chilly', 'winter', 'snow']),
-  A('glance', 'stare', 'tap', 'pound', 'degree', 5, ['touch', 'finger', 'knock']),
+  A('glance', 'stare', 'sip', 'gulp', 'degree', 5, ['taste', 'drink', 'pour']),
   A('happy', 'overjoyed', 'sad', 'heartbroken', 'degree', 5, ['unhappy', 'gloomy', 'lonely']),
   // level 5: subtler antonyms, synonyms, part/whole
   A('generous', 'stingy', 'brave', 'cowardly', 'antonym', 5, ['bold', 'hero', 'fearless']),
@@ -125,6 +125,6 @@ export const ANALOGIES: Analogy[] = [
   A('bristle', 'brush', 'lens', 'camera', 'part/whole', 5, ['picture', 'glass', 'zoom']),
   A('surgeon', 'scalpel', 'sculptor', 'chisel', 'worker/tool', 5, ['statue', 'marble', 'clay']),
   A('architect', 'blueprint', 'composer', 'score', 'worker/tool', 5, ['orchestra', 'concert', 'piano']),
-  A('compass', 'direction', 'barometer', 'pressure', 'object/function', 5, ['weather', 'storm', 'rain']),
+  A('compass', 'direction', 'odometer', 'distance', 'object/function', 5, ['speed', 'engine', 'fuel']),
   A('anchor', 'hold', 'rudder', 'steer', 'object/function', 5, ['boat', 'stern', 'float']),
 ]

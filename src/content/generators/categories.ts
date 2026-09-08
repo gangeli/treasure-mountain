@@ -102,7 +102,9 @@ export const categories: Generator = {
       const coprime = pool2.filter(m => { const v = num(m); return v > 0 && v % out !== 0 && out % v !== 0 })
       const members = rng.sample(out > 1 && coprime.length >= n - 1 ? coprime : pool2, n - 1)
       const { choices, answer } = shuffled(rng, outsider, members, n)
-      const hint = grade <= 2 || (grade === 3 && tier === 1)
+      // Number sets always carry the rule: with 19 against 25 and 4, "the only prime" and "the only
+      // square" are both true, and only the hint line says which one is being asked.
+      const hint = grade <= 2 || (grade === 3 && tier === 1) || cat.domain === 'math'
       const count = n - 1 === 3 ? 'Three' : 'Two'
       const prompt = hint ? ['Which one does not belong?', `${count} of these are ${cat.many}.`] : ['Which one does not belong?']
       return riddle({

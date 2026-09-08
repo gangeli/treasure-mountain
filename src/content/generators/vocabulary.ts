@@ -35,8 +35,14 @@ export const vocabulary: Generator = {
     const reverse = rng.bool(tier === 1 ? 0.3 : tier === 2 ? 0.45 : 0.6)
     const rank = rankIn(pool.filter(x => x.level === w.level), w) * 4
     if (reverse) {
+      // A definition that starts with "a"/"an"/"to" announces its part of speech, so decoys have to
+      // start the same way - otherwise "Which word means 'a great lack of food'?" is answerable by
+      // picking the only noun.
+      const shapeOf = (d: string) => /^(an?|the) /.test(d) ? 'noun' : /^to /.test(d) ? 'verb' : 'other'
+      const mine = shapeOf(w.def)
       const others = rng.shuffle(pool.filter(x => x !== w && !sameGroup(x, w) && x.word !== w.word))
-        .sort((a, b) => Math.abs(a.word.length - w.word.length) - Math.abs(b.word.length - w.word.length))
+        .sort((a, b) => (shapeOf(a.def) === mine ? 0 : 1) - (shapeOf(b.def) === mine ? 0 : 1)
+          || Math.abs(a.word.length - w.word.length) - Math.abs(b.word.length - w.word.length))
       const { choices, answer } = shuffled(rng, w.word, others.map(x => x.word), n)
       const prompt = rng.pick([[`Which word means "${w.def}"?`], ['Which word means', `"${w.def}"?`]])
       return riddle({

@@ -102,7 +102,10 @@ export const plurals: Generator = {
     const noun = rng.pick(pool)
     const { choices, answer } = shuffled(rng, noun.plural, rng.shuffle(nounWrongs(noun)), n)
     type Mode = 'one' | 'have' | 'here' | 'name'
-    const modes: Mode[] = grade >= 3 ? ['one', 'have', 'here', 'name', 'name'] : grade === 2 ? ['one', 'have', 'here', 'name'] : ['one', 'have', 'here']
+    // "I have one crisis. My friend has six ___" is nonsense: the counting frames are for concrete
+    // nouns, so the Latin and Greek plurals are only ever asked by name.
+    const modes: Mode[] = noun.level >= 5 ? ['name']
+      : grade >= 3 ? ['one', 'have', 'here', 'name', 'name'] : grade === 2 ? ['one', 'have', 'here', 'name'] : ['one', 'have', 'here']
     const mode = rng.pick(modes)
     const count = rng.pick(COUNTS)
     let prompt: string[]

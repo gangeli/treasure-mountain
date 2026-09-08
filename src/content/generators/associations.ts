@@ -87,7 +87,10 @@ export const associations: Generator = {
     }
 
     const banned = acceptable(p)
+    // "flies" beside "breathe" and "cut" gives the answer away on verb form alone, so what a plural
+    // subject does is only ever offered against another plural subject.
     const okPeers = peers.filter(q => !banned.has(q.b.toLowerCase()) && (rel !== 'part' || q.dom !== p.dom))
+      .sort((a, b) => (rel === 'does' ? (!!a.pl === !!p.pl ? 0 : 1) - (!!b.pl === !!p.pl ? 0 : 1) : 0))
     const decoyPairs = okPeers.filter(q => q.b.length <= 26)
     // Fill-in-the-blank only when every choice takes the same article as the answer ("A bird lives in a ___").
     const sameArt = decoyPairs.filter(q => artOf(q) === artOf(p))
