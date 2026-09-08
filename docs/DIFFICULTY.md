@@ -280,8 +280,8 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 | 3 | 1 | 36.9 | 6.7 | 16 | 33% | Which fraction is the biggest? [1/6 / *1/3 / 1/5 / 1/4] |
 | 3 | 2 | 41.6 | 5.9 | 12 | 29% | What fraction is marked on the / number line? [2/5 / *3/5 / 7/10 / 1/3] |
 | 3 | 3 | 44.2 | 6.0 | 24 | 32% | Which fraction is the smallest? [1/4 / 1/10 / 1/5 / *1/12] |
-| 4 | 1 | 57.0 | 5.5 | 24 | 0% | Which fraction is equivalent to 3/4? [8/12 / 10/12 / 9/13 / *9/12] |
-| 4 | 2 | 58.9 | 6.1 | 30 | 0% | 5/6 - 4/6 = ? [1/2 / 11/12 / *1/6 / 1/12] |
+| 4 | 1 | 57.0 | 5.5 | 24 | 54% | Which fraction is equivalent to 3/4? [8/12 / 10/12 / 9/13 / *9/12] |
+| 4 | 2 | 58.9 | 6.1 | 30 | 30% | 5/6 - 4/6 = ? [1/2 / 11/12 / *1/6 / 1/12] |
 | 4 | 3 | 59.9 | 6.7 | 36 | 0% | 5/6 - 3/6 = ? / (Give the answer in simplest form.) [*1/3 / 1/2 / 1/6 / 5/6] |
 | 5 | 1 | 70.8 | 9.2 | 30 | 0% | What is 2/3 of 9? [*6 / 3 / 9 / 2] |
 | 5 | 2 | 75.1 | 6.2 | 24 | 0% | 3 1/6 + 2 2/3 = ? [5 1/3 / *5 5/6 / 6 / 6 5/6] |
@@ -341,11 +341,11 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 | 2 | 2 | 29.0 | 6.7 | 10000 | 65% | What temperature does the / thermometer show? [70°F / *50°F / 60°F] |
 | 2 | 3 | 34.1 | 8.2 | 10000 | 68% | About how long is a spoon? [*6 inches / 1 inch / 6 feet] |
 | 3 | 1 | 42.9 | 7.0 | 600 | 0% | How many inches are in a foot? [*12 / 14 / 1 / 24] |
-| 3 | 2 | 44.6 | 7.1 | 1000 | 0% | How many cups are in a pint? [4 / *2 / 1 / 20] |
-| 3 | 3 | 56.5 | 7.1 | 36000 | 0% | How many inches are in 2 yards? [*72 / 62 / 108 / 36] |
-| 4 | 1 | 64.3 | 5.0 | 960 | 0% | 2 hours = ? minutes [*120 minutes / 60 minutes / 180 minutes / 12 minutes] |
-| 4 | 2 | 72.6 | 5.0 | 960 | 0% | 11 minutes = ? seconds [*660 seconds / 720 seconds / 6,600 seconds / 66 seconds] |
-| 4 | 3 | 74.8 | 5.7 | 960 | 0% | 5 tons = ? pounds [2,005 pounds / 8,000 pounds / 100,000 pounds / *10,000 pounds] |
+| 3 | 2 | 44.8 | 8.2 | 1000 | 19% | How many minutes are in an hour? [6 / 58 / *60 / 30] |
+| 3 | 3 | 55.1 | 9.0 | 36000 | 24% | How many days are in a year? [465 / 3650 / *365 / 37] |
+| 4 | 1 | 59.2 | 7.3 | 960 | 29% | The chart shows stickers for each day. / Which day had the fewest stickers? [Wed / Mon / *Thu / Tue] |
+| 4 | 2 | 68.2 | 7.4 | 900 | 24% | 9 liters = ? milliliters [*9,000 milliliters / 90,000 milliliters / 900 milliliters / 10,000 milliliters] |
+| 4 | 3 | 70.9 | 7.6 | 973 | 23% | The chart shows stars for each day. / How many stars in the whole week? [*73 / 72 / 78 / 74] |
 | 5 | 1 | 66.5 | 8.3 | 950 | 42% | 4.5 days = ? hours [84 hours / 11 hours / 45 hours / *108 hours] |
 | 5 | 2 | 73.2 | 11.8 | 990 | 34% | The chart shows stars for each day. / How many more stars on Thu than Wed? [12 / 19 / *11 / 10] |
 | 5 | 3 | 76.9 | 10.9 | 990 | 32% | 8.25 kilometers = ? meters [7,250 meters / 825 meters / *8,250 meters / 9,250 meters] |

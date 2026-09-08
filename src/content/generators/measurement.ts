@@ -1,4 +1,5 @@
-import type { Generator } from '../types'
+import type { Generator, Grade, Tier, Riddle } from '../types'
+import type { Rng } from '../../engine/rng'
 import { shuffled, choiceCount } from '../types'
 import { mathRiddle, sayChoices, numDecoys, fmtInt, fmtDec, wrap, NAMES } from './mathutil'
 
@@ -80,6 +81,45 @@ const natDec = (units: number, places: number): string => {
 }
 
 /** Longer/heavier (K), units and tools (1), estimates and thermometers (2), facts (3), conversions (4), decimal conversions and bar charts (5). */
+
+/** Bar-chart values: single units for grade 3, the fuller spread from grade 4 up. */
+const SMALL_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+const BIG_VALUES = [2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 16, 18, 20]
+
+/**
+ * Reading a bar chart. Written once and asked from grade 3 up: scaled picture and bar graphs are a
+ * 3rd-grade standard, and until this was shared the chart lived at grade 5 only, which left grades
+ * 3 and 4 with almost no riddle that has a picture at all.
+ */
+function barChart(mode: string, grade: Grade, tier: Tier, rng: Rng, n: number, base: number, pool: number[]): Riddle {
+  const what = rng.pick(CHART)
+  const values = rng.sample(pool, 5)
+  const prompt0 = `The chart shows ${what} for each day.`
+  const vis = { kind: 'bars', values, labels: DAYS } as const
+  if (mode === 'bars') {
+    const most = rng.bool()
+    const target = most ? Math.max(...values) : Math.min(...values)
+    const label = DAYS[values.indexOf(target)]
+    const { choices, answer } = shuffled(rng, label, DAYS.filter(d => d !== label), n)
+    const prompt = [prompt0, `Which day had the ${most ? 'most' : 'fewest'} ${what}?`]
+    return mathRiddle({ family: 'measurement', skill: 'math: reading bar charts', prompt, visual: vis, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: base + tier * 3, grade, tier }, most ? 'barmax' : 'barmin')
+  }
+  if (mode === 'barsDiff') {
+    const [i, j] = rng.sample([0, 1, 2, 3, 4], 2)
+    const hi = values[i] > values[j] ? i : j, lo = hi === i ? j : i
+    const diff = values[hi] - values[lo]
+    const decoys = numDecoys(rng, diff, n - 1, [values[hi] + values[lo], values[hi], values[lo], diff + 1, diff - 1], 3, 1).map(String)
+    const { choices, answer } = shuffled(rng, String(diff), decoys, n)
+    const prompt = [prompt0, `How many more ${what} on ${DAYS[hi]} than ${DAYS[lo]}?`]
+    return mathRiddle({ family: 'measurement', skill: 'math: reading bar charts', prompt, visual: vis, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: base + 2 + tier * 3, grade, tier }, `num:${values[hi]}-${values[lo]}`)
+  }
+  const total = values.reduce((a, b) => a + b, 0)
+  const decoys = numDecoys(rng, total, n - 1, [total - Math.min(...values), total + Math.max(...values), total + 1, total - 1, total + 5], 6, 1).map(String)
+  const { choices, answer } = shuffled(rng, String(total), decoys, n)
+  const prompt = [prompt0, `How many ${what} in the whole week?`]
+  return mathRiddle({ family: 'measurement', skill: 'math: reading bar charts', prompt, visual: vis, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: base + 4 + tier * 3, grade, tier }, `num:${values.join('+')}`)
+}
+
 export const measurement: Generator = {
   id: 'measurement',
   name: 'Measurement',
@@ -182,6 +222,9 @@ export const measurement: Generator = {
     }
 
     if (grade === 3) {
+      // Reading a scaled bar graph is a 3rd-grade standard, and it is one of the few riddles at this
+      // grade that comes with a picture, so it is one item in four from tier 2 on.
+      if (tier >= 2 && rng.bool(0.25)) return barChart(tier === 2 ? 'bars' : 'barsDiff', grade, tier, rng, n, 39, SMALL_VALUES)
       // Tier 3 is the multi-step question almost every time, and its plain recalls are the level-3
       // facts only, so it is no longer a re-run of tier 2.
       const multi = tier === 3 && rng.bool(0.8)
@@ -208,6 +251,8 @@ export const measurement: Generator = {
     }
 
     if (grade === 4) {
+      // Charts again, with the fuller spread of values and the harder questions the grade can take.
+      if (rng.bool(0.25)) return barChart(tier === 1 ? 'bars' : tier === 2 ? 'barsDiff' : 'barsTotal', grade, tier, rng, n, 44, BIG_VALUES)
       const mode = rng.pick(tier === 1 ? ['up'] : tier === 2 ? ['up', 'down'] : ['up', 'down', 'mixed'])
       // At tier 2 the "up" conversions are level-2 only, so no tier-2 card is character-for-character
       // a tier-1 card; level-1 facts come back only in the new "down" direction.
@@ -240,33 +285,7 @@ export const measurement: Generator = {
 
     // grade 5 -- bar charts are one item in three, and the harder chart questions are held back.
     const mode = rng.pick(tier === 1 ? ['decimalUp', 'decimalUp', 'bars'] : tier === 2 ? ['decimalUp', 'decimalDown', 'barsDiff', 'twoStep'] : ['decimalUp', 'decimalDown', 'twoStep', 'barsTotal'])
-    if (mode.startsWith('bars')) {
-      const what = rng.pick(CHART)
-      const values = rng.sample([2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 16, 18, 20], 5)
-      const prompt0 = `The chart shows ${what} for each day.`
-      if (mode === 'bars') {
-        const most = rng.bool()
-        const target = most ? Math.max(...values) : Math.min(...values)
-        const label = DAYS[values.indexOf(target)]
-        const { choices, answer } = shuffled(rng, label, DAYS.filter(d => d !== label), n)
-        const prompt = [prompt0, `Which day had the ${most ? 'most' : 'fewest'} ${what}?`]
-        return mathRiddle({ family: 'measurement', skill: 'math: reading bar charts', prompt, visual: { kind: 'bars', values, labels: DAYS }, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 60 + tier * 3, grade, tier }, most ? 'barmax' : 'barmin')
-      }
-      if (mode === 'barsDiff') {
-        const [i, j] = rng.sample([0, 1, 2, 3, 4], 2)
-        const hi = values[i] > values[j] ? i : j, lo = hi === i ? j : i
-        const diff = values[hi] - values[lo]
-        const decoys = numDecoys(rng, diff, n - 1, [values[hi] + values[lo], values[hi], values[lo], diff + 1, diff - 1], 3, 1).map(String)
-        const { choices, answer } = shuffled(rng, String(diff), decoys, n)
-        const prompt = [prompt0, `How many more ${what} on ${DAYS[hi]} than ${DAYS[lo]}?`]
-        return mathRiddle({ family: 'measurement', skill: 'math: reading bar charts', prompt, visual: { kind: 'bars', values, labels: DAYS }, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 62 + tier * 3, grade, tier }, `num:${values[hi]}-${values[lo]}`)
-      }
-      const total = values.reduce((a, b) => a + b, 0)
-      const decoys = numDecoys(rng, total, n - 1, [total - Math.min(...values), total + Math.max(...values), total + 1, total - 1, total + 5], 6, 1).map(String)
-      const { choices, answer } = shuffled(rng, String(total), decoys, n)
-      const prompt = [prompt0, `How many ${what} in the whole week?`]
-      return mathRiddle({ family: 'measurement', skill: 'math: reading bar charts', prompt, visual: { kind: 'bars', values, labels: DAYS }, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 64 + tier * 3, grade, tier }, `num:${values.join('+')}`)
-    }
+    if (mode.startsWith('bars')) return barChart(mode, grade, tier, rng, n, 60, BIG_VALUES)
     const c = rng.pick(CONV.filter(x => x.f >= 4 && (mode !== 'twoStep' || TWO_STEP[x.big])))
     if (mode === 'twoStep') {
       const name = rng.pick(NAMES)

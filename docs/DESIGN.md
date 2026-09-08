@@ -93,7 +93,10 @@ Mountain Master (6), Champion (7: the crown is won).
    coins, shapes, counters), choices in a column, selection box, speaker button.
 6. **Clue bubble.** "Good job, Super Solver! You have won a clue word to help you find the key: two".
 7. **Castle climb.** Three floors of ladders; some ladders are trick ladders (they end short) from
-   star 3; the Master's arm sweeps from a wall hole from star 4; falling just sends you down a floor.
+   star 3, and sliding back down one costs only the climb; the Master's arm sweeps from a wall hole
+   from star 4 and knocks you down a floor. Neither can strand you: every floor keeps at least one
+   real ladder, no hole is within reach of a ladder head, and stepping onto a floor is safe for half
+   a second (`test/game.test.ts` climbs 60 castles at each of the 8 ranks to hold that).
 8. **Throne room.** Cutscene: chest opens, treasures fly in, the Master of Mischief steams and is
    blasted out of the window, a prize pops out, then the slide down.
 9. **Rank screen.** The poster again, with the star moving up when a threshold is crossed. Then
@@ -159,7 +162,7 @@ each grade; the exact number ranges are in `src/content/generators/*.ts` and are
 | Fractions | halves (pictures) | halves and quarters | thirds; which picture shows 1/3 | compare unit fractions | equivalent fractions | add/subtract fractions |
 | Word problems | one-step add within 5 | one-step within 20 | one-step within 100 | two-step; multiplication | multi-step | multi-step with fractions/decimals |
 | Even/odd, factors | -- | -- | even or odd | even/odd to 100 | factors, multiples | prime, GCF |
-| Measurement | longer/shorter; heavier | inches vs feet vs miles (which unit) | cm/m estimates | minutes in an hour, etc. | unit conversions | conversions with decimals |
+| Measurement | longer/shorter; heavier | inches vs feet vs miles (which unit) | cm/m estimates; thermometers | minutes in an hour; bar charts | unit conversions; bar charts | conversions with decimals; bar charts |
 
 ### Thinking and science
 

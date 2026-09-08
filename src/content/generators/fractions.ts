@@ -198,7 +198,11 @@ export const fractions: Generator = {
         }
         const { choices, answer } = shuffled(rng, ans, decoys, n)
         const prompt = [`Which fraction is equivalent to ${num}/${den}?`]
-        return mathRiddle({ family: 'fractions', skill: 'math: equivalent fractions', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: 50 + k * 2 + den, grade, tier }, `num:${num}/${den}`)
+        // A bar model of the fraction, at the tiers where equivalence is still being learned rather
+        // than practised. Grade 4 otherwise sees a picture in one riddle out of forty, and the model
+        // is how the standard is taught: the same amount, cut into more pieces.
+        const visual = tier < 3 ? { kind: 'fraction', shape: 'bar', parts: den, shaded: num } as const : undefined
+        return mathRiddle({ family: 'fractions', skill: 'math: equivalent fractions', prompt, visual, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: 50 + k * 2 + den, grade, tier }, `num:${num}/${den}`)
       }
       if (mode === 'simplify') {
         const den = rng.pick([2, 3, 4, 5]), num = rng.int(1, den - 1), k = rng.int(2, 6)
