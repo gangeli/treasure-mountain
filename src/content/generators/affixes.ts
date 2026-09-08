@@ -1,6 +1,6 @@
 import type { Generator, Grade, Tier } from '../types'
 import { riddle, shuffled, choiceCount } from '../types'
-import { DERIVED, AFFIX_MEANING, PREFIXES, type Derived } from '../data/affixes'
+import { DERIVED, AFFIX_MEANING, PREFIXES, SUFFIXES, type Derived } from '../data/affixes'
 import { wrap } from './textutil'
 
 function levels(grade: Grade, tier: Tier): number[] {
@@ -61,7 +61,14 @@ export const affixes: Generator = {
       })
     }
     // 'form' and 'which': the answer is the derived word itself.
-    const decoys = easy && w.fake ? rng.shuffle(w.fake) : realDecoys(w, rng)
+    // In 'form' the base word is printed in the prompt, so every choice has to be built on that
+    // base - otherwise the answer is the only word containing it and no affix knowledge is needed.
+    const built = (w.kind === 'prefix' ? PREFIXES : SUFFIXES).filter(a => a !== w.affix)
+      .map(a => w.kind === 'prefix' ? a + w.base : w.base + a)
+    const sameBase = DERIVED.filter(x => x.base === w.base && x.word !== w.word).map(x => x.word)
+    const decoys = mode === 'form'
+      ? [...rng.shuffle(w.fake ?? []), ...rng.shuffle(sameBase), ...rng.shuffle(built)]
+      : easy && w.fake ? rng.shuffle(w.fake) : realDecoys(w, rng)
     const { choices, answer } = shuffled(rng, w.word, decoys, n)
     if (mode === 'form') {
       const prompt = wrap(`Add a ${w.kind} to "${w.base}" to make a word that means "${w.meaning}".`)
