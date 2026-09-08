@@ -67,9 +67,11 @@ function update(dt: number): void {
   game.events.sfx.length = 0
   audio.play(game.events.music)
   audio.setSound(game.settings.sound); audio.setMusic(game.settings.music)
-  const speaking = !!game.speak
+  // Stop the old voice before starting any new one: a line queued on the same frame as the screen
+  // change is not always spoken (older grades only speak when the button is pressed), and when it
+  // was not, nothing cancelled what was already being read.
+  if (game.screen !== lastScreen || game.paused !== wasPaused) { lastScreen = game.screen; wasPaused = game.paused; stopSpeaking() }
   if (game.speak) { if (!testMode && (game.grade <= 1 || (game as any)._speakRequested)) speak(game.speak); game.speak = null; (game as any)._speakRequested = false }
-  if (game.screen !== lastScreen || game.paused !== wasPaused) { lastScreen = game.screen; wasPaused = game.paused; if (!speaking) stopSpeaking() }
   if ((game as any).installRequested) { (game as any).installRequested = false; if (deferredInstall) { deferredInstall.prompt(); deferredInstall = null } }
 }
 
