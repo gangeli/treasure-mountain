@@ -171,7 +171,11 @@ export function drawElf(ctx: Ctx, x: number, y: number, facing: 1 | -1, pose: El
   circle(ctx, 0, 24, 5.5, P.elfSkin, P.ink, 2)
   ctx.restore()
   if (item === 'balloon') {
-    line(ctx, 18, -70, 28, -120, P.ink, 1.5)
+    // The string starts at the hand that is holding it. It used to start at (18,-70), which is the
+    // side of the elf's head, so the balloon was tied to its hat.
+    const a = (-armSwing * 0.8 - 65) * Math.PI / 180
+    const hx = 14 - 24 * Math.sin(a), hh = -52 + 24 * Math.cos(a)
+    line(ctx, hx, hh, 30, -118, P.ink, 1.5)
     ellipse(ctx, 30, -136, 16, 20, P.red, P.ink, 2.5)
     ellipse(ctx, 25, -142, 4, 6, 'rgba(255,255,255,0.6)', 'rgba(0,0,0,0)', 0)
   }
