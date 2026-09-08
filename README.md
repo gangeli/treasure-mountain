@@ -30,7 +30,7 @@ Mischief.
 | `src/art/` | Everything drawn: palette, drawing helpers, backdrops, characters, scenery, features, HUD, riddle pictures, screens. |
 | `android/` | A one-Activity WebView app that bundles `dist/index.html`. |
 | `docs/` | The GitHub Pages site (install instructions, screenshots) and the design and research documents. |
-| `e2e/` | Playwright tools: screenshots of every screen, the real-input playtest, icon rendering. |
+| `e2e/` | Playwright tools: screenshots of every screen, the real-input playtest, the offline/PWA and `file://` checks, headless audio rendering, icon rendering, and the sample and difficulty dumps. |
 | `test/` | Vitest suites: content validity and difficulty ramps, level generation, game flow. |
 
 ## Building
@@ -56,7 +56,7 @@ so that new builds install over old ones on a sideloaded tablet.
   K-5 puzzle matrix, screens, economy, art and sound.
 * [`docs/research/treasure-mountain.md`](docs/research/treasure-mountain.md): notes on the original
   game's mechanics gathered while building this, with sources and confidence levels.
-* [`docs/DIFFICULTY.md`](docs/DIFFICULTY.md): measured difficulty per family, grade and tier, and
-  the playtest results.
+* [`docs/DIFFICULTY.md`](docs/DIFFICULTY.md): measured difficulty per family, grade and tier, with
+  an example riddle for each and a sample of what one climb asks at every grade.
 
 MIT licensed. Not affiliated with The Learning Company.
