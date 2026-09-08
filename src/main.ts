@@ -100,8 +100,10 @@ if (testMode) {
         case 'level1': startLevel(1); break
         case 'level2': startLevel(2); break
         case 'level3': startLevel(3); break
-        case 'level1-poof': startLevel(1); { const grp = g.lvl!.level.groups.find(x => x.hides === 'treasure')!; g.lvl!.player.x = grp.x; g.lvl!.camX = grp.x - 500; g.run!.coins = 5; g.dropCoin(); for (let i = 0; i < 40; i++) g.update(1 / 60) } break
-        case 'level1-key': startLevel(1); { g.run!.clues = { ...g.lvl!.level.clueWords }; const grp = g.lvl!.level.groups.find(x => x.hides === 'key')!; g.lvl!.player.x = grp.x; g.lvl!.camX = grp.x - 500; g.run!.coins = 5; g.dropCoin(); for (let i = 0; i < 40; i++) g.update(1 / 60) } break
+        // 78 frames = 1.3s: the treasure or key has finished rising out of the ground and the cloud
+        // has nearly faded. At 40 the picture was a cloud with nothing coming out of it.
+        case 'level1-poof': startLevel(1); { const grp = g.lvl!.level.groups.find(x => x.hides === 'treasure')!; g.lvl!.player.x = grp.x; g.lvl!.camX = grp.x - 500; g.run!.coins = 5; g.dropCoin(); for (let i = 0; i < 78; i++) g.update(1 / 60) } break
+        case 'level1-key': startLevel(1); { g.run!.clues = { ...g.lvl!.level.clueWords }; const grp = g.lvl!.level.groups.find(x => x.hides === 'key')!; g.lvl!.player.x = grp.x; g.lvl!.camX = grp.x - 500; g.run!.coins = 5; g.dropCoin(); for (let i = 0; i < 78; i++) g.update(1 / 60) } break
         case 'riddle': case 'riddle-visual': case 'riddle-long': case 'clue': {
           startLevel(1)
           const elf = g.lvl!.elves.find(e => e.kind === 'scroll')!
