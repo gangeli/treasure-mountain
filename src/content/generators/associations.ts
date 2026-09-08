@@ -39,6 +39,13 @@ function acceptable(p: Assoc): Set<string> {
   return out
 }
 
+/**
+ * The preposition that goes with a workplace. Most take "in", but nobody works *in* a farm, a ranch,
+ * a ship or an airplane, and a jockey is at the racetrack, not in it. `art: 'the'` places (the
+ * beach) take "at" as they always did.
+ */
+const prepOf = (a: Assoc): string => a.prep ?? (a.art === 'the' ? 'at' : 'in')
+
 /** Where it lives / what it says / does / where it works / what it uses / part of / used for. */
 export const associations: Generator = {
   id: 'associations',
@@ -76,7 +83,7 @@ export const associations: Generator = {
       const prompt: string[] = rel === 'lives' ? [`Who lives in ${withArt(b, p.art)}?`]
         : rel === 'sound' ? [`Who says "${b}"?`]
           : rel === 'does' ? [`Which one ${b}?`]
-            : rel === 'works' ? [`Who works ${p.art === 'the' ? 'at' : 'in'} ${withArt(b, p.art)}?`]
+            : rel === 'works' ? [`Who works ${prepOf(p)} ${withArt(b, p.art)}?`]
               : rel === 'uses' ? [`Who uses ${toolArt(b)}?`]
                 : rel === 'part' ? [`Which one is part of ${withArt(b, p.art)}?`]
                   : ['Which one is used for', `${b}?`]
@@ -109,7 +116,7 @@ export const associations: Generator = {
       const ask = `What ${p.pl ? 'do' : 'does'} ${subject(p)} do`
       prompt = verse ? [`${ask} all day?`, 'Pick the word and be on your way!'] : [`${ask}?`]
     } else if (rel === 'works') {
-      prompt = useFill ? [`${cap(an(p.a))} works ${art === 'the' ? 'at' : 'in'} ${blank}.`] : [`Where does ${an(p.a)} work?`]
+      prompt = useFill ? [`${cap(an(p.a))} works ${prepOf(p)} ${blank}.`] : [`Where does ${an(p.a)} work?`]
     } else if (rel === 'uses') {
       prompt = useFill ? [`${cap(an(p.a))} uses ${blank}.`] : [`What does ${an(p.a)} use?`]
     } else if (rel === 'part') {

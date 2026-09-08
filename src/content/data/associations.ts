@@ -5,7 +5,7 @@
  * Level 1 = K, 2 = grades 1-2, 3 = grades 2-3, 4 = grades 4-5.
  */
 export type Rel = 'lives' | 'sound' | 'does' | 'works' | 'uses' | 'part' | 'function'
-export interface Assoc { a: string; b: string; rel: Rel; level: 1 | 2 | 3 | 4; also?: string[]; art?: 'the' | ''; dom?: string; pl?: true; person?: true }
+export interface Assoc { a: string; b: string; rel: Rel; level: 1 | 2 | 3 | 4; also?: string[]; art?: 'the' | ''; dom?: string; pl?: true; person?: true; prep?: 'in' | 'on' | 'at' }
 
 const p = (rel: Rel, level: 1 | 2 | 3 | 4, a: string, b: string, also: string[] = [], extra: Partial<Assoc> = {}): Assoc => ({ a, b, rel, level, also, ...extra })
 
@@ -51,18 +51,18 @@ export const ASSOCIATIONS: Assoc[] = [
   p('does', 3, 'lungs', 'breathe', ['inhale', 'exhale', 'expand'], { art: '', pl: true }), p('does', 3, 'compass', 'points', ['spins']), p('does', 3, 'engine', 'roars', ['runs', 'hums', 'purrs', 'starts']),
   // ---- where it works
   p('works', 2, 'baker', 'bakery', ['kitchen', 'shop', 'store']), p('works', 2, 'teacher', 'school', ['classroom', 'college']), p('works', 2, 'doctor', 'hospital', ['clinic', 'office']),
-  p('works', 2, 'chef', 'kitchen', ['restaurant', 'cafe', 'diner']), p('works', 2, 'farmer', 'farm', ['field', 'barn', 'ranch', 'orchard']), p('works', 2, 'pilot', 'airplane', ['cockpit', 'airport', 'helicopter', 'plane', 'jet']),
-  p('works', 2, 'sailor', 'ship', ['boat', 'sea', 'ocean', 'submarine']), p('works', 2, 'librarian', 'library', ['school']), p('works', 2, 'mechanic', 'garage', ['shop', 'workshop']),
+  p('works', 2, 'chef', 'kitchen', ['restaurant', 'cafe', 'diner']), p('works', 2, 'farmer', 'farm', ['field', 'barn', 'ranch', 'orchard'], { prep: 'on' }), p('works', 2, 'pilot', 'airplane', ['cockpit', 'airport', 'helicopter', 'plane', 'jet'], { prep: 'on' }),
+  p('works', 2, 'sailor', 'ship', ['boat', 'sea', 'ocean', 'submarine'], { prep: 'on' }), p('works', 2, 'librarian', 'library', ['school']), p('works', 2, 'mechanic', 'garage', ['shop', 'workshop']),
   p('works', 2, 'firefighter', 'fire station', ['firehouse', 'fire truck']), p('works', 2, 'nurse', 'hospital', ['clinic', 'office', 'school']), p('works', 2, 'waiter', 'restaurant', ['cafe', 'diner', 'kitchen']),
   p('works', 2, 'zookeeper', 'zoo', []), p('works', 2, 'cashier', 'store', ['shop', 'supermarket', 'bank', 'restaurant']), p('works', 2, 'lifeguard', 'beach', ['pool', 'lake'], { art: 'the' }),
   p('works', 2, 'astronaut', 'spaceship', ['space station', 'rocket', 'space', 'spacecraft']), p('works', 2, 'dentist', 'dental office', ['office', 'clinic']), p('works', 2, 'police officer', 'police station', ['street', 'city', 'town']),
   p('works', 3, 'actor', 'theater', ['stage', 'studio', 'movie set']), p('works', 3, 'judge', 'courtroom', ['court', 'courthouse']), p('works', 3, 'scientist', 'laboratory', ['lab', 'university', 'college']),
   p('works', 3, 'banker', 'bank', ['office']), p('works', 3, 'artist', 'studio', ['gallery', 'workshop']), p('works', 3, 'miner', 'mine', ['quarry', 'tunnel']),
   p('works', 3, 'florist', 'flower shop', ['shop', 'store', 'greenhouse']), p('works', 3, 'pharmacist', 'pharmacy', ['drugstore', 'hospital', 'store']), p('works', 3, 'professor', 'university', ['college', 'school']),
-  p('works', 3, 'barber', 'barbershop', ['shop', 'salon']), p('works', 3, 'coach', 'gym', ['field', 'court', 'stadium', 'school'], { art: 'the' }), p('works', 3, 'butcher', 'butcher shop', ['shop', 'store', 'market']),
-  p('works', 3, 'blacksmith', 'forge', ['smithy', 'workshop', 'shop']), p('works', 3, 'captain', 'ship', ['boat', 'airplane', 'plane', 'sea']), p('works', 3, 'cowboy', 'ranch', ['farm', 'rodeo', 'field', 'range']),
+  p('works', 3, 'barber', 'barbershop', ['shop', 'salon']), p('works', 3, 'coach', 'gym', ['field', 'court', 'stadium', 'school'], { art: 'the' }), p('works', 3, 'butcher', 'meat market', ['shop', 'store', 'market', 'butcher shop', 'deli']),
+  p('works', 3, 'blacksmith', 'forge', ['smithy', 'workshop', 'shop']), p('works', 3, 'captain', 'ship', ['boat', 'airplane', 'plane', 'sea'], { prep: 'on' }), p('works', 3, 'cowboy', 'ranch', ['farm', 'rodeo', 'field', 'range'], { prep: 'on' }),
   p('works', 3, 'secretary', 'office', []), p('works', 3, 'mail carrier', 'post office', ['truck', 'street', 'route']), p('works', 3, 'veterinarian', 'animal hospital', ['clinic', 'vet clinic', 'farm', 'zoo']),
-  p('works', 3, 'jockey', 'racetrack', ['stable', 'track']), p('works', 3, 'surgeon', 'operating room', ['hospital', 'clinic']), p('works', 3, 'lifeguard', 'swimming pool', ['pool', 'beach', 'water park']),
+  p('works', 3, 'jockey', 'racetrack', ['stable', 'track'], { prep: 'at' }), p('works', 3, 'surgeon', 'operating room', ['hospital', 'clinic']), p('works', 3, 'lifeguard', 'swimming pool', ['pool', 'beach', 'water park'], { prep: 'at' }),
   p('works', 3, 'clown', 'circus', ['party', 'carnival'], { art: 'the' }), p('works', 3, 'monk', 'monastery', ['abbey', 'temple']), p('works', 3, 'senator', 'Capitol', ['government', 'Senate', 'Congress'], { art: 'the' }),
   // ---- what it uses
   p('uses', 2, 'carpenter', 'hammer', ['saw', 'nails', 'drill', 'screwdriver', 'chisel', 'tape measure', 'level', 'wood', 'lumber']), p('uses', 2, 'painter', 'paintbrush', ['brush', 'roller', 'paint', 'ladder', 'canvas']),

@@ -291,6 +291,9 @@ export const measurement: Generator = {
       const name = rng.pick(NAMES)
       const big = rng.int(1, 5), cut = rng.int(1, big * c.f - 1)
       const ans = big * c.f - cut
+      // Never cut exactly half: "a 1-yard rope, cut off 18 inches, how many inches are left?" has
+      // the answer written in the question.
+      if (ans === cut) return measurement.make(grade, tier, rng)
       const decoys = numDecoys(rng, ans, n - 1, [big * c.f + cut, big - cut, cut, ans + c.f, ans - c.f], Math.max(3, Math.round(c.f / 4)), 1).map(v => withUnit(v, c.small))
       const { choices, answer } = shuffled(rng, withUnit(ans, c.small), decoys, n)
       const prompt = wrap(TWO_STEP[c.big](name, withUnit(big, c.big), withUnit(cut, c.small), c.small))

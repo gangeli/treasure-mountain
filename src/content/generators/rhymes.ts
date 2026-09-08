@@ -106,11 +106,18 @@ export const rhymes: Generator = {
     const bag = rng.shuffle(rest)
 
     const verse = grade <= 2
+    // The verse must not contain the answer. "And pick a word to rhyme" wanting "pick", and
+    // "sound the same" wanting "same", let a child copy the answer out of the question.
+    const says = (l: string): boolean => new RegExp(`\\b${answer.toLowerCase()}\\b`).test(l.toLowerCase())
     const fmts = (verse ? VERSE_FMTS : PLAIN_FMTS)
       .filter(f => f.n <= bag.length)
       .filter(f => f.lines(bag.slice(0, f.n)).every(l => l.length <= MAX_LINE))
+      .filter(f => !f.lines(bag.slice(0, f.n)).some(says))
     // Longer prompts are better evidence of the pattern, so they are drawn more often.
-    const fmt = fmts.length ? rng.weighted(fmts, fmts.map(f => f.n)) : { n: 2, lines: PLAIN_FMTS[2].lines }
+    // The last resort says "which one", not "which word": for the -erd/-ird family the answer can be
+    // "word" itself, and every other phrasing asks for a word.
+    const plain2: Fmt = { n: 2, lines: ws => [`${cap(ws[0])} and ${ws[1]} rhyme.`, 'Which one rhymes with them?'] }
+    const fmt = fmts.length ? rng.weighted(fmts, fmts.map(f => f.n)) : plain2
     const shown = bag.slice(0, fmt.n)
     const prompt = fmt.lines(shown)
     // Sound-alike families (great / straight / weight) get a nudge that spelling will not help.

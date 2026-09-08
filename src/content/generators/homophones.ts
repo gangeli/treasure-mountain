@@ -87,11 +87,15 @@ export const homophones: Generator = {
     const decoys = [...rng.shuffle(others), ...fillers(set, target.word, rng)]
     const { choices, answer } = shuffled(rng, target.word, decoys, n)
     const body = wrap(target.sentence)
-    const prompt = rng.pick([
+    // Only an option that does not contain the answer: "Which spelling is right here?" asking for
+    // "here" is answered by reading the question, and "here" is one of the homophone sets.
+    const says = (lines: string[]): boolean => new RegExp(`\\b${target.word.toLowerCase()}\\b`).test(lines.join(' ').toLowerCase())
+    const opts = [
       [...body, 'Which word fills the blank?'],
       ['Fill in the blank:', ...body],
       [...body, 'Which spelling is right here?'],
-    ])
+    ].filter(o => !says(o.slice(o.indexOf(body[0]) === 0 ? body.length : 0)))
+    const prompt = rng.pick(opts.length ? opts : [[...body, 'Which word fills the blank?']])
     return riddle({
       family: 'homophones', skill: 'vocabulary: homophones', prompt, choices, answer,
       spoken: `${spokenBlank(target.sentence)} Which word fills the blank? ${sayChoices(choices)}?`,

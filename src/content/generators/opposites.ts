@@ -128,20 +128,22 @@ export const opposites: Generator = {
 
     let prompt: string[]
     const glossLine = gloss ? [`(${word} = ${gloss})`] : []
+    // The verse must not contain the answer: "Please pick it out for me" wanting "out" is answered
+    // by reading the question, and the rhyme is not worth that.
+    const says = (lines: string[]): boolean => new RegExp(`\\b${(choices[answer].text ?? '').toLowerCase()}\\b`).test(lines.join(' ').toLowerCase())
     if (verse && intro.length === 2) {
-      const v = rng.int(0, 1)
-      prompt = v === 0
-        ? [`${cap(word)} is the word I say.`, 'Its opposite, please, today!']
-        : [`${cap(intro[0].a)} and ${intro[0].b}, ${intro[1].a} and ${intro[1].b}:`, 'Opposites, you see!', `Now the opposite of ${word},`, 'Please pick it out for me.']
-      if (!fits(prompt)) prompt = [`${cap(word)} is the word I say.`, 'Its opposite, please, today!']
+      const short = [`${cap(word)} is the word I say.`, 'Its opposite, please, today!']
+      const long = [`${cap(intro[0].a)} and ${intro[0].b}, ${intro[1].a} and ${intro[1].b}:`, 'Opposites, you see!', `Now the opposite of ${word},`, 'Please pick it out for me.']
+      const ok = [short, long].filter(pp => fits(pp) && !says(pp))
+      prompt = ok.length ? ok[rng.int(0, ok.length - 1)] : [`What is the opposite of ${word}?`, ...glossLine]
     } else {
       const options = [
         [`What is the opposite of ${word}?`, ...glossLine],
         [`The opposite of ${word} is ___.`, ...glossLine],
         [`Which word means the opposite of ${word}?`, ...glossLine],
         ...(grade >= 4 ? [[`Which word is an antonym of ${word}?`, ...glossLine]] : []),
-      ].filter(fits)
-      prompt = rng.pick(options)
+      ].filter(pp => fits(pp) && !says(pp))
+      prompt = options.length ? rng.pick(options) : [`What is the opposite of ${word}?`, ...glossLine]
     }
     return riddle({
       family: 'opposites', skill: grade >= 4 ? 'vocabulary: antonyms' : 'vocabulary: opposites',

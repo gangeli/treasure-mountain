@@ -87,7 +87,11 @@ export const vowels: Generator = {
     }
 
     if (mode === 'name') {
-      const answerW = rng.pick(family)
+      // Never the word the label uses as its example: "Which word has the long u (as in cube)
+      // sound?" wanting "cube" is answered by reading the question.
+      const example = /\(as in (\w+)\)/.exec(sound.label)?.[1]
+      const namable = family.filter(w => w !== example)
+      const answerW = rng.pick(namable.length ? namable : family)
       const { choices, answer } = shuffled(rng, answerW, decoys, n)
       const prompt = [`Which word has the ${sound.label} sound?`]
       return riddle({

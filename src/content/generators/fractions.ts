@@ -61,6 +61,23 @@ function wordChoices(dens: number[]): { word: string; num: number; den: number }
 }
 
 /** Halves and quarters (K-1), naming fractions (2), unit fractions and number lines (3), equivalence and like denominators (4), unlike denominators and mixed numbers (5). */
+/** The value of a simple "a/b" choice, or null for anything else (a mixed number, a whole). */
+const simpleVal = (t: string): number | null => {
+  const m = /^(\d+)\/(\d+)$/.exec(t.trim())
+  return m ? Number(m[1]) / Number(m[2]) : null
+}
+/** Puts `twin` first among the decoys, dropping anything already worth the same. */
+function offerTwin(decoys: string[], twin: string, ans: string): void {
+  if (twin === ans) return
+  const v = simpleVal(twin)
+  if (v !== null && simpleVal(ans) === v) return
+  for (let i = decoys.length - 1; i >= 0; i--) {
+    const dv = simpleVal(decoys[i])
+    if (decoys[i] === twin || (v !== null && dv !== null && Math.abs(dv - v) < 1e-9)) decoys.splice(i, 1)
+  }
+  decoys.unshift(twin)
+}
+
 export const fractions: Generator = {
   id: 'fractions',
   name: 'Fractions',
@@ -223,6 +240,12 @@ export const fractions: Generator = {
       if (tier < 3 && gcd(r, den) !== 1) return fractions.make(grade, tier, rng)
       const ans = fracStr(r, den)
       const decoys = textDecoys(rng, r, den, n + 2, [[r, den * 2], [add ? a - b : a + b, den], [r + 1, den], [r - 1, den], [a * b, den]], [den, den * 2]).filter(d => d !== ans)
+      // 2/5 - 1/5 = 1/5: when the answer is one of the fractions in the sum, offer the other one
+      // too, so reading a fraction straight off the question is not a strategy.
+      // As written in the question, not simplified: the point is that the string a child could copy
+      // off the page is on offer, and fracStr would turn 2/10 into 1/5.
+      const twin = r === a ? b : r === b ? a : null
+      if (twin !== null && twin !== r) offerTwin(decoys, `${twin}/${den}`, ans)
       const { choices, answer } = shuffled(rng, ans, decoys, n)
       const prompt = [`${a}/${den} ${add ? '+' : '-'} ${b}/${den} = ?`, ...(gcd(r, den) !== 1 ? ['(Give the answer in simplest form.)'] : [])]
       return mathRiddle({ family: 'fractions', skill: add ? 'math: adding fractions' : 'math: subtracting fractions', prompt, choices, answer, spoken: `What is ${a}/${den} ${add ? 'plus' : 'minus'} ${b}/${den}? ${sayChoices(choices)}?`, metric: 50 + den + (gcd(r, den) !== 1 ? 4 : 0), grade, tier }, `num:${a}/${den}${add ? '+' : '-'}${b}/${den}`)
@@ -260,6 +283,10 @@ export const fractions: Generator = {
       if (add && rn >= L && tier === 1) return fractions.make(grade, tier, rng)
       const ans = fracStr(rn, L)
       const decoys = textDecoys(rng, rn, L, n + 2, [[add ? a + b : a - b, d1 + d2], [add ? a + b : Math.abs(a - b), Math.max(d1, d2)], [rn + 1, L], [rn - 1, L], [add ? a + b : a - b, L]], [L, d1 + d2, L * 2], rn < L).filter(d => d !== ans)
+      // 1/2 - 1/4 = 1/4: when the answer is one of the two fractions in the question, put the other
+      // one on offer as well, so copying a fraction off the page is not a strategy.
+      const other = ans === fracStr(a, d1) && ans !== fracStr(b, d2) ? `${b}/${d2}` : ans === fracStr(b, d2) && ans !== fracStr(a, d1) ? `${a}/${d1}` : null
+      if (other) offerTwin(decoys, other, ans)
       const { choices, answer } = shuffled(rng, ans, decoys, n)
       const prompt = [`${a}/${d1} ${add ? '+' : '-'} ${b}/${d2} = ?`]
       return mathRiddle({ family: 'fractions', skill: add ? 'math: adding fractions' : 'math: subtracting fractions', prompt, choices, answer, spoken: `What is ${a}/${d1} ${add ? 'plus' : 'minus'} ${b}/${d2}? ${sayChoices(choices)}?`, metric: 62 + L + tier * 2, grade, tier }, `num:${a}/${d1}${add ? '+' : '-'}${b}/${d2}`)
@@ -279,6 +306,15 @@ export const fractions: Generator = {
     const mixed = (w: number, x: number, d: number) => `${w} ${x}/${d}`
     const wrongWhole = add ? (w1 + w2) * L + Math.abs(a * (L / d1) - b * (L / d2)) : (w1 - w2) * L + Math.abs(a * (L / d1) - b * (L / d2))
     const decoys = textDecoys(rng, rn, L, n + 2, [[wrongWhole, L], [rn + L, L], [rn - L, L], [rn + 1, L], [rn - 1, L], [add ? (w1 + w2) * (d1 + d2) + a + b : 1, d1 + d2]], [L, L * 2], false).filter(d => d !== ans)
+    // 2 1/2 - 2 1/4 = 1/4: when the answer is one of the fractions written in the question, the
+    // other one has to be a choice too, or a child can read the answer off the page.
+    // By position, not by value: the two numerators are often the same number.
+    const parts: [number, number][] = [[a, d1], [b, d2]]
+    for (let k = 0; k < 2; k++) {
+      if (ans !== fracStr(parts[k][0], parts[k][1])) continue
+      // Moved to the front, not merely present: only the first few decoys are actually offered.
+      offerTwin(decoys, `${parts[1 - k][0]}/${parts[1 - k][1]}`, ans)
+    }
     const { choices, answer } = shuffled(rng, ans, decoys, n)
     const prompt = [`${mixed(w1, a, d1)} ${add ? '+' : '-'} ${mixed(w2, b, d2)} = ?`]
     return mathRiddle({ family: 'fractions', skill: 'math: mixed numbers', prompt, choices, answer, spoken: `What is ${w1} and ${a}/${d1} ${add ? 'plus' : 'minus'} ${w2} and ${b}/${d2}? ${sayChoices(choices)}?`, metric: 66 + L + tier * 2 + (add ? 0 : 4), grade, tier }, `num:${w1}+${a}/${d1}${add ? '+' : '-'}(${w2}+${b}/${d2})`)

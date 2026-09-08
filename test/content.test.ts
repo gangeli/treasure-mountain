@@ -92,11 +92,16 @@ describe('rhymes', () => {
 describe('sounds', () => {
   it('the question says where the sound is, and no decoy shares it', () => {
     sweep(sounds, 200, r => {
-      const m = /^These words all (begin|end) with ([a-z]+)\.$/.exec(r.prompt[1])
+      // "begin with b" but "end in th": the answer to an ending question can be the word "with".
+      const m = /^These words all (begin with|end in) ([a-z]+)\.$/.exec(r.prompt[1])
       if (!m) return `no sound line: "${r.prompt[1]}"`
-      const [, where, key] = m
+      const where = m[1] === 'begin with' ? 'begin' : 'end'
+      const key = m[2]
       const ans = answerOf(r)
-      if (!r.prompt.some(l => new RegExp(`Which word ${where === 'begin' ? 'begins' : 'ends'} with ${key}\\b`).test(l))) return 'the question does not name the position'
+      const verb = where === 'begin' ? 'begins' : 'ends'
+      // Either the couplet names the key, or it asks for "the same way" - which it does when every
+      // phrasing that names the key would have contained the answer.
+      if (!r.prompt.some(l => new RegExp(`Which word ${verb} (${m[1].split(' ')[1]} ${key}\\b|the same way)`).test(l))) return `the question does not name the position: ${r.prompt.join(' / ')}`
       if (where === 'begin' ? !ans.startsWith(key) : !sameEnd(endSoundOf(ans), endKeySound(key))) return `answer "${ans}" does not ${where} with ${key}`
       for (const d of decoysOf(r)) {
         if (where === 'begin') {
@@ -245,5 +250,106 @@ describe('the voice names the answer buttons', () => {
       }
     }
     expect(missing.slice(0, 5)).toEqual([])
+  })
+})
+
+describe('a riddle does not state its own answer', () => {
+  const inPrompt = (prompt: string, t: string | undefined): boolean => {
+    const a = (t ?? '').toLowerCase().trim()
+    if (a.length < 3) return false
+    // Not preceded by a word character or a decimal point: "hut" is not in "shut", and "2 kg"
+    // is not in "1.2 kg".
+    return new RegExp(`(?<![\\w.])${a.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`).test(prompt)
+  }
+  /**
+   * The answer is written in the question and none of the decoys is. A question that names every
+   * choice - "a nail or a cork?", "Cleo is older than Wren... who is oldest?" - gives nothing away,
+   * because copying a word out of it is no help in choosing between them.
+   */
+  const statesAnswer = (r: Riddle): boolean => {
+    const prompt = r.prompt.join(' ').toLowerCase()
+    if (!inPrompt(prompt, r.choices[r.answer].text)) return false
+    return !r.choices.some((c, i) => i !== r.answer && inPrompt(prompt, c.text))
+  }
+
+  /**
+   * Families where the answer legitimately appears in the question: an irregular plural is the same
+   * word ("one deer, ten ___"), a two-way question has to name both options ("a nail or a cork?"),
+   * a logic puzzle names everyone in it, and a joke riddle is built on the trick ("what can you
+   * hold in your right hand but never in your left hand?"). Every other family has to ask something
+   * a child cannot answer by copying a word out of the question.
+   */
+  const ALLOWED = new Set(['plurals', 'riddles', 'shapes', 'wordproblems', 'events'])
+
+  it('sounds never hands the answer to the child in the verse', () => {
+    const gen = GENERATORS.find(g => g.id === 'sounds')!
+    const bad: string[] = []
+    for (const grade of gen.grades) for (const tier of TIERS) {
+      const rng = new Rng(`states-sounds-${grade}-${tier}`)
+      for (let i = 0; i < 250; i++) {
+        const r = gen.make(grade, tier, rng)
+        if (statesAnswer(r)) bad.push(`${r.prompt.join(' / ')} -> ${r.choices[r.answer].text}`)
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+
+  it('events below the logic puzzles never name the stage they are asking for', () => {
+    const gen = GENERATORS.find(g => g.id === 'events')!
+    const bad: string[] = []
+    for (const grade of gen.grades) {
+      if (grade < 2 || grade > 4) continue
+      for (const tier of TIERS) {
+        const rng = new Rng(`states-events-${grade}-${tier}`)
+        for (let i = 0; i < 250; i++) {
+          const r = gen.make(grade, tier, rng)
+          if (statesAnswer(r)) bad.push(`g${grade}: ${r.prompt.join(' / ')} -> ${r.choices[r.answer].text}`)
+        }
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+
+  it('making change never gives change equal to the price', () => {
+    const gen = GENERATORS.find(g => g.id === 'money')!
+    const bad: string[] = []
+    for (const tier of TIERS) {
+      const rng = new Rng(`change-${tier}`)
+      for (let i = 0; i < 400; i++) {
+        const r = gen.make(3, tier, rng)
+        if (/change/.test(r.prompt.join(' ')) && statesAnswer(r)) bad.push(`${r.prompt.join(' / ')} -> ${r.choices[r.answer].text}`)
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+
+  it('no family outside the allowed list states its answer', () => {
+    const bad: string[] = []
+    for (const gen of GENERATORS) {
+      if (ALLOWED.has(gen.id)) continue
+      for (const grade of gen.grades) for (const tier of TIERS) {
+        const rng = new Rng(`states-${gen.id}-${grade}-${tier}`)
+        for (let i = 0; i < 120; i++) {
+          const r = gen.make(grade, tier, rng)
+          if (statesAnswer(r)) bad.push(`${gen.id} g${grade}: ${r.prompt.join(' / ')} -> ${r.choices[r.answer].text}`)
+        }
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+})
+
+describe('people work in the right prepositions', () => {
+  it('nobody works "in" a farm, a ranch, a ship or an airplane', () => {
+    const gen = GENERATORS.find(g => g.id === 'associations')!
+    const bad: string[] = []
+    for (const grade of gen.grades) for (const tier of TIERS) {
+      const rng = new Rng(`prep-${grade}-${tier}`)
+      for (let i = 0; i < 300; i++) {
+        const p = gen.make(grade, tier, rng).prompt.join(' ')
+        if (/works in an? (farm|ranch|ship|airplane|racetrack|swimming pool)\b/.test(p)) bad.push(p)
+      }
+    }
+    expect([...new Set(bad)].slice(0, 3)).toEqual([])
   })
 })

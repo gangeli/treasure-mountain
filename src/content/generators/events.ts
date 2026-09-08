@@ -412,7 +412,19 @@ function sequenceQ(grade: Grade, tier: Tier, rng: Rng): Riddle {
   const plan = seqPlan(level, tier)
   const pool = plan.modes.flatMap(m => seqCandidates(level, m, plan.band, n - 1))
   if (pool.length === 0) throw new Error(`events: no sequence questions for level ${level} tier ${tier}`)
-  const q = rng.pick(pool)
+  // A question whose own prompt says the answer is not a question. "The life cycle of an oak tree.
+  // What is the last stage?" has the answer, "oak tree", in its first line, and a child can match
+  // the words without knowing anything about oak trees.
+  const givesItAway = (c: SeqQ): boolean => {
+    const text = seqPrompt(c, level, rng).join(' ').toLowerCase()
+    return new RegExp(`\\b${c.answer.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`).test(text)
+  }
+  // Only from grade 2 up: below that the prompt is "First you <the step before>", which cannot name
+  // the answer, and the handful of questions the check would drop there are the ones that repeat a
+  // noun ("fill the tub" then "get in the tub"), which is not a giveaway and is most of the variety
+  // kindergarten's tier 3 has.
+  const usable = level >= 2 ? pool.filter(c => !givesItAway(c)) : pool
+  const q = rng.pick(usable.length ? usable : pool)
   // Every decoy is another step of the same scenario, so none of them is eliminable on topic alone.
   const decoys = rng.shuffle(q.seq.steps.filter(x => x !== q.answer && x !== q.ref))
   const { choices, answer } = shuffled(rng, q.answer, decoys, n)

@@ -166,6 +166,10 @@ export const addSub: Generator = {
     // Include the classic wrong-operation decoy where possible.
     const wrongOp = add ? x - y : x + y
     if (wrongOp !== result && wrongOp >= 0 && !decoys.includes(fmt(wrongOp))) decoys[decoys.length - 1] = fmt(wrongOp)
+    // When the answer is one of the numbers in the question (220 - 110 = 110), the other one has to
+    // be a choice too, or "pick a number you can see in the sum" is a winning strategy.
+    const other = result === x ? y : result === y ? x : null
+    if (other !== null && other !== result && !decoys.includes(fmt(other))) decoys[0] = fmt(other)
     const { choices, answer } = shuffled(rng, fmt(result), rng.shuffle(decoys), n)
     const withPictures = grade === 0 || (grade === 1 && tier === 1 && rng.bool(0.5))
     const symbol = add ? '+' : '-'

@@ -171,6 +171,9 @@ export const money: Generator = {
       const payOpts = tier === 1 ? [25, 50, 75, 100].filter(p => p > price) : [50, 75, 100].filter(p => p > price)
       const pay = rng.pick(payOpts)
       const change = pay - price
+      // Never make change that equals the price, or the child can read the answer straight off the
+      // question without subtracting anything (a 25c toy paid for with 50c).
+      if (change === price) return money.make(grade, tier, rng)
       const vals = numDecoys(rng, change, n - 1, [pay + price, change + 5, change - 5, change + 10, change - 10, price, change + 1, change - 1], 8, 1)
       const { fmt, over } = centsFmt([change, ...vals])
       const { choices, answer } = shuffled(rng, fmt(change), vals.map(fmt), n)
@@ -201,6 +204,8 @@ export const money: Generator = {
       }
       const a = r(300, 1999), b = r(100, a - 50)
       const diff = a - b
+      // Not exactly half: $10.00 - $5.00 = $5.00 has its answer written in the question.
+      if (diff === b) return money.make(grade, tier, rng)
       const decoys = numDecoys(rng, diff, n - 1, [a + b, diff + 100, diff - 100, diff + 25, diff - 25, diff + 10, diff - 10], 50, 1).map(dollars)
       const { choices, answer } = shuffled(rng, dollars(diff), decoys, n)
       const prompt = mode === 'sub'

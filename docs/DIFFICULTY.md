@@ -29,31 +29,31 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 | 1 | 2 | 29.4 | 19.9 | 0 | 0% | Track, jack, rack, pack / All these words rhyme, you see. / Find one more that rhymes / And give it to me! [*black / jump / sick] |
 | 1 | 3 | 37.4 | 19.7 | 0 | 0% | Snail and nail sound the same. / Now finish off my rhyme: / Which word rhymes with them? / Pick it out this time! [*rail / ring / way] |
 | 2 | 1 | 33.6 | 19.8 | 0 | 0% | Pool, stool, drool / These three words rhyme, you see. / Which word rhymes with them? / Please pick it out for me! [hall / pill / *cool] |
-| 2 | 2 | 37.4 | 19.8 | 0 | 0% | Rake, shake, cake / These three words rhyme, you see. / Which word rhymes with them? / Please pick it out for me! [brick / *wake / small] |
+| 2 | 2 | 37.4 | 19.7 | 0 | 0% | Rake, shake, cake / These three words rhyme, you see. / Which word rhymes with them? / Please pick it out for me! [brick / *wake / small] |
 | 2 | 3 | 49.1 | 20.4 | 0 | 0% | Jelly and smelly sound the same. / Now finish off my rhyme: / Which word rhymes with them? / Pick it out this time! [*belly / crumble / treat] |
 | 3 | 1 | 39.4 | 11.5 | 0 | 0% | Spoon, noon, moon. / These words all rhyme. / Which word rhymes with them? [rain / rake / right / *soon] |
 | 3 | 2 | 49.1 | 11.1 | 0 | 0% | Wetter, better, letter. / These words all rhyme. / Which word rhymes with them? [sheep / creep / *sweater / plain] |
 | 3 | 3 | 54.4 | 11.3 | 0 | 0% | Merry, berry, very, ferry. / These words all rhyme. / Which word rhymes with them? [decision / candle / *cherry / crinkle] |
 | 4 | 1 | 51.2 | 11.1 | 0 | 0% | Cable, label, fable, stable. / These words all rhyme. / Which word rhymes with them? [mitten / feather / *table / pocket] |
 | 4 | 2 | 55.8 | 11.2 | 0 | 0% | Division, decision, television, vision. / These words all rhyme. / Which word rhymes with them? [connection / *collision / vacation / infection] |
-| 4 | 3 | 66.6 | 16.4 | 0 | 0% | Television and collision rhyme. / Which word rhymes with them? [*decision / fantastic / nation / clutter] |
+| 4 | 3 | 66.5 | 16.3 | 0 | 0% | Television and collision rhyme. / Which word rhymes with them? [*decision / fantastic / nation / clutter] |
 | 5 | 1 | 64.3 | 11.5 | 0 | 0% | Stability, humility, fragility, agility. / These words all rhyme. / Which word rhymes with them? [kitten / *ability / flipper / trickle] |
-| 5 | 2 | 66.6 | 16.1 | 0 | 0% | Through, chew, shoe, glue. / These words all rhyme. / Which word rhymes with them? / Listen for the sound, not the spelling. [vision / wait / roar / *blue] |
+| 5 | 2 | 66.5 | 16.1 | 0 | 0% | Through, chew, shoe, glue. / These words all rhyme. / Which word rhymes with them? / Listen for the sound, not the spelling. [vision / wait / roar / *blue] |
 | 5 | 3 | 67.9 | 18.9 | 0 | 0% | Fluff, puff, rough. / These words all rhyme. / Which word rhymes with them? / Listen for the sound, not the spelling. [straight / mitten / *enough / handle] |
 
 ### Letter sounds (`sounds`, reading)
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 13.6 | 23.5 | 0 | 0% | Ten, tent, tap, toy. / These words all begin with t. / Which word begins with t as well? / Pick it out and ring the bell! [*top / vine / worm] |
-| K | 2 | 18.4 | 23.6 | 0 | 0% | Leg, fog, dog, bag. / These words all end with g. / Which word ends with g as well? / Pick it out and ring the bell! [kiss / *jug / kid] |
-| K | 3 | 23.2 | 23.5 | 0 | 0% | Wall, pull, well, hill. / These words all end with ll. / Which word ends with ll too? / Pick that one, and we are through! [*tall / pig / rim] |
-| 1 | 1 | 20.1 | 23.5 | 0 | 0% | Sun, sit, soap, seal. / These words all begin with s. / Which word begins with s as well? / Pick it out and ring the bell! [hop / *sad / violin] |
-| 1 | 2 | 34.9 | 23.5 | 0 | 0% | Question, quack, quick, quilt. / These words all begin with qu. / Which word begins with qu too? / Pick that one, and we are through! [*queen / chest / shark] |
-| 1 | 3 | 40.7 | 23.5 | 0 | 0% | Long, thing, king, ring. / These words all end with ng. / Which word ends with ng too? / Pick that one, and we are through! [*strong / wish / dish] |
-| 2 | 1 | 41.9 | 23.5 | 0 | 0% | Stone, star, stamp, step. / These words all begin with st. / Which word begins with st too? / Pick that one, and we are through! [black / *stop / spill] |
-| 2 | 2 | 48.7 | 23.5 | 0 | 0% | Flag, flat, flower, flip. / These words all begin with fl. / Which word begins with fl too? / Pick that one, and we are through! [spill / *float / plus] |
-| 2 | 3 | 56.2 | 23.5 | 0 | 0% | Bolt, belt, built, melt. / These words all end with lt. / Which word ends with lt as well? / Pick it out and ring the bell! [trunk / sand / *tilt] |
+| K | 1 | 13.6 | 23.0 | 0 | 0% | Ten, tent, tap, toy. / These words all begin with t. / Which word begins the same way? / Choose the right one, and hooray! [*top / vine / worm] |
+| K | 2 | 18.4 | 23.0 | 0 | 0% | Leg, fog, dog, bag. / These words all end in g. / Which word ends the same way? / Choose the right one, and hooray! [kiss / *jug / kid] |
+| K | 3 | 23.2 | 22.9 | 0 | 0% | Wall, pull, well, hill. / These words all end in ll. / Which word ends in ll as well? / Pick it out and ring the bell! [*tall / pig / rim] |
+| 1 | 1 | 20.1 | 23.0 | 0 | 0% | Sun, sit, soap, seal. / These words all begin with s. / Which word begins with s as well? / Pick it out and ring the bell! [hop / *sad / violin] |
+| 1 | 2 | 34.9 | 23.0 | 0 | 0% | Question, quack, quick, quilt. / These words all begin with qu. / Which word begins with qu too? / Pick that one, and we are through! [*queen / chest / shark] |
+| 1 | 3 | 40.7 | 23.0 | 0 | 0% | Long, thing, king, ring. / These words all end in ng. / Which word ends in ng too? / Pick that one, and we are through! [*strong / wish / dish] |
+| 2 | 1 | 41.9 | 22.9 | 0 | 0% | Stone, star, stamp, step. / These words all begin with st. / Which word begins with st too? / Pick that one, and we are through! [black / *stop / spill] |
+| 2 | 2 | 48.7 | 23.0 | 0 | 0% | Flag, flat, flower, flip. / These words all begin with fl. / Which word begins with fl too? / Pick that one, and we are through! [spill / *float / plus] |
+| 2 | 3 | 56.2 | 22.9 | 0 | 0% | Bolt, belt, built, melt. / These words all end in lt. / Which word ends the same way? / Choose the right one, and hooray! [trunk / sand / *tilt] |
 
 ### Counting (`counting`, math)
 
@@ -231,11 +231,11 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 | 2 | 1 | 34.7 | 5.8 | 96 | 67% | Count the coins. How much money? [75¢ / 60¢ / *65¢] |
 | 2 | 2 | 40.5 | 8.2 | 95 | 35% | How much money do you see? [61¢ / *51¢ / 52¢] |
 | 2 | 3 | 45.1 | 7.2 | 98 | 59% | Which coins make 35¢? [*1 quarter, 1 dime / 2 quarters, 2 dimes / 1 dime, 3 nickels] |
-| 3 | 1 | 49.6 | 14.0 | 96 | 0% | You pay one dollar for a 25¢ ball. / What is your change? [85¢ / 80¢ / 74¢ / *75¢] |
-| 3 | 2 | 51.3 | 14.2 | 98 | 0% | You pay one dollar for a 28¢ eraser. / What is your change? [*72¢ / 67¢ / 71¢ / 82¢] |
+| 3 | 1 | 49.4 | 14.1 | 96 | 0% | You pay one dollar for a 25¢ ball. / What is your change? [85¢ / 80¢ / 74¢ / *75¢] |
+| 3 | 2 | 51.4 | 14.0 | 99 | 0% | You pay one dollar for a 28¢ eraser. / What is your change? [*72¢ / 67¢ / 71¢ / 82¢] |
 | 3 | 3 | 59.4 | 17.9 | 90 | 0% | A sticker costs 35¢ and a marble costs 15¢. / Nina pays for both with one dollar. / How much change does Nina get? [45¢ / *50¢ / 85¢ / 65¢] |
-| 4 | 1 | 70.6 | 10.3 | 35.25 | 0% | A book costs $19.25. / A ring costs $2.50. / How much more does the book cost? [$16.50 / *$16.75 / $15.75 / $16.65] |
-| 4 | 2 | 73.7 | 11.2 | 35.4 | 0% | A pencil costs $3.15 and an eraser / costs $4.30. What is the total? [$7.35 / $8.45 / $7.70 / *$7.45] |
+| 4 | 1 | 70.6 | 10.6 | 29.75 | 0% | A book costs $19.25. / A ring costs $2.50. / How much more does the book cost? [$16.50 / *$16.75 / $15.75 / $16.65] |
+| 4 | 2 | 73.7 | 11.3 | 34.9 | 0% | A pencil costs $3.15 and an eraser / costs $4.30. What is the total? [$7.35 / $8.45 / $7.70 / *$7.45] |
 | 4 | 3 | 77.7 | 13.7 | 33 | 0% | A ring costs $10.95. / A sticker costs $1.03. / How much more does the ring cost? [$9.67 / $10.92 / $8.92 / *$9.92] |
 | 5 | 1 | 85.9 | 12.5 | 87.75 | 0% | Rosa buys 3 notebooks at $0.65 each. / How much does that cost? [*$1.95 / $2.95 / $0.20 / $2.60] |
 | 5 | 2 | 89.8 | 15.9 | 81 | 0% | Hugo buys 3 notebooks at $3.90 each / and pays with $20.00. / How much change does Hugo get? [*$8.30 / $7.30 / $16.10 / $4.40] |
@@ -347,7 +347,7 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 | 4 | 2 | 68.2 | 7.4 | 900 | 24% | 9 liters = ? milliliters [*9,000 milliliters / 90,000 milliliters / 900 milliliters / 10,000 milliliters] |
 | 4 | 3 | 70.9 | 7.6 | 973 | 23% | The chart shows stars for each day. / How many stars in the whole week? [*73 / 72 / 78 / 74] |
 | 5 | 1 | 66.5 | 8.3 | 950 | 42% | 4.5 days = ? hours [84 hours / 11 hours / 45 hours / *108 hours] |
-| 5 | 2 | 73.2 | 11.8 | 990 | 34% | The chart shows stars for each day. / How many more stars on Thu than Wed? [12 / 19 / *11 / 10] |
+| 5 | 2 | 73.3 | 11.8 | 990 | 33% | The chart shows stars for each day. / How many more stars on Thu than Wed? [12 / 19 / *11 / 10] |
 | 5 | 3 | 76.9 | 10.9 | 990 | 32% | 8.25 kilometers = ? meters [7,250 meters / 825 meters / *8,250 meters / 9,250 meters] |
 
 ### Letters (`letters`, reading)
@@ -393,7 +393,7 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| K | 1 | 13.8 | 11.6 | 0 | 0% | What is the opposite of wet? [*dry / hot / big] |
+| K | 1 | 13.8 | 11.4 | 0 | 0% | What is the opposite of wet? [*dry / hot / big] |
 | K | 2 | 20.2 | 11.4 | 0 | 0% | Which word means the opposite of dark? [clean / awake / *light] |
 | K | 3 | 26.7 | 11.3 | 0 | 0% | Yes and no, give and take: / Opposites, you see! / Now the opposite of over, / Please pick it out for me. [more / *under / down] |
 | 1 | 1 | 33.0 | 11.1 | 0 | 0% | Come and go, safe and dangerous: / Opposites, you see! / Now the opposite of wide, / Please pick it out for me. [strong / silent / *narrow] |
@@ -416,9 +416,9 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 1 | 33.1 | 14.4 | 0 | 0% | Another word for quick: / Do you know one? Think it through. / Which word here means quick? / Pick it and I'll cheer for you! [*fast / tidy / sick] |
+| 1 | 1 | 33.1 | 14.5 | 0 | 0% | Another word for quick: / Do you know one? Think it through. / Which word here means quick? / Pick it and I'll cheer for you! [*fast / tidy / sick] |
 | 1 | 2 | 38.9 | 14.7 | 0 | 0% | Which word means about the same as bag? [road / *sack / gift] |
-| 1 | 3 | 44.8 | 14.4 | 0 | 0% | Which word means almost the same as friendly? [*kind / loud / tidy] |
+| 1 | 3 | 44.8 | 14.3 | 0 | 0% | Which word means almost the same as friendly? [*kind / loud / tidy] |
 | 2 | 1 | 51.1 | 13.6 | 0 | 0% | Which word means about the same as bold? [*brave / weird / needy] |
 | 2 | 2 | 58.0 | 14.2 | 0 | 0% | Another word for ask: / Do you know one? Think it through. / Which word here means ask? / Pick it and I'll cheer for you! [assist / snatch / *question] |
 | 2 | 3 | 64.0 | 13.8 | 0 | 0% | Toss, toss, toss! / Which word means the same? / Find it here and you will win / This little word game! [hurry / reply / *fling] |
@@ -527,7 +527,7 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 
 | Grade | Tier | metric | words | max number | pictures | example |
 | --- | --- | --- | --- | --- | --- | --- |
-| 2 | 1 | 25.5 | 10.0 | 0 | 0% | Fill in the blank: / I have ___ hands. [*two / tow / too] |
+| 2 | 1 | 25.5 | 9.9 | 0 | 0% | Fill in the blank: / I have ___ hands. [*two / tow / too] |
 | 2 | 2 | 28.9 | 10.3 | 0 | 0% | Fill in the blank: / I ___ how to swim. [week / *know / no] |
 | 2 | 3 | 35.8 | 10.4 | 0 | 0% | Fill in the blank: / Grandma ___ a quilt. [tail / maid / *made] |
 | 3 | 1 | 36.7 | 10.4 | 0 | 0% | The cut will ___ in a week. / Which spelling is right here? [pole / heel / past / *heal] |
@@ -754,7 +754,7 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 | --- | --- | --- | --- | --- | --- | --- |
 | K | 1 | 0.9 | 6.5 | 0 | 0% | Which one is hot? [ice / *a fire / a snowman] |
 | K | 2 | 4.1 | 8.0 | 0 | 0% | Here is a question for you. / Which one is smooth? [sandpaper / *a mirror / a brick] |
-| K | 3 | 8.4 | 8.8 | 0 | 0% | Which one is heavier, a brick or a feather? [neither one / *a brick / they are the same] |
+| K | 3 | 8.4 | 8.8 | 0 | 0% | Which one is heavier, a brick or a feather? [a feather / *a brick / neither one] |
 | 1 | 1 | 8.6 | 7.7 | 0 | 0% | When you open a drawer, you ... [drop it / *pull it / push it] |
 | 1 | 2 | 12.6 | 9.0 | 0 | 0% | What can you pour from a cup? [a sock / *water / a spoon] |
 | 1 | 3 | 18.7 | 10.8 | 0 | 0% | Which material bends easily? [glass / brick / *rubber] |
@@ -781,9 +781,9 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 | 1 | 1 | 14.5 | 9.3 | 0 | 0% | Think about homework. / What is the last thing you do? [*hand it in / take out your book / answer the questions] |
 | 1 | 2 | 17.0 | 14.5 | 0 | 0% | Think about a birthday cake. / After you sing happy birthday, what do you do / next? [eat the cake / light the candles / *blow out the candles] |
 | 1 | 3 | 18.0 | 14.5 | 0 | 0% | Think about homework. / What do you do just before you hand it in? [read the page / take out your book / *answer the questions] |
-| 2 | 1 | 24.3 | 10.1 | 0 | 0% | The life cycle of a duck. / What is the last stage? [*duck / egg / duckling] |
-| 2 | 2 | 27.0 | 12.5 | 0 | 0% | How a bean seed grows. / This stage: bean seed. / What comes next? [leaves open / shoot grows / *roots grow] |
-| 2 | 3 | 28.0 | 14.6 | 0 | 0% | The life cycle of a mosquito. / This stage: mosquito. / What comes just before it? [*pupa / egg / wriggler] |
+| 2 | 1 | 24.0 | 9.7 | 0 | 0% | The life cycle of a bear. / What is the last stage? [*adult bear / cub / young bear] |
+| 2 | 2 | 27.0 | 12.4 | 0 | 0% | How a bean seed grows. / This stage: bean seed. / What comes next? [leaves open / shoot grows / *roots grow] |
+| 2 | 3 | 28.0 | 14.6 | 0 | 0% | The life cycle of a mosquito. / This stage: pupa. / What comes just before it? [*wriggler / egg / mosquito] |
 | 3 | 1 | 35.5 | 7.9 | 20 | 0% | Repotting a plant. / What is the very first step? [press the soil down / water it / *fill a pot with soil / make a hole in the soil] |
 | 3 | 2 | 38.0 | 15.8 | 20 | 0% | Popcorn. / You have just done this: / heat the pan. / What do you do next? [put on the lid / *add the kernels / wait for the pops / pour into a bowl] |
 | 3 | 3 | 39.0 | 17.9 | 20 | 0% | A snowman. / You are about to do this: / roll a big ball. / What did you do just before? [stack them / roll a smaller ball / *pack the snow / add a face] |
@@ -840,7 +840,7 @@ What a child sees over 12 riddles (tiers 1-3 as the levels go up), drawn by the 
 
 1. *(placevalue, tier 1)* 4 tens and 6 ones = ? — 47, **46**, 36
 2. *(riddles, tier 1)* A riddle from the elf for you: I have four legs but cannot walk. You sit on me. What am I? — **a chair**, a lamp, a door
-3. *(sounds, tier 1)* Ax, fix, mix, ox. These words all end with x. Which word ends with x as well? Pick it out and ring the bell! — mud, **wax**, kick
+3. *(sounds, tier 1)* Ax, fix, mix, ox. These words all end in x. Which word ends the same way? Choose the right one, and hooray! — mud, **wax**, kick
 4. *(time, tier 1)* Look at the clock. What time is it? — 8:00, 7:30, **7:00**
 5. *(placevalue, tier 2)* How many tens are in 17? — **1**, 0, 2
 6. *(sounds, tier 2)* Queen, quilt, quack, quiet. These words all begin with qu. Which word begins with qu too? Pick that one, and we are through! — **question**, cherry, chick
@@ -859,7 +859,7 @@ What a child sees over 12 riddles (tiers 1-3 as the levels go up), drawn by the 
 4. *(compounds, tier 1)* Tree + house = treehouse Foot + path = footpath Pop + corn = popcorn Cook + book = ______. — bookcase, notebook, **cookbook**
 5. *(comparisons, tier 2)* Which of these is the biggest? — a table, **a bridge**, an Olympic pool
 6. *(addsub, tier 2)* 44 - 14 = ? — 58, **30**, 34
-7. *(events, tier 2)* The life cycle of an oak tree. This stage: young tree. What comes next? — seedling, acorn, **oak tree**
+7. *(events, tier 2)* The life cycle of an apple tree. This stage: seedling. What comes next? — apple tree, apple seed, **young tree**
 8. *(time, tier 2)* Which clock shows 7 o'clock? — **picture**, picture, picture
 9. *(sentences, tier 3)* I wore ___ to keep my hands warm. Which word fills the blank? — **mittens**, sandals, sunglasses
 10. *(associations, tier 3)* Which one is part of a shirt? — string, leaf, **collar**

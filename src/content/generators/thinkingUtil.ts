@@ -96,7 +96,14 @@ export function factRiddle(family: string, skill: string, facts: readonly Fact[]
     metric = f.level * 10 + (f.hard ? 5 : 0) + Math.min(5, f.q.length / 25)
   }
   const n = choiceCount(grade)
-  const { choices, answer } = shuffled(rng, f.a, rng.shuffle(f.d), n)
+  // A question that offers a choice in words - "Is the sky light or dark?" - has to put both of
+  // them on the buttons. Shuffling the decoys sometimes dropped the alternative, leaving the answer
+  // as the only choice the question named, which a child can pick without knowing anything.
+  const decoys = rng.shuffle(f.d)
+  const q = f.q.toLowerCase()
+  const paired = decoys.find(d => q.includes(`${f.a.toLowerCase()} or ${d.toLowerCase()}`) || q.includes(`${d.toLowerCase()} or ${f.a.toLowerCase()}`))
+  if (paired) decoys.splice(decoys.indexOf(paired), 1), decoys.unshift(paired)
+  const { choices, answer } = shuffled(rng, f.a, decoys, n)
   const body = f.verse ?? wrap(f.q)
   const prompt = !f.verse && body.length <= 3 && rng.bool(0.35) ? [rng.pick(LEADS), ...body] : body
   return riddle({

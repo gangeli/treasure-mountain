@@ -73,8 +73,8 @@ export const MATTER_FACTS: Fact[] = [
   // ---- Level 1 band 3: choosing a material for a job, harder pushes and pulls.
   F(1, 3, 'Which material bends easily?', 'rubber', ['glass', 'stone', 'brick']),
   F(1, 3, 'A wagon follows behind you when you ...', 'pull it', ['push it', 'lift it', 'kick it']),
-  F(1, 3, 'Which is harder to push, a full cart or an empty one?', 'a full cart', ['an empty cart', 'they are the same', 'neither can move']),
-  F(1, 3, 'Which is easier to pull, a light box or a heavy one?', 'a light box', ['a heavy box', 'they are the same', 'neither one moves']),
+  F(1, 3, 'Which is harder to push, a full cart or an empty cart?', 'a full cart', ['an empty cart', 'they are the same', 'neither can move']),
+  F(1, 3, 'Which is easier to pull, a light box or a heavy box?', 'a light box', ['a heavy box', 'they are the same', 'neither one moves']),
   F(1, 3, 'Why do we make raincoats out of plastic?', 'water runs off it', ['it soaks up water', 'it is very heavy', 'it is see-through']),
   F(1, 3, 'What happens to a metal spoon left in soup on a stove?', 'it gets hot', ['it gets colder', 'it melts away', 'it turns to wood']),
   F(1, 3, 'What makes a rolling ball slow down and stop?', 'rubbing on the ground', ['the color of the ball', 'the sound it makes', 'the light in the room']),

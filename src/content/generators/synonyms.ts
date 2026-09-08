@@ -117,19 +117,22 @@ export const synonyms: Generator = {
     let prompt: string[]
     const glossLine = gloss ? [`(${word} = ${gloss})`] : []
     const verse = grade <= 2 && !gloss && rng.bool(0.5)
+    // A verse that contains the answer answers itself: "This little word game!" wanting "little".
+    const says = (lines: string[]): boolean => new RegExp(`\\b${(choices[answer].text ?? '').toLowerCase()}\\b`).test(lines.join(' ').toLowerCase())
     if (verse) {
-      prompt = rng.bool()
-        ? [`Another word for ${word}:`, 'Do you know one? Think it through.', `Which word here means ${word}?`, "Pick it and I'll cheer for you!"]
-        : [`${cap(word)}, ${word}, ${word}!`, 'Which word means the same?', 'Find it here and you will win', 'This little word game!']
-      if (!fits(prompt)) prompt = [`Another word for ${word} is ___.`]
+      const vs = [
+        [`Another word for ${word}:`, 'Do you know one? Think it through.', `Which word here means ${word}?`, "Pick it and I'll cheer for you!"],
+        [`${cap(word)}, ${word}, ${word}!`, 'Which word means the same?', 'Find it here and you will win', 'This little word game!'],
+      ].filter(pp => fits(pp) && !says(pp))
+      prompt = vs.length ? rng.pick(vs) : [`Another word for ${word} is ___.`]
     } else {
       const options = [
         [`Another word for ${word} is ___.`, ...glossLine],
         [`Which word means almost the same as ${word}?`, ...glossLine],
         [`Which word means about the same as ${word}?`, ...glossLine],
         ...(grade >= 4 ? [[`Which word is a synonym of ${word}?`, ...glossLine]] : []),
-      ].filter(fits)
-      prompt = rng.pick(options)
+      ].filter(pp => fits(pp) && !says(pp))
+      prompt = options.length ? rng.pick(options) : [`Another word for ${word} is ___.`]
     }
     return riddle({
       family: 'synonyms', skill: 'vocabulary: synonyms', prompt, verse, highlight: [word], choices, answer,

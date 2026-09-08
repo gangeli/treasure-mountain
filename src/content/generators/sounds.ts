@@ -76,11 +76,24 @@ export const sounds: Generator = {
     const n = choiceCount(grade)
     const { choices, answer: idx } = shuffled(rng, answer, decoys, n)
     const verb = task.pos === 'start' ? 'begins' : 'ends'
-    const tail = rng.pick([
-      [`Which word ${verb} with ${key} too?`, 'Pick that one, and we are through!'],
-      [`Which word ${verb} with ${key} as well?`, 'Pick it out and ring the bell!'],
-    ])
-    const prompt = [line1(), `These words all ${task.pos === 'start' ? 'begin' : 'end'} with ${key}.`, ...tail]
+    // A rhyming couplet must not contain the answer: "Which word ends with -ll as well?" wanting
+    // "well", and "Pick that one" wanting "pick", both hand the answer to the child in the question.
+    // Prefer a couplet that is clean; failing that, keep the question and drop the rhyme.
+    const says = (line: string): boolean => new RegExp(`\\b${answer.toLowerCase()}\\b`).test(line.toLowerCase())
+    // "ends in th", not "ends with th": for the -th family the answer can be the word "with", and
+    // every line that said "with" handed it over.
+    const prep = task.pos === 'start' ? 'with' : 'in'
+    const couplets = [
+      [`Which word ${verb} ${prep} ${key} too?`, 'Pick that one, and we are through!'],
+      [`Which word ${verb} ${prep} ${key} as well?`, 'Pick it out and ring the bell!'],
+      [`Which word ${verb} the same way?`, 'Choose the right one, and hooray!'],
+    ]
+    const clean = couplets.filter(t => !t.some(says))
+    // Every couplet can collide: the answer "with" is in two of the questions and "pick" is in two
+    // of the rhymes. There is always a question, though - dropping it left a verse that asked
+    // nothing at all.
+    const tail = clean.length ? rng.pick(clean) : [`Which word ${verb} the same way?`]
+    const prompt = [line1(), `These words all ${task.pos === 'start' ? 'begin' : 'end'} ${prep} ${key}.`, ...tail]
     const spell = key.split('').join(' ')
     return riddle({
       family: 'sounds', skill: task.skill, prompt, verse: true,
