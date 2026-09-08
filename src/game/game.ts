@@ -92,7 +92,7 @@ export class Game {
   private save(): void { this.onSave?.(this.toSave()) }
 
   profile(grade: Grade = this.grade): Profile {
-    if (!this.profiles[grade]) this.profiles[grade] = { grade, total: 0, prizes: [], ascents: 0, stats: {}, crown: false }
+    if (!this.profiles[grade]) this.profiles[grade] = { grade, total: 0, prizes: [], ascents: 0, crown: false }
     return this.profiles[grade]
   }
   stars(): number { return starsForTotal(this.profile().total) }
@@ -390,9 +390,6 @@ export class Game {
     if (run.seen.length > 200) run.seen.shift()
     run.recentAreas.push(r.family)
     run.riddlesAsked++
-    const st = this.profile().stats
-    st[r.family] = st[r.family] || [0, 0]
-    st[r.family][0]++
     this.riddle = { riddle: r, selected: 0, wrong: [], triesLeft: this.grade <= 1 ? 3 : 2, phase: 'ask', t: 0, coinsWon: 0 }
     ;(this.riddle as any).elfId = elf.id
     this.sfx('scroll')
@@ -428,7 +425,6 @@ export class Game {
     if (i === rv.riddle.answer) {
       rv.phase = 'right'; rv.t = 0
       run.riddlesRight++
-      const st = this.profile().stats; st[rv.riddle.family][1]++
       run.coins += 2; rv.coinsWon = 2
       this.sfx('right')
       // Clue word: fill a random empty slot.

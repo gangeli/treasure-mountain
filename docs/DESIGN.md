@@ -249,9 +249,11 @@ elf laugh, dust, gate, crown.
 
 ## 10. Persistence
 
-`localStorage` key `treasure-mountain-v1`: per-grade profile (stars, total treasures, prizes,
-riddles seen/right per family for the difficulty report), settings, and the current run (level,
-seed, coins, nets, clue words found, treasures found, position). Nothing else is stored.
+`localStorage` key `treasure-mountain-v1`: per-grade profile (total treasures, which prizes are on
+the shelf, how many ascents, whether the crown has been won), the sound and music settings, and
+the current run (level, seed, coins, nets, clue words found, treasures found, position). Nothing
+else is stored - in particular nothing that identifies the child, and no record of which questions
+they got wrong.
 
 ## 11. Testing
 

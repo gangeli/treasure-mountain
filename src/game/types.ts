@@ -11,7 +11,6 @@ export interface Profile {
   prizes: string[]
   ascents: number
   /** family -> [asked, right] */
-  stats: Record<string, [number, number]>
   crown: boolean
 }
 

@@ -94,7 +94,7 @@ if (testMode) {
       const startLevel = (no: 1 | 2 | 3) => { setup(); g.pressButton('start'); if (g.screen === 'intro') g.advanceScene(); if (no > 1) g.startLevel(no, 777, false); g.lvl!.camX = g.lvl!.player.x - 500 }
       switch (name) {
         case 'title': g.goto('title'); break
-        case 'grade': g.profiles = { 0: { grade: 0, total: 7, prizes: ['kite'], ascents: 1, stats: {}, crown: false }, 3: { grade: 3, total: 120, prizes: ['robot'], ascents: 12, stats: {}, crown: false } } as any; g.goto('grade'); break
+        case 'grade': g.profiles = { 0: { grade: 0, total: 7, prizes: ['kite'], ascents: 1, crown: false }, 3: { grade: 3, total: 120, prizes: ['robot'], ascents: 12, crown: false } } as any; g.goto('grade'); break
         case 'clubhouse': setup(); g.profile().total = 31; g.profile().prizes = ['lamp', 'balloon', 'boxcar', 'kite', 'drum', 'robot']; g.profile().ascents = 5; g.pressButton('start'); g.startLevel(2, 5, false); g.goto('clubhouse'); break
         case 'intro': setup(); g.pressButton('start'); if (g.screen !== 'intro') g.goto('intro'); break
         case 'level1': startLevel(1); break
