@@ -39,6 +39,17 @@ await page.waitForFunction(() => !document.getElementById('boot'), null, { timeo
 const title = await page.title()
 console.log('offline reload ok, title =', title)
 await context.setOffline(false)
+
+// Held upright, the game is a strip in the middle of a black screen: a touch device in portrait
+// gets a "turn your tablet sideways" card instead, and a way past it for a tablet locked upright.
+const shown = () => page.evaluate(() => getComputedStyle(document.getElementById('rotate')).display)
+await page.setViewportSize({ width: 390, height: 844 })
+if (await shown() !== 'flex') throw new Error('no rotate card on a portrait touch screen')
+await page.click('#rotate label')
+if (await shown() !== 'none') throw new Error('"Play anyway" did not dismiss the rotate card')
+await page.setViewportSize({ width: 1280, height: 720 })
+if (await shown() !== 'none') throw new Error('rotate card shown in landscape')
+
 if (errors.length) throw new Error('console errors: ' + errors.join(' | '))
 await browser.close(); server.close()
 console.log('PWA checks passed')

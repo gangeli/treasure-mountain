@@ -18,10 +18,26 @@
   body { font-family: system-ui, sans-serif; }
   #game { position: fixed; display: block; background: #0b1a2c; image-rendering: auto; }
   #boot { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; color: #ffd76a; font: 700 22px system-ui, sans-serif; letter-spacing: .04em; }
+  /* Held upright, a 16:9 game is a postage stamp in the middle of a tall black screen, with nothing
+     to say why. The installed app and the APK both ask for landscape; a browser tab cannot, so it
+     asks the child instead - and takes "no" for an answer, because some tablets are locked upright. */
+  #rotate { display: none }
+  @media (orientation: portrait) and (pointer: coarse) {
+    #rotate { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; background: #0b1a2c; color: #fff6d8; text-align: center; font: 700 26px system-ui, sans-serif; padding: 24px; }
+    #anyway:checked ~ #rotate { display: none }
+  }
+  #rotate svg { width: 116px; height: 116px }
+  #rotate label { font: 700 20px system-ui, sans-serif; color: #1a2238; background: #ffd23f; border: 4px solid #1a2238; border-radius: 16px; padding: 14px 26px; }
 </style>
 </head>
 <body>
 <div id="boot">Loading Treasure Mountain…</div>
+<input type="checkbox" id="anyway" hidden>
+<div id="rotate">
+  <svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#ffd23f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><rect x="30" y="14" width="40" height="66" rx="7"/><path d="M14 62a40 40 0 0 0 12 20"/><path d="M10 50l4 12 12-4"/><path d="M86 38a40 40 0 0 1-12 20"/><path d="M90 50l-4-12-12 4"/></g></svg>
+  <div>Turn your tablet sideways to play</div>
+  <label for="anyway">Play anyway</label>
+</div>
 <canvas id="game" width="1280" height="720" aria-label="Treasure Mountain game"></canvas>
 <script type="module" src="./src/main.ts"></script>
 </body>
