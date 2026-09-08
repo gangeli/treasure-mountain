@@ -11,6 +11,9 @@ function rr(x0,y0,w,h,r){x.beginPath();x.moveTo(x0+r,y0);x.arcTo(x0+w,y0,x0+w,y0
 // background: sky gradient with rounded corners (maskable safe zone kept in the middle 80%)
 const g=x.createLinearGradient(0,0,0,512);g.addColorStop(0,'#3c7dd9');g.addColorStop(1,'#9fd0ff');
 rr(0,0,512,512,110);x.fillStyle=g;x.fill();
+// Everything else is drawn at 80% about the centre, so it survives the circular crop Android
+// applies to a maskable icon; the sky fills the frame behind it.
+x.save();x.translate(256,256);x.scale(0.8,0.8);x.translate(-256,-256);
 // sun
 x.fillStyle='#ffd23f';x.beginPath();x.arc(400,120,54,0,7);x.fill();
 // mountain
@@ -28,6 +31,7 @@ rr(248,132,16,30,8);x.fillStyle='#1a2238';x.fill();
 x.save();x.translate(150,370);x.rotate(-0.5);x.lineWidth=7;
 x.beginPath();x.arc(0,-40,34,0,7);x.fillStyle='#f6c445';x.fill();x.stroke();x.beginPath();x.arc(0,-40,13,0,7);x.fillStyle='#c48a12';x.fill();x.stroke();
 rr(-12,-8,24,90,6);x.fillStyle='#f6c445';x.fill();x.stroke();rr(12,40,26,16,3);x.fill();x.stroke();rr(12,64,20,16,3);x.fill();x.stroke();x.restore();
+x.restore();
 </script></body>`
 await page.setContent(html)
 await page.waitForTimeout(100)

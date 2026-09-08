@@ -1,7 +1,7 @@
 {
   "name": "Treasure Mountain",
   "short_name": "Treasure Mtn",
-  "description": "Catch elves, solve riddles, find the treasure and win back the Wizard's crown. Grades K-5.",
+  "description": "Catch elves, solve riddles, find the treasure and win back the crown from the Master of Mischief. Grades K-5.",
   "start_url": "./",
   "scope": "./",
   "display": "fullscreen",

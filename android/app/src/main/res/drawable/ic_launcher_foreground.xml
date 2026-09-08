@@ -1,6 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The launcher icon draws the same picture as the web app icon (dist/icon-512.png): the mountain
+  with its green terraces, the castle on the summit, the key and the sun. Everything is kept inside
+  the central 72dp safe zone, so a round or squircle mask does not cut it.
+-->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
-    <path android:fillColor="#4a8a3c" android:pathData="M14,84 L42,36 L54,56 L68,30 L94,84 Z"/>
-    <path android:fillColor="#ffffff" android:pathData="M68,30 L61,44 L76,44 Z"/>
-    <path android:fillColor="#ffd76a" android:pathData="M26,26 m-8,0 a8,8 0 1,0 16,0 a8,8 0 1,0 -16,0"/>
+    <!-- sun -->
+    <path android:fillColor="#ffd23f" android:pathData="M78,32 m-8,0 a8,8 0 1,0 16,0 a8,8 0 1,0 -16,0"/>
+    <!-- mountain -->
+    <path android:fillColor="#9aa5b8" android:strokeColor="#1a2238" android:strokeWidth="3"
+        android:strokeLineJoin="round" android:pathData="M26,76 L54,30 L82,76 Z"/>
+    <!-- terraces, clipped to the mountain -->
+    <group>
+        <clip-path android:pathData="M26,76 L54,30 L82,76 Z"/>
+        <path android:fillColor="#3fb544" android:strokeColor="#1a2238" android:strokeWidth="2"
+            android:pathData="M36,67 h34 a5,4 0 0,1 0,8 h-34 a5,4 0 0,1 0,-8 z"/>
+        <path android:fillColor="#3fb544" android:strokeColor="#1a2238" android:strokeWidth="2"
+            android:pathData="M43,55 h22 a4,3 0 0,1 0,6 h-22 a4,3 0 0,1 0,-6 z"/>
+        <path android:fillColor="#7fe07a" android:strokeColor="#1a2238" android:strokeWidth="2"
+            android:pathData="M49,45 h11 a3,2.5 0 0,1 0,5 h-11 a3,2.5 0 0,1 0,-5 z"/>
+    </group>
+    <!-- snow cap -->
+    <path android:fillColor="#f4fbff" android:strokeColor="#1a2238" android:strokeWidth="2"
+        android:pathData="M45,42 L54,30 L63,42 C58,44 50,44 45,42 Z"/>
+    <!-- castle: keep and two towers -->
+    <path android:fillColor="#c5cddb" android:strokeColor="#1a2238" android:strokeWidth="2"
+        android:pathData="M47,26 h14 v12 h-14 z"/>
+    <path android:fillColor="#c5cddb" android:strokeColor="#1a2238" android:strokeWidth="2"
+        android:pathData="M42,22 h6 v16 h-6 z M60,22 h6 v16 h-6 z"/>
+    <path android:fillColor="#2f6fe4" android:strokeColor="#1a2238" android:strokeWidth="2"
+        android:pathData="M41,22 L45,16 L49,22 Z M59,22 L63,16 L67,22 Z"/>
+    <path android:fillColor="#1a2238" android:pathData="M51,31 h6 v7 h-6 z"/>
+    <!-- key -->
+    <path android:fillColor="#f6c445" android:strokeColor="#1a2238" android:strokeWidth="2"
+        android:pathData="M38,58 m-6,0 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0"/>
+    <path android:fillColor="#c48a12" android:pathData="M38,58 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0"/>
+    <path android:fillColor="#f6c445" android:strokeColor="#1a2238" android:strokeWidth="2"
+        android:pathData="M36,63 h4 v13 h-4 z M40,70 h4 v3 h-4 z M40,74 h3 v3 h-3 z"/>
 </vector>
