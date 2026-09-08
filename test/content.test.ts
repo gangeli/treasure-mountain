@@ -725,3 +725,29 @@ describe('a colour-blind child can answer every riddle', () => {
     expect(bad.slice(0, 3)).toEqual([])
   })
 })
+
+/**
+ * Big numbers on the answer buttons carry thousands separators. "How many mg are in 1.5 kg?"
+ * offered 1500000, 15000000, 150000 and 150000000: telling those apart is a digit-counting
+ * exercise, not a conversion one. Within one choice set the grouping is all or nothing, so no
+ * riddle ever shows "2000" beside "20,000".
+ */
+describe('numbers on the buttons are written the way numbers are written', () => {
+  const UNGROUPED = /(?<![\d.,])\d{5,}(?![\d,])/
+  const GROUPED = /\d,\d\d\d/
+  it('no answer runs five digits together, and a choice set never mixes the two', () => {
+    const bad: string[] = []
+    for (const gen of GENERATORS) for (const grade of gen.grades) for (const tier of TIERS) {
+      const rng = new Rng(`digits-${gen.id}-${grade}-${tier}`)
+      for (let i = 0; i < 80; i++) {
+        const r = gen.make(grade, tier, rng)
+        const texts = r.choices.map(c => c.text ?? '')
+        for (const t of texts) if (UNGROUPED.test(t)) bad.push(`${gen.id} g${grade}t${tier}: "${t}" in ${r.prompt.join(' ')}`)
+        if (texts.some(t => GROUPED.test(t)) && texts.some(t => /(?<![\d.,])\d{4,}(?![\d,])/.test(t))) {
+          bad.push(`${gen.id} g${grade}t${tier}: mixed grouping in ${texts.join(' | ')}`)
+        }
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+  })
+})

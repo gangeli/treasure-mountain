@@ -98,7 +98,7 @@ export const BODY_FACTS: Fact[] = [
   F(2, 3, 'What is the pointed tooth at the corner of your mouth called?', 'a canine', ['a molar', 'a wisdom tooth', 'a front tooth']),
   F(2, 3, 'Which flat teeth at the back grind up your food?', 'molars', ['canines', 'front teeth', 'baby teeth']),
   F(2, 3, 'What is the hard, shiny coating on your teeth called?', 'enamel', ['skin', 'bone', 'hair']),
-  F(2, 3, "About how many bones are in a grown-up's body?", 'about 206', ['about 50', 'about 20', 'about 1000']),
+  F(2, 3, "About how many bones are in a grown-up's body?", 'about 206', ['about 50', 'about 20', 'about 1,000']),
   F(2, 3, 'What is the biggest bone in your body?', 'the thigh bone', ['the skull', 'a finger bone', 'a rib']),
   F(2, 3, 'Does a baby have more bones or fewer bones than a grown-up?', 'more bones', ['fewer bones', 'the same number', 'no bones at all']),
   F(2, 3, 'Bread, rice and pasta belong to which food group?', 'grains', ['fruits', 'dairy', 'meats']),

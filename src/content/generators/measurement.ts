@@ -188,7 +188,7 @@ export const measurement: Generator = {
       const mode = rng.pick(tier === 1 ? ['estimate', 'thermo'] : tier === 2 ? ['estimate', 'thermo', 'weather'] : ['estimate', 'thermo', 'weather', 'change'])
       if (mode === 'estimate') {
         const e = rng.pick(ESTIMATES)
-        const txt = (v: number, u: string) => `${v} ${v === 1 && (u === 'inches' || u === 'feet') ? singular(u) : u}`
+        const txt = (v: number, u: string) => `${fmtInt(v)} ${v === 1 && (u === 'inches' || u === 'feet') ? singular(u) : u}`
         const other = OTHER_UNIT[e.unit]
         // Two decoys must never be the same length in different words: "2500 cm" and "25 m" are one
         // wrong answer written twice, and it costs the question a choice.
@@ -250,8 +250,8 @@ export const measurement: Generator = {
       if (multi) {
         const k = rng.int(2, 6)
         const ans = v * k
-        const decoys = numDecoys(rng, ans, n - 1, [v + k, v * (k + 1), v * (k - 1), ans + v / 2, ans + 10, ans - 10], Math.max(3, Math.round(ans / 10)), 1).map(String)
-        const { choices, answer } = shuffled(rng, String(ans), decoys, n)
+        const decoys = numDecoys(rng, ans, n - 1, [v + k, v * (k + 1), v * (k - 1), ans + v / 2, ans + 10, ans - 10], Math.max(3, Math.round(ans / 10)), 1).map(fmtInt)
+        const { choices, answer } = shuffled(rng, fmtInt(ans), decoys, n)
         const plural = inWhat.replace(/^an? /, '').replace(/^half /, '')
         const prompt = [`How many ${what} are in ${k} ${plural}${plural.endsWith('s') ? '' : 's'}?`]
         return mathRiddle({ family: 'measurement', skill: 'math: measurement facts', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: 34 + tier * 4 + Math.log2(ans) * 2, grade, tier }, `num:${v}*${k}`)
@@ -259,8 +259,8 @@ export const measurement: Generator = {
       // Near misses derived from the fact itself; `sameSize` keeps decoys within an order of
       // magnitude so a child cannot cross two of four choices off on sight.
       const near = v >= 100 ? [v + v / 10, v - v / 10, v + 100, v - 100] : [v + 2, v - 2, v + 10, v - 10]
-      const decoys = numDecoys(rng, v, n - 1, [v * 2, Math.round(v / 2), v * 10, Math.round(v / 10), ...near], Math.max(2, Math.round(v / 5)), 1, Number.MAX_SAFE_INTEGER, true).map(String)
-      const { choices, answer } = shuffled(rng, String(v), decoys, n)
+      const decoys = numDecoys(rng, v, n - 1, [v * 2, Math.round(v / 2), v * 10, Math.round(v / 10), ...near], Math.max(2, Math.round(v / 5)), 1, Number.MAX_SAFE_INTEGER, true).map(fmtInt)
+      const { choices, answer } = shuffled(rng, fmtInt(v), decoys, n)
       const prompt = [`How many ${what} are in ${inWhat}?`]
       return mathRiddle({ family: 'measurement', skill: 'math: measurement facts', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: 30 + tier * 4 + Math.log2(v) * 2, grade, tier }, `num:${v}`)
     }

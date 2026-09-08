@@ -3,6 +3,7 @@ import type { Rng } from '../../engine/rng'
 import { riddle, shuffled, choiceCount, cap, numberWord, nearbyNumbers, sayChoices, Choice} from '../types'
 import { THINGS, marginFor, canEstimate, EST_MARGIN, QTY_MARGIN, type Attr, type Thing } from '../data/comparisons'
 import { pickLevel, wrap } from './thinkingUtil'
+import { fmtInt } from './mathutil'
 
 interface AttrDef {
   attr: Attr
@@ -39,7 +40,7 @@ export function snap(v: number): number {
   const best = LADDER.reduce((b, x) => Math.abs(x - m) < Math.abs(b - m) ? x : b, LADDER[0])
   return Number((s * best * Math.pow(10, e)).toPrecision(4))
 }
-export const nice = (v: number): string => String(snap(v))
+export const nice = (v: number): string => fmtInt(snap(v))
 
 /** "1 foot", not "1 feet". Abbreviations (cm, kg, km/h) are never pluralised. */
 const SINGULAR: Record<string, string> = { feet: 'foot', inches: 'inch', miles: 'mile', pounds: 'pound', ounces: 'ounce', tons: 'ton', 'metric tons': 'metric ton' }
@@ -64,7 +65,7 @@ const SCALE: Record<string, number> = {
   'km/h': 1, mph: 1.609,
 }
 export function measure(text: string): number | null {
-  const m = /^([\d.]+) (.+)$/.exec(text.trim())
+  const m = /^([\d.,]+) (.+)$/.exec(text.trim().replace(/,/g, ''))
   const s = m ? SCALE[m[2]] : undefined
   return m && s !== undefined ? Number(m[1]) * s : null
 }
@@ -291,8 +292,12 @@ const HARD_UNITS: Unit[] = [
   { big: 'km', small: 'cm', f: 100000, what: 'longer' }, { big: 'kg', small: 'mg', f: 1000000, what: 'heavier' },
   { big: 'm', small: 'mm', f: 1000, what: 'longer' }, { big: 'liter', small: 'mL', f: 1000, what: 'more', bigWord: true },
 ]
-/** "1 minute", "2 minutes", "3 kg". */
-const amount = (v: number, u: string, word?: boolean) => `${v} ${word && v !== 1 ? u + 's' : u}`
+/**
+ * "1 minute", "2 minutes", "3 kg", "1,500,000 mg". Grouped in threes like every other big number
+ * in the game: "How many mg are in 1.5 kg?" offered 1500000, 15000000 and 150000000, which is a
+ * digit-counting exercise rather than a conversion one.
+ */
+const amount = (v: number, u: string, word?: boolean) => `${fmtInt(v)} ${word && v !== 1 ? u + 's' : u}`
 const plural = (u: string, word?: boolean) => word ? u + 's' : u
 const money = (c: number) => c < 100 ? `${c} cents` : `$${(c / 100).toFixed(2)}`
 
@@ -327,10 +332,10 @@ function unitQ(grade: Grade, tier: Tier, rng: Rng): Riddle {
     const u = rng.pick(hard ? HARD_UNITS : UNITS)
     const A = hard && u.f >= 1000 && rng.bool(0.5) ? rng.pick([1.5, 2.5, 3.5, 4.5]) : rng.int(2, 9)
     const total = Math.round(A * u.f)
-    const answer = String(total)
+    const answer = fmtInt(total)
     // Wrong power of ten, forgetting to multiply, off by one, and dropping the decimal part.
     const decoys = [total * 10, Math.round(total / 10), total * 100, u.f, Math.floor(A) * u.f, (Math.floor(A) + 1) * u.f]
-      .map(String).filter(d => d !== answer && d !== '0' && d.length <= 26)
+      .map(fmtInt).filter(d => d !== answer && d !== '0' && d.length <= 26)
     const { choices, answer: idx } = shuffled(rng, answer, decoys, n)
     const q = `How many ${plural(u.small, u.smallWord)} are in ${amount(A, u.big, u.bigWord)}?`
     return riddle({
@@ -351,10 +356,10 @@ function unitQ(grade: Grade, tier: Tier, rng: Rng): Riddle {
     per = rng.pick([5, 10, 15, 20, 25, 30, 40, 50]); item = rng.pick(['pencils', 'stickers', 'apples', 'erasers', 'marbles']); fmt = money
     q = [`${k} ${item} cost ${fmt(k * per)}.`, m === 1 ? `How much does 1 ${item.slice(0, -1)} cost?` : `How much do ${m} ${item} cost?`]
   } else if (mode === 'weigh') {
-    per = rng.pick([50, 100, 120, 150, 200, 250]); item = rng.pick(['apples', 'oranges', 'potatoes', 'books', 'pears']); fmt = (v: number) => v >= 1000 && v % 100 === 0 ? `${v / 1000} kg` : `${v} g`
+    per = rng.pick([50, 100, 120, 150, 200, 250]); item = rng.pick(['apples', 'oranges', 'potatoes', 'books', 'pears']); fmt = (v: number) => v >= 1000 && v % 100 === 0 ? `${v / 1000} kg` : `${fmtInt(v)} g`
     q = [`${k} ${item} weigh ${fmt(k * per)}.`, m === 1 ? `How much does 1 ${item.slice(0, -1)} weigh?` : `How much do ${m} ${item} weigh?`]
   } else {
-    per = rng.pick([40, 50, 60, 80, 100]); item = rng.pick(['a car', 'a train', 'a bus', 'a boat']); fmt = (v: number) => `${v} km`
+    per = rng.pick([40, 50, 60, 80, 100]); item = rng.pick(['a car', 'a train', 'a bus', 'a boat']); fmt = (v: number) => `${fmtInt(v)} km`
     q = [`${cap(item)} travels ${fmt(k * per)} in ${k} hours.`, m === 1 ? 'How far does it go in 1 hour?' : `How far does it go in ${m} hours?`]
   }
   const answer = fmt(m * per)

@@ -198,7 +198,8 @@ const KILOS: Record<string, number> = { g: 0.001, kg: 1, 'metric ton': 1000, 'me
 const KMH: Record<string, number> = { 'km/h': 1, mph: 1.60934 }
 /** "6 feet" -> 1.83, "2 metric tons" -> 2000, "80 km/h" -> 80. Null when it is not a measurement. */
 function amountOf(text: string): number | null {
-  const m = /^([0-9]+(?:\.[0-9]+)?) (.+)$/.exec(text.trim())
+  // Big amounts are written with thousands separators ("15,000 metric tons"), like everywhere else.
+  const m = /^([0-9]+(?:\.[0-9]+)?) (.+)$/.exec(text.trim().replace(/,/g, ''))
   if (!m) return null
   const scale = METRES[m[2]] ?? KILOS[m[2]] ?? KMH[m[2]]
   return scale === undefined ? null : Number(m[1]) * scale

@@ -144,7 +144,7 @@ export const compare: Generator = {
           : grade === 2 ? (tier === 1 ? [10, 99, 1] : tier === 2 ? [100, 499, 0] : [100, 999, 1])
             : (tier === 1 ? [1000, 4999, 0] : tier === 2 ? [1000, 9999, 1] : [1000, 9999, 2])
       const [lo, hi, share] = range
-      const fmt = (v: number) => grade >= 3 ? fmtInt(v) : String(v)
+      const fmt = (v: number) => fmtInt(v)
       const metric = 10 + Math.log2(hi) * 3 + share * 2
       if (mode === 'between') {
         // Pick two bounds and one number strictly inside. Children hear "between 1 and 10" used
@@ -185,7 +185,7 @@ export const compare: Generator = {
       if (grade <= 3) {
         const [lo, hi] = grade === 2 ? [10, 999] : tier === 1 ? [100, 4999] : [1000, 9999]
         const [a, b] = closeNumbers(rng, 2, lo, hi, tier === 3 ? 2 : tier === 2 ? 1 : 0)
-        av = a; bv = b; aT = grade >= 3 ? fmtInt(a) : String(a); bT = grade >= 3 ? fmtInt(b) : String(b)
+        av = a; bv = b; aT = fmtInt(a); bT = fmtInt(b)
         metric = 15 + Math.log2(hi) * 3
       } else if (grade === 4 && rng.bool(0.5)) {
         const d = rng.int(5, 12)

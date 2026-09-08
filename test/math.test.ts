@@ -404,7 +404,7 @@ describe('number families: review regressions', () => {
       const floor = tier > 1 ? CEIL[grade][tier - 2] : grade === 0 ? 1 : CEIL[grade - 1][0]
       for (let i = 0; i < 200; i++) {
         const r = addSub.make(grade, tier, rng)
-        const parts = r.prompt[0].split(' ')
+        const parts = r.prompt[0].replace(/,/g, '').split(' ')
         const total = Number(parts[0]) + Number(parts[2])
         expect(total, `g${grade} t${tier}: "${r.prompt[0]}" is an easier tier's fact`).toBeGreaterThan(floor)
         expect(total, `g${grade} t${tier}: "${r.prompt[0]}" is over the grade ceiling`).toBeLessThanOrEqual(CEIL[grade][tier - 1])

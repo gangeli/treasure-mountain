@@ -1,5 +1,6 @@
 import type { Generator, CounterItem, Grade, Tier } from '../types'
 import { riddle, shuffled, choiceCount, nearbyNumbers, numberWord, sayChoices} from '../types'
+import { fmtInt } from './mathutil'
 
 const ITEMS: CounterItem[] = ['apple', 'star', 'ball', 'fish', 'flower', 'heart', 'balloon', 'bug', 'cookie', 'acorn']
 const plural: Record<CounterItem, string> = { apple: 'apples', star: 'stars', ball: 'balls', fish: 'fish', flower: 'flowers', coin: 'coins', block: 'blocks', heart: 'hearts', balloon: 'balloons', bug: 'bugs', cookie: 'cookies', acorn: 'acorns' }
@@ -158,7 +159,7 @@ export const addSub: Generator = {
       x = rng.int(side, total - side)
       y = total - x
     }
-    const fmt = (v: number) => decimals ? (v / Math.pow(10, decimals)).toFixed(decimals) : String(v)
+    const fmt = (v: number) => decimals ? (v / Math.pow(10, decimals)).toFixed(decimals) : fmtInt(v)
     if (!add && x < y) [x, y] = [y, x]
     const result = add ? x + y : x - y
     const spread = Math.max(2, Math.round(Math.max(1, result) * 0.15))

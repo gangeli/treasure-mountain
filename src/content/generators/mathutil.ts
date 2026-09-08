@@ -63,8 +63,14 @@ export function numDecoys(rng: Rng, answer: number, count: number, preferred: nu
 
 export const fmtDec = (units: number, places: number): string => (units / Math.pow(10, places)).toFixed(places)
 
-/** 1234567 -> "1,234,567" */
-export const fmtInt = (n: number): string => n.toLocaleString('en-US')
+/**
+ * 1234567 -> "1,234,567". Groups the whole part and leaves the fraction exactly as it was:
+ * toLocaleString rounds to three decimal places, which turned 0.0009 into 0.001.
+ */
+export const fmtInt = (n: number): string => {
+  const [whole, frac] = String(n).split('.')
+  return whole.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + (frac ? '.' + frac : '')
+}
 
 export const cents = (c: number): string => `${c}¢`
 export const dollars = (c: number): string => `$${(c / 100).toFixed(2)}`
