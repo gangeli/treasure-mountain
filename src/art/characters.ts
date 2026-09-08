@@ -84,12 +84,16 @@ export function drawPlayer(ctx: Ctx, x: number, y: number, facing: 1 | -1, state
   ctx.beginPath(); ctx.arc(8, hy + 6, 8, 0.2, Math.PI - 0.6); ctx.stroke()
   // nose
   ctx.beginPath(); ctx.moveTo(20, hy + 2); ctx.lineTo(25, hy + 5); ctx.stroke()
-  // ---- Robin Hood cap with feather
+  // ---- Robin Hood cap with feather. The body of the cap goes down first: the crown and the brim
+  // used to be two crescents with a gap between them, and past the edge of the head that gap was a
+  // hole through the hat with the sky in it, ending in a pale spike beyond the brim.
+  ctx.beginPath()
+  ctx.moveTo(-28, hy - 8); ctx.quadraticCurveTo(-6, hy - 44, 30, hy - 22); ctx.lineTo(36, hy - 14)
+  ctx.lineTo(34, hy - 8); ctx.quadraticCurveTo(0, hy - 12, -26, hy - 4); ctx.closePath()
+  fillStroke(ctx, P.redDark)
   ctx.beginPath()
   ctx.moveTo(-28, hy - 8); ctx.quadraticCurveTo(-6, hy - 44, 30, hy - 22); ctx.lineTo(36, hy - 14); ctx.quadraticCurveTo(6, hy - 30, -28, hy - 8); ctx.closePath()
   fillStroke(ctx, P.red)
-  ctx.beginPath(); ctx.moveTo(-28, hy - 8); ctx.quadraticCurveTo(0, hy - 18, 36, hy - 14); ctx.lineTo(34, hy - 8); ctx.quadraticCurveTo(0, hy - 12, -26, hy - 4); ctx.closePath()
-  fillStroke(ctx, P.redDark, P.ink, 2)
   // feather
   ctx.save(); ctx.translate(-16, hy - 24); ctx.rotate(-0.9)
   ellipse(ctx, 0, -14, 6, 18, P.white, P.ink, 2)

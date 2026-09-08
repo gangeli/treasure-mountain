@@ -271,7 +271,21 @@ export function drawTreasure(ctx: Ctx, name: string, x: number, y: number, s = 1
       tail(); ctx.strokeStyle = P.red; ctx.lineWidth = 3.5; ctx.stroke()
       break
     }
-    case 'drum': ellipse(ctx, 0, 8, 22, 8, P.red); ctx.fillStyle = P.red; ctx.fillRect(-22, -12, 44, 20); line(ctx, -22, -12, -22, 8, P.ink, 3); line(ctx, 22, -12, 22, 8, P.ink, 3); ellipse(ctx, 0, -12, 22, 8, P.cream); break
+    case 'drum': {
+      // A plain red cylinder with a cream lid read as a cake tin. A toy drum is known by its
+      // lacing: the zigzag of rope between the two hoops, and the gold hoops themselves.
+      ellipse(ctx, 0, 8, 22, 8, P.gold)
+      ctx.fillStyle = P.red; ctx.fillRect(-22, -12, 44, 21)
+      ctx.save(); ctx.beginPath(); ctx.rect(-22, -8, 44, 14); ctx.clip()
+      ctx.strokeStyle = P.cream; ctx.lineWidth = 2.5; ctx.lineCap = 'round'
+      ctx.beginPath()
+      for (let i = 0; i < 6; i++) { const x = -21 + i * 7; ctx.moveTo(x, i % 2 ? 5 : -7); ctx.lineTo(x + 7, i % 2 ? -7 : 5) }
+      ctx.stroke(); ctx.restore()
+      line(ctx, -22, -12, -22, 8, P.ink, 3); line(ctx, 22, -12, 22, 8, P.ink, 3)
+      ellipse(ctx, 0, -12, 22, 8, P.gold)
+      ellipse(ctx, 0, -13, 18, 6, P.cream)
+      break
+    }
     case 'top': poly(ctx, [[-20, -14], [20, -14], [0, 22]], P.purple); ellipse(ctx, 0, -14, 20, 7, P.pink); line(ctx, 0, -20, 0, -30, P.ink, 4); break
     case 'robot': {
       // arms and legs first so the body overlaps them
