@@ -367,7 +367,7 @@ function castle(ctx: Ctx, g: Game): void {
   // the Super Solver
   const py = CASTLE_FLOOR_Y(c.floor) - (c.state === 'climb' || c.state === 'fall' ? c.y : 0)
   drawPlayer(ctx, c.x, py, c.facing, c.state === 'climb' ? 'climb' : c.state === 'fall' ? 'fall' : c.state === 'hit' ? 'hit' : 'idle', c.t, 0)
-  if (c.floor === 0 && c.t < 4 && c.state === 'walk') drawBubble(ctx, ['Climb the ladders to the throne room!', 'Tap a ladder to climb it. Grey ladders are tricks!'], 640, 330, 'none')
+  if (c.floor === 0 && c.t < 4 && c.state === 'walk') drawBubble(ctx, ['Climb the ladders to the throne room!', 'Tap a ladder to climb it. Gray ladders are tricks!'], 640, 330, 'none')
   drawFrame(ctx)
 }
 
