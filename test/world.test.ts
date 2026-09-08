@@ -32,6 +32,13 @@ describe('level generation', () => {
         for (let i = 0; i < things.length; i++) for (let j = i + 1; j < things.length; j++) {
           expect(loopDist(things[i].x, things[j].x), `overlap seed ${seed}`).toBeGreaterThan((things[i].w + things[j].w) / 2 - 1)
         }
+        // No two groups of one kind carry colours that red-green colour blindness hides, or the
+        // clue words would be unusable for about one boy in twelve.
+        const CONF = new Set(['red|green', 'green|red', 'orange|green', 'green|orange', 'green|yellow', 'yellow|green', 'red|orange', 'orange|red', 'blue|purple', 'purple|blue'])
+        for (let i = 0; i < lv.groups.length; i++) for (let j = i + 1; j < lv.groups.length; j++) {
+          const a = lv.groups[i], b = lv.groups[j]
+          if (a.kind === b.kind) expect(CONF.has(`${a.descriptor}|${b.descriptor}`), `${a.kind}: ${a.descriptor} vs ${b.descriptor}`).toBe(false)
+        }
         // Words
         expect(lv.clueWords.number).toBeTruthy()
         expect(lv.clueWords.object).toBeTruthy()

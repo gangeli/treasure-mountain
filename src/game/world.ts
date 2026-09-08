@@ -92,6 +92,9 @@ const matches = (g: { count: number; descriptor: string; kind: string }, t: { co
  * one group matches all three clue words (the key), exactly `treasures` match exactly two, and all
  * others match at most one.
  */
+/** Colour pairs red-green colour blindness makes the same; see tryAdd. */
+const CONFUSABLE_COLORS = new Set(['red|green', 'green|red', 'orange|green', 'green|orange', 'green|yellow', 'yellow|green', 'red|orange', 'orange|red', 'blue|purple', 'purple|blue'])
+
 export function generateLevel(no: LevelNo, seed: number, grade: Grade, treasures: number, stars: number): Level {
   for (let attempt = 0; attempt < 30; attempt++) {
     const lv = tryGenerate(no, seed, grade, treasures, stars, attempt)
@@ -127,6 +130,10 @@ function tryGenerate(no: LevelNo, seed: number, grade: Grade, treasures: number,
     if (matches(t, target) !== wantMatches) return false
     const kd = KINDS.find(k => k.kind === t.kind)!
     if (!descriptorsFor(kd, grade).includes(t.descriptor)) return false
+    // Never ask a child to tell green lanterns from red ones: about one boy in twelve cannot, and
+    // the clue words would then be unusable. Two groups of the same kind never carry a pair of
+    // colours that red-green colour blindness hides.
+    if (triples.some(o => o.kind === t.kind && CONFUSABLE_COLORS.has(`${o.descriptor}|${t.descriptor}`))) return false
     seen.add(key)
     triples.push({ ...t, hides })
     return true
@@ -155,6 +162,10 @@ function tryGenerate(no: LevelNo, seed: number, grade: Grade, treasures: number,
       tryAdd({ count: c, descriptor: d, kind: k.kind }, 'treasure', 2)
     }
   }
+
+  // With the colour-blind constraint on top of the match rules, a few (grade, level, star) draws
+  // have no layout at all; the caller retries with the next attempt seed.
+  if (triples.filter(t => t.hides === 'treasure').length < treasures) return null
 
   // --- filler groups (0 or 1 match)
   const totalGroups = Math.max(11, treasures + 6) + Math.min(2, Math.floor(stars / 3))
