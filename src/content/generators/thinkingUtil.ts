@@ -108,4 +108,3 @@ export function factRiddle(family: string, skill: string, facts: readonly Fact[]
 }
 
 /** Convenience for "spoken": the prompt sentence followed by the choices. */
-export const readChoices = (lead: string, choices: { text?: string }[]): string => `${lead} ${choices.map(c => c.text ?? '').filter(Boolean).join(', ')}?`

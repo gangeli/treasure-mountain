@@ -1,5 +1,5 @@
 import { P } from './palette'
-import { type Ctx, circle, ellipse, poly, line, roundRect, fillStroke, shadowBlob, text, star } from './draw'
+import { type Ctx, circle, ellipse, poly, line, roundRect, fillStroke, shadowBlob, text, star, FONT_DISPLAY } from './draw'
 import type { Feature, LevelNo } from '../game/world'
 import { drawKey } from './characters'
 
@@ -45,9 +45,9 @@ function netRock(ctx: Ctx, x: number, y: number, price: number, t: number): void
   ctx.beginPath(); ctx.moveTo(x - w / 2, y); ctx.quadraticCurveTo(x - w / 2 - 10, y - h * 0.5, x - w * 0.3, y - h * 0.8); ctx.quadraticCurveTo(x - w * 0.05, y - h - 8, x + w * 0.25, y - h * 0.85); ctx.quadraticCurveTo(x + w / 2 + 6, y - h * 0.55, x + w / 2, y); ctx.closePath()
   fillStroke(ctx, P.rock)
   ctx.save(); ctx.globalAlpha = 0.4; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.ellipse(x - w * 0.2, y - h * 0.65, w * 0.14, h * 0.1, -0.5, 0, Math.PI * 2); ctx.fill(); ctx.restore()
-  text(ctx, 'NETS', x, y - h * 0.62, { size: 26, align: 'center', color: P.ink, weight: 900, font: '"Fredoka","Nunito","Trebuchet MS",sans-serif' })
-  text(ctx, String(price), x, y - h * 0.4, { size: 30, align: 'center', color: P.redDark, weight: 900, font: '"Fredoka","Nunito","Trebuchet MS",sans-serif' })
-  text(ctx, 'COINS', x, y - h * 0.2, { size: 22, align: 'center', color: P.ink, weight: 900, font: '"Fredoka","Nunito","Trebuchet MS",sans-serif' })
+  text(ctx, 'NETS', x, y - h * 0.62, { size: 26, align: 'center', color: P.ink, weight: 900, font: FONT_DISPLAY })
+  text(ctx, String(price), x, y - h * 0.4, { size: 30, align: 'center', color: P.redDark, weight: 900, font: FONT_DISPLAY })
+  text(ctx, 'COINS', x, y - h * 0.2, { size: 22, align: 'center', color: P.ink, weight: 900, font: FONT_DISPLAY })
   // a net leaning on the rock, bobbing
   ctx.save(); ctx.translate(x + w / 2 - 6, y - 10 + Math.sin(t * 2) * 1.5); ctx.rotate(0.35)
   line(ctx, 0, 0, 0, -70, P.ink, 6); line(ctx, 0, 0, 0, -70, P.wood, 3)
@@ -222,7 +222,7 @@ export function drawPoof(ctx: Ctx, x: number, y: number, t: number): void {
   ctx.fill(); ctx.stroke()
   // High in the cloud, above the Super Solver's cap: he stands in front of the cloud, and centred
   // the word lost its middle behind his head.
-  text(ctx, 'POOF', x, y - r * 0.42, { size: 34 + k * 10, align: 'center', color: P.magenta, weight: 900, outline: P.white, outlineWidth: 6, font: '"Fredoka","Nunito","Trebuchet MS",sans-serif' })
+  text(ctx, 'POOF', x, y - r * 0.42, { size: 34 + k * 10, align: 'center', color: P.magenta, weight: 900, outline: P.white, outlineWidth: 6, font: FONT_DISPLAY })
   ctx.restore()
 }
 

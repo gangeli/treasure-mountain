@@ -61,11 +61,6 @@ export function numDecoys(rng: Rng, answer: number, count: number, preferred: nu
   return rng.shuffle(out)
 }
 
-/** Decoys in integer "units" (e.g. tenths) formatted as decimals. */
-export function decDecoys(rng: Rng, answerUnits: number, places: number, count: number, preferred: number[], spread: number, min = 0): string[] {
-  return numDecoys(rng, answerUnits, count, preferred, spread, min).map(u => fmtDec(u, places))
-}
-
 export const fmtDec = (units: number, places: number): string => (units / Math.pow(10, places)).toFixed(places)
 
 /** 1234567 -> "1,234,567" */
@@ -103,7 +98,6 @@ export const clock24Text = (mins: number): string => {
   const h = Math.floor(mins / 60), m = mins % 60
   return `${clockText(h === 0 ? 12 : h, m)} ${h < 12 ? 'a.m.' : 'p.m.'}`
 }
-export const hourWord = (h: number): string => String(((h + 11) % 12) + 1)
 
 /** Wraps text into lines of at most `width` characters, breaking at sentence ends when it can. */
 export function wrap(text: string, width = 46): string[] {

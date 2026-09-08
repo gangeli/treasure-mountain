@@ -1,5 +1,5 @@
 import { P } from './palette'
-import { type Ctx, roundRect, circle, text, line, rr, fillStroke, star, poly, measure } from './draw'
+import { type Ctx, roundRect, circle, text, line, rr, fillStroke, star, poly, measure, FONT_DISPLAY } from './draw'
 import { W, H, HUD_Y, HUD_H } from '../game/layout'
 import type { Game } from '../game/game'
 import type { Button } from '../game/ui'
@@ -138,7 +138,7 @@ export function drawButtons(ctx: Ctx, buttons: Button[], g: Game): void {
     else if (b.icon) { text(ctx, b.icon, cx, cy, { size: 30, color: label, weight: 800, align: 'center' }); if (b.toggled === false) line(ctx, cx - 14, cy + 14, cx + 14, cy - 14, P.red, 4) }
     // The big buttons carry a navy outline on their label: white on the bright green face is only
     // 2.7:1, and PLAY / "Let's go!" / Continue all sit on the grass band on their screens.
-    else text(ctx, b.label, cx, cy, { size: big ? 36 : 24, color: label, weight: 900, align: 'center', font: big ? '"Fredoka","Nunito","Trebuchet MS",sans-serif' : undefined, spacing: big ? 2 : 0, outline: big ? P.ink : undefined, outlineWidth: big ? 5 : 0 })
+    else text(ctx, b.label, cx, cy, { size: big ? 36 : 24, color: label, weight: 900, align: 'center', font: big ? FONT_DISPLAY : undefined, spacing: big ? 2 : 0, outline: big ? P.ink : undefined, outlineWidth: big ? 5 : 0 })
     ctx.restore()
   }
   void g
@@ -161,7 +161,7 @@ export function drawBubble(ctx: Ctx, lines: string[], x: number, y: number, tail
 export function drawPause(ctx: Ctx, buttons: Button[], g: Game): void {
   ctx.fillStyle = 'rgba(10,20,40,0.6)'; ctx.fillRect(0, 0, W, H)
   roundRect(ctx, W / 2 - 280, 110, 560, 500, 24, P.panel, P.panelLine, 4)
-  text(ctx, 'Paused', W / 2, 160, { size: 40, color: P.yellow, weight: 900, align: 'center', font: '"Fredoka","Nunito","Trebuchet MS",sans-serif' })
+  text(ctx, 'Paused', W / 2, 160, { size: 40, color: P.yellow, weight: 900, align: 'center', font: FONT_DISPLAY })
   drawButtons(ctx, buttons, g)
 }
 

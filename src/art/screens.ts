@@ -1,5 +1,5 @@
 import { P } from './palette'
-import { type Ctx, roundRect, circle, ellipse, text, line, poly, vgrad, h1, richText, wrap, measure, star, rr, fillStroke } from './draw'
+import { type Ctx, roundRect, circle, ellipse, text, line, poly, vgrad, h1, richText, wrap, measure, star, rr, fillStroke, FONT_DISPLAY } from './draw'
 import { W, H, PLAY_H } from '../game/layout'
 import type { Game } from '../game/game'
 import { CASTLE_FLOORS, CASTLE_FLOOR_Y, CASTLE_FLOOR_H } from '../game/game'
@@ -15,7 +15,7 @@ import { leaf } from './backgrounds'
 import { gradeName, gradeShort, type Grade } from '../content/types'
 import { STAR_THRESHOLDS, RANK_NAMES, starsForTotal } from '../game/world'
 
-const DISPLAY = '"Fredoka","Nunito","Trebuchet MS",sans-serif'
+const DISPLAY = FONT_DISPLAY
 
 export function drawScreen(ctx: Ctx, g: Game, buttons: Button[]): void {
   switch (g.screen) {
