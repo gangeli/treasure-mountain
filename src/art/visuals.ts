@@ -114,8 +114,10 @@ export function clock(ctx: Ctx, hour: number, minute: number, cx: number, cy: nu
   }
   const ma = (minute / 60) * Math.PI * 2 - Math.PI / 2
   const ha = ((hour % 12) / 12 + minute / 720) * Math.PI * 2 - Math.PI / 2
-  line(ctx, cx, cy, cx + Math.cos(ha) * r * 0.45, cy + Math.sin(ha) * r * 0.45, P.ink, Math.max(4, r * 0.07))
-  line(ctx, cx, cy, cx + Math.cos(ma) * r * 0.74, cy + Math.sin(ma) * r * 0.74, P.red, Math.max(3, r * 0.045))
+  // Both hands stop inside the ring of numerals (which sits at 0.64r): at 0.74r the minute hand
+  // covered the very numeral it was pointing at, so 3:40 hid its own 8.
+  line(ctx, cx, cy, cx + Math.cos(ha) * r * 0.36, cy + Math.sin(ha) * r * 0.36, P.ink, Math.max(4, r * 0.07))
+  line(ctx, cx, cy, cx + Math.cos(ma) * r * 0.52, cy + Math.sin(ma) * r * 0.52, P.red, Math.max(3, r * 0.045))
   circle(ctx, cx, cy, Math.max(3, r * 0.05), P.ink, P.ink, 0)
 }
 
@@ -254,17 +256,35 @@ function letterCard(ctx: Ctx, t: string, x: number, y: number, w: number, h: num
 }
 
 function thermometer(ctx: Ctx, deg: number, unit: 'F' | 'C', x: number, y: number, w: number, h: number): void {
-  const cx = x + w / 2, top = y + 12, bottom = y + h - 40, tw = 26
+  // Tube, bulb, graduations and labels all scale with the box. At the old fixed 26px width and 30px
+  // inset the thermometer was a spindle on the big riddle card, and on a small card the scale used
+  // barely half the tube's height - so the mercury sat far below where the number said it should.
   const lo = unit === 'F' ? 0 : -10, hi = unit === 'F' ? 100 : 40
-  roundRect(ctx, cx - tw / 2, top, tw, bottom - top, tw / 2, P.white, P.ink, 3)
+  const tw = Math.max(16, Math.min(44, h * 0.14))
+  const br = tw * 0.78
+  const top = y + Math.max(20, h * 0.1), bulbY = y + h - br - 4, bottom = bulbY - 4
+  const span = bottom - top, pad = Math.max(5, Math.min(14, span * 0.08))
+  const ls = Math.max(11, Math.min(22, span * 0.12))
+  const tickLong = tw * 0.62, tickShort = tw * 0.34
+  // Centre the tube *and* its label column in the box, or the whole picture sits off to the left.
+  const cx = x + (w - (tw + tickLong + 6 + measure(ctx, String(hi), ls, 800))) / 2 + tw / 2
+  roundRect(ctx, cx - tw / 2, top, tw, span, tw / 2, P.white, P.ink, 3)
   const f = Math.max(0, Math.min(1, (deg - lo) / (hi - lo)))
-  const level = bottom - 10 - f * (bottom - top - 30)
-  ctx.fillStyle = P.red; ctx.fillRect(cx - tw / 2 + 7, level, tw - 14, bottom - level)
-  circle(ctx, cx, bottom + 4, tw * 0.75, P.red, P.ink, 3)
+  const level = bottom - pad - f * (span - pad * 2)
+  const mw = Math.max(6, tw - 12)
+  ctx.fillStyle = P.red; ctx.fillRect(cx - mw / 2, level, mw, bottom - level)
+  circle(ctx, cx, bulbY, br, P.red, P.ink, 3)
+  // The column is redrawn into the bulb: the bulb's own outline otherwise cut a navy line across
+  // the mercury and left the column looking detached from the bulb.
+  ctx.fillStyle = P.red; ctx.fillRect(cx - mw / 2, level, mw, bulbY - level)
   const stepT = unit === 'F' ? 10 : 5
-  const labelEvery = (bottom - top) > 150 ? stepT * 2 : stepT * 4
-  for (let v = lo; v <= hi; v += stepT) { const py = bottom - 10 - ((v - lo) / (hi - lo)) * (bottom - top - 30); const lab = (v - lo) % labelEvery === 0; line(ctx, cx + tw / 2, py, cx + tw / 2 + (lab ? 14 : 8), py, P.ink, 2); if (lab) text(ctx, String(v), cx + tw / 2 + 20, py, { size: 15, color: P.ink, weight: 800 }) }
-  text(ctx, '°' + unit, cx, top - 4, { size: 18, align: 'center', color: P.ink, weight: 800 })
+  const labelEvery = span > 150 ? stepT * 2 : stepT * 4
+  for (let v = lo; v <= hi; v += stepT) {
+    const py = bottom - pad - ((v - lo) / (hi - lo)) * (span - pad * 2), lab = (v - lo) % labelEvery === 0
+    line(ctx, cx + tw / 2, py, cx + tw / 2 + (lab ? tickLong : tickShort), py, P.ink, 2)
+    if (lab) text(ctx, String(v), cx + tw / 2 + tickLong + 6, py, { size: ls, color: P.ink, weight: 800 })
+  }
+  text(ctx, '°' + unit, cx, top - 6, { size: Math.max(14, Math.min(26, span * 0.13)), align: 'center', color: P.ink, weight: 800 })
 }
 
 function scale(ctx: Ctx, left: string, right: string, heavier: 'left' | 'right' | 'none', x: number, y: number, w: number, h: number): void {

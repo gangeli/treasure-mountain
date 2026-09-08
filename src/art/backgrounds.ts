@@ -6,12 +6,14 @@ import type { LevelNo } from '../game/world'
 export interface Theme {
   skyTop: string; skyBottom: string; far: string; farDark: string; wall: string; wallDark: string; wallLight: string
   ground: string; groundDark: string; groundLight: string; vine: string; vineLight: string
+  /** Grass tufts. Separate from the ground so the summit can be a snow field with grass poking through. */
+  tuft: string; tuftDark: string
 }
 
 export const THEMES: Record<LevelNo, Theme> = {
-  1: { skyTop: '#5fb0ff', skyBottom: '#cfefff', far: '#6fa7c9', farDark: '#4f86a8', wall: '#8593ab', wallDark: '#66748f', wallLight: '#a7b3c7', ground: '#46b83f', groundDark: '#2f8f2c', groundLight: '#72d35f', vine: '#2f9b3a', vineLight: '#6fd35e' },
-  2: { skyTop: '#f2a45c', skyBottom: '#ffe0b3', far: '#a67c9c', farDark: '#7c5a7e', wall: '#8b7aa6', wallDark: '#655683', wallLight: '#ab9cc4', ground: '#5bb54a', groundDark: '#3b8a33', groundLight: '#8ad86a', vine: '#3a8f4a', vineLight: '#7fcf6a' },
-  3: { skyTop: '#9ed3ff', skyBottom: '#eef9ff', far: '#8ab6d8', farDark: '#6a95b9', wall: '#7a8aa6', wallDark: '#5a6a88', wallLight: '#b9c8da', ground: '#67c05e', groundDark: '#3f9042', groundLight: '#a8e69a', vine: '#4c9c4c', vineLight: '#9fdc8f' },
+  1: { skyTop: '#5fb0ff', skyBottom: '#cfefff', far: '#6fa7c9', farDark: '#4f86a8', wall: '#8593ab', wallDark: '#66748f', wallLight: '#a7b3c7', ground: '#46b83f', groundDark: '#2f8f2c', groundLight: '#72d35f', vine: '#2f9b3a', vineLight: '#6fd35e', tuft: '#72d35f', tuftDark: '#2f8f2c' },
+  2: { skyTop: '#f2a45c', skyBottom: '#ffe0b3', far: '#a67c9c', farDark: '#7c5a7e', wall: '#8b7aa6', wallDark: '#655683', wallLight: '#ab9cc4', ground: '#5bb54a', groundDark: '#3b8a33', groundLight: '#8ad86a', vine: '#3a8f4a', vineLight: '#7fcf6a', tuft: '#8ad86a', tuftDark: '#3b8a33' },
+  3: { skyTop: '#9ed3ff', skyBottom: '#eef9ff', far: '#8ab6d8', farDark: '#6a95b9', wall: '#7a8aa6', wallDark: '#5a6a88', wallLight: '#b9c8da', ground: '#e6f1f8', groundDark: '#bcd2e0', groundLight: '#ffffff', vine: '#4c9c4c', vineLight: '#9fdc8f', tuft: '#6cae72', tuftDark: '#47804f' },
 }
 
 /** Draws the whole backdrop for a level at camera x (loop coordinates). */
@@ -111,9 +113,12 @@ function drawWall(ctx: Ctx, camX: number, th: Theme, no: LevelNo, t: number): vo
     const sx = b * 160 - camX + (camX < 0 ? 0 : 0)
     const x = ((sx % (LOOP_W)) + LOOP_W) % LOOP_W > W + 200 ? sx - LOOP_W : sx
     const r1 = h1(wb * 7 + 1), r2 = h1(wb * 7 + 2), r3 = h1(wb * 7 + 3)
-    // crack
+    // Crack: a dark fissure with a lit lip 2px to its right, so it reads as a groove in the rock
+    // rather than as a stray pen stroke on top of it.
     const cx = x + r1 * 140, cy = top + 70 + r2 * 150
-    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + 12 - r3 * 30, cy + 30); ctx.lineTo(cx + 5, cy + 60 + r1 * 30); ctx.stroke()
+    const crack = (dx: number): void => { ctx.beginPath(); ctx.moveTo(cx + dx, cy); ctx.lineTo(cx + dx + 12 - r3 * 30, cy + 30); ctx.lineTo(cx + dx + 5, cy + 60 + r1 * 30); ctx.stroke() }
+    ctx.save(); ctx.globalAlpha = 0.5; ctx.strokeStyle = th.wallLight; ctx.lineWidth = 2; crack(2.5); ctx.restore()
+    ctx.strokeStyle = th.wallDark; ctx.lineWidth = 3; crack(0)
     // embedded stones with a soft outline
     if (r3 > 0.45) {
       const ex = x + 80 + r2 * 60, ey = top + 120 + r3 * 180, rx = 16 + r1 * 12, ry = 10 + r2 * 6
@@ -211,8 +216,8 @@ function drawGround(ctx: Ctx, camX: number, th: Theme, no: LevelNo): void {
     const wb = ((b % (LOOP_W / 36)) + LOOP_W / 36) % (LOOP_W / 36)
     const x = b * 36 - camX
     const r = h1(wb * 5 + 2)
-    tuft(ctx, x + r * 20, PLAY_H - 22, 8 + r * 8, th.groundLight)
-    if (r > 0.6) tuft(ctx, x + 10, GROUND_Y + 18 + r * 40, 5 + r * 5, r > 0.8 ? th.groundLight : th.groundDark)
+    tuft(ctx, x + r * 20, PLAY_H - 22, 8 + r * 8, th.tuft)
+    if (r > 0.6) tuft(ctx, x + 10, GROUND_Y + 18 + r * 40, 5 + r * 5, r > 0.8 ? th.tuft : th.tuftDark)
     if (no === 3) {
       // A continuous drift banked against the path edge, with a soft shadow line, rather than
       // detached white ovals lying on the grass like puddles.

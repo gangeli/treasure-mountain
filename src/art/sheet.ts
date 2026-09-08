@@ -22,8 +22,9 @@ export function drawSheet(ctx: Ctx, name: string, t: number): void {
       drawPlayer(ctx, 1100, 400, -1, 'walk', 0.5, 60); label('facing left', 1100, 425)
       const elves: [string, any, any][] = [['run', 'run', 'none'], ['scroll', 'run', 'scroll'], ['balloon', 'run', 'balloon'], ['dust', 'run', 'dust'], ['caught', 'caught', 'none'], ['dance', 'dance', 'none'], ['stand', 'stand', 'scroll']]
       elves.forEach(([n, pose, item], i) => { const x = 80 + i * 120; drawElf(ctx, x, 580, 1, pose, 0.3, i % 3, item); label(n, x, 600) })
-      drawMaster(ctx, 1000, 600, 0.3, 'smug', 0.9); label('smug', 1000, 620)
-      drawMaster(ctx, 1150, 600, 0.3, 'angry', 0.9); label('angry', 1150, 620)
+      // At 0.9 the Master overlapped the row of player poses above him and his own label.
+      drawMaster(ctx, 1000, 600, 0.3, 'smug', 0.52); label('smug', 1000, 620)
+      drawMaster(ctx, 1150, 600, 0.3, 'angry', 0.52); label('angry', 1150, 620)
       drawCrown(ctx, 1100, 690, 40); drawKey(ctx, 1200, 690, 1.5, true); drawKey(ctx, 1240, 690, 1.5, false)
       break
     }

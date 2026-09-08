@@ -285,7 +285,9 @@ function riddle(ctx: Ctx, g: Game, clueMode = false): void {
     let fill = P.cream, edge: string = P.ink
     if (wrong) { fill = '#d9d9d9'; edge = P.rockDark }
     if (showRight) { fill = P.greenLight; edge = P.greenDark }
-    if (selected) edge = P.red
+    // The keyboard cursor sits on choice 1 from the moment the riddle opens, so it must not be red:
+    // a red ring around an untouched answer reads as "this one is wrong".
+    if (selected) edge = P.blue
     roundRect(ctx, rc.x, rc.y, rc.w, rc.h, 14, fill, edge, selected || showRight ? 5 : 3)
     if (c.visual) drawVisual(ctx, c.visual, rc.x + 8, rc.y + 8, rc.w - 16, rc.h - 16)
     else {
@@ -321,10 +323,8 @@ function bigBubble(ctx: Ctx, lines: string[], word?: string, wordLine = lines.le
   // Sits above the answer buttons (which start at y 258), so the child can still see which choice
   // was the right one while the bubble congratulates them.
   const w = 760, h = 214, x = W / 2 - w / 2, y = 34
-  ctx.save(); ctx.globalAlpha = 0.98
   scallop(ctx, x + w / 2, y + h / 2, w / 2 - 30, h / 2 - 14, 16)
   fillStroke(ctx, P.white, P.ink, 3)
-  ctx.restore()
   const filtered = lines.filter((l, i) => l !== '' || i === wordLine - 1)
   filtered.forEach((l, i) => text(ctx, l, W / 2, y + 46 + i * 36, { size: 28, align: 'center', color: P.ink, weight: 800 }))
   if (word) text(ctx, word, W / 2, y + 48 + Math.min(wordLine, filtered.length) * 36, { size: 38, align: 'center', color: P.redDark, weight: 900, font: DISPLAY })
@@ -364,7 +364,9 @@ function castle(ctx: Ctx, g: Game): void {
     ctx.save(); ctx.strokeStyle = '#6f84b8'; ctx.lineWidth = 3
     ctx.beginPath(); ctx.arc(h.x, hy, 28, Math.PI * 1.05, Math.PI * 1.85); ctx.stroke(); ctx.restore()
     circle(ctx, h.x, hy + 2, 23, '#16203a', 'rgba(0,0,0,0)', 0)
-    if (h.active) { const k = Math.sin(((h.t % 3) - 2.1) / 0.9 * Math.PI); const len = Math.max(0, k) * 90; roundRect(ctx, h.x - 12, hy - 10, len + 12, 22, 10, P.purple, P.ink, 3); circle(ctx, h.x + len + 4, hy, 14, P.skin, P.ink, 3) }
+    // Only once the arm is clear of the rim: below that the sleeve hides inside the hole and all
+    // that showed was a disembodied hand sitting in the opening like an egg in a nest.
+    if (h.active) { const k = Math.sin(((h.t % 3) - 2.1) / 0.9 * Math.PI); const len = Math.max(0, k) * 90; if (len > 8) { roundRect(ctx, h.x - 12, hy - 10, len + 12, 22, 10, P.purple, P.ink, 3); circle(ctx, h.x + len + 4, hy, 14, P.skin, P.ink, 3) } }
   }
   // throne room door on the top floor
   const dy = CASTLE_FLOOR_Y(CASTLE_FLOORS - 1)
@@ -432,21 +434,26 @@ function throne(ctx: Ctx, g: Game): void {
   roundRect(ctx, 1010, 246, 96, 30, 8, P.cream, P.ink, 3)
   text(ctx, 'SLIDE', 1058, 261, { size: 18, align: 'center', color: P.ink, weight: 900 })
   // treasure chest
+  // Gold with a darker band and a dark lock: the same chest as the treasure counter in the HUD, so
+  // "fill the treasure chest" points at something the child already recognises. (It was pink, which
+  // read as a toy box and matched nothing else in the game.)
   const open = step >= 2
-  roundRect(ctx, 330, 330, 200, 90, 12, P.pink, P.ink, 4)
-  ctx.fillStyle = P.magenta; ctx.fillRect(340, 370, 180, 10)
-  if (open) { poly(ctx, [[330, 330], [530, 330], [520, 260], [340, 260]], P.pink, P.ink, 4); ctx.fillStyle = P.gold; ctx.fillRect(345, 322, 170, 10) }
-  else roundRect(ctx, 326, 300, 208, 40, 14, P.magenta, P.ink, 4)
-  roundRect(ctx, 420, 340, 20, 22, 4, P.gold, P.ink, 2.5)
+  roundRect(ctx, 330, 330, 200, 90, 12, P.gold, P.ink, 4)
+  ctx.fillStyle = P.goldDark; ctx.fillRect(340, 370, 180, 10)
+  if (open) { poly(ctx, [[330, 330], [530, 330], [520, 260], [340, 260]], P.goldDark, P.ink, 4); ctx.fillStyle = P.gold; ctx.fillRect(345, 322, 170, 10) }
+  else roundRect(ctx, 326, 300, 208, 40, 14, P.goldDark, P.ink, 4)
+  roundRect(ctx, 420, 340, 20, 22, 4, P.ink, P.ink, 2.5)
   // treasures flying into the chest during step 2, then a glow
   const treasures = g.run?.treasures ?? []
   if (step === 2) treasures.forEach((name, i) => { const k = Math.max(0, Math.min(1, (st - i * 0.15) / 1.2)); const x0 = 900, y0 = 300, x1 = 430, y1 = 300; drawTreasure(ctx, name, x0 + (x1 - x0) * k, y0 + (y1 - y0) * k - Math.sin(k * Math.PI) * 160, 1 - k * 0.3) })
-  if (step >= 2) { ctx.save(); ctx.globalAlpha = 0.6 + Math.sin(t * 6) * 0.2; for (let i = 0; i < 5; i++) star(ctx, 360 + i * 36, 290 - (i % 2) * 20, 9, P.yellow, 'rgba(0,0,0,0)', 0, 4); ctx.restore() }
+  if (step >= 2) { ctx.save(); ctx.globalAlpha = 0.6 + Math.sin(t * 6) * 0.2; for (let i = 0; i < 5; i++) star(ctx, 360 + i * 36, 290 - (i % 2) * 20, 9, P.white, 'rgba(0,0,0,0)', 0, 4); ctx.restore() }
   // the Super Solver
   const px = step === 0 ? 1100 - Math.min(1, st / 1.2) * 230 : 870
   drawPlayer(ctx, px, 420, -1, step === 0 ? 'walk' : 'idle', t, step === 0 ? st * 300 : 0)
   // prize
-  if (step >= 6) { roundRect(ctx, 740, 120, 300, 140, 20, P.cream, P.ink, 4); text(ctx, 'Your prize:', 890, 150, { size: 24, align: 'center', color: P.inkSoft, weight: 800 }); drawTreasure(ctx, g.prize, 890, 215, 1.4); text(ctx, g.prize, 890, 250, { size: 22, align: 'center', color: P.ink, weight: 900 }) }
+  // Room for the tall prizes (the kite's tail, the jack-in-the-box's spring): at 300x140 with the
+  // picture at 1.4 they ran out through the bottom of the card and across their own name.
+  if (step >= 6) { roundRect(ctx, 730, 106, 320, 180, 20, P.cream, P.ink, 4); text(ctx, 'Your prize:', 890, 136, { size: 24, align: 'center', color: P.inkSoft, weight: 800 }); drawTreasure(ctx, g.prize, 890, 205, 1.2); text(ctx, g.prize, 890, 268, { size: 22, align: 'center', color: P.ink, weight: 900 }) }
   // captions
   const cap = ['The throne room!', 'Time to fill the treasure chest.', `${treasures.length} treasure${treasures.length === 1 ? '' : 's'} go into the chest!`, 'The Master of Mischief is not happy...', 'The magic of the mountain wakes up!', 'Off he goes!', 'You keep one treasure as a prize.'][step] ?? ''
   if (cap) text(ctx, cap, W / 2, 40, { size: 34, align: 'center', color: P.yellow, weight: 900, outline: P.ink, outlineWidth: 6, font: DISPLAY })

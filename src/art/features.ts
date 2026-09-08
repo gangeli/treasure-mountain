@@ -246,12 +246,14 @@ export function drawTreasure(ctx: Ctx, name: string, x: number, y: number, s = 1
     case 'boxcar': roundRect(ctx, -26, -22, 52, 30, 4, P.blue); circle(ctx, -14, 12, 7, P.ink, P.ink, 0); circle(ctx, 14, 12, 7, P.ink, P.ink, 0); ctx.fillStyle = P.bluePale; ctx.fillRect(-18, -16, 12, 10); ctx.fillRect(6, -16, 12, 10); break
     case 'teddy bear': circle(ctx, 0, 6, 16, P.brownLight); circle(ctx, 0, -14, 12, P.brownLight); circle(ctx, -10, -22, 5, P.brownLight, P.ink, 2); circle(ctx, 10, -22, 5, P.brownLight, P.ink, 2); circle(ctx, -4, -15, 1.8, P.ink, P.ink, 0); circle(ctx, 4, -15, 1.8, P.ink, P.ink, 0); circle(ctx, 0, -10, 2.5, P.ink, P.ink, 0); break
     case 'kite': {
-      poly(ctx, [[0, -30], [18, -6], [0, 22], [-18, -6]], P.yellow)
-      line(ctx, 0, -30, 0, 22, P.ink, 1.5); line(ctx, -18, -6, 18, -6, P.ink, 1.5)
+      // Sits 10px higher than it used to: with the tail hanging below, the kite's middle was well
+      // under the origin, so on the prize card it pushed past the card and over its own name.
+      poly(ctx, [[0, -40], [18, -16], [0, 12], [-18, -16]], P.yellow)
+      line(ctx, 0, -40, 0, 12, P.ink, 1.5); line(ctx, -18, -16, 18, -16, P.ink, 1.5)
       // A ribbon tail with outlined bows, at the same weight as everything else.
       ctx.strokeStyle = P.ink; ctx.lineWidth = 2; ctx.lineCap = 'round'
-      ctx.beginPath(); ctx.moveTo(0, 22); ctx.bezierCurveTo(10, 30, -4, 38, 8, 48); ctx.stroke()
-      for (const [bx, by] of [[6, 30], [1, 39], [8, 48]]) {
+      ctx.beginPath(); ctx.moveTo(0, 12); ctx.bezierCurveTo(10, 20, -4, 28, 8, 38); ctx.stroke()
+      for (const [bx, by] of [[6, 20], [1, 29], [8, 38]]) {
         poly(ctx, [[bx - 6, by - 4], [bx, by], [bx - 6, by + 4]], P.red, P.ink, 1.5)
         poly(ctx, [[bx + 6, by - 4], [bx, by], [bx + 6, by + 4]], P.red, P.ink, 1.5)
       }

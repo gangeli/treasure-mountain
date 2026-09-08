@@ -108,7 +108,19 @@ export function drawButtons(ctx: Ctx, buttons: Button[], g: Game): void {
     else if (b.icon === 'coin') { circle(ctx, cx, cy - 8, 15, P.gold, P.ink, 2.5); circle(ctx, cx, cy - 8, 8, P.goldDark, 'rgba(0,0,0,0)', 0); text(ctx, b.label, cx, cy + 22, { size: 15, color: P.white, weight: 800, align: 'center' }) }
     else if (b.icon === 'jump') { poly(ctx, [[cx, cy - 22], [cx + 14, cy - 6], [cx + 6, cy - 6], [cx + 6, cy + 6], [cx - 6, cy + 6], [cx - 6, cy - 6], [cx - 14, cy - 6]], P.white, P.ink, 2.5); text(ctx, b.label, cx, cy + 22, { size: 15, color: P.white, weight: 800, align: 'center' }) }
     else if (b.icon === 'pause') { ctx.fillStyle = P.white; ctx.fillRect(cx - 11, cy - 12, 8, 24); ctx.fillRect(cx + 3, cy - 12, 8, 24) }
-    else if (b.icon === 'speaker') { poly(ctx, [[cx - 16, cy - 7], [cx - 6, cy - 7], [cx + 4, cy - 17], [cx + 4, cy + 17], [cx - 6, cy + 7], [cx - 16, cy + 7]], P.white, P.ink, 2); ctx.strokeStyle = P.white; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(cx + 6, cy, 10, -0.9, 0.9); ctx.stroke(); ctx.beginPath(); ctx.arc(cx + 6, cy, 17, -0.9, 0.9); ctx.stroke() }
+    else if (b.icon === 'speaker') {
+      // Also the icon for the "Sound" row of the pause menu, where it sits left of the label: two
+      // music notes side by side made the sound and music toggles look like one control twice.
+      const ix = b.label ? b.x + 32 : cx
+      ctx.save(); ctx.translate(ix, cy); if (b.label) ctx.scale(0.72, 0.72)
+      poly(ctx, [[-16, -7], [-6, -7], [4, -17], [4, 17], [-6, 7], [-16, 7]], label, P.ink, 2)
+      ctx.strokeStyle = label; ctx.lineWidth = 3
+      ctx.beginPath(); ctx.arc(6, 0, 10, -0.9, 0.9); ctx.stroke()
+      ctx.beginPath(); ctx.arc(6, 0, 17, -0.9, 0.9); ctx.stroke()
+      if (b.toggled === false) line(ctx, -18, 16, 18, -16, P.red, 4)
+      ctx.restore()
+      if (b.label) text(ctx, b.label, b.x + 58, cy, { size: 22, color: label, weight: 800 })
+    }
     else if (b.id === 'back') { poly(ctx, [[b.x + 34, cy - 11], [b.x + 34, cy + 11], [b.x + 19, cy]], label, P.ink, 2); text(ctx, b.label, b.x + 46, cy, { size: 24, color: label, weight: 800 }) }
     else if (b.icon && b.label) { text(ctx, b.icon, b.x + 30, cy, { size: 28, color: label, weight: 800, align: 'center' }); text(ctx, b.label, b.x + 56, cy, { size: big ? 30 : 22, color: label, weight: 800 }) }
     else if (b.icon) { text(ctx, b.icon, cx, cy, { size: 30, color: label, weight: 800, align: 'center' }); if (b.toggled === false) line(ctx, cx - 14, cy + 14, cx + 14, cy - 14, P.red, 4) }

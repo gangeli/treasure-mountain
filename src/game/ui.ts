@@ -41,7 +41,7 @@ export function riddleChoiceRects(r: Riddle): { x: number; y: number; w: number;
 export function uiButtons(g: Game): Button[] {
   const b: Button[] = []
   if (g.paused) {
-    const items = [['p-resume', 'Keep playing', '▶'], ['p-howto', 'How to play', '?'], ['p-sound', g.settings.sound ? 'Sound: on' : 'Sound: off', '♪'], ['p-music', g.settings.music ? 'Music: on' : 'Music: off', '♫'], ['p-quit', 'Quit to title', '⌂']]
+    const items = [['p-resume', 'Keep playing', '▶'], ['p-howto', 'How to play', '?'], ['p-sound', g.settings.sound ? 'Sound: on' : 'Sound: off', 'speaker'], ['p-music', g.settings.music ? 'Music: on' : 'Music: off', '♫'], ['p-quit', 'Quit to title', '⌂']]
     items.forEach(([id, label, icon], i) => b.push({ id, x: W / 2 - 220, y: 200 + i * 78, w: 440, h: 64, label, icon }))
     return b
   }
@@ -50,7 +50,9 @@ export function uiButtons(g: Game): Button[] {
       b.push({ id: 'play', x: 200, y: 385, w: 340, h: 92, label: 'PLAY', big: true })
       b.push({ id: 'howto', x: 100, y: 505, w: 260, h: 58, label: 'How to play' })
       b.push({ id: 'about', x: 380, y: 505, w: 260, h: 58, label: 'About' })
-      b.push({ id: 'sound', x: W - 150, y: 16, w: 60, h: 60, label: '', icon: g.settings.sound ? '♪' : '♪̸', toggled: g.settings.sound })
+      // A speaker, not a second music note: side by side with the music toggle two notes were one
+      // control drawn twice. (The struck-through note glyph also rendered as tofu on some fonts.)
+      b.push({ id: 'sound', x: W - 150, y: 16, w: 60, h: 60, label: '', icon: 'speaker', toggled: g.settings.sound })
       b.push({ id: 'music', x: W - 80, y: 16, w: 60, h: 60, label: '', icon: '♫', toggled: g.settings.music })
       if (g.installable && !g.isApp) b.push({ id: 'install', x: 20, y: 16, w: 200, h: 56, label: 'Install app', icon: '⤓' })
       break
