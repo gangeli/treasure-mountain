@@ -18,6 +18,16 @@ export function validateRiddle(r: Riddle, grade: number, gen: string): string[] 
   if (r.family !== gen) errs.push(`family ${r.family} != ${gen}`)
   if (!r.skill) errs.push('skill missing')
   if (r.grade !== grade) errs.push('grade mismatch')
+  // A highlight the prompt does not contain paints nothing: the red cue for the rhyme ending, the
+  // contraction or the word being asked about silently disappears. (It did once, for every family
+  // at once, when richText stopped matching multi-word and quoted highlights.)
+  if (r.highlight) {
+    const hay = r.prompt.join(' ').toLowerCase()
+    for (const h of r.highlight) {
+      if (!h.trim()) errs.push('empty highlight')
+      else if (!hay.includes(h.toLowerCase())) errs.push(`highlight "${h}" is not in the prompt`)
+    }
+  }
   return errs
 }
 

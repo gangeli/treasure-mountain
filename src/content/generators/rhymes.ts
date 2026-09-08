@@ -78,6 +78,15 @@ const PLAIN_FMTS: Fmt[] = [
   { n: 2, lines: ws => [`${cap(ws[0])} and ${ws[1]} rhyme.`, 'Which word rhymes with them?'] },
 ]
 
+/** The longest ending the shown rhyming words share in spelling (at least two letters). */
+function sharedEnding(words: string[]): string[] | undefined {
+  const lo = words.map(w => w.toLowerCase())
+  const min = Math.min(...lo.map(w => w.length))
+  let k = 0
+  while (k < min - 1 && lo.every(w => w[w.length - 1 - k] === lo[0][lo[0].length - 1 - k])) k++
+  return k >= 2 ? [lo[0].slice(lo[0].length - k)] : undefined
+}
+
 export const rhymes: Generator = {
   id: 'rhymes',
   name: 'Rhymes',
@@ -124,7 +133,9 @@ export const rhymes: Generator = {
 
     return riddle({
       family: 'rhymes', skill: 'phonics: rhyming', prompt, verse: verse || undefined,
-      highlight: fam.varied ? undefined : [fam.end],
+      // The spelling the shown words actually share, not the family's phonetic key: the -ery family
+      // is spelled "merry, berry, cherry", so highlighting "ery" painted nothing at all.
+      highlight: fam.varied ? undefined : sharedEnding(shown),
       choices, answer: idx,
       spoken: `${shown.join(', ')}. These words rhyme. Which word rhymes with them? ${choices.map(c => c.text).join(', ')}?`,
       // Two tiers can draw the same family level (kindergarten's -at/-it then -op), so the metric

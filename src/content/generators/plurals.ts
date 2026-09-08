@@ -72,6 +72,9 @@ export const plurals: Generator = {
       const mode = rng.pick(modes)
       let prompt: string[]
       let spoken: string
+      // What the red cue points at. In the "context" framing the base verb never appears, so the
+      // time marker is highlighted instead - it is the word that tells you the tense.
+      let hl: string[] = [v.base]
       const skill = v.level === 3 ? 'grammar: past tense (-ed)' : 'grammar: irregular past tense'
       if (mode === 'today') {
         prompt = [`Today I ${v.base}${obj}.`, `Yesterday I ___${obj}.`]
@@ -85,11 +88,13 @@ export const plurals: Generator = {
       } else {
         // Singular subjects only: "the kids wore a hat" reads as one hat between them.
         const subj = rng.pick(['I', 'my friend', 'my sister', 'the teacher'])
-        prompt = [`${rng.pick(MARKERS)}, ${subj} ___${obj}.`, 'Which word fills the blank?']
+        const marker = rng.pick(MARKERS)
+        hl = [marker]
+        prompt = [`${marker}, ${subj} ___${obj}.`, 'Which word fills the blank?']
         spoken = `${prompt[0].replace('___', 'blank')} Which word fills the blank?`
       }
       return riddle({
-        family: 'plurals', skill, prompt, highlight: mode === 'name' ? [] : [v.base], choices, answer,
+        family: 'plurals', skill, prompt, highlight: mode === 'name' ? [] : hl, choices, answer,
         spoken: `${spoken} ${choices.map(c => c.text).join(', ')}?`,
         metric: v.level * 10 + v.past.length + (mode === 'context' ? 3 : 0), grade, tier,
         // One riddle per verb: all four framings ask for the same past tense, and a child should
