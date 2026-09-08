@@ -53,7 +53,10 @@
   .gallery figcaption { padding: 8px 12px; font-size: 15px; font-weight: 700; }
   .hero { border: 4px solid var(--ink); border-radius: 18px; overflow:hidden; box-shadow: 0 10px 0 #d9e2ee; margin: 10px auto 0; max-width: 900px; }
   .hero img { display:block; width:100%; }
-  table { border-collapse: collapse; width:100%; font-size: 15px; } th, td { border: 2px solid #d9e2ee; padding: 6px 10px; text-align:left; vertical-align: top; } th { background: #eef4fb; }
+  /* Four columns of prose will not fit a phone, so the table scrolls inside its own box rather
+     than taking the whole page sideways with it. */
+  .scroller { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { border-collapse: collapse; width:100%; min-width: 640px; font-size: 15px; } th, td { border: 2px solid #d9e2ee; padding: 6px 10px; text-align:left; vertical-align: top; } th { background: #eef4fb; }
   footer { text-align:center; padding: 30px 20px 50px; color: #4b5878; font-size: 15px; }
   a { color: #1e48a3; }
   .note { background: var(--cream); border: 3px solid var(--ink); border-radius: 14px; padding: 12px 16px; }
@@ -142,6 +145,7 @@
 
   <section>
     <h2>For grown-ups</h2>
+    <div class="scroller">
     <table>
       <tr><th>Grade</th><th>Reading</th><th>Math</th><th>Thinking &amp; science</th></tr>
       <tr><td>K</td><td>letters, beginning sounds, rhymes, opposites, categories, sight-word sentences</td><td>counting to 10, adding and subtracting within 10 with pictures, shapes, patterns, coins, clocks on the hour, longer/heavier</td><td>animal sounds and babies, seasons and weather, senses, float/sink, first-next-last, odd one out by color, shape and number</td></tr>
@@ -151,6 +155,7 @@
       <tr><td>4</td><td>harder analogies, adjectives and adverbs, tier-2 vocabulary</td><td>multi-digit, 2-digit × 1-digit, remainders, millions, angles and area, equivalent fractions, unit conversions</td><td>food chains, moon phases and rocks, body systems, energy and light, cause and effect</td></tr>
       <tr><td>5</td><td>academic vocabulary, pronouns and conjunctions, tense in context</td><td>decimals, 2-digit × 2-digit, primes and GCF, volume and coordinates, unlike fractions, multi-step problems</td><td>ecosystems, the solar system, cells, electricity and forces, logic puzzles</td></tr>
     </table>
+    </div>
     <p>Riddles get harder from level 1 to level 3, and again as stars are earned. Everything is generated, so the same riddle rarely repeats. The full per-family, per-grade measurements are in <a href="https://github.com/gangeli/treasure-mountain/blob/main/docs/DIFFICULTY.md">DIFFICULTY.md</a>; the design in <a href="https://github.com/gangeli/treasure-mountain/blob/main/docs/DESIGN.md">DESIGN.md</a>; and the notes on the original game in <a href="https://github.com/gangeli/treasure-mountain/blob/main/docs/research/treasure-mountain.md">the research document</a>.</p>
   </section>
 
