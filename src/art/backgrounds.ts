@@ -119,7 +119,9 @@ function drawWall(ctx: Ctx, camX: number, th: Theme, no: LevelNo, t: number): vo
       const ex = x + 80 + r2 * 60, ey = top + 120 + r3 * 180, rx = 16 + r1 * 12, ry = 10 + r2 * 6
       ctx.fillStyle = r2 > 0.5 ? th.wallLight : th.wallDark
       ctx.beginPath(); ctx.ellipse(ex, ey, rx, ry, r1, 0, Math.PI * 2); ctx.fill()
-      ctx.strokeStyle = th.wallDark; ctx.lineWidth = 2; ctx.stroke()
+      // Navy outline like everything else in the game: at wallDark the stones (and the snow caps on
+      // them at level 3) floated on the wall instead of sitting in it.
+      ctx.strokeStyle = P.ink; ctx.lineWidth = 2.5; ctx.stroke()
       ctx.fillStyle = 'rgba(255,255,255,0.25)'; ctx.beginPath(); ctx.ellipse(ex - rx * 0.3, ey - ry * 0.3, rx * 0.4, ry * 0.35, r1, 0, Math.PI * 2); ctx.fill()
     }
     if (no === 2 && r1 > 0.55) {
