@@ -49,7 +49,6 @@ function speak(text: string): void {
 
 function update(dt: number): void {
   const { pointer, keys } = input.drain()
-  game.portraitHint = window.innerHeight > window.innerWidth * 1.1 && stage.metrics.scale < 0.55
   for (const k of keys) { if (k.kind === 'down' && !k.repeat) game.keyDown(k.key); else if (k.kind === 'up') game.keyUp(k.key) }
   for (const p of pointer) if (p.kind === 'down') game.tap(p.x, p.y)
   game.update(dt)

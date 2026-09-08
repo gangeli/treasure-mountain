@@ -20,9 +20,10 @@
   #boot { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; color: #ffd76a; font: 700 22px system-ui, sans-serif; letter-spacing: .04em; }
   /* Held upright, a 16:9 game is a postage stamp in the middle of a tall black screen, with nothing
      to say why. The installed app and the APK both ask for landscape; a browser tab cannot, so it
-     asks the child instead - and takes "no" for an answer, because some tablets are locked upright. */
+     asks instead - full screen, because a hint drawn inside the game would be the same postage
+     stamp - and takes "no" for an answer, because some tablets are locked upright. */
   #rotate { display: none }
-  @media (orientation: portrait) and (pointer: coarse) {
+  @media (max-aspect-ratio: 10/11) {
     #rotate { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; background: #0b1a2c; color: #fff6d8; text-align: center; font: 700 26px system-ui, sans-serif; padding: 24px; }
     #anyway:checked ~ #rotate { display: none }
   }
