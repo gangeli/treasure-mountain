@@ -61,10 +61,10 @@ const CHAIN_ATTRS = [
 const RACES = ['running race', 'swimming race', 'sack race', 'bike race', 'spelling contest']
 const PLACES = ['first', 'second', 'third']
 const MATCH_THEMES = [
-  { noun: 'pet', items: ['cat', 'dog', 'fish'], intro: (ns: string[]) => `${ns[0]}, ${ns[1]} and ${ns[2]} each have one pet: a cat, a dog and a fish.`, has: 'has the', q: (n: string) => `Which pet does ${n} have?`, who: (it: string) => `Who has the ${it}?` },
-  { noun: 'fruit', items: ['apple', 'pear', 'plum'], intro: (ns: string[]) => `${ns[0]}, ${ns[1]} and ${ns[2]} each eat one fruit: an apple, a pear and a plum.`, has: 'eats the', q: (n: string) => `Which fruit does ${n} eat?`, who: (it: string) => `Who eats the ${it}?` },
-  { noun: 'hat', items: ['red hat', 'blue hat', 'green hat'], intro: (ns: string[]) => `${ns[0]}, ${ns[1]} and ${ns[2]} each wear a hat: one red, one blue and one green.`, has: 'wears the', q: (n: string) => `Which hat does ${n} wear?`, who: (it: string) => `Who wears the ${it}?` },
-  { noun: 'instrument', items: ['drum', 'flute', 'piano'], intro: (ns: string[]) => `${ns[0]}, ${ns[1]} and ${ns[2]} each play one instrument: a drum, a flute and a piano.`, has: 'plays the', q: (n: string) => `Which instrument does ${n} play?`, who: (it: string) => `Who plays the ${it}?` },
+  { noun: 'pet', items: ['cat', 'dog', 'fish'], intro: (ns: string[]) => `${ns[0]}, ${ns[1]} and ${ns[2]} each have one pet: a cat, a dog and a fish.`, has: 'has the', hasnot: 'does not have the', q: (n: string) => `Which pet does ${n} have?`, who: (it: string) => `Who has the ${it}?` },
+  { noun: 'fruit', items: ['apple', 'pear', 'plum'], intro: (ns: string[]) => `${ns[0]}, ${ns[1]} and ${ns[2]} each eat one fruit: an apple, a pear and a plum.`, has: 'eats the', hasnot: 'does not eat the', q: (n: string) => `Which fruit does ${n} eat?`, who: (it: string) => `Who eats the ${it}?` },
+  { noun: 'hat', items: ['red hat', 'blue hat', 'green hat'], intro: (ns: string[]) => `${ns[0]}, ${ns[1]} and ${ns[2]} each wear a hat: one red, one blue and one green.`, has: 'wears the', hasnot: 'does not wear the', q: (n: string) => `Which hat does ${n} wear?`, who: (it: string) => `Who wears the ${it}?` },
+  { noun: 'instrument', items: ['drum', 'flute', 'piano'], intro: (ns: string[]) => `${ns[0]}, ${ns[1]} and ${ns[2]} each play one instrument: a drum, a flute and a piano.`, has: 'plays the', hasnot: 'does not play the', q: (n: string) => `Which instrument does ${n} play?`, who: (it: string) => `Who plays the ${it}?` },
 ]
 
 /** Builds a random three-clue logic puzzle with a unique solution (brute-force checked). */
@@ -117,20 +117,24 @@ export function logicPuzzle(rng: Rng, tier: Tier): LogicPuzzle {
   const lines = clues.map(c => {
     switch (c.kind) {
       case 'is': return kind === 'race' ? `${c.who} came ${c.what}.` : `${c.who} ${theme.has} ${c.what}.`
-      case 'not': return kind === 'race' ? `${c.who} did not come ${c.what}.` : `${c.who} does not have the ${c.what}.`
+      case 'not': return kind === 'race' ? `${c.who} did not come ${c.what}.` : `${c.who} ${theme.hasnot} ${c.what}.`
       case 'before': return rng.bool() ? `${c.a} finished before ${c.b}.` : `${c.b} finished after ${c.a}.`
       case 'rightafter': return `${c.a} finished right after ${c.b}.`
     }
   })
   const intro = kind === 'race' ? `${names[0]}, ${names[1]} and ${names[2]} had a ${race}.` : theme.intro(names)
-  const askWho = rng.bool(0.6)
+  // Never ask something a clue states outright.
+  const stated = clues.filter(c => c.kind === 'is') as { who: string; what: string }[]
+  const askableItems = items.filter(it => !stated.some(c => c.what === it))
+  const askableNames = names.filter(nm => !stated.some(c => c.who === nm))
+  const askWho = askableNames.length === 0 || (askableItems.length > 0 && rng.bool(0.6))
   if (askWho) {
-    const target = rng.pick(items)
+    const target = rng.pick(askableItems)
     const answer = names.find(n => as[n] === target)!
     const question = kind === 'race' ? (target === 'first' ? 'Who won?' : `Who came ${target}?`) : theme.who(target)
     return { kind, names, items, clues, ask: ['who', target], lines: [intro, ...lines], question, answer, decoys: [...names.filter(n => n !== answer), 'cannot tell'] }
   }
-  const who = rng.pick(names)
+  const who = rng.pick(askableNames)
   const answer = as[who]
   const question = kind === 'race' ? `Where did ${who} finish?` : theme.q(who)
   return { kind, names, items, clues, ask: ['what', who], lines: [intro, ...lines], question, answer, decoys: [...items.filter(i => i !== answer), 'cannot tell'] }
@@ -180,10 +184,11 @@ function sequenceQ(grade: Grade, tier: Tier, level: Grade, rng: Rng): Riddle {
       : mode === 'last' ? [`Think about ${topic}.`, 'What is the last thing you do?']
       : [...wrap(`After you ${ref}, what do you do next?`)]
   } else if (level === 2) {
-    prompt = mode === 'first' ? [`The life cycle of ${topic}.`, 'What comes first?']
-      : mode === 'last' ? [`The life cycle of ${topic}.`, 'What is the last stage?']
-      : mode === 'next' ? [`The life cycle of ${topic}.`, `This stage: ${ref}.`, 'What comes next?']
-      : [`The life cycle of ${topic}.`, `This stage: ${ref}.`, 'What comes just before it?']
+    const title = seq.title ?? `The life cycle of ${topic}.`
+    prompt = mode === 'first' ? [title, 'What comes first?']
+      : mode === 'last' ? [title, 'What is the last stage?']
+      : mode === 'next' ? [title, `This stage: ${ref}.`, 'What comes next?']
+      : [title, `This stage: ${ref}.`, 'What comes just before it?']
   } else {
     prompt = mode === 'first' ? [`${cap(topic)}.`, 'What is the very first step?']
       : mode === 'last' ? [`${cap(topic)}.`, 'What is the last step?']

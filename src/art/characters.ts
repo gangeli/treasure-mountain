@@ -193,15 +193,16 @@ export function drawMaster(ctx: Ctx, x: number, y: number, t: number, mood: 'smu
   // head
   const hy = -125
   circle(ctx, 0, hy, 42, P.skin)
-  // wild hair
-  ctx.fillStyle = P.orange; ctx.strokeStyle = P.ink; ctx.lineWidth = 2.5
-  for (let i = 0; i < 9; i++) {
-    const a = Math.PI + (i / 8) * Math.PI
-    const jit = mood === 'angry' ? Math.sin(t * 30 + i) * 6 : 0
-    const px = Math.cos(a) * 44, py = hy + Math.sin(a) * 44
-    ctx.beginPath(); ctx.moveTo(px * 0.7, py * 0.9 + hy * 0.1); ctx.lineTo(px * 1.55 + jit, py + (py - hy) * 0.6 - 10); ctx.lineTo(px * 1.05 + 14, py + 6); ctx.closePath(); ctx.fill(); ctx.stroke()
+  // wild orange hair: a ring of tufts around the top of the head, bristling when angry
+  for (let i = 0; i < 11; i++) {
+    const a = Math.PI * 0.95 + (i / 10) * Math.PI * 1.1
+    const jit = mood === 'angry' ? 6 + Math.sin(t * 30 + i) * 4 : 0
+    const rr = 40 + (i % 2 ? 14 : 6) + jit
+    circle(ctx, Math.cos(a) * rr, hy + Math.sin(a) * rr, 13 + (i % 3) * 3, i % 2 ? P.orange : '#ff9f3d', P.ink, 2.5)
   }
   circle(ctx, 0, hy, 42, P.skin) // face over hair roots
+  // sideburns / bushy eyebrows base
+  circle(ctx, -40, hy + 12, 10, P.orange, P.ink, 2.5); circle(ctx, 40, hy + 12, 10, P.orange, P.ink, 2.5)
   // brows and eyes
   const angry = mood !== 'smug'
   for (const s of [-1, 1]) {

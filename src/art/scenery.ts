@@ -124,7 +124,10 @@ function mushroom(ctx: Ctx, x: number, y: number, s: number, color: string, spot
   roundRect(ctx, x - 9 * s, y - stemH, 18 * s, stemH, 6 * s, P.cream)
   ctx.beginPath(); ctx.moveTo(x - capW / 2, y - stemH + 4); ctx.quadraticCurveTo(x - capW / 2, y - stemH - 34 * s, x, y - stemH - 36 * s); ctx.quadraticCurveTo(x + capW / 2, y - stemH - 34 * s, x + capW / 2, y - stemH + 4); ctx.closePath()
   fillStroke(ctx, color)
-  if (spotted || r > 0.5) { circle(ctx, x - 12 * s, y - stemH - 12 * s, 5 * s, P.white, P.ink, 1.5); circle(ctx, x + 8 * s, y - stemH - 22 * s, 4 * s, P.white, P.ink, 1.5); circle(ctx, x + 14 * s, y - stemH - 6 * s, 3.5 * s, P.white, P.ink, 1.5) }
+  // Spots only for "spotted": descriptors must be reliable clue words.
+  if (spotted) { circle(ctx, x - 12 * s, y - stemH - 12 * s, 5 * s, P.white, P.ink, 1.5); circle(ctx, x + 8 * s, y - stemH - 22 * s, 4 * s, P.white, P.ink, 1.5); circle(ctx, x + 14 * s, y - stemH - 6 * s, 3.5 * s, P.white, P.ink, 1.5); circle(ctx, x - 4 * s, y - stemH - 28 * s, 3 * s, P.white, P.ink, 1.5) }
+  else { ctx.save(); ctx.globalAlpha = 0.25; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.ellipse(x - 10 * s, y - stemH - 20 * s, 10 * s, 5 * s, -0.4, 0, Math.PI * 2); ctx.fill(); ctx.restore() }
+  void r
 }
 
 function log(ctx: Ctx, x: number, y: number, s: number): void {
@@ -163,7 +166,8 @@ function pine(ctx: Ctx, x: number, y: number, s: number, tall: number, snowy: bo
   for (let i = 0; i < 3; i++) {
     const ty = y - 18 - i * h * 0.28, tw = w * (1 - i * 0.22), th = h * 0.42
     poly(ctx, [[x - tw / 2, ty], [x, ty - th], [x + tw / 2, ty]], i === 1 ? P.greenDark : P.green)
-    if (snowy || r > 0.6) { ctx.beginPath(); ctx.moveTo(x - tw * 0.3, ty - th * 0.45); ctx.quadraticCurveTo(x, ty - th * 0.75, x + tw * 0.3, ty - th * 0.45); ctx.quadraticCurveTo(x, ty - th * 0.3, x - tw * 0.3, ty - th * 0.45); ctx.closePath(); fillStroke(ctx, P.snow, P.ink, 1.5) }
+    // Snow only for "snowy" (a clue word must be reliable).
+    if (snowy) { ctx.beginPath(); ctx.moveTo(x - tw * 0.3, ty - th * 0.45); ctx.quadraticCurveTo(x, ty - th * 0.75, x + tw * 0.3, ty - th * 0.45); ctx.quadraticCurveTo(x, ty - th * 0.3, x - tw * 0.3, ty - th * 0.45); ctx.closePath(); fillStroke(ctx, P.snow, P.ink, 1.5) }
   }
   if (r > 0.3) for (let i = 0; i < 3; i++) circle(ctx, x - 16 + i * 16, y - 40 - i * 22 * tall, 4, i % 2 ? P.red : P.yellow, P.ink, 1.5)
 }
@@ -227,7 +231,7 @@ function sign(ctx: Ctx, x: number, y: number, s: number, tall: number, round: bo
   const bw = 60 * s, bh = 36 * s
   if (round) circle(ctx, x, y - poleH - bh * 0.5, bw * 0.55, color)
   else roundRect(ctx, x - bw / 2, y - poleH - bh, bw, bh, 5, color)
-  const words = ['ELF XING', 'MINE', 'KEEP OUT', 'NETS →', 'TREASURE?', 'CAVE']
+  const words = ['ELF XING', 'MINE', 'KEEP OUT', 'SLOW', 'TRAIL', 'CAVE']
   const w = words[Math.floor(r * words.length) % words.length]
   ctx.fillStyle = P.ink; ctx.font = `800 ${Math.round(12 * s)}px "Nunito", "Trebuchet MS", sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
   ctx.fillText(w, x, y - poleH - bh * 0.5)

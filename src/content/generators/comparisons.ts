@@ -5,10 +5,10 @@ import { THINGS, type Thing } from '../data/comparisons'
 import { pickLevel } from './thinkingUtil'
 
 type Attr = 'len' | 'mass' | 'speed'
-interface AttrDef { attr: Attr; more: string; most: string; least: string; tall?: boolean }
+interface AttrDef { attr: Attr; more: string; most: string; least: string; tall?: boolean; /** 'longer' makes no sense for things measured by height. */ noTall?: boolean }
 const ATTRS: AttrDef[] = [
   { attr: 'len', more: 'bigger', most: 'biggest', least: 'smallest' },
-  { attr: 'len', more: 'longer', most: 'longest', least: 'shortest' },
+  { attr: 'len', more: 'longer', most: 'longest', least: 'shortest', noTall: true },
   { attr: 'len', more: 'taller', most: 'tallest', least: 'shortest', tall: true },
   { attr: 'mass', more: 'heavier', most: 'heaviest', least: 'lightest' },
   { attr: 'speed', more: 'faster', most: 'fastest', least: 'slowest' },
@@ -54,7 +54,7 @@ function relativeQ(grade: Grade, tier: Tier, level: Grade, rng: Rng): Riddle {
   const n = choiceCount(grade)
   const maxLevel = Math.min(3, level) as Grade
   const def = rng.pick(ATTRS.filter(d => level >= 1 || d.attr !== 'speed'))
-  const cands = THINGS.filter(t => t.level <= maxLevel && t[def.attr] !== undefined && (!def.tall || t.tall))
+  const cands = THINGS.filter(t => t.level <= maxLevel && t[def.attr] !== undefined && (!def.tall || t.tall) && (!def.noTall || !t.tall))
   const ratio = level === 0 ? 6 : level === 1 ? 3 : 2
   const pair = n === 3 && (level === 0 ? tier === 1 || rng.bool(0.5) : level === 1 && rng.bool(0.3))
   if (pair) {
@@ -78,7 +78,7 @@ function estimateQ(grade: Grade, tier: Tier, level: Grade, rng: Rng): Riddle {
   const imperial = rng.bool(0.4)
   const attrs: Attr[] = level >= 4 ? ['speed', 'speed', 'mass', 'len'] : ['len', 'len', 'mass']
   const attr = rng.pick(attrs)
-  const cands = THINGS.filter(t => t.level <= Math.min(4, level) && t[attr] !== undefined && !(attr === 'len' && t.len! >= 1000) && !(attr === 'mass' && t.mass! >= 1e6) && !(attr === 'len' && t.len! < 0.01) && !(attr === 'mass' && t.mass! < 0.001))
+  const cands = THINGS.filter(t => t.level <= Math.min(4, level) && t[attr] !== undefined && !(attr === 'len' && t.len! >= 1000) && !(attr === 'mass' && t.mass! >= 1e6) && !(attr === 'len' && t.len! < 0.01) && !(attr === 'mass' && t.mass! < 0.05))
   const t = rng.pick(cands)
   const v = t[attr]!
   const fmt = attr === 'len' ? (x: number) => lenText(x, imperial) : attr === 'mass' ? (x: number) => massText(x, imperial) : (x: number) => speedText(x, imperial)

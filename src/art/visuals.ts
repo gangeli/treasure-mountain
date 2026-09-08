@@ -71,29 +71,29 @@ function counters(ctx: Ctx, v: Extract<Visual, { kind: 'counters' }>, x: number,
     for (let gi = 0; gi < groups; gi++) {
       const gx = x0 - cell / 2 + gi * (per * cell + cell * 0.6)
       rr(ctx, gx - 6, y0 - cell / 2 - 6, per * cell + 12, cell + 12, 14); ctx.strokeStyle = P.inkSoft; ctx.lineWidth = 2; ctx.setLineDash([8, 6]); ctx.stroke(); ctx.setLineDash([])
-      if (gi < groups - 1) text(ctx, '+', gx + per * cell + cell * 0.3, y0, { size: 40, align: 'center', color: P.ink, weight: 900 })
+      if (gi < groups - 1) text(ctx, '+', gx + per * cell + cell * 0.36, y0, { size: cell * 0.6, align: 'center', color: P.ink, weight: 900, outline: P.scroll, outlineWidth: 6 })
     }
   }
 }
 
 // ------------------------------------------------------------------ clock
 export function clock(ctx: Ctx, hour: number, minute: number, cx: number, cy: number, r: number): void {
-  circle(ctx, cx, cy, r, P.white, P.ink, 4)
-  circle(ctx, cx, cy, r - 8, 'rgba(0,0,0,0)', P.blueDark, 2)
+  circle(ctx, cx, cy, r, P.white, P.ink, Math.max(2.5, r * 0.035))
+  circle(ctx, cx, cy, r * 0.93, 'rgba(0,0,0,0)', P.blueDark, Math.max(1.5, r * 0.018))
   for (let i = 0; i < 60; i++) {
     const a = (i / 60) * Math.PI * 2 - Math.PI / 2
     const big = i % 5 === 0
-    line(ctx, cx + Math.cos(a) * (r - 14), cy + Math.sin(a) * (r - 14), cx + Math.cos(a) * (r - (big ? 26 : 20)), cy + Math.sin(a) * (r - (big ? 26 : 20)), P.ink, big ? 3 : 1.5)
+    line(ctx, cx + Math.cos(a) * r * 0.88, cy + Math.sin(a) * r * 0.88, cx + Math.cos(a) * r * (big ? 0.78 : 0.83), cy + Math.sin(a) * r * (big ? 0.78 : 0.83), P.ink, big ? Math.max(2, r * 0.025) : Math.max(1, r * 0.012))
   }
   for (let i = 1; i <= 12; i++) {
     const a = (i / 12) * Math.PI * 2 - Math.PI / 2
-    text(ctx, String(i), cx + Math.cos(a) * (r - 44), cy + Math.sin(a) * (r - 44), { size: r * 0.22, align: 'center', color: P.ink, weight: 800 })
+    text(ctx, String(i), cx + Math.cos(a) * r * 0.64, cy + Math.sin(a) * r * 0.64, { size: r * 0.2, align: 'center', color: P.ink, weight: 800 })
   }
   const ma = (minute / 60) * Math.PI * 2 - Math.PI / 2
   const ha = ((hour % 12) / 12 + minute / 720) * Math.PI * 2 - Math.PI / 2
-  line(ctx, cx, cy, cx + Math.cos(ha) * r * 0.5, cy + Math.sin(ha) * r * 0.5, P.ink, 8)
-  line(ctx, cx, cy, cx + Math.cos(ma) * r * 0.74, cy + Math.sin(ma) * r * 0.74, P.red, 5)
-  circle(ctx, cx, cy, 6, P.ink, P.ink, 0)
+  line(ctx, cx, cy, cx + Math.cos(ha) * r * 0.45, cy + Math.sin(ha) * r * 0.45, P.ink, Math.max(4, r * 0.07))
+  line(ctx, cx, cy, cx + Math.cos(ma) * r * 0.74, cy + Math.sin(ma) * r * 0.74, P.red, Math.max(3, r * 0.045))
+  circle(ctx, cx, cy, Math.max(3, r * 0.05), P.ink, P.ink, 0)
 }
 
 // ------------------------------------------------------------------ coins
@@ -227,7 +227,8 @@ function thermometer(ctx: Ctx, deg: number, unit: 'F' | 'C', x: number, y: numbe
   ctx.fillStyle = P.red; ctx.fillRect(cx - tw / 2 + 7, level, tw - 14, bottom - level)
   circle(ctx, cx, bottom + 4, tw * 0.75, P.red, P.ink, 3)
   const stepT = unit === 'F' ? 10 : 5
-  for (let v = lo; v <= hi; v += stepT) { const py = bottom - 10 - ((v - lo) / (hi - lo)) * (bottom - top - 30); line(ctx, cx + tw / 2, py, cx + tw / 2 + (v % (stepT * 2) === 0 ? 14 : 8), py, P.ink, 2); if (v % (stepT * 2) === 0) text(ctx, String(v), cx + tw / 2 + 20, py, { size: 15, color: P.ink, weight: 800 }) }
+  const labelEvery = (bottom - top) > 220 ? stepT * 2 : stepT * 4
+  for (let v = lo; v <= hi; v += stepT) { const py = bottom - 10 - ((v - lo) / (hi - lo)) * (bottom - top - 30); const lab = (v - lo) % labelEvery === 0; line(ctx, cx + tw / 2, py, cx + tw / 2 + (lab ? 14 : 8), py, P.ink, 2); if (lab) text(ctx, String(v), cx + tw / 2 + 20, py, { size: 15, color: P.ink, weight: 800 }) }
   text(ctx, '°' + unit, cx, top - 4, { size: 18, align: 'center', color: P.ink, weight: 800 })
 }
 

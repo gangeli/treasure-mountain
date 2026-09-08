@@ -5,6 +5,7 @@ import { AudioEngine } from './engine/audio'
 import { loadSave, writeSave } from './engine/storage'
 import { Game } from './game/game'
 import { render } from './art/render'
+import { drawSheet } from './art/sheet'
 import type { Grade } from './content/types'
 
 declare global {
@@ -77,13 +78,15 @@ if ('serviceWorker' in navigator && location.protocol.startsWith('http') && !tes
 
 // Test hooks: screenshots and scripted play from Playwright.
 if (testMode) {
-  const shots = ['title', 'grade', 'clubhouse', 'intro', 'level1', 'level2', 'level3', 'riddle', 'riddle-visual', 'clue', 'castle', 'throne', 'rank', 'crown', 'howto', 'about', 'pause', 'level1-poof', 'level1-key']
+  const shots = ['title', 'grade', 'clubhouse', 'intro', 'level1', 'level2', 'level3', 'riddle', 'riddle-visual', 'clue', 'castle', 'throne', 'rank', 'crown', 'howto', 'about', 'pause', 'level1-poof', 'level1-key', 'sheet-characters', 'sheet-scenery1', 'sheet-scenery2', 'sheet-scenery3', 'sheet-features', 'sheet-treasures', 'sheet-visuals']
   window.__tm = {
     ready: true,
     game,
     shots: () => shots,
     show(name: string) {
       const g = game
+      if (name.startsWith('sheet-')) { loop.stop(); drawSheet(stage.begin(), name, 0.3); return }
+      if (!loop.running) loop.start()
       const setup = (grade: Grade = 2) => { g.profiles = {}; g.grade = grade; g.profile(grade); g.run = null; g.lvl = null; g.goto('clubhouse') }
       const startLevel = (no: 1 | 2 | 3) => { setup(); g.pressButton('start'); if (g.screen === 'intro') g.advanceScene(); if (no > 1) g.startLevel(no, 777, false); g.lvl!.camX = g.lvl!.player.x - 500 }
       switch (name) {

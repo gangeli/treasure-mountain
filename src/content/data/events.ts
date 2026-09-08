@@ -2,9 +2,9 @@ import type { Grade } from '../types'
 import type { Fact } from '../generators/thinkingUtil'
 
 /** An ordered sequence of events. Level 0 everyday 2-3 steps, 1 daily routine, 2 life cycles, 3 procedures. */
-export interface Sequence { level: Grade; topic: string; steps: string[] }
+export interface Sequence { level: Grade; topic: string; steps: string[]; /** Heading used for life cycles when "The life cycle of <topic>" reads badly. */ title?: string }
 
-const Q = (level: Grade, topic: string, steps: string[]): Sequence => ({ level, topic, steps })
+const Q = (level: Grade, topic: string, steps: string[], title?: string): Sequence => ({ level, topic, steps, title })
 
 export const SEQUENCES: Sequence[] = [
   // ---- K: first / next / last
@@ -32,13 +32,13 @@ export const SEQUENCES: Sequence[] = [
   Q(1, 'toast', ['toast the bread', 'spread the butter', 'add the jam', 'eat the toast']),
   Q(1, 'dinner', ['wash your hands', 'set the table', 'eat dinner', 'clear the table']),
   Q(1, 'bedtime', ['put on pyjamas', 'read a story', 'turn off the light', 'go to sleep']),
-  Q(1, 'class', ['line up', 'walk to the classroom', 'sit down', 'listen to the teacher']),
+  Q(1, 'the start of class', ['line up', 'walk to the classroom', 'sit down', 'listen to the teacher']),
   Q(1, 'lunchtime', ['eat lunch', 'play outside', 'go back inside', 'read a book']),
-  Q(1, 'a glass of water', ['get a cup', 'pour the water', 'drink it', 'wash the cup']),
+  Q(1, 'a glass of water', ['get a cup', 'pour the water', 'drink the water', 'wash the cup']),
   Q(1, 'the bus', ['get dressed', 'eat breakfast', 'pack your bag', 'catch the bus']),
   Q(1, 'swimming', ['put on your swimsuit', 'jump in the pool', 'swim', 'dry off with a towel']),
-  Q(1, 'tidying up', ['pick up the toys', 'put them in the box', 'close the lid', 'put the box away']),
-  Q(1, 'waking up', ['wake up', 'stretch', 'get out of bed', 'open the curtains']),
+  Q(1, 'tidying up', ['pick up the toys', 'put the toys in the box', 'close the lid', 'put the box away']),
+  Q(1, 'washing up', ['scrape the plates', 'wash the dishes', 'dry the dishes', 'put them away']),
   Q(1, 'homework', ['take out your book', 'read the page', 'answer the questions', 'hand it in']),
   // ---- 2: life cycles
   Q(2, 'a butterfly', ['egg', 'caterpillar', 'chrysalis', 'butterfly']),
@@ -55,8 +55,8 @@ export const SEQUENCES: Sequence[] = [
   Q(2, 'a bean plant', ['bean seed', 'roots grow', 'shoot grows', 'leaves open']),
   Q(2, 'a duck', ['egg', 'duckling', 'duck']),
   Q(2, 'a bear', ['cub', 'young bear', 'adult bear']),
-  Q(2, 'making seeds', ['a flower blooms', 'bees carry pollen', 'seeds form', 'seeds fall down']),
-  Q(2, 'the water cycle', ['rain falls', 'water flows to rivers', 'rivers reach the sea', 'water evaporates']),
+  Q(2, 'making seeds', ['a flower blooms', 'bees carry pollen', 'seeds form', 'seeds fall down'], 'How a plant makes seeds.'),
+  Q(2, 'the water cycle', ['rain falls', 'water flows to rivers', 'rivers reach the sea', 'water evaporates'], 'The water cycle.'),
   // ---- 3: procedures
   Q(3, 'baking a cake', ['mix flour and eggs', 'pour into a tin', 'bake in the oven', 'let it cool', 'eat the cake']),
   Q(3, 'planting a seed', ['dig a hole', 'put in the seed', 'cover with soil', 'water it']),
