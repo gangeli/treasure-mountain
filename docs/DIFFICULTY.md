@@ -234,11 +234,11 @@ The **metric** is each family's own difficulty number (bigger is harder; only co
 | 3 | 1 | 49.4 | 14.1 | 96 | 0% | You pay one dollar for a 25¢ ball. / What is your change? [85¢ / 80¢ / 74¢ / *75¢] |
 | 3 | 2 | 51.4 | 14.0 | 99 | 0% | You pay one dollar for a 28¢ eraser. / What is your change? [*72¢ / 67¢ / 71¢ / 82¢] |
 | 3 | 3 | 59.4 | 17.9 | 90 | 0% | A sticker costs 35¢ and a marble costs 15¢. / Nina pays for both with one dollar. / How much change does Nina get? [45¢ / *50¢ / 85¢ / 65¢] |
-| 4 | 1 | 70.6 | 10.6 | 29.75 | 0% | A book costs $19.25. / A ring costs $2.50. / How much more does the book cost? [$16.50 / *$16.75 / $15.75 / $16.65] |
-| 4 | 2 | 73.7 | 11.3 | 34.9 | 0% | A pencil costs $3.15 and an eraser / costs $4.30. What is the total? [$7.35 / $8.45 / $7.70 / *$7.45] |
-| 4 | 3 | 77.7 | 13.7 | 33 | 0% | A ring costs $10.95. / A sticker costs $1.03. / How much more does the ring cost? [$9.67 / $10.92 / $8.92 / *$9.92] |
-| 5 | 1 | 85.9 | 12.5 | 87.75 | 0% | Rosa buys 3 notebooks at $0.65 each. / How much does that cost? [*$1.95 / $2.95 / $0.20 / $2.60] |
-| 5 | 2 | 89.8 | 15.9 | 81 | 0% | Hugo buys 3 notebooks at $3.90 each / and pays with $20.00. / How much change does Hugo get? [*$8.30 / $7.30 / $16.10 / $4.40] |
+| 4 | 1 | 70.6 | 10.6 | 29.75 | 0% | A hat costs $19.25. / A notebook costs $2.50. / How much more does the hat cost? [$16.50 / *$16.75 / $15.75 / $16.65] |
+| 4 | 2 | 73.7 | 11.3 | 34.9 | 0% | A toy costs $3.15 and a card / costs $4.30. What is the total? [$7.35 / $8.45 / $7.70 / *$7.45] |
+| 4 | 3 | 77.7 | 13.7 | 33 | 0% | A yo-yo costs $10.95. / A ring costs $1.03. / How much more does the yo-yo cost? [$9.67 / $10.92 / $8.92 / *$9.92] |
+| 5 | 1 | 85.9 | 12.5 | 87.75 | 0% | Rosa buys 3 books at $0.65 each. / How much does that cost? [*$1.95 / $2.95 / $0.20 / $2.60] |
+| 5 | 2 | 89.8 | 15.9 | 81 | 0% | Hugo buys 3 kites at $3.90 each / and pays with $20.00. / How much change does Hugo get? [*$8.30 / $7.30 / $16.10 / $4.40] |
 | 5 | 3 | 92.0 | 15.4 | 43.5 | 0% | Ruby buys 3 balls at $1.05 each and / 2 hats at $2.85 each. / How much does Ruby spend? [$11.70 / $7.85 / *$8.85 / $3.15] |
 
 ### Shapes and geometry (`shapes`, math)
@@ -906,7 +906,7 @@ What a child sees over 12 riddles (tiers 1-3 as the levels go up), drawn by the 
 6. *(shapes, tier 2)* Start at (1, 0). Move 2 right and 4 up. Where are you now? — (4, 3), (3, 5), **(3, 4)**, (4, 4)
 7. *(riddles, tier 2)* What breaks but never falls, and what falls but never breaks? — glass and rain, **day and night**, waves and leaves, a cup and a ball
 8. *(opposites, tier 2)* Which word means the opposite of complicate? — **simplify**, advance, attract, conserve
-9. *(money, tier 3)* 5 yo-yos cost $5.50 altogether. How much does one yo-yo cost? — **$1.10**, $2.20, $1.05, $1.38
+9. *(money, tier 3)* 5 books cost $5.50 altogether. How much does one book cost? — **$1.10**, $2.20, $1.05, $1.38
 10. *(shapes, tier 3)* Start at (1, 4). Move 3 right and 2 up. Where are you now? — (4, 2), **(4, 6)**, (6, 4), (4, 4)
 11. *(matter, tier 3)* Which of these is NOT a chemical change? — rusting a nail, **boiling water**, a firework going off, burning paper
 12. *(riddles, tier 3)* I am an odd number. Take away one letter and I become even. What am I? — nine, thirty, **seven**, eleven
