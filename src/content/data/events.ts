@@ -91,7 +91,7 @@ export const CAUSE_EFFECT: Fact[] = [
   F(4, 'The boy studied hard. What was the effect?', 'he did well on the test', ['he forgot everything', 'he lost his book', 'he missed the bus']),
   F(4, 'The bread went mouldy. Why?', 'it was left out too long', ['it was eaten', 'it was fresh', 'it was in the freezer']),
   F(4, 'Why did the balloon pop?', 'it touched a sharp pin', ['it was tied tight', 'it was red', 'it floated up']),
-  F(4, 'Why did the milk go sour?', 'it was left out of the fridge', ['it was cold', 'it was in a cup', 'it was white']),
+  F(4, 'Why did the milk go sour?', 'it was left out too long', ['it was cold', 'it was in a cup', 'it was white']),
   F(4, 'Why did the crops grow so well this year?', 'plenty of rain and sun', ['there was a drought', 'it was very dark', 'it snowed all summer']),
   F(4, 'The car stopped in the road. Why?', 'it ran out of fuel', ['the radio was on', 'it was painted blue', 'the driver was happy']),
   F(4, 'The tower of blocks fell over. Why?', 'it was too tall and wobbly', ['it was very short', 'it was made of blocks', 'it was red']),

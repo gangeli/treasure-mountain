@@ -6,7 +6,7 @@ import { standardChecks } from './helpers'
 import { OPPOSITES } from '../src/content/data/opposites'
 import { SYNONYMS } from '../src/content/data/synonyms'
 import { antonymsOf, synonymsOf } from '../src/content/data/vocab'
-import { CATEGORIES } from '../src/content/data/categories'
+import { CATEGORIES, type Category } from '../src/content/data/categories'
 import { COMPOUNDS, compoundWord } from '../src/content/data/compounds'
 import { ASSOCIATIONS } from '../src/content/data/associations'
 import { SYLLABLE_WORDS } from '../src/content/data/syllables'
@@ -108,7 +108,15 @@ describe('synonyms', () => {
 })
 
 describe('categories', () => {
-  const memberOf = (cat: { members: string[] }, w: string) => cat.members.some(m => lower(m) === lower(w))
+  const memberOf = (cat: { members: string[]; extra?: string[] }, w: string) => [...cat.members, ...(cat.extra ?? [])].some(m => lower(m) === lower(w))
+  const overlaps = (a: Category, b: Category) => [...a.members, ...(a.extra ?? [])].some(m => memberOf(b, m))
+  /** A decoy is never a member (explicit or implicit) of the category; without decoysFrom it also belongs to no overlapping category. */
+  const validDecoy = (cat: Category, d: string): string | null => {
+    if (memberOf(cat, d)) return `decoy ${d} is a member of ${cat.id}`
+    if (cat.decoysFrom) return cat.decoysFrom.some(id => CATEGORIES.find(c => c.id === id)!.members.includes(d)) ? null : `decoy ${d} is not from a sibling of ${cat.id}`
+    for (const c of CATEGORIES) if (memberOf(c, d) && overlaps(c, cat)) return `decoy ${d} belongs to ${c.id}, which overlaps ${cat.id}`
+    return null
+  }
   it('answers are members and decoys are never members of the category (or any overlapping one)', () => {
     forEachRiddle('categories', 300, r => {
       const line = r.prompt.find(l => l.startsWith('Which one')) ?? ''
@@ -116,28 +124,32 @@ describe('categories', () => {
       if (which) {
         const cat = CATEGORIES.find(c => c.one === which[1])
         if (!cat) return `unknown category ${which[1]}`
-        if (!memberOf(cat, answerText(r))) return `answer not a member`
-        for (const d of decoyTexts(r)) for (const c of CATEGORIES) if (memberOf(c, d) && c.members.some(m => memberOf(cat, m))) return `decoy ${d} belongs to ${c.id}, which overlaps ${cat.id}`
+        if (!cat.members.includes(answerText(r))) return `answer not a member`
+        for (const d of decoyTexts(r)) { const e = validDecoy(cat, d); if (e) return e }
         return null
       }
       if (line === 'Which one does not belong?') {
-        // Some category K holds all the others, and the answer is in no category that overlaps K.
+        // Some category K holds all the others and the answer is a valid decoy for K.
         const others = decoyTexts(r)
         const ans = answerText(r)
-        const cats = CATEGORIES.filter(c => others.every(o => memberOf(c, o)))
+        const cats = CATEGORIES.filter(c => others.every(o => c.members.includes(o)))
         if (cats.length === 0) return `no category contains ${others.join(', ')}`
         const hint = /of these are (.+)\.$/.exec(r.prompt[1] ?? '')
         if (hint && !cats.some(c => c.many === hint[1])) return `hint ${hint[1]} does not match`
-        const good = cats.filter(k => !CATEGORIES.some(c => memberOf(c, ans) && c.members.some(m => memberOf(k, m))))
-        if (good.length === 0) return `answer ${ans} overlaps every category holding the others`
+        if (!cats.some(k => validDecoy(k, ans) === null)) return `answer ${ans} is not a valid outsider for ${cats.map(c => c.id).join('/')}`
         return null
       }
       // name mode
       const shown = r.highlight ?? []
       const ansCat = CATEGORIES.find(c => c.many === answerText(r))
       if (!ansCat) return `unknown category name ${answerText(r)}`
-      if (!shown.every(s => memberOf(ansCat, s))) return `shown words are not all ${ansCat.id}`
-      for (const d of decoyTexts(r)) { const c = CATEGORIES.find(k => k.many === d); if (c && shown.some(s => memberOf(c, s))) return `decoy category ${d} contains a shown word` }
+      if (!shown.every(s => ansCat.members.includes(s))) return `shown words are not all ${ansCat.id}`
+      for (const d of decoyTexts(r)) {
+        const c = CATEGORIES.find(k => k.many === d)
+        if (!c) return `unknown decoy category ${d}`
+        if (c.broad) return `broad category ${d} offered as a decoy`
+        if (shown.some(s => memberOf(c, s))) return `decoy category ${d} contains a shown word`
+      }
       return null
     })
   })

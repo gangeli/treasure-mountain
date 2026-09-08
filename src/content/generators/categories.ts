@@ -1,6 +1,6 @@
 import type { Generator, Grade, Tier } from '../types'
 import { riddle, shuffled, choiceCount, cap } from '../types'
-import { CATEGORIES, overlapping, type Category } from '../data/categories'
+import { CATEGORIES, overlapping, allMembers, byId, type Category } from '../data/categories'
 
 type Mode = 'which' | 'odd' | 'name'
 
@@ -25,17 +25,32 @@ function modesFor(grade: Grade, tier: Tier): Mode[] {
   return tier === 1 ? ['name', 'odd'] : ['name', 'name', 'odd']
 }
 
-/** Words that are members of no category overlapping `cat`; same-domain ones first. */
-function outsiders(rng: { shuffle<T>(a: readonly T[]): T[] }, cat: Category): string[] {
-  const over = new Set(overlapping(cat))
-  const banned = new Set([...over].flatMap(c => c.members.map(m => m.toLowerCase())))
-  const ok = (c: Category) => !over.has(c)
-  const same = rng.shuffle(CATEGORIES.filter(c => ok(c) && c.domain === cat.domain && Math.abs(c.level - cat.level) <= 1).flatMap(c => c.members))
-  const near = rng.shuffle(CATEGORIES.filter(c => ok(c) && c.domain !== cat.domain && Math.abs(c.level - cat.level) <= 1).flatMap(c => c.members))
-  const any = rng.shuffle(CATEGORIES.filter(ok).flatMap(c => c.members))
+/**
+ * Decoy words for `cat`. With `decoysFrom`, they come from those sibling categories and only the
+ * category's own (explicit and implicit) members are banned; otherwise from categories that share
+ * no member with `cat`, same domain first, banning every member of any overlapping category.
+ */
+function outsiders(rng: { shuffle<T>(a: readonly T[]): T[] }, cat: Category, grade: number): string[] {
+  const maxLevel = grade <= 1 ? 2 : cat.level + 1
+  let banned: Set<string>
+  let pools: string[][]
+  if (cat.decoysFrom) {
+    banned = new Set(allMembers(cat))
+    const from = cat.decoysFrom.map(byId)
+    pools = [rng.shuffle(from.filter(c => c.level <= maxLevel).flatMap(c => c.members)), rng.shuffle(from.flatMap(c => c.members))]
+  } else {
+    const over = new Set(overlapping(cat))
+    banned = new Set([...over].flatMap(allMembers))
+    const ok = (c: Category) => !over.has(c) && c.level <= maxLevel && c.level >= cat.level - 1
+    pools = [
+      rng.shuffle(CATEGORIES.filter(c => ok(c) && c.domain === cat.domain).flatMap(c => c.members)),
+      rng.shuffle(CATEGORIES.filter(c => ok(c) && c.domain !== cat.domain).flatMap(c => c.members)),
+      rng.shuffle(CATEGORIES.filter(c => !over.has(c)).flatMap(c => c.members)),
+    ]
+  }
   const seen = new Set<string>()
   const out: string[] = []
-  for (const w of [...same, ...near, ...any]) {
+  for (const w of pools.flat()) {
     const k = w.toLowerCase()
     if (banned.has(k) || seen.has(k) || w.length > 26) continue
     seen.add(k)
@@ -63,7 +78,7 @@ export const categories: Generator = {
 
     if (mode === 'which') {
       const answerW = rng.pick(cat.members.filter(m => m.length <= 26))
-      const { choices, answer } = shuffled(rng, answerW, outsiders(rng, cat), n)
+      const { choices, answer } = shuffled(rng, answerW, outsiders(rng, cat, grade), n)
       const prompt = grade === 0 && rng.bool(0.4) ? ['Look at these three words.', `Which one is ${cat.one}?`] : [`Which one is ${cat.one}?`]
       return riddle({
         family: 'categories', skill, prompt, choices, answer,
@@ -74,7 +89,7 @@ export const categories: Generator = {
 
     if (mode === 'odd') {
       const members = rng.sample(cat.members.filter(m => m.length <= 26), n - 1)
-      const outsider = outsiders(rng, cat)[0]
+      const outsider = outsiders(rng, cat, grade)[0]
       const { choices, answer } = shuffled(rng, outsider, members, n)
       const hint = grade <= 2 || (grade === 3 && tier === 1)
       const count = n - 1 === 3 ? 'Three' : 'Two'
@@ -91,9 +106,13 @@ export const categories: Generator = {
     let line = `${cap(shown[0])}, ${shown[1]}, and ${shown[2]}`
     for (let t = 0; t < 6 && line.length > 46; t++) { shown = rng.sample(cat.members, 3); line = `${cap(shown[0])}, ${shown[1]}, and ${shown[2]}` }
     if (line.length > 46) { shown = shown.slice(0, 2); line = `${cap(shown[0])} and ${shown[1]}` }
+    // Decoy names: sibling categories (decoysFrom) first, then same-domain ones; never a superset like "animals".
     const over = new Set(overlapping(cat))
-    const decoyCats = rng.shuffle(CATEGORIES.filter(c => !over.has(c) && c.many.length <= 26))
+    const okName = (c: Category) => !over.has(c) && !c.broad && c.many.length <= 26
+    const siblings = cat.decoysFrom ? rng.shuffle(cat.decoysFrom.map(byId).filter(okName)) : []
+    const rest = rng.shuffle(CATEGORIES.filter(c => okName(c) && !siblings.includes(c)))
       .sort((a, b) => (a.domain === cat.domain ? 0 : 1) - (b.domain === cat.domain ? 0 : 1))
+    const decoyCats = [...siblings, ...rest]
     const { choices, answer } = shuffled(rng, cat.many, decoyCats.map(c => c.many), n)
     const prompt = [line, shown.length === 3 ? 'are all ___.' : 'are both ___.']
     return riddle({

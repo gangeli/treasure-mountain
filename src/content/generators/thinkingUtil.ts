@@ -47,8 +47,8 @@ export function pickLevel(grade: Grade, tier: Tier, rng: Rng): Grade {
 const LEADS = ['Think hard, my friend!', 'Here is a question for you.', 'A puzzle for a clever climber!', 'Riddle me this:', 'Let me see what you know.']
 
 /** Builds a riddle from a Fact table for the given grade/tier. */
-export function factRiddle(family: string, skill: string, facts: readonly Fact[], grade: Grade, tier: Tier, rng: Rng): Riddle {
-  const level = pickLevel(grade, tier, rng)
+export function factRiddle(family: string, skill: string, facts: readonly Fact[], grade: Grade, tier: Tier, rng: Rng, forcedLevel?: Grade): Riddle {
+  const level = forcedLevel ?? pickLevel(grade, tier, rng)
   let pool = facts.filter(f => f.level === level && (tier >= 2 || !f.hard))
   if (pool.length === 0) pool = facts.filter(f => f.level === level)
   if (pool.length === 0) pool = facts.filter(f => f.level === grade)

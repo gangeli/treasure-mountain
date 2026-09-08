@@ -59,7 +59,7 @@ export const opposites: Generator = {
     const word = flip ? pair.b : pair.a
     const answerW = flip ? pair.a : pair.b
     const banned = new Set([...relatedTo(word), ...relatedTo(answerW)])
-    const candidates = rng.shuffle(OPPOSITES.filter(p => p.pos === pair.pos && Math.abs(p.level - pair.level) <= 1).flatMap(p => [p.a, p.b]))
+    const candidates = rng.shuffle(OPPOSITES.filter(p => p.pos === pair.pos && Math.abs(p.level - pair.level) <= (grade <= 1 ? 0 : 1)).flatMap(p => [p.a, p.b]))
       .filter(w => !banned.has(w.toLowerCase()) && !sameRoot(w, word) && !sameRoot(w, answerW))
     // Prefer decoys of similar length to the answer so length is not a giveaway.
     const decoys = [...candidates].sort((x, y) => Math.abs(x.length - answerW.length) - Math.abs(y.length - answerW.length)).slice(0, 8)

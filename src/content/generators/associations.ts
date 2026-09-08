@@ -66,7 +66,7 @@ export const associations: Generator = {
       const prompt: string[] = rel === 'lives' ? [`Who lives in ${withArt(b, p.art)}?`]
         : rel === 'sound' ? [`Who says "${b}"?`]
           : rel === 'does' ? [`Which one ${b}?`]
-            : rel === 'works' ? [`Who works in ${withArt(b, p.art)}?`]
+            : rel === 'works' ? [`Who works ${p.art === 'the' ? 'at' : 'in'} ${withArt(b, p.art)}?`]
               : rel === 'uses' ? [`Who uses ${toolArt(b)}?`]
                 : rel === 'part' ? [`Which one is part of ${withArt(b, p.art)}?`]
                   : ['Which one is used for', `${b}?`]
@@ -95,7 +95,7 @@ export const associations: Generator = {
     } else if (rel === 'does') {
       prompt = verse ? [`What does ${subject(p)} do all day?`, 'Pick the word and be on your way!'] : [`What does ${subject(p)} do?`]
     } else if (rel === 'works') {
-      prompt = useFill ? [`${cap(an(p.a))} works in ${blank}.`] : [`Where does ${an(p.a)} work?`]
+      prompt = useFill ? [`${cap(an(p.a))} works ${art === 'the' ? 'at' : 'in'} ${blank}.`] : [`Where does ${an(p.a)} work?`]
     } else if (rel === 'uses') {
       prompt = useFill ? [`${cap(an(p.a))} uses ${blank}.`] : [`What does ${an(p.a)} use?`]
     } else if (rel === 'part') {

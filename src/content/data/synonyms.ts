@@ -11,9 +11,9 @@ const g = (words: string[], level: 1 | 2 | 3 | 4, pos: Pos = 'adj'): SynGroup =>
 export const SYNONYMS: SynGroup[] = [
   // level 1
   g(['big', 'large', 'huge'], 1), g(['small', 'little', 'tiny'], 1), g(['happy', 'glad', 'cheerful'], 1), g(['sad', 'unhappy', 'gloomy'], 1),
-  g(['fast', 'quick', 'speedy'], 1), g(['slow', 'sluggish'], 1), g(['loud', 'noisy'], 1), g(['quiet', 'silent', 'hushed'], 1),
+  g(['fast', 'quick', 'speedy'], 1), g(['slow', 'poky'], 1), g(['loud', 'noisy'], 1), g(['quiet', 'silent', 'hushed'], 1),
   g(['pretty', 'beautiful', 'lovely'], 1), g(['smart', 'clever', 'bright'], 1), g(['funny', 'silly', 'goofy'], 1), g(['scared', 'afraid', 'frightened'], 1),
-  g(['angry', 'mad', 'cross'], 1), g(['tired', 'sleepy', 'weary'], 1), g(['cold', 'chilly', 'freezing'], 1), g(['hot', 'boiling', 'scorching'], 1),
+  g(['angry', 'mad', 'cross'], 1), g(['tired', 'sleepy'], 1), g(['cold', 'chilly', 'freezing'], 1), g(['hot', 'boiling'], 1),
   g(['nice', 'kind', 'friendly'], 1), g(['mean', 'unkind', 'cruel'], 1), g(['wet', 'damp', 'soggy'], 1), g(['neat', 'tidy', 'orderly'], 1),
   g(['begin', 'start'], 1, 'verb'), g(['stop', 'halt', 'quit'], 1, 'verb'), g(['look', 'see', 'watch'], 1, 'verb'), g(['shout', 'yell', 'holler'], 1, 'verb'),
   g(['jump', 'leap', 'hop'], 1, 'verb'), g(['run', 'dash', 'sprint'], 1, 'verb'), g(['fix', 'repair', 'mend'], 1, 'verb'), g(['pick', 'choose', 'select'], 1, 'verb'),
@@ -33,7 +33,7 @@ export const SYNONYMS: SynGroup[] = [
   // level 3: shades of meaning
   g(['angry', 'furious', 'enraged'], 3), g(['happy', 'joyful', 'delighted'], 3), g(['sad', 'miserable', 'sorrowful'], 3), g(['scared', 'terrified', 'petrified'], 3),
   g(['big', 'enormous', 'gigantic'], 3), g(['small', 'minute', 'miniature'], 3), g(['good', 'excellent', 'superb'], 3), g(['bad', 'awful', 'terrible'], 3),
-  g(['tired', 'exhausted', 'drained'], 3), g(['hungry', 'starving', 'famished'], 3), g(['cold', 'frigid', 'icy'], 3), g(['hot', 'sweltering', 'blazing'], 3),
+  g(['tired', 'exhausted', 'drained'], 3), g(['hungry', 'starving', 'famished'], 3), g(['cold', 'frigid', 'icy'], 3), g(['hot', 'sweltering', 'blazing', 'scorching'], 3),
   g(['smart', 'brilliant', 'intelligent'], 3), g(['pretty', 'gorgeous', 'stunning'], 3), g(['fast', 'rapid', 'swift'], 3), g(['careful', 'cautious', 'wary'], 3),
   g(['lazy', 'idle', 'sluggish'], 3), g(['honest', 'truthful', 'sincere'], 3), g(['polite', 'courteous', 'respectful'], 3), g(['rude', 'impolite', 'disrespectful'], 3),
   g(['walk', 'stroll', 'wander'], 3, 'verb'), g(['eat', 'devour', 'gobble'], 3, 'verb'), g(['laugh', 'giggle', 'chuckle'], 3, 'verb'), g(['fall', 'tumble', 'topple'], 3, 'verb'),

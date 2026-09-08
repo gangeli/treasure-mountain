@@ -58,7 +58,7 @@ export const synonyms: Generator = {
     const group: SynGroup = rng.pick(pool)
     const [word, answerW] = rng.sample(group.words, 2)
     const banned = new Set([...relatedTo(word), ...relatedTo(answerW)])
-    const candidates = rng.shuffle(SYNONYMS.filter(g => g !== group && g.pos === group.pos && Math.abs(g.level - group.level) <= 1).flatMap(g => g.words))
+    const candidates = rng.shuffle(SYNONYMS.filter(g => g !== group && g.pos === group.pos && Math.abs(g.level - group.level) <= (grade <= 1 ? 0 : 1)).flatMap(g => g.words))
       .filter(w => !banned.has(w.toLowerCase()) && !sameRoot(w, word) && !sameRoot(w, answerW))
     const decoys = [...candidates].sort((x, y) => Math.abs(x.length - answerW.length) - Math.abs(y.length - answerW.length)).slice(0, 8)
     const { choices, answer } = shuffled(rng, answerW, rng.shuffle(decoys), n)

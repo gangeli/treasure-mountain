@@ -1,0 +1,104 @@
+name: Build, test and publish
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Create a GitHub release with this tag (e.g. v1.0); leave empty for a plain build"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install
+        run: npm ci
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+      - name: Typecheck and unit tests (content, world, game flow)
+        run: npm run typecheck && npm test
+      - name: Build the web app (single-file HTML + PWA shell)
+        run: npx vite build
+      - name: Browser playtest and screenshots (headless Chromium)
+        run: |
+          npx playwright install --with-deps chromium
+          node e2e/screenshots.mjs e2e/out/shots
+          node e2e/playtest.mjs
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build the signed release APK
+        run: cd android && ./gradlew :app:assembleRelease --no-daemon
+      - name: Report sizes
+        run: |
+          echo "web index.html: $(stat -c %s dist/index.html) bytes ($(gzip -c dist/index.html | wc -c) gzipped)"
+          echo "APK: $(stat -c %s android/app/build/outputs/apk/release/app-release.apk) bytes"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: treasure-mountain-web
+          path: dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: treasure-mountain-apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots
+          path: e2e/out
+      - name: Attach APK to the release
+        if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.release_tag != ''
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.release_tag || github.ref_name }}
+          name: Treasure Mountain ${{ github.event.inputs.release_tag || github.ref_name }}
+          body: "Signed release APK. See https://gangeli.github.io/treasure-mountain/ for install instructions."
+          files: android/app/build/outputs/apk/release/app-release.apk
+
+  # Deploys docs/ (plus the freshly built APK and the web build under play/) to GitHub Pages.
+  # Requires Pages to be enabled once in the repository settings with "Source: GitHub Actions".
+  pages:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: treasure-mountain-apk
+          path: docs
+      - uses: actions/download-artifact@v4
+        with:
+          name: treasure-mountain-web
+          path: docs/play
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+      - id: deployment
+        uses: actions/deploy-pages@v4

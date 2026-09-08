@@ -1,6 +1,10 @@
 import type { Generator, Grade, Tier } from '../types'
 import { riddle, shuffled, choiceCount, cap } from '../types'
 import { COMPOUNDS, compoundWord, type Compound } from '../data/compounds'
+import { OPPOSITES } from '../data/opposites'
+import { SYNONYMS } from '../data/synonyms'
+import { SYLLABLE_WORDS } from '../data/syllables'
+import { FAMILIES } from '../data/phonics'
 
 function levelsFor(grade: Grade, tier: Tier): number[] {
   const table: Partial<Record<Grade, number[][]>> = {
@@ -13,6 +17,14 @@ function levelsFor(grade: Grade, tier: Tier): number[] {
 }
 
 const HALVES = new Set(COMPOUNDS.flatMap(c => [c.a, c.b]))
+/** Real words known to the content data, for judging whether a wrong split looks plausible. */
+const LEXICON = new Set<string>([
+  ...HALVES,
+  ...OPPOSITES.flatMap(p => [p.a, p.b]),
+  ...SYNONYMS.flatMap(g => g.words),
+  ...Object.values(SYLLABLE_WORDS).flat(),
+  ...FAMILIES.flatMap(f => f.words),
+].map(w => w.toLowerCase()))
 
 /** Compounds sharing exactly one half with `x` (never the reversed word). */
 function sharingHalf(x: Compound): Compound[] {
@@ -41,14 +53,13 @@ export const compounds: Generator = {
       const decoys: string[] = []
       if (byA.length) decoys.push(`${target.a} + ${byA[0].b}`)
       if (byB.length) decoys.push(`${byB[0].a} + ${target.b}`)
-      // A wrong split of the word itself, unless both pieces happen to be real halves.
-      for (const k of rng.shuffle([target.a.length - 1, target.a.length + 1, target.a.length - 2, target.a.length + 2])) {
-        if (k < 2 || k > word.length - 2) continue
-        const l = word.slice(0, k), r = word.slice(k)
-        if (HALVES.has(l) && HALVES.has(r)) continue
-        decoys.push(`${l} + ${r}`)
-        break
-      }
+      // A wrong split of the word itself, only when it looks plausible: exactly one piece is a real word
+      // (flash + light -> fla + shlight is silly; new + sprint would be arguable, so both-real is skipped too).
+      const splits = rng.shuffle([target.a.length - 1, target.a.length + 1, target.a.length - 2, target.a.length + 2])
+        .filter(k => k >= 2 && k <= word.length - 2)
+        .map(k => [word.slice(0, k), word.slice(k)])
+        .filter(([l, r]) => LEXICON.has(l) !== LEXICON.has(r))
+      if (splits.length) decoys.push(`${splits[0][0]} + ${splits[0][1]}`)
       for (const c of rng.shuffle(pool)) { if (decoys.length >= n + 1) break; if (c !== target) decoys.push(`${c.a} + ${c.b}`) }
       const { choices, answer } = shuffled(rng, `${target.a} + ${target.b}`, rng.shuffle(decoys).filter(d => d.length <= 26), n)
       const prompt = [`Which two words make "${word}"?`]

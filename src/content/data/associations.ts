@@ -87,7 +87,7 @@ export const ASSOCIATIONS: Assoc[] = [
   p('uses', 3, 'hockey player', 'hockey stick', ['puck', 'skates', 'stick', 'helmet']), p('uses', 3, 'miner', 'pickaxe', ['helmet', 'lamp', 'shovel', 'drill', 'cart']),
   p('uses', 3, 'explorer', 'map', ['compass', 'backpack', 'boots', 'tent', 'binoculars']), p('uses', 3, 'cashier', 'cash register', ['scanner', 'register', 'computer', 'money']),
   p('uses', 3, 'violinist', 'violin', ['bow', 'sheet music', 'music stand']), p('uses', 3, 'pianist', 'piano', ['sheet music', 'keyboard', 'metronome']),
-  p('uses', 3, 'detective', 'magnifying glass', ['notebook', 'flashlight', 'camera', 'clues', 'fingerprints']), p('uses', 3, 'beekeeper', 'beehive', ['smoker', 'veil', 'gloves', 'hive', 'honey']),
+  p('uses', 3, 'detective', 'magnifying glass', ['notebook', 'flashlight', 'camera', 'clues', 'fingerprints']), p('uses', 3, 'beekeeper', 'bee suit', ['smoker', 'veil', 'gloves', 'hive', 'beehive', 'honey']),
   // ---- part of a whole
   p('part', 3, 'wheel', 'car', ['bike', 'bicycle', 'truck', 'wagon', 'bus', 'cart', 'wheelbarrow', 'tricycle', 'train'], { dom: 'vehicle' }), p('part', 3, 'pedal', 'bicycle', ['bike', 'car', 'piano', 'tricycle'], { dom: 'vehicle' }),
   p('part', 3, 'engine', 'car', ['truck', 'airplane', 'plane', 'boat', 'train', 'bus', 'motorcycle', 'rocket'], { dom: 'vehicle' }), p('part', 3, 'propeller', 'airplane', ['boat', 'helicopter', 'plane', 'ship', 'submarine'], { dom: 'vehicle' }),

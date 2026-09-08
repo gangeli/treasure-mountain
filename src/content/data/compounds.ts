@@ -80,7 +80,7 @@ export const COMPOUNDS: Compound[] = [
   c('every', 'day', 3), c('week', 'day', 3), c('pay', 'day', 3), c('day', 'dream', 3), c('night', 'mare', 3),
   c('over', 'night', 3), c('super', 'star', 3), c('super', 'market', 3), c('star', 'light', 3), c('moon', 'beam', 3),
   c('some', 'day', 3), c('some', 'how', 3), c('some', 'time', 3), c('what', 'ever', 3), c('how', 'ever', 3),
-  c('when', 'ever', 3), c('where', 'ever', 3), c('body', 'guard', 3), c('copy', 'cat', 3), c('house', 'plant', 3),
+  c('when', 'ever', 3), c('body', 'guard', 3), c('copy', 'cat', 3), c('house', 'plant', 3),
   c('finger', 'tip', 3), c('key', 'chain', 3), c('look', 'out', 3), c('cook', 'out', 3), c('work', 'out', 3),
   c('check', 'out', 3), c('down', 'load', 3), c('up', 'load', 3), c('count', 'down', 3), c('touch', 'down', 3),
   c('sun', 'roof', 3), c('honey', 'dew', 3), c('under', 'stand', 3), c('under', 'line', 3), c('under', 'neath', 3),
