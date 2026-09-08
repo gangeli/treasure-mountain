@@ -262,6 +262,15 @@ export class Game {
       case 'p-music': this.settings.music = !this.settings.music; this.sfx('click'); this.save(); break
       case 'p-quit': this.paused = false; this.sfx('click'); this.save(); this.goto('title'); break
       case 'speak': if (this.riddle) this.speak = this.riddle.riddle.spoken; break
+      case 'sayclues': {
+        const c = this.run?.clues
+        if (!c) break
+        const have = [c.number, c.descriptor, c.object].filter(Boolean) as string[]
+        this.speak = have.length === 0 ? 'You have no clue words yet. Catch an elf carrying a scroll.'
+          : have.length === 3 ? `Find ${have.join(' ')}, and drop a coin in front of them.`
+          : `So far your clue words are: ${have.join(', ')}. Catch more elves for the rest.`
+        break
+      }
       case 'goon': if (this.screen === 'riddle') this.riddleContinue(); else if (this.screen === 'clue') this.closeClue(); else this.advanceScene(); break
       case 'continue': this.advanceScene(); break
       default:
@@ -444,7 +453,9 @@ export class Game {
     const rv = this.riddle!
     if (rv.phase === 'wrong') { rv.phase = 'ask'; rv.t = 0; return }
     if (rv.phase === 'right') {
-      if (rv.clueWord) { this.sfx('clue'); this.goto('clue'); return }
+      // Read the clue word out. A five-year-old who cannot yet read "small" has no other way to
+      // use the three words in the panel; main.ts speaks only for K and 1st unless asked.
+      if (rv.clueWord) { this.sfx('clue'); this.speak = `You won a clue word: ${rv.clueWord}`; this.goto('clue'); return }
       this.finishRiddle(); return
     }
     if (rv.phase === 'reveal') { this.finishRiddle(); return }
@@ -468,6 +479,7 @@ export class Game {
     if (run.clues.number && run.clues.descriptor && run.clues.object && !(run as any).allCluesMsg) {
       (run as any).allCluesMsg = true
       this.showMessage(['You have all three clue words!', `Find ${groupLabel(lvl.level.target)} and drop a coin.`], 5)
+      this.speak = `You have all three clue words. Find ${groupLabel(lvl.level.target)}, and drop a coin.`
     }
   }
 

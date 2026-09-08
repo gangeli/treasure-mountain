@@ -22,7 +22,7 @@ export function drawHud(ctx: Ctx, g: Game, buttons: Button[]): void {
     // as if it belonged to the one below it.
     const y = BOX_Y + 52 + i * 30
     const w = run?.clues[s]
-    roundRect(ctx, 80, y - 14, 322, 28, 8, w ? P.panelDeep : P.panelDeep, w ? P.gold : P.panelLine, w ? 2.5 : 2)
+    roundRect(ctx, 80, y - 14, 284, 28, 8, w ? P.panelDeep : P.panelDeep, w ? P.gold : P.panelLine, w ? 2.5 : 2)
     if (w) text(ctx, w, 96, y, { size: 24, color: P.gold, weight: 800 })
     // 0.7, not 0.5: the "what it looks like" hints are meant to read as not-yet-won, but at half
     // alpha they were 3.3:1 on the slot and a child could not read what they were waiting for.

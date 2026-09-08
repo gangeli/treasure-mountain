@@ -62,7 +62,7 @@ function update(dt: number): void {
 
 // The speaker button always speaks, even for older grades.
 const origPress = game.pressButton.bind(game)
-game.pressButton = (id: string) => { if (id === 'speak') (game as any)._speakRequested = true; origPress(id) }
+game.pressButton = (id: string) => { if (id === 'speak' || id === 'sayclues') (game as any)._speakRequested = true; origPress(id) }
 
 const loop = new Loop(update, () => render(stage.begin(), game))
 loop.start()

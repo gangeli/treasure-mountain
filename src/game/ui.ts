@@ -84,6 +84,9 @@ export function uiButtons(g: Game): Button[] {
       b.push({ id: 'coin', x: cx + w + 12, y, w, h, label: `Coin`, icon: 'coin', disabled: run.coins <= 0 })
       b.push({ id: 'jump', x: cx + 2 * (w + 12), y, w, h, label: 'Jump', icon: 'jump' })
       b.push({ id: 'pause', x: W - 70, y: 12, w: 58, h: 58, label: '', icon: 'pause' })
+      // Reads the clue words out. The three words are the only text a pre-reader has to act on,
+      // and they are what a child forgets while hunting the far side of the level.
+      b.push({ id: 'sayclues', x: 372, y: 636, w: 52, h: 48, label: '', icon: 'speaker' })
       break
     }
     case 'castle':
