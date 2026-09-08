@@ -83,7 +83,8 @@ export const plurals: Generator = {
         prompt = [`What is the past tense of "${v.base}"?`]
         spoken = `What is the past tense of ${v.base}?`
       } else {
-        const subj = rng.pick(['I', 'we', 'they', 'the kids', 'my friends'])
+        // Singular subjects only: "the kids wore a hat" reads as one hat between them.
+        const subj = rng.pick(['I', 'my friend', 'my sister', 'the teacher'])
         prompt = [`${rng.pick(MARKERS)}, ${subj} ___${obj}.`, 'Which word fills the blank?']
         spoken = `${prompt[0].replace('___', 'blank')} Which word fills the blank?`
       }
@@ -91,6 +92,9 @@ export const plurals: Generator = {
         family: 'plurals', skill, prompt, highlight: mode === 'name' ? [] : [v.base], choices, answer,
         spoken: `${spoken} ${choices.map(c => c.text).join(', ')}?`,
         metric: v.level * 10 + v.past.length + (mode === 'context' ? 3 : 0), grade, tier,
+        // One riddle per verb: all four framings ask for the same past tense, and a child should
+        // not be asked for "sat" twice in one climb because the sentence around it changed.
+        key: `plurals|verb|${v.base}`,
       })
     }
     const levels = nounLevels(grade, tier)
@@ -111,6 +115,7 @@ export const plurals: Generator = {
       family: 'plurals', skill, prompt, highlight: mode === 'name' ? [] : [noun.singular], choices, answer,
       spoken: `${prompt.join(' ').replace('___', 'blank')} ${mode === 'name' ? '' : 'Which word fills the blank? '}${choices.map(c => c.text).join(', ')}?`,
       metric: noun.level * 10 + noun.plural.length, grade, tier,
+      key: `plurals|noun|${noun.singular}`,
     })
   },
 }
