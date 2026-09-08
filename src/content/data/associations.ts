@@ -5,7 +5,7 @@
  * Level 1 = K, 2 = grades 1-2, 3 = grades 2-3, 4 = grades 4-5.
  */
 export type Rel = 'lives' | 'sound' | 'does' | 'works' | 'uses' | 'part' | 'function'
-export interface Assoc { a: string; b: string; rel: Rel; level: 1 | 2 | 3 | 4; also?: string[]; art?: 'the' | ''; dom?: string }
+export interface Assoc { a: string; b: string; rel: Rel; level: 1 | 2 | 3 | 4; also?: string[]; art?: 'the' | ''; dom?: string; pl?: true }
 
 const p = (rel: Rel, level: 1 | 2 | 3 | 4, a: string, b: string, also: string[] = [], extra: Partial<Assoc> = {}): Assoc => ({ a, b, rel, level, also, ...extra })
 
@@ -38,17 +38,17 @@ export const ASSOCIATIONS: Assoc[] = [
   p('does', 1, 'snake', 'slithers', ['hisses', 'crawls', 'slides']), p('does', 1, 'kangaroo', 'hops', ['jumps', 'leaps']), p('does', 1, 'rabbit', 'hops', ['jumps', 'digs', 'leaps']),
   p('does', 1, 'horse', 'gallops', ['runs', 'trots', 'neighs', 'jumps']), p('does', 1, 'worm', 'wriggles', ['crawls', 'digs', 'wiggles', 'squirms']), p('does', 1, 'duck', 'quacks', ['swims', 'paddles', 'waddles', 'flies']),
   p('does', 1, 'penguin', 'waddles', ['swims', 'slides', 'dives']), p('does', 1, 'monkey', 'swings', ['climbs', 'jumps', 'chatters', 'leaps']), p('does', 1, 'eagle', 'soars', ['flies', 'hunts', 'glides']),
-  p('does', 1, 'sun', 'shines', ['glows', 'warms', 'rises', 'sets']), p('does', 1, 'rain', 'falls', ['pours', 'drips', 'drizzles']), p('does', 1, 'wind', 'blows', ['howls', 'whistles', 'gusts']),
-  p('does', 2, 'scissors', 'cut', ['snip', 'trim']), p('does', 2, 'pencil', 'writes', ['draws', 'sketches']), p('does', 2, 'eraser', 'erases', ['rubs out']),
+  p('does', 1, 'sun', 'shines', ['glows', 'warms', 'rises', 'sets'], { art: 'the' }), p('does', 1, 'rain', 'falls', ['pours', 'drips', 'drizzles'], { art: '' }), p('does', 1, 'wind', 'blows', ['howls', 'whistles', 'gusts'], { art: 'the' }),
+  p('does', 2, 'scissors', 'cut', ['snip', 'trim'], { art: '', pl: true }), p('does', 2, 'pencil', 'writes', ['draws', 'sketches']), p('does', 2, 'eraser', 'erases', ['rubs out']),
   p('does', 2, 'clock', 'ticks', ['tells time', 'chimes']), p('does', 2, 'bell', 'rings', ['chimes', 'jingles']), p('does', 2, 'lamp', 'glows', ['shines', 'lights']),
   p('does', 2, 'oven', 'bakes', ['heats', 'cooks', 'roasts', 'warms']), p('does', 2, 'refrigerator', 'chills', ['cools', 'freezes']), p('does', 2, 'broom', 'sweeps'),
   p('does', 2, 'needle', 'sews', ['stitches', 'pricks', 'pokes']), p('does', 2, 'key', 'unlocks', ['opens', 'locks']), p('does', 2, 'hammer', 'pounds', ['hits', 'nails', 'bangs', 'strikes']),
   p('does', 2, 'saw', 'saws', ['cuts', 'slices']), p('does', 2, 'telephone', 'rings', ['calls', 'buzzes']), p('does', 2, 'boat', 'floats', ['sails', 'rocks', 'drifts']),
-  p('does', 2, 'seed', 'sprouts', ['grows']), p('does', 2, 'fire', 'burns', ['crackles', 'glows', 'heats', 'warms']), p('does', 2, 'ice', 'melts', ['freezes', 'chills', 'cools']),
+  p('does', 2, 'seed', 'sprouts', ['grows']), p('does', 2, 'fire', 'burns', ['crackles', 'glows', 'heats', 'warms'], { art: '' }), p('does', 2, 'ice', 'melts', ['freezes', 'chills', 'cools'], { art: '' }),
   p('does', 2, 'river', 'flows', ['runs', 'floods', 'winds']), p('does', 2, 'balloon', 'pops', ['floats', 'rises', 'bursts']), p('does', 2, 'kite', 'flies', ['soars', 'floats']),
-  p('does', 3, 'volcano', 'erupts', ['smokes', 'rumbles', 'explodes']), p('does', 3, 'caterpillar', 'crawls', ['wriggles', 'eats', 'munches']), p('does', 3, 'thunder', 'rumbles', ['booms', 'crashes', 'roars']),
+  p('does', 3, 'volcano', 'erupts', ['smokes', 'rumbles', 'explodes']), p('does', 3, 'caterpillar', 'crawls', ['wriggles', 'eats', 'munches']), p('does', 3, 'thunder', 'rumbles', ['booms', 'crashes', 'roars'], { art: '' }),
   p('does', 3, 'magnet', 'attracts', ['pulls', 'sticks', 'repels']), p('does', 3, 'sponge', 'absorbs', ['soaks', 'wipes', 'cleans']), p('does', 3, 'heart', 'beats', ['pumps', 'pounds', 'thumps']),
-  p('does', 3, 'lungs', 'breathe', ['inhale', 'exhale', 'expand']), p('does', 3, 'compass', 'points', ['spins']), p('does', 3, 'engine', 'roars', ['runs', 'hums', 'purrs', 'starts']),
+  p('does', 3, 'lungs', 'breathe', ['inhale', 'exhale', 'expand'], { art: '', pl: true }), p('does', 3, 'compass', 'points', ['spins']), p('does', 3, 'engine', 'roars', ['runs', 'hums', 'purrs', 'starts']),
   // ---- where it works
   p('works', 2, 'baker', 'bakery', ['kitchen', 'shop', 'store']), p('works', 2, 'teacher', 'school', ['classroom', 'college']), p('works', 2, 'doctor', 'hospital', ['clinic', 'office']),
   p('works', 2, 'chef', 'kitchen', ['restaurant', 'cafe', 'diner']), p('works', 2, 'farmer', 'farm', ['field', 'barn', 'ranch', 'orchard']), p('works', 2, 'pilot', 'airplane', ['cockpit', 'airport', 'helicopter', 'plane', 'jet']),

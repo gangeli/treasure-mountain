@@ -1,6 +1,7 @@
 import type { Generator, Grade, Tier } from '../types'
 import { riddle, shuffled, choiceCount, cap, an } from '../types'
 import { ASSOCIATIONS, type Assoc, type Rel } from '../data/associations'
+import { tierWindow, rankIn } from './textutil'
 
 interface Plan { rels: Rel[]; levels: number[]; rev: number }
 
@@ -9,9 +10,9 @@ function planFor(grade: Grade, tier: Tier): Plan {
   const table: Record<Grade, Plan[]> = {
     0: [{ rels: ['lives', 'sound'], levels: [1], rev: 0 }, { rels: ['lives', 'sound', 'does'], levels: [1], rev: 0.2 }, { rels: ['lives', 'does', 'sound'], levels: [1, 2], rev: 0.3 }],
     1: [{ rels: ['lives', 'sound', 'does'], levels: [1, 2], rev: 0.2 }, { rels: ['lives', 'does', 'works'], levels: [2], rev: 0.3 }, { rels: ['does', 'works', 'uses'], levels: [2], rev: 0.3 }],
-    2: [{ rels: ['does', 'works', 'uses'], levels: [2], rev: 0.2 }, { rels: ['works', 'uses'], levels: [2, 3], rev: 0.3 }, { rels: ['works', 'uses'], levels: [3], rev: 0.5 }],
+    2: [{ rels: ['does', 'works', 'uses'], levels: [2], rev: 0.2 }, { rels: ['works', 'uses'], levels: [2, 3], rev: 0.3 }, { rels: ['uses', 'uses', 'part'], levels: [3], rev: 0.5 }],
     3: [{ rels: ['uses', 'works'], levels: [3], rev: 0.3 }, { rels: ['uses', 'part'], levels: [3], rev: 0.4 }, { rels: ['part', 'uses'], levels: [3, 4], rev: 0.5 }],
-    4: [{ rels: ['part'], levels: [3, 4], rev: 0.3 }, { rels: ['part', 'function'], levels: [4], rev: 0.4 }, { rels: ['function', 'part'], levels: [4], rev: 0.5 }],
+    4: [{ rels: ['part'], levels: [3, 4], rev: 0.3 }, { rels: ['part', 'function'], levels: [4], rev: 0.4 }, { rels: ['function', 'function', 'part'], levels: [4], rev: 0.5 }],
     5: [{ rels: ['part', 'function'], levels: [4], rev: 0.3 }, { rels: ['function'], levels: [4], rev: 0.5 }, { rels: ['function'], levels: [4], rev: 0.6 }],
   }
   return table[grade][tier - 1]
@@ -50,11 +51,17 @@ export const associations: Generator = {
     const plan = planFor(grade, tier)
     const rel = rng.pick(plan.rels)
     const pool = ASSOCIATIONS.filter(p => p.rel === rel && plan.levels.includes(p.level))
-    const p = rng.pick(pool)
-    const rev = rng.bool(plan.rev)
+    // Each tier takes its own window of the list, which runs from the everyday pairs to the ones
+    // that need a specific word, so two tiers drawing the same relation and level still differ.
+    const window = plan.levels.flatMap(l => tierWindow(pool.filter(x => x.level === l), tier))
+    const p = rng.pick(window.length >= 5 ? window : pool)
+    // A plural subject ("scissors cut") cannot be the answer to "Which one cuts?", so those
+    // entries are never reversed.
+    const rev = rng.bool(plan.rev) && !p.pl
     const peers = rng.shuffle(ASSOCIATIONS.filter(q => q.rel === rel && q !== p && Math.abs(q.level - p.level) <= 1))
     const verse = grade <= 2 && rng.bool(0.5)
     const metric = REL_RANK[rel] * 10 + p.level * 5 + (rev ? 3 : 0)
+      + rankIn(ASSOCIATIONS.filter(x => x.rel === rel && x.level === p.level), p) * 4
     const spokenList = (choices: { text?: string }[]) => choices.map(c => c.text ?? '').join(', ')
 
     if (rev) {
@@ -93,7 +100,8 @@ export const associations: Generator = {
     } else if (rel === 'sound') {
       prompt = verse ? ['Listen, listen! What do you hear?', `${cap(subject(p))} says ___, loud and clear!`] : [`What does ${subject(p)} say?`]
     } else if (rel === 'does') {
-      prompt = verse ? [`What does ${subject(p)} do all day?`, 'Pick the word and be on your way!'] : [`What does ${subject(p)} do?`]
+      const ask = `What ${p.pl ? 'do' : 'does'} ${subject(p)} do`
+      prompt = verse ? [`${ask} all day?`, 'Pick the word and be on your way!'] : [`${ask}?`]
     } else if (rel === 'works') {
       prompt = useFill ? [`${cap(an(p.a))} works ${art === 'the' ? 'at' : 'in'} ${blank}.`] : [`Where does ${an(p.a)} work?`]
     } else if (rel === 'uses') {
@@ -103,7 +111,7 @@ export const associations: Generator = {
     } else {
       prompt = [`What is ${an(p.a)} used for?`]
     }
-    const spoken = rel === 'lives' ? `Where does ${subject(p)} live?` : rel === 'sound' ? `What does ${subject(p)} say?` : rel === 'does' ? `What does ${subject(p)} do?`
+    const spoken = rel === 'lives' ? `Where does ${subject(p)} live?` : rel === 'sound' ? `What does ${subject(p)} say?` : rel === 'does' ? `What ${p.pl ? 'do' : 'does'} ${subject(p)} do?`
       : rel === 'works' ? `Where does ${an(p.a)} work?` : rel === 'uses' ? `What does ${an(p.a)} use?` : rel === 'part' ? `What is ${an(p.a)} part of?` : `What is ${an(p.a)} used for?`
     return riddle({
       family: 'associations', skill: SKILL[rel], prompt, verse: verse && (rel === 'lives' || rel === 'sound' || rel === 'does'), highlight: [p.a], choices, answer,
