@@ -73,26 +73,39 @@ function chest(ctx: Ctx, x: number, y: number, found: number, total: number, _se
   roundRect(ctx, x - 5, y - 8, 10, 10, 2, P.ink, P.ink, 0)
 }
 
+/** Buttons drawn over the pale-blue screens; a blue face would vanish into the sky. */
+const OVER_SKY = new Set(['back', 'howto', 'about', 'install', 'sound', 'music'])
+
 export function drawButtons(ctx: Ctx, buttons: Button[], g: Game): void {
   for (const b of buttons) {
     if (b.id.startsWith('choice')) continue // drawn by the riddle screen
     ctx.save()
     if (b.disabled) ctx.globalAlpha = 0.45
     const big = !!b.big
-    const fill = big ? P.green : b.toggled === false ? P.rockDark : P.blue
-    const edge = big ? P.greenDark : b.toggled === false ? P.inkSoft : P.blueDark
+    // Buttons that sit on the blue sky screens get a cream face, or they are blue on blue.
+    const onSky = OVER_SKY.has(b.id)
+    const fill = big ? P.green : b.toggled === false ? P.rockDark : onSky ? P.cream : P.blue
+    const edge = big ? P.greenDark : b.toggled === false ? P.inkSoft : onSky ? '#d8c48c' : P.blueDark
+    const label = big ? P.white : b.toggled === false ? P.white : onSky ? P.ink : P.white
     roundRect(ctx, b.x, b.y + 4, b.w, b.h, 14, edge, P.ink, 3)
     roundRect(ctx, b.x, b.y, b.w, b.h - 4, 14, fill, P.ink, 3)
-    ctx.save(); ctx.globalAlpha = 0.25; roundRect(ctx, b.x + 6, b.y + 5, b.w - 12, (b.h - 4) * 0.4, 10, P.white, 'rgba(0,0,0,0)', 0); ctx.restore()
+    // Gloss only over the top third, above the cap height, and faded so it cannot cut the text.
+    ctx.save()
+    const gh = (b.h - 4) * 0.34
+    const gg = ctx.createLinearGradient(0, b.y + 4, 0, b.y + 4 + gh)
+    gg.addColorStop(0, 'rgba(255,255,255,0.34)'); gg.addColorStop(1, 'rgba(255,255,255,0)')
+    rr(ctx, b.x + 6, b.y + 5, b.w - 12, gh, 10); ctx.fillStyle = gg; ctx.fill()
+    ctx.restore()
     const cx = b.x + b.w / 2, cy = b.y + (b.h - 4) / 2
     if (b.icon === 'net') { ctx.save(); ctx.translate(cx - 4, cy + 22); ctx.rotate(0.6); drawNet(ctx, 0.34); ctx.restore(); text(ctx, b.label, cx, cy + 22, { size: 15, color: P.white, weight: 800, align: 'center' }) }
     else if (b.icon === 'coin') { circle(ctx, cx, cy - 8, 15, P.gold, P.ink, 2.5); circle(ctx, cx, cy - 8, 8, P.goldDark, 'rgba(0,0,0,0)', 0); text(ctx, b.label, cx, cy + 22, { size: 15, color: P.white, weight: 800, align: 'center' }) }
     else if (b.icon === 'jump') { poly(ctx, [[cx, cy - 22], [cx + 14, cy - 6], [cx + 6, cy - 6], [cx + 6, cy + 6], [cx - 6, cy + 6], [cx - 6, cy - 6], [cx - 14, cy - 6]], P.white, P.ink, 2.5); text(ctx, b.label, cx, cy + 22, { size: 15, color: P.white, weight: 800, align: 'center' }) }
     else if (b.icon === 'pause') { ctx.fillStyle = P.white; ctx.fillRect(cx - 11, cy - 12, 8, 24); ctx.fillRect(cx + 3, cy - 12, 8, 24) }
     else if (b.icon === 'speaker') { poly(ctx, [[cx - 16, cy - 7], [cx - 6, cy - 7], [cx + 4, cy - 17], [cx + 4, cy + 17], [cx - 6, cy + 7], [cx - 16, cy + 7]], P.white, P.ink, 2); ctx.strokeStyle = P.white; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(cx + 6, cy, 10, -0.9, 0.9); ctx.stroke(); ctx.beginPath(); ctx.arc(cx + 6, cy, 17, -0.9, 0.9); ctx.stroke() }
-    else if (b.icon && b.label) { text(ctx, b.icon, b.x + 30, cy, { size: 28, color: P.white, weight: 800, align: 'center' }); text(ctx, b.label, b.x + 56, cy, { size: big ? 30 : 22, color: P.white, weight: 800 }) }
-    else if (b.icon) { text(ctx, b.icon, cx, cy, { size: 30, color: P.white, weight: 800, align: 'center' }); if (b.toggled === false) line(ctx, cx - 14, cy + 14, cx + 14, cy - 14, P.red, 4) }
-    else text(ctx, b.label, cx, cy, { size: big ? 36 : 24, color: P.white, weight: 900, align: 'center', font: big ? '"Fredoka","Nunito","Trebuchet MS",sans-serif' : undefined, spacing: big ? 2 : 0 })
+    else if (b.id === 'back') { poly(ctx, [[b.x + 34, cy - 11], [b.x + 34, cy + 11], [b.x + 19, cy]], label, P.ink, 2); text(ctx, b.label, b.x + 46, cy, { size: 24, color: label, weight: 800 }) }
+    else if (b.icon && b.label) { text(ctx, b.icon, b.x + 30, cy, { size: 28, color: label, weight: 800, align: 'center' }); text(ctx, b.label, b.x + 56, cy, { size: big ? 30 : 22, color: label, weight: 800 }) }
+    else if (b.icon) { text(ctx, b.icon, cx, cy, { size: 30, color: label, weight: 800, align: 'center' }); if (b.toggled === false) line(ctx, cx - 14, cy + 14, cx + 14, cy - 14, P.red, 4) }
+    else text(ctx, b.label, cx, cy, { size: big ? 36 : 24, color: label, weight: 900, align: 'center', font: big ? '"Fredoka","Nunito","Trebuchet MS",sans-serif' : undefined, spacing: big ? 2 : 0 })
     ctx.restore()
   }
   void g
@@ -119,6 +132,14 @@ export function drawPause(ctx: Ctx, buttons: Button[], g: Game): void {
   drawButtons(ctx, buttons, g)
 }
 
-export function drawStars(ctx: Ctx, x: number, y: number, n: number, max = 7, size = 14): void {
-  for (let i = 0; i < max; i++) star(ctx, x + i * (size * 2.2), y, size, i < n ? P.yellow : P.panel, i < n ? P.ink : P.bluePale, 2)
+/**
+ * Earned stars are gold, unearned ones are hollow. Filled-vs-empty is the cue a five-year-old
+ * reads; a colour difference alone is not enough, so an unearned star must not look solid.
+ * `onDark` swaps the hollow fill for the dark-panel version used inside the HUD.
+ */
+export function drawStars(ctx: Ctx, x: number, y: number, n: number, max = 7, size = 14, onDark = false): void {
+  for (let i = 0; i < max; i++) {
+    const earned = i < n
+    star(ctx, x + i * (size * 2.2), y, size, earned ? P.yellow : (onDark ? P.panel : P.white), P.ink, 2)
+  }
 }

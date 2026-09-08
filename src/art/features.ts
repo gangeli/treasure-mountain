@@ -241,10 +241,34 @@ export function drawTreasure(ctx: Ctx, name: string, x: number, y: number, s = 1
     case 'balloon': line(ctx, 0, 0, 4, 30, P.ink, 2); ellipse(ctx, 0, -8, 18, 22, P.red); ellipse(ctx, -6, -14, 4, 6, 'rgba(255,255,255,0.6)', 'rgba(0,0,0,0)', 0); break
     case 'boxcar': roundRect(ctx, -26, -22, 52, 30, 4, P.blue); circle(ctx, -14, 12, 7, P.ink, P.ink, 0); circle(ctx, 14, 12, 7, P.ink, P.ink, 0); ctx.fillStyle = P.bluePale; ctx.fillRect(-18, -16, 12, 10); ctx.fillRect(6, -16, 12, 10); break
     case 'teddy bear': circle(ctx, 0, 6, 16, P.brownLight); circle(ctx, 0, -14, 12, P.brownLight); circle(ctx, -10, -22, 5, P.brownLight, P.ink, 2); circle(ctx, 10, -22, 5, P.brownLight, P.ink, 2); circle(ctx, -4, -15, 1.8, P.ink, P.ink, 0); circle(ctx, 4, -15, 1.8, P.ink, P.ink, 0); circle(ctx, 0, -10, 2.5, P.ink, P.ink, 0); break
-    case 'kite': poly(ctx, [[0, -30], [18, -6], [0, 22], [-18, -6]], P.yellow); line(ctx, 0, -30, 0, 22, P.ink, 1.5); line(ctx, -18, -6, 18, -6, P.ink, 1.5); line(ctx, 0, 22, 8, 40, P.red, 2); break
+    case 'kite': {
+      poly(ctx, [[0, -30], [18, -6], [0, 22], [-18, -6]], P.yellow)
+      line(ctx, 0, -30, 0, 22, P.ink, 1.5); line(ctx, -18, -6, 18, -6, P.ink, 1.5)
+      // A ribbon tail with outlined bows, at the same weight as everything else.
+      ctx.strokeStyle = P.ink; ctx.lineWidth = 2; ctx.lineCap = 'round'
+      ctx.beginPath(); ctx.moveTo(0, 22); ctx.bezierCurveTo(10, 30, -4, 38, 8, 48); ctx.stroke()
+      for (const [bx, by] of [[6, 30], [1, 39], [8, 48]]) {
+        poly(ctx, [[bx - 6, by - 4], [bx, by], [bx - 6, by + 4]], P.red, P.ink, 1.5)
+        poly(ctx, [[bx + 6, by - 4], [bx, by], [bx + 6, by + 4]], P.red, P.ink, 1.5)
+      }
+      break
+    }
     case 'drum': ellipse(ctx, 0, 8, 22, 8, P.red); ctx.fillStyle = P.red; ctx.fillRect(-22, -12, 44, 20); line(ctx, -22, -12, -22, 8, P.ink, 3); line(ctx, 22, -12, 22, 8, P.ink, 3); ellipse(ctx, 0, -12, 22, 8, P.cream); break
     case 'top': poly(ctx, [[-20, -14], [20, -14], [0, 22]], P.purple); ellipse(ctx, 0, -14, 20, 7, P.pink); line(ctx, 0, -20, 0, -30, P.ink, 4); break
-    case 'robot': roundRect(ctx, -16, -12, 32, 30, 4, P.rockLight); roundRect(ctx, -12, -36, 24, 22, 4, P.rock); circle(ctx, -5, -26, 3, P.cyan, P.ink, 1.5); circle(ctx, 5, -26, 3, P.cyan, P.ink, 1.5); line(ctx, 0, -36, 0, -44, P.ink, 2); circle(ctx, 0, -46, 3, P.red, P.ink, 1.5); break
+    case 'robot': {
+      // arms and legs first so the body overlaps them
+      roundRect(ctx, -26, -8, 12, 22, 5, P.blueDark, P.ink, 2); roundRect(ctx, 14, -8, 12, 22, 5, P.blueDark, P.ink, 2)
+      roundRect(ctx, -12, 14, 10, 12, 4, P.blueDark, P.ink, 2); roundRect(ctx, 2, 14, 10, 12, 4, P.blueDark, P.ink, 2)
+      roundRect(ctx, -16, -12, 32, 28, 6, P.blue)
+      roundRect(ctx, -8, -4, 16, 12, 3, P.cyanPale, P.ink, 2)
+      roundRect(ctx, -13, -36, 26, 24, 7, P.blue)
+      circle(ctx, -5, -26, 4, P.white, P.ink, 1.5); circle(ctx, 5, -26, 4, P.white, P.ink, 1.5)
+      circle(ctx, -4, -25, 2, P.ink, P.ink, 0); circle(ctx, 6, -25, 2, P.ink, P.ink, 0)
+      ctx.strokeStyle = P.ink; ctx.lineWidth = 2; ctx.lineCap = 'round'
+      ctx.beginPath(); ctx.arc(0, -19, 5, 0.2, Math.PI - 0.2); ctx.stroke()
+      line(ctx, 0, -36, 0, -45, P.ink, 2); circle(ctx, 0, -47, 3.5, P.red, P.ink, 1.5)
+      break
+    }
     case 'sailboat': poly(ctx, [[-24, 8], [24, 8], [16, 22], [-16, 22]], P.brown); line(ctx, 0, 8, 0, -34, P.ink, 3); poly(ctx, [[2, -34], [26, 4], [2, 4]], P.white); poly(ctx, [[-2, -26], [-20, 4], [-2, 4]], P.red); break
     case 'trumpet': line(ctx, -26, 0, 10, 0, P.ink, 10); line(ctx, -26, 0, 10, 0, P.gold, 6); poly(ctx, [[10, -6], [30, -18], [30, 18], [10, 6]], P.gold); for (let i = 0; i < 3; i++) roundRect(ctx, -12 + i * 9, -12, 5, 8, 1, P.gold, P.ink, 1.5); break
     case 'yo-yo': circle(ctx, 0, 4, 18, P.green); circle(ctx, 0, 4, 5, P.greenDark, P.ink, 1.5); line(ctx, 0, -14, 0, -36, P.ink, 2); break

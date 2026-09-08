@@ -99,25 +99,68 @@ function title(ctx: Ctx, g: Game): void {
 }
 
 // ------------------------------------------------------------------ grade select
+/** Cream on dark fills, navy on light ones (relative luminance, WCAG weights). */
+function readableOn(hex: string): string {
+  const n = parseInt(hex.slice(1), 16)
+  const lin = (c: number) => { const s = c / 255; return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4) }
+  const L = 0.2126 * lin((n >> 16) & 255) + 0.7152 * lin((n >> 8) & 255) + 0.0722 * lin(n & 255)
+  return L > 0.42 ? P.ink : P.cream
+}
+
+/** The Trainee badge: a little knapsack, so every grade card has something in the badge slot. */
+function drawKnapsack(ctx: Ctx, x: number, y: number): void {
+  roundRect(ctx, x - 20, y - 18, 40, 38, 10, P.brown)
+  ctx.fillStyle = P.brownDark; ctx.fillRect(x - 20, y - 2, 40, 7)
+  roundRect(ctx, x - 11, y - 30, 22, 14, 6, P.brownLight, P.ink, 2.5)
+  roundRect(ctx, x - 6, y + 4, 12, 11, 3, P.gold, P.ink, 2)
+  ctx.strokeStyle = P.ink; ctx.lineWidth = 2.5; ctx.lineCap = 'round'
+  ctx.beginPath(); ctx.moveTo(x - 14, y - 16); ctx.quadraticCurveTo(x - 24, y - 2, x - 15, y + 12); ctx.stroke()
+  ctx.beginPath(); ctx.moveTo(x + 14, y - 16); ctx.quadraticCurveTo(x + 24, y - 2, x + 15, y + 12); ctx.stroke()
+}
+
 function gradeSelect(ctx: Ctx, g: Game): void {
   sky(ctx, '#3c7dd9', '#9fd0ff')
+  // A low mountain band behind the cards, so the entry screen reads as the way into the game.
+  ctx.save(); ctx.globalAlpha = 0.35
+  ctx.fillStyle = '#2f6fb8'
+  ctx.beginPath(); ctx.moveTo(0, H)
+  for (let x = 0; x <= W; x += 24) ctx.lineTo(x, 560 - 90 * Math.abs(Math.sin(x / 420)) - 40 * Math.abs(Math.sin(x / 150 + 1.2)))
+  ctx.lineTo(W, H); ctx.closePath(); ctx.fill()
+  ctx.restore()
+  ctx.fillStyle = '#3f8f45'; ctx.fillRect(0, 660, W, H - 660)
+  ctx.fillStyle = '#57a851'; ctx.fillRect(0, 660, W, 7)
+
   text(ctx, 'Who is climbing today?', W / 2, 90, { size: 54, align: 'center', color: P.yellow, weight: 900, font: DISPLAY, outline: P.ink, outlineWidth: 8 })
   text(ctx, 'Pick your grade. Each grade keeps its own treasures and stars.', W / 2, 145, { size: 22, align: 'center', color: P.white, weight: 700 })
+  // Small, and behind the cards, so they sit inside the grass band instead of being clipped.
+  ctx.save(); ctx.translate(96, 702); ctx.scale(0.66, 0.66); drawElf(ctx, 0, 0, 1, 'dance', g.time, 1, 'scroll'); ctx.restore()
+  ctx.save(); ctx.translate(W - 120, 702); ctx.scale(0.62, 0.62); drawPlayer(ctx, 0, 0, -1, 'idle', g.time, 0); ctx.restore()
   const cards = gradeCardRects()
   const colors = [P.pink, P.orange, P.yellow, P.green, P.cyan, P.purple]
   cards.forEach((c, i) => {
     const prof = g.profiles[i]
     roundRect(ctx, c.x, c.y + 6, c.w, c.h, 22, P.ink, P.ink, 0)
-    roundRect(ctx, c.x, c.y, c.w, c.h, 22, P.cream, P.ink, 4)
-    roundRect(ctx, c.x, c.y, c.w, 62, 22, colors[i], P.ink, 4); ctx.fillStyle = colors[i]; ctx.fillRect(c.x + 4, c.y + 40, c.w - 8, 24)
-    text(ctx, i === 0 ? 'K' : gradeShort(i as Grade), c.x + 50, c.y + 32, { size: 40, align: 'center', color: P.ink, weight: 900, font: DISPLAY })
-    text(ctx, gradeName(i as Grade), c.x + 96, c.y + 32, { size: 28, color: P.ink, weight: 900, font: DISPLAY })
+    // Body first, then the header clipped to the card so its bottom corners cannot round away
+    // and leave a sliver of cream; the outline is stroked last, so the border is one clean line.
+    rr(ctx, c.x, c.y, c.w, c.h, 22)
+    ctx.fillStyle = P.cream; ctx.fill()
+    ctx.save(); ctx.clip()
+    ctx.fillStyle = colors[i]; ctx.fillRect(c.x, c.y, c.w, 64)
+    ctx.restore()
+    line(ctx, c.x, c.y + 64, c.x + c.w, c.y + 64, P.ink, 4)
+    rr(ctx, c.x, c.y, c.w, c.h, 22); ctx.lineWidth = 4; ctx.strokeStyle = P.ink; ctx.stroke()
+    // Cream on the dark headers, navy on the light ones; navy on purple was 2.7:1.
+    const headText = readableOn(colors[i])
+    text(ctx, i === 0 ? 'K' : gradeShort(i as Grade), c.x + 50, c.y + 34, { size: 40, align: 'center', color: headText, weight: 900, font: DISPLAY })
+    text(ctx, gradeName(i as Grade), c.x + 96, c.y + 34, { size: 28, color: headText, weight: 900, font: DISPLAY })
     const stars = prof ? starsForTotal(prof.total) : 0
     drawStars(ctx, c.x + 36, c.y + 100, stars, 7, 13)
     text(ctx, RANK_NAMES[stars], c.x + 24, c.y + 140, { size: 22, color: P.inkSoft, weight: 800 })
     text(ctx, `${prof?.total ?? 0} treasures`, c.x + 24, c.y + 172, { size: 20, color: P.inkSoft, weight: 700 })
+    // Every card carries a badge in the same slot, so the untouched grades do not look unfinished.
     if (prof?.crown) drawCrown(ctx, c.x + c.w - 50, c.y + 150, 22)
     else if (prof && prof.prizes.length) drawTreasure(ctx, prof.prizes[prof.prizes.length - 1], c.x + c.w - 50, c.y + 150, 0.8)
+    else drawKnapsack(ctx, c.x + c.w - 50, c.y + 158)
   })
 }
 
