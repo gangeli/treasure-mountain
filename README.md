@@ -12,6 +12,8 @@ Mischief.
   it into a full-screen, offline app with its own icon.
 * **Install the APK:** see the [GitHub Pages site](https://gangeli.github.io/treasure-mountain/) for
   the APK and step-by-step sideloading instructions.
+* **Made to be played before you can read:** riddles are read aloud for kindergarten and 1st
+  grade, and a speaker beside the clue words reads back the ones you have won.
 * **Grades K-5:** every puzzle family (rhymes, letter sounds, compound words, opposites, synonyms,
   categories, analogies, homophones, prefixes and suffixes, counting, adding, multiplying, fractions,
   time, money, shapes, measurement, word problems, animals, earth and sky, the body, matter and
