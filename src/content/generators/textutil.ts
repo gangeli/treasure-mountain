@@ -20,3 +20,23 @@ export function lines(...parts: (string | string[])[]): string[] {
 /** Replaces the blank with the word (for spoken text or keys). */
 export const fill = (sentence: string, word: string): string => sentence.replace('___', word)
 export const spokenBlank = (sentence: string): string => sentence.replace('___', 'blank')
+
+/**
+ * The slice of an ordered pool a tier draws from. Word lists in this game are authored from the
+ * words a child meets first to the ones they meet last, so tier 1 takes the front of the list and
+ * tier 3 the back, with an overlap in the middle. Two tiers on the same level then still ask
+ * different questions.
+ */
+export function tierWindow<T>(pool: T[], tier: 1 | 2 | 3): T[] {
+  const m = pool.length
+  if (m < 6) return pool
+  const from = tier === 1 ? 0 : tier === 2 ? Math.floor(m * 0.3) : Math.floor(m * 0.55)
+  const to = tier === 1 ? Math.ceil(m * 0.6) : tier === 2 ? Math.ceil(m * 0.85) : m
+  return pool.slice(from, to)
+}
+
+/** 0 for the first item of an ordered pool, 1 for the last: how far in an item sits. */
+export function rankIn<T>(pool: T[], item: T): number {
+  const i = pool.indexOf(item)
+  return pool.length > 1 && i >= 0 ? i / (pool.length - 1) : 0
+}

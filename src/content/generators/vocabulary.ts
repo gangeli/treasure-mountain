@@ -1,6 +1,7 @@
 import type { Generator, Grade, Tier } from '../types'
 import { riddle, shuffled, choiceCount } from '../types'
 import { VOCAB, type VocabWord } from '../data/vocabulary'
+import { tierWindow, rankIn } from './textutil'
 
 function levels(grade: Grade, tier: Tier): number[] {
   const table: Partial<Record<Grade, number[][]>> = {
@@ -24,10 +25,15 @@ export const vocabulary: Generator = {
     const n = choiceCount(grade)
     const lv = levels(grade, tier)
     const pool = VOCAB.filter(w => lv.includes(w.level))
-    // Tier 3 leans to longer words within the level band.
-    const pair = rng.sample(pool, 2)
+    // Each tier takes its own window of the level, and tier 3 leans to the longer word of two draws.
+    const window = lv.flatMap(l => tierWindow(pool.filter(w => w.level === l), tier))
+    const from = window.length >= 6 ? window : pool
+    const pair = rng.sample(from, 2)
     const w = tier === 3 ? (pair[0].word.length >= pair[1].word.length ? pair[0] : pair[1]) : pair[0]
-    const reverse = rng.bool(0.45)
+    // Naming the word for a meaning is harder than picking the meaning of a named word, so the
+    // higher tiers ask that way more often.
+    const reverse = rng.bool(tier === 1 ? 0.3 : tier === 2 ? 0.45 : 0.6)
+    const rank = rankIn(pool.filter(x => x.level === w.level), w) * 4
     if (reverse) {
       const others = rng.shuffle(pool.filter(x => x !== w && !sameGroup(x, w) && x.word !== w.word))
         .sort((a, b) => Math.abs(a.word.length - w.word.length) - Math.abs(b.word.length - w.word.length))
@@ -36,7 +42,8 @@ export const vocabulary: Generator = {
       return riddle({
         family: 'vocabulary', skill: 'vocabulary: word meanings', prompt, choices, answer,
         spoken: `Which word means ${w.def}? ${choices.map(c => c.text).join(', ')}?`,
-        metric: w.level * 10 + w.word.length + 2, grade, tier,
+        metric: w.level * 10 + w.word.length + 2 + rank, grade, tier,
+        key: `vocabulary|word|${w.word}`,
       })
     }
     const { choices, answer } = shuffled(rng, w.def, rng.shuffle(w.decoys), n)
@@ -44,7 +51,8 @@ export const vocabulary: Generator = {
     return riddle({
       family: 'vocabulary', skill: 'vocabulary: word meanings', prompt, highlight: [w.word], choices, answer,
       spoken: `What does ${w.word} mean? ${choices.map(c => c.text).join(', ')}?`,
-      metric: w.level * 10 + w.word.length, grade, tier,
+      metric: w.level * 10 + w.word.length + rank, grade, tier,
+      key: `vocabulary|def|${w.word}`,
     })
   },
 }
