@@ -14,7 +14,6 @@ export function drawFeature(ctx: Ctx, f: Feature, x: number, y: number, no: Leve
     case 'keyhole': return keyholeTree(ctx, x, y, opts.hasKey, opts.progress ?? 0)
     case 'fountain': return fountain(ctx, x, y, t, opts.hasKey, opts.progress ?? 0)
     case 'castledoor': return castleDoor(ctx, x, y, opts.hasKey, opts.progress ?? 0)
-    case 'coincache': return
   }
 }
 

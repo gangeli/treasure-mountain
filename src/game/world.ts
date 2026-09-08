@@ -57,7 +57,7 @@ export interface Group {
   treasure?: string
 }
 
-export interface Feature { type: 'clubhouse' | 'netrock' | 'tunnel' | 'keyhole' | 'secret' | 'bridge' | 'fountain' | 'castledoor' | 'coincache'; x: number; width: number; pair?: number }
+export interface Feature { type: 'clubhouse' | 'netrock' | 'tunnel' | 'keyhole' | 'secret' | 'bridge' | 'fountain' | 'castledoor'; x: number; width: number; pair?: number }
 
 export interface Level {
   no: LevelNo
