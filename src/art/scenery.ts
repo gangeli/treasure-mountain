@@ -38,7 +38,10 @@ export function drawGroup(ctx: Ctx, g: Group, x: number, groundY: number, t: num
 export function drawKind(ctx: Ctx, kind: string, desc: string, x: number, y: number, t: number, seed: number): void {
   const s = sizeFor(desc), tall = tallFor(desc), r = h1(seed)
   switch (kind) {
-    case 'tree': return tree(ctx, x, y, s, tall, desc === 'round', r)
+    // A "tall tree" the same height as a "big tree" is a clue word a child cannot see: at the shared
+    // 1.6 the taller trunk and the narrower crown cancelled out, and both came to about 180px. Big
+    // is the wide one, tall is the high one.
+    case 'tree': return tree(ctx, x, y, s, desc === 'tall' ? 2.1 : tall, desc === 'round', r)
     case 'bush': return bush(ctx, x, y, s, desc === 'round', P.green, r)
     case 'rock': return rock(ctx, x, y, s * 0.9, desc === 'round' ? 'round' : desc === 'flat' ? 'flat' : 'plain', P.rock, r)
     case 'boulder': return rock(ctx, x, y, 1.5, desc === 'round' ? 'round' : desc === 'flat' ? 'flat' : desc === 'pointy' ? 'pointy' : 'cracked', P.rock, r)

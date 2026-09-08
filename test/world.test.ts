@@ -91,3 +91,23 @@ describe('every level the game can ask for can be built', () => {
     expect(built).toBe(57600)
   })
 })
+
+/**
+ * A clue word a child cannot see is not a clue. "Big" and "tall" are both large trees and the
+ * difference is the width of the crown, so K and 1st grade are never asked to tell them apart.
+ */
+describe('the youngest grades only get descriptors they can see', () => {
+  it('K and 1st are never sent to look for a tall tree', () => {
+    for (let stars = 0; stars <= 7; stars++) {
+      const treasures = treasuresForStars(stars)
+      for (const grade of [0, 1] as const) for (const no of [1, 2, 3] as const) {
+        for (let seed = 1; seed <= 60; seed++) {
+          const lv = generateLevel(no, seed * 31 + stars, grade, treasures, stars)
+          for (const g of lv.groups) {
+            expect(g.kind === 'tree' && g.descriptor === 'tall', `grade ${grade} level ${no} seed ${seed}`).toBe(false)
+          }
+        }
+      }
+    }
+  })
+})

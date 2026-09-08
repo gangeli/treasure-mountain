@@ -5,14 +5,20 @@ import { LOOP_W, wrapX } from './layout'
 export type LevelNo = 1 | 2 | 3
 
 /** Scenery kinds, by level. Singular and plural names; which descriptors can be drawn for them. */
-export interface KindDef { kind: string; plural: string; descriptors: string[]; levels: LevelNo[]; width: number }
+export interface KindDef {
+  kind: string; plural: string; descriptors: string[]; levels: LevelNo[]; width: number
+  /** Descriptors K and 1st grade may be asked for, when the full set holds a pair they cannot
+   * separate at a glance: a big tree and a tall tree are both large trees, and the difference is
+   * the width of the crown. */
+  young?: string[]
+}
 
 /**
  * Descriptors within a kind are mutually exclusive (one dimension per kind: sizes/shapes OR
  * colours OR a distinct feature) so a child can always tell which group a clue word means.
  */
 export const KINDS: KindDef[] = [
-  { kind: 'tree', plural: 'trees', descriptors: ['small', 'big', 'tall', 'round'], levels: [1], width: 110 },
+  { kind: 'tree', plural: 'trees', descriptors: ['small', 'big', 'tall', 'round'], young: ['small', 'big', 'round'], levels: [1], width: 110 },
   { kind: 'bush', plural: 'bushes', descriptors: ['small', 'big', 'round'], levels: [1, 2], width: 90 },
   { kind: 'rock', plural: 'rocks', descriptors: ['small', 'big', 'round', 'flat'], levels: [1, 2, 3], width: 80 },
   { kind: 'flower', plural: 'flowers', descriptors: ['red', 'yellow', 'blue', 'purple', 'white'], levels: [1, 2], width: 50 },
@@ -83,7 +89,7 @@ const kindsFor = (level: LevelNo, grade: Grade): KindDef[] => {
 }
 
 const descriptorsFor = (k: KindDef, grade: Grade): string[] => {
-  if (grade <= 1) return k.descriptors.filter(d => ['small', 'big', 'tall', 'red', 'yellow', 'blue', 'green', 'round', 'short', 'long', 'white', 'purple', 'pink', 'snowy', 'spotted', 'empty', 'square'].includes(d))
+  if (grade <= 1) return (k.young ?? k.descriptors).filter(d => ['small', 'big', 'tall', 'red', 'yellow', 'blue', 'green', 'round', 'short', 'long', 'white', 'purple', 'pink', 'snowy', 'spotted', 'empty', 'square'].includes(d))
   return k.descriptors
 }
 
