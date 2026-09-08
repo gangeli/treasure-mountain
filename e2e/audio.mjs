@@ -1,8 +1,10 @@
 // Renders every sound effect and every music track through an OfflineAudioContext in the browser
 // and checks that each one actually produces audio (non-silent, not clipping, right sort of length).
 // Nobody can hear a synthesiser in CI, so this is how we know the sound is not silence.
-// Usage: node e2e/audio.mjs   (run `npx vite build` first)
+// Usage: npx tsx e2e/audio.mjs   (run `npx vite build` first)
 import { serve, launch, playwright } from './lib.mjs'
+// The real cue lists, imported rather than copied, so a sound added tomorrow is measured too.
+import { SFX_NAMES, MUSIC_NAMES } from '../src/engine/audio.ts'
 
 const pw = await playwright()
 const { server, url } = await serve('dist')
@@ -10,12 +12,9 @@ const { browser, page } = await launch(pw, { dpr: 1 })
 await page.goto(url + '?test=1')
 await page.waitForFunction(() => window.__tm && window.__tm.ready)
 
-const result = await page.evaluate(async () => {
+const result = await page.evaluate(async ([SFX, MUSIC]) => {
   const { AudioEngine } = window.__tm
   if (!AudioEngine) return { error: 'AudioEngine not exposed on window.__tm' }
-  const SFX = ['step', 'jump', 'land', 'net', 'catch', 'miss', 'scroll', 'right', 'wrong', 'coin',
-    'clue', 'dig', 'treasure', 'nothing', 'ladder', 'fanfare', 'crown', 'click', 'elfLaugh', 'tick', 'gate', 'lose']
-  const MUSIC = ['title', 'level1', 'level2', 'level3', 'castle', 'win']
 
   // Measure a rendered buffer: peak amplitude and how much of it is audible.
   const measure = buf => {
@@ -58,7 +57,7 @@ const result = await page.evaluate(async () => {
   for (const s of ['net', 'catch', 'coin', 'right', 'clue', 'treasure', 'fanfare', 'step', 'jump']) busy.sfx(s)
   const mix = measure(await busyCtx.startRendering())
   return { sfx, music, mix }
-})
+}, [SFX_NAMES, MUSIC_NAMES])
 
 await browser.close()
 server.close()

@@ -3,11 +3,17 @@
  * envelopes in the spirit of the 1990 AdLib/PC-speaker originals, and music is a tiny step
  * sequencer playing square/triangle voices with a look-ahead scheduler.
  */
-export type SfxName =
-  | 'step' | 'jump' | 'land' | 'net' | 'catch' | 'miss' | 'scroll' | 'right' | 'wrong' | 'coin'
-  | 'clue' | 'dig' | 'treasure' | 'nothing' | 'ladder' | 'fanfare' | 'crown' | 'click' | 'elfLaugh' | 'tick' | 'gate' | 'lose'
+/**
+ * Every cue the game can play. Written as lists so `e2e/audio.mjs` can render and measure all of
+ * them without keeping its own copy - a copy would go quiet about the next sound added. Nothing in
+ * the game reads the lists, so the bundle keeps only the types.
+ */
+export const SFX_NAMES = ['step', 'jump', 'land', 'net', 'catch', 'miss', 'scroll', 'right', 'wrong', 'coin',
+  'clue', 'dig', 'treasure', 'nothing', 'ladder', 'fanfare', 'crown', 'click', 'elfLaugh', 'tick', 'gate', 'lose'] as const
+export const MUSIC_NAMES = ['title', 'level1', 'level2', 'level3', 'castle', 'win'] as const
 
-export type MusicName = 'title' | 'level1' | 'level2' | 'level3' | 'castle' | 'win' | 'none'
+export type SfxName = typeof SFX_NAMES[number]
+export type MusicName = typeof MUSIC_NAMES[number] | 'none'
 
 interface Note { t: number; n: number | null; d: number; v?: number }
 

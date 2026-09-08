@@ -1,16 +1,10 @@
 // WCAG contrast for every text-on-background pair the game draws. Reading is the whole point of
 // this game, and a colour that looks fine to an adult on a laptop can be unreadable to a child on a
 // tablet in a bright room, so the ratios are checked rather than eyeballed.
-// Usage: node e2e/contrast.mjs
-const P = {
-  ink: '#1a2238', inkSoft: '#2d3a5c', frame: '#1b3a5c', panel: '#0f2747', panelDeep: '#0a1c33',
-  panelLine: '#5aa9ff', cyan: '#39d6e8', cyanPale: '#a8f0f6', scroll: '#5fdad9', scrollEdge: '#2aa6a8',
-  white: '#ffffff', cream: '#fff6d8', yellow: '#ffd23f', gold: '#f6c445', orange: '#ff8c1a',
-  red: '#e63946', redDark: '#b3202c', pink: '#ff6fb1', purple: '#7b4bb8', purpleDark: '#4d2a7f',
-  blue: '#2f6fe4', blueDark: '#1e48a3', bluePale: '#8fc1ff', skyTop: '#6fbaff', skyBottom: '#c9ecff',
-  green: '#3fb544', greenDark: '#2b8a33', greenLight: '#7fe07a', grass: '#46b83f',
-  rockWall: '#7f8ba3', mine: '#7d6a9c', snow: '#f4fbff',
-}
+// Usage: npx tsx e2e/contrast.mjs
+// The real palette, imported rather than copied: a copy of these 32 colours drifts silently, and
+// then every ratio below is about a game that is no longer on screen.
+import { P } from '../src/art/palette.ts'
 const lin = c => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4))
 const lum = hex => {
   const n = parseInt(hex.slice(1), 16)
