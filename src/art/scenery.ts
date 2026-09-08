@@ -219,6 +219,9 @@ function icicle(ctx: Ctx, x: number, y: number, s: number, len: number, color: s
   // an ice spike growing from the ground (a frozen drip)
   const h = 70 * len, w = 22 * s
   shadowBlob(ctx, x, y, w)
+  // A bank of snow at the foot, so the spike reads as ice grown out of the snow rather than a
+  // shard balanced on the grass.
+  ctx.beginPath(); ctx.ellipse(x, y - 2, w * 1.5, w * 0.55, 0, Math.PI, 0); ctx.closePath(); fillStroke(ctx, P.snow, P.ink, 2.5)
   poly(ctx, [[x - w, y], [x - w * 0.5, y - h * 0.5], [x, y - h], [x + w * 0.5, y - h * 0.55], [x + w, y]], color)
   ctx.save(); ctx.globalAlpha = 0.6; ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.moveTo(x - w * 0.55, y - h * 0.15); ctx.lineTo(x - w * 0.25, y - h * 0.8); ctx.lineTo(x - w * 0.1, y - h * 0.3); ctx.closePath(); ctx.fill(); ctx.restore()
 }

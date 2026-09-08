@@ -41,7 +41,7 @@ how the screens, art and sound are laid out.
 | Castle | Ladders to the throne room; the Master of Mischief can knock you down at higher ranks | Same (barrel-free, just trick ladders and his arm) |
 | Throne room | Deposit treasures in the chest; the Master of Mischief steams and is blown off; you keep one treasure as a prize | Same |
 | Ranks | Stars at 5, 25, 70, 115, 170, 230, 300 total treasures | Same thresholds, rank names below |
-| Treasures per level | 2 at rank 0, +1 per star, max 6 | Same |
+| Treasures per level | 2, 2, 3, 3, 4, 4, 5, 5 by star count (read out of SST.EXE) | Same table |
 | Elf dust | From star 2 up some elves throw dust that steals a coin | Same |
 | Collapsing bridge | From star 3 up the level 2 bridge collapses under you unless you jump | Same |
 
@@ -213,7 +213,7 @@ object), exactly like the original's HUD.
 ## 8. Art direction
 
 * Logical canvas 1280 x 720, letterboxed. Play area 1280 x 560, HUD 1280 x 160 below.
-* Palette: an "EGA remembered fondly" palette: deep blue frame (#1b3a5c), grey-blue rock backdrops,
+* Palette: an "EGA remembered fondly" palette: deep blue frame (#1b3a5c), gray-blue rock backdrops,
   saturated grass green, cyan accents, warm browns, magenta/purple for the mine, icy whites and
   pale blues for the summit. Flat fills with one darker shade per colour and a thin dark outline,
   so everything reads at tablet size and stays crisp as vectors.
@@ -224,12 +224,13 @@ object), exactly like the original's HUD.
   wild orange hair, red nose, crown, purple robe) with steam and a blast-off.
 * Backgrounds are drawn once per level into an offscreen canvas per screen; entities are drawn
   every frame. Parallax: one far layer (mountain silhouettes / sky) at 0.3x.
-* Text: a rounded sans-serif system stack at 30-40 px for riddles (min 28 px), with letter-spacing
+* Text: a rounded sans-serif system stack for riddles, sized to fit - 46 px for a one-line question
+  down to 24 px for a six-line grade-5 logic puzzle, always stopping short of the answer buttons - with letter-spacing
   and generous line height; red for the clue word and the highlighted rhyme letters, as the original.
 
 ## 9. Sound
 
-All synthesised (see `src/engine/audio.ts`): a title march, one loop per level (pastoral,
+All synthesized (see `src/engine/audio.ts`): a title march, one loop per level (pastoral,
 brisk mine, airy summit), a castle theme and a victory loop; effects for steps, jump, net swing,
 catch, miss, scroll open, right/wrong, coin, clue, poof/dig, treasure, key, ladder, fanfare,
 elf laugh, dust, gate, crown.
