@@ -87,7 +87,8 @@ export interface CastleState {
   t: number
   facing: 1 | -1
   targetX: number | null
-  falls: number
+  /** Why the last fall happened, shown for a few seconds so the child knows what hit them. */
+  hint: { text: string[]; t: number } | null
 }
 
 export interface LevelState {

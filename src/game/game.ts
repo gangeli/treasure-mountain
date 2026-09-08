@@ -823,9 +823,13 @@ export class Game {
     }
     const holes: CastleState['holes'] = []
     // Never 640: the Master's portraits hang at 160, 640 and 1120, and a hole there was drawn as a
-    // black disc on top of a gold picture frame.
-    if (stars >= 4) for (let f = 1; f < CASTLE_FLOORS; f++) holes.push({ floor: f, x: rng.pick([350, 450, 830, 930]), t: rng.float(0, 2), active: false })
-    this.castle = { floor: 0, x: 100, y: 0, onLadder: null, ladders, holes, state: 'walk', t: 0, facing: 1, targetX: null, falls: 0 }
+    // black disc on top of a gold picture frame. And never within reach of a ladder head (220, 500,
+    // 780, 1060): a hole at 450 or 830 caught the player the instant they stepped off the ladder,
+    // with nothing they could have done about it, and could knock them down the same ladder over
+    // and over. Every position here is at least 90px clear of all four.
+    const HOLE_X = [350, 400, 900, 950]
+    if (stars >= 4) for (let f = 1; f < CASTLE_FLOORS; f++) holes.push({ floor: f, x: rng.pick(HOLE_X), t: rng.float(0, 2), active: false })
+    this.castle = { floor: 0, x: 100, y: 0, onLadder: null, ladders, holes, state: 'walk', t: 0, facing: 1, targetX: null, hint: null }
     this.goto('castle')
     this.showMessage([], 0)
   }
@@ -845,6 +849,7 @@ export class Game {
   private updateCastle(dt: number): void {
     const c = this.castle!
     c.t += dt
+    if (c.hint && (c.hint.t -= dt) <= 0) c.hint = null
     let move = 0
     if (this.held.has('ArrowLeft') || this.held.has('a')) move -= 1
     if (this.held.has('ArrowRight') || this.held.has('d')) move += 1
@@ -861,7 +866,12 @@ export class Game {
           h.t += dt
           const period = 3
           h.active = (h.t % period) > period - 0.9
-          if (h.active && h.floor === c.floor && Math.abs(h.x - c.x) < 70 && c.state === 'walk') { c.state = 'hit'; c.t = 0; this.sfx('miss') }
+          // c.t is the time since the state last changed, so this also gives half a second of grace
+          // to anyone who has just stepped off a ladder or been knocked down onto this floor.
+          if (h.active && h.floor === c.floor && Math.abs(h.x - c.x) < 70 && c.state === 'walk' && c.t > 0.5) {
+            c.state = 'hit'; c.t = 0; this.sfx('miss')
+            c.hint = { text: ['The Master knocked you down a floor!', 'Wait for the arm to go back in, then run past.'], t: 4 }
+          }
         }
         break
       }
@@ -871,13 +881,20 @@ export class Game {
         const trickStop = l.trick ? top * 0.62 : top
         c.y += 170 * dt
         if (c.y >= trickStop) {
-          if (l.trick) { c.state = 'fall'; c.t = 0; this.sfx('miss'); c.falls++ }
+          if (l.trick) {
+            c.state = 'fall'; c.t = 0; this.sfx('miss')
+            // Without this a child climbs, slides back down and is told nothing at all.
+            c.hint = { text: ['That ladder was a trick!', 'Gray ladders stop halfway. Try another one.'], t: 4 }
+          }
           else { c.y = 0; c.floor++; c.onLadder = null; c.state = 'walk'; c.t = 0; this.sfx('ladder'); if (c.floor === CASTLE_FLOORS - 1) this.sfx('fanfare') }
         }
         break
       }
       case 'fall': { c.y -= 260 * dt; if (c.y <= 0) { c.y = 0; c.onLadder = null; c.state = 'walk'; c.t = 0 } break }
-      case 'hit': { c.x -= c.facing * 120 * dt; if (c.t > 0.7) { c.state = 'walk'; c.t = 0; if (c.floor > 0) { c.floor--; c.falls++ } } break }
+      // Being knocked down a floor cancels where the player was walking to. Without this the walk
+      // resumed on the floor below and climbed the ladder it had been aiming at up there, so the
+      // Super Solver went up a ladder that was not drawn anywhere near them.
+      case 'hit': { c.x -= c.facing * 120 * dt; if (c.t > 0.7) { c.state = 'walk'; c.t = 0; c.targetX = null; (c as any).climbAt = null; if (c.floor > 0) c.floor-- } break }
       case 'door': if (c.t > (this.fast ? 0.1 : 1.2)) { c.state = 'done'; this.enterThrone() } break
       case 'done': break
     }
@@ -885,6 +902,7 @@ export class Game {
 
   private startClimb(l: CastleState['ladders'][number]): void {
     const c = this.castle!
+    if (l.floor !== c.floor) return
     c.onLadder = c.ladders.indexOf(l); c.x = l.x; c.y = 0; c.state = 'climb'; c.t = 0; c.targetX = null
     this.sfx('ladder')
   }

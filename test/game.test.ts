@@ -3,6 +3,7 @@ import { Game } from '../src/game/game'
 import { STEP } from '../src/engine/loop'
 import { wrapX, loopDelta } from '../src/game/layout'
 import { STAR_THRESHOLDS } from '../src/game/world'
+import { CASTLE_FLOORS, CASTLE_FLOOR_Y } from '../src/game/game'
 
 function step(g: Game, seconds: number): void { const n = Math.ceil(seconds / STEP); for (let i = 0; i < n; i++) g.update(STEP) }
 
@@ -188,4 +189,82 @@ describe('game flow', () => {
     g.useUp(); step(g, 0.5)
     expect(Math.abs(loopDelta(lvl.player.x, b.x))).toBeLessThan(150)
   })
+})
+
+describe('the castle is always climbable', () => {
+  /**
+   * Walks the castle honestly - only taps, at the speed the player actually walks - and returns how
+   * long it took. The old flow test teleported onto a good ladder, so it proved the state machine
+   * worked but not that a child could get through: trick ladders and the Master's arm are exactly
+   * the things that could wall a floor off, and neither was ever exercised.
+   */
+  function climb(g: Game, limitSeconds = 200): number {
+    let t = 0
+    while (g.screen === 'castle' && t < limitSeconds) {
+      const c = g.castle!
+      if (c.state === 'walk' && c.targetX == null) {
+        if (c.floor === CASTLE_FLOORS - 1) {
+          if (Math.abs(c.x - 1050) < 40) { g.held.add('ArrowUp'); step(g, 0.05); t += 0.05; g.held.delete('ArrowUp') }
+          else g.tap(1050, CASTLE_FLOOR_Y(c.floor) - 40)
+        } else {
+          const here = c.ladders.filter(l => l.floor === c.floor)
+          const good = here.filter(l => !l.trick)
+          expect(good.length, `floor ${c.floor} has no real ladder`).toBeGreaterThan(0)
+          const l = good.reduce((a, b) => (Math.abs(a.x - c.x) <= Math.abs(b.x - c.x) ? a : b))
+          g.tap(l.x, CASTLE_FLOOR_Y(c.floor) - 40)
+        }
+      }
+      step(g, 0.1); t += 0.1
+    }
+    return t
+  }
+
+  /** Puts a game straight into the castle at a chosen rank, without playing three levels first. */
+  function atCastle(seed: string, total: number): Game {
+    const g = new Game(null, { seed, fast: true })
+    g.chooseGrade(2)
+    g.profile().total = total
+    g.pressButton('start')
+    if (g.screen === 'intro') g.advanceScene()
+    const run = g.run!
+    run.hasKey = true
+    const lvl = g.lvl!
+    // Walk out of the third level through its exit, which is what opens the castle.
+    g.startLevel(3, run.seed, false)
+    g.run!.hasKey = true
+    const l3 = g.lvl!
+    const exit = l3.level.features.find(f => f.type === 'keyhole' || f.type === 'fountain' || f.type === 'castledoor')!
+    l3.player.x = exit.x; l3.player.state = 'idle'
+    g.useUp()
+    step(g, 3)
+    void lvl
+    expect(g.screen).toBe('castle')
+    return g
+  }
+
+  /** The smallest treasure total that earns exactly this many stars. */
+  const totalFor = (stars: number): number => (stars === 0 ? 0 : STAR_THRESHOLDS[stars - 1])
+
+  // Every rank, so both hazards are covered: trick ladders appear at 3 stars, the arm at 4.
+  for (let stars = 0; stars <= STAR_THRESHOLDS.length; stars++) {
+    it(`reaches the throne at ${stars} star${stars === 1 ? '' : 's'}`, () => {
+      for (let seed = 0; seed < 60; seed++) {
+        const g = atCastle(`castle-${stars}-${seed}`, totalFor(stars))
+        // Guard against a vacuous pass: the hazards really are in this castle.
+        expect(g.stars()).toBe(stars)
+        expect(g.castle!.ladders.some(l => l.trick), 'trick ladders').toBe(stars >= 3)
+        expect(g.castle!.holes.length > 0, 'holes').toBe(stars >= 4)
+        // The Master's arm must never reach a ladder head: a hole at 450 or 830 caught the player
+        // the moment they stepped off, with no move available that would have avoided it.
+        for (const h of g.castle!.holes) {
+          for (const l of g.castle!.ladders) {
+            expect(Math.abs(h.x - l.x), `hole at ${h.x} is on the ladder at ${l.x}`).toBeGreaterThan(70)
+          }
+        }
+        const took = climb(g)
+        expect(g.screen, `stars ${stars} seed ${seed}: stuck after ${took.toFixed(0)}s on floor ${g.castle?.floor}`).toBe('throne')
+        expect(took, `stars ${stars} seed ${seed} took ${took.toFixed(0)}s`).toBeLessThan(90)
+      }
+    })
+  }
 })
