@@ -24,7 +24,7 @@ export function riddleChoiceRects(r: Riddle): { x: number; y: number; w: number;
     const x0 = SCROLL.x + 60
     for (let i = 0; i < n; i++) out.push({ x: x0 + i * (w + gap), y: SCROLL.y + SCROLL.h - h - 40, w, h })
   } else {
-    const h = n === 4 ? 66 : 76, gap = 10, w = 560
+    const h = n === 4 ? 66 : 76, gap = 10, w = 820
     const y0 = SCROLL.y + SCROLL.h - 30 - n * h - (n - 1) * gap
     for (let i = 0; i < n; i++) out.push({ x: SCROLL.x + 60, y: y0 + i * (h + gap), w, h })
   }

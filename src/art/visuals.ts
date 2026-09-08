@@ -168,9 +168,11 @@ export function shape(ctx: Ctx, name: ShapeName, cx: number, cy: number, r: numb
 
 function pattern(ctx: Ctx, items: { shape: ShapeName; color: string }[], blank: boolean, x: number, y: number, w: number, h: number): void {
   const n = items.length + (blank ? 1 : 0)
-  const cell = Math.min(w / n, h, 90)
+  const cell = Math.min(w / n, h, 96)
   const x0 = x + (w - n * cell) / 2 + cell / 2, cy = y + h / 2
-  items.forEach((it, i) => shape(ctx, it.shape, x0 + i * cell, cy, cell * 0.36, it.color))
+  // Big enough to compare with the same shape on an answer card: at 0.36 the pattern read as a
+  // miniature of the choices rather than the same object.
+  items.forEach((it, i) => shape(ctx, it.shape, x0 + i * cell, cy, cell * 0.42, it.color))
   if (blank) { rr(ctx, x0 + items.length * cell - cell * 0.4, cy - cell * 0.4, cell * 0.8, cell * 0.8, 10); ctx.setLineDash([8, 6]); ctx.lineWidth = 3; ctx.strokeStyle = P.inkSoft; ctx.stroke(); ctx.setLineDash([]); text(ctx, '?', x0 + items.length * cell, cy, { size: cell * 0.5, align: 'center', color: P.inkSoft, weight: 900 }) }
 }
 

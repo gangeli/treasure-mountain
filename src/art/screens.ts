@@ -1,5 +1,5 @@
 import { P } from './palette'
-import { type Ctx, roundRect, circle, text, line, poly, vgrad, richText, wrap, measure, star, rr, fillStroke } from './draw'
+import { type Ctx, roundRect, circle, text, line, poly, vgrad, richText, wrap, star, rr, fillStroke } from './draw'
 import { W, H, PLAY_H } from '../game/layout'
 import type { Game } from '../game/game'
 import { CASTLE_FLOORS, CASTLE_FLOOR_Y, CASTLE_FLOOR_H } from '../game/game'
@@ -249,7 +249,8 @@ function riddle(ctx: Ctx, g: Game, clueMode = false): void {
   // rolled ends
   for (const side of [S.x + 14, S.x + S.w - 14]) { roundRect(ctx, side - 14, S.y - 10, 28, S.h + 20, 14, P.cream, P.ink, 3); ctx.fillStyle = P.yellowDark; ctx.fillRect(side - 8, S.y - 4, 16, 6); ctx.fillRect(side - 8, S.y + S.h - 2, 16, 6) }
   // vines in the corners
-  for (const [vx, vy, rot] of [[S.x + 40, S.y + 18, 0.4], [S.x + S.w - 60, S.y + 18, 2.6], [S.x + 40, S.y + S.h - 20, -0.6]]) {
+  // The top-left vine hangs straight down the margin: at 0.4 it grew into the first line of text.
+  for (const [vx, vy, rot] of [[S.x + 34, S.y + 18, 1.5], [S.x + S.w - 60, S.y + 18, 2.6], [S.x + 40, S.y + S.h - 20, -0.6]]) {
     for (let k = 0; k < 4; k++) leaf(ctx, vx + Math.cos(rot) * k * 22, vy + Math.sin(rot) * k * 22, 10, rot + (k % 2 ? 0.9 : -0.9), k % 2 ? P.leafLight : P.leaf)
   }
   // the elf dancing at the right edge
@@ -258,18 +259,21 @@ function riddle(ctx: Ctx, g: Game, clueMode = false): void {
   const hasVisual = !!r.visual
   const promptX = S.x + 60, promptY = S.y + 60
   const textW = hasVisual ? 570 : S.w - 250
-  // Largest size at which every prompt line fits on one line; otherwise wrap at 30px.
-  const sizes = r.prompt.length <= 2 ? [46, 42, 38, 34, 30] : [38, 34, 30]
-  let size = sizes.find(sz => r.prompt.every(l => measure(ctx, l, sz) <= textW)) ?? 30
-  const maxLines = hasVisual ? 5 : 6
+  const rects = riddleChoiceRects(r)
+  // The biggest type at which the wrapped prompt still stops short of the first answer button. A
+  // four-line prompt at 38px used to run underneath it, and the last line was unreadable.
+  const ceiling = Math.min(...rects.map(rc => rc.y)) - 14
+  let size = 24
+  let rows: string[] = []
+  for (const sz of [46, 42, 38, 34, 30, 28, 26, 24]) {
+    size = sz
+    rows = r.prompt.flatMap(l => wrap(ctx, l, textW, sz))
+    if (promptY - sz / 2 + rows.length * sz * 1.3 <= ceiling) break
+  }
   let y = promptY
-  const rows: string[] = []
-  for (const line0 of r.prompt) rows.push(...wrap(ctx, line0, textW, size))
-  if (rows.length > maxLines) size = 28
   for (const l of rows) { richText(ctx, l, promptX, y, size, P.ink, r.highlight ?? [], P.redDark); y += size * 1.3 }
   if (r.visual) drawVisual(ctx, r.visual, S.x + 640, S.y + 30, 440, 250)
   // choices
-  const rects = riddleChoiceRects(r)
   rects.forEach((rc, i) => {
     const c = r.choices[i]
     const wrong = rv.wrong.includes(i)
@@ -285,7 +289,13 @@ function riddle(ctx: Ctx, g: Game, clueMode = false): void {
     else text(ctx, c.text ?? '', rc.x + 26, rc.y + rc.h / 2, { size: (c.text ?? '').length > 18 ? 26 : 32, color: wrong ? P.rockDark : P.ink, weight: 800 })
     if (wrong) line(ctx, rc.x + 14, rc.y + rc.h / 2, rc.x + rc.w - 14, rc.y + rc.h / 2, P.red, 4)
     if (showRight) { circle(ctx, rc.x + rc.w - 26, rc.y + rc.h / 2, 16, P.green, P.ink, 2.5); line(ctx, rc.x + rc.w - 34, rc.y + rc.h / 2, rc.x + rc.w - 28, rc.y + rc.h / 2 + 7, P.white, 4); line(ctx, rc.x + rc.w - 28, rc.y + rc.h / 2 + 7, rc.x + rc.w - 16, rc.y + rc.h / 2 - 8, P.white, 4) }
-    if (rv.phase === 'ask' && !wrong) { circle(ctx, rc.x - 24, rc.y + rc.h / 2, 14, P.scrollEdge, P.ink, 2); text(ctx, String(i + 1), rc.x - 24, rc.y + rc.h / 2 + 1, { size: 18, align: 'center', color: P.white, weight: 900 }) }
+    // Picture answers sit in a row, so their number goes inside the card: to the left it landed on
+    // the neighbouring card's border.
+    if (rv.phase === 'ask' && !wrong) {
+      const bx = c.visual ? rc.x + 22 : rc.x - 24, by = c.visual ? rc.y + 22 : rc.y + rc.h / 2
+      circle(ctx, bx, by, 14, P.scrollEdge, P.ink, 2)
+      text(ctx, String(i + 1), bx, by + 1, { size: 18, align: 'center', color: P.white, weight: 900 })
+    }
   })
   // feedback bubbles
   if (clueMode || rv.phase === 'right') {

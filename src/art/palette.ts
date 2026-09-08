@@ -5,6 +5,7 @@ export const P = {
   frame: '#1b3a5c',        // HUD / letterbox frame
   frameLight: '#2b5a8c',
   panel: '#0f2747',        // HUD panel fill
+  panelDeep: '#0a1c33',    // inset slot inside a HUD panel (clue words)
   panelLine: '#5aa9ff',
   cyan: '#39d6e8',
   cyanDark: '#1aa6b8',

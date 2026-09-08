@@ -79,6 +79,13 @@ export function wrap(ctx: Ctx, s: string, maxWidth: number, size: number, weight
     if (measure(ctx, t, size, weight) > maxWidth && cur) { lines.push(cur); cur = w } else cur = t
   }
   if (cur) lines.push(cur)
+  // A last line holding one short word ("...12 more get / on.") reads as a mistake on the scroll,
+  // so pull a word down from the line above; the line count does not change.
+  const last = lines.length - 1
+  if (lines.length >= 2 && !lines[last].includes(' ') && lines[last].length <= 8) {
+    const above = lines[last - 1].split(' ')
+    if (above.length >= 3) { lines[last] = above.pop()! + ' ' + lines[last]; lines[last - 1] = above.join(' ') }
+  }
   return lines
 }
 

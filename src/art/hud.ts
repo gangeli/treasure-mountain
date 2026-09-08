@@ -15,14 +15,16 @@ export function drawHud(ctx: Ctx, g: Game, buttons: Button[]): void {
   // Left: clue words
   roundRect(ctx, 14, BOX_Y, 412, BOX_H, 10, P.panel, P.panelLine, 3)
   text(ctx, 'Clue Words:', 32, BOX_Y + 24, { size: 22, color: P.white, weight: 800 })
-  drawKey(ctx, 46, BOX_Y + 82, 1.1, !!run?.hasKey)
+  drawKey(ctx, 46, BOX_Y + 80, 1.25, !!run?.hasKey)
   const slots: (keyof NonNullable<typeof run>['clues'])[] = ['number', 'descriptor', 'object']
   slots.forEach((s, i) => {
+    // A slot to fill rather than a red rule: an underline sat halfway between two labels and read
+    // as if it belonged to the one below it.
     const y = BOX_Y + 52 + i * 30
-    line(ctx, 80, y + 12, 400, y + 12, P.red, 2.5)
     const w = run?.clues[s]
-    if (w) text(ctx, w, 96, y, { size: 24, color: P.white, weight: 800 })
-    else { ctx.save(); ctx.globalAlpha = 0.35; text(ctx, ['number', 'what it looks like', 'what it is'][i], 96, y, { size: 16, color: P.bluePale, weight: 600 }); ctx.restore() }
+    roundRect(ctx, 80, y - 14, 322, 28, 8, w ? P.panelDeep : P.panelDeep, w ? P.gold : P.panelLine, w ? 2.5 : 2)
+    if (w) text(ctx, w, 96, y, { size: 24, color: P.gold, weight: 800 })
+    else { ctx.save(); ctx.globalAlpha = 0.5; text(ctx, ['number', 'what it looks like', 'what it is'][i], 96, y, { size: 16, color: P.bluePale, weight: 600 }); ctx.restore() }
   })
   // Middle: prompt box (buttons drawn by drawButtons)
   roundRect(ctx, 440, BOX_Y, 400, BOX_H, 10, P.panel, P.panelLine, 3)
