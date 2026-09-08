@@ -228,7 +228,13 @@ export class Game {
         break
       }
       case 'intro': if (key === 'Enter' || key === 'Space') this.startLevel(1, this.run!.seed); break
-      case 'clubhouse': if (key === 'Enter' || key === 'Space') this.startAscent(); if (key === 'Escape') this.goto('grade'); break
+      case 'clubhouse':
+        // Enter matches the big button, which is "new climb"; C is the other one. Without it a
+        // keyboard player could never pick up a climb they had left half-finished.
+        if (key === 'Enter' || key === 'Space') this.startAscent()
+        if (key === 'c' && this.canResume()) { this.sfx('click'); this.resume() }
+        if (key === 'Escape') this.goto('grade')
+        break
       case 'howto': case 'about': if (key === 'Enter' || key === 'Space' || key === 'Escape') this.goto(this.run ? 'clubhouse' : 'title'); break
       case 'level':
         if (key === 'Space') this.throwNet()

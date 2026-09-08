@@ -268,3 +268,126 @@ describe('the castle is always climbable', () => {
     })
   }
 })
+
+describe('the whole game is playable from the keyboard', () => {
+  /** Holds a key for one simulated frame's worth of steps, the way a finger on a key would. */
+  function hold(g: Game, key: string, seconds: number): void {
+    g.keyDown(key)
+    step(g, seconds)
+    g.keyUp(key)
+  }
+
+  /** Walks toward a world x with the arrow keys until within `near`, or gives up. */
+  function walkTo(g: Game, target: () => number | null, near: number, budget = 40): boolean {
+    for (let i = 0; i < budget; i++) {
+      const t = target()
+      if (t == null) return false
+      const p = g.lvl!.player
+      const d = loopDelta(p.x, t)
+      if (Math.abs(d) <= near) return true
+      hold(g, d > 0 ? 'ArrowRight' : 'ArrowLeft', Math.min(0.9, Math.abs(d) / 300))
+      step(g, 0.05)
+      if (g.screen !== 'level') return true
+    }
+    return Math.abs(loopDelta(g.lvl!.player.x, target() ?? 0)) <= near
+  }
+
+  it('a full ascent at 2nd grade, using nothing but key presses', () => {
+    const g = new Game(null, { seed: 'kb', fast: true })
+    g.keyDown('Enter'); g.keyUp('Enter')            // title -> grade
+    expect(g.screen).toBe('grade')
+    g.keyDown('2'); g.keyUp('2')                    // grade -> clubhouse
+    expect(g.screen).toBe('clubhouse')
+    expect(g.grade).toBe(2)
+    g.keyDown('Enter'); g.keyUp('Enter')            // clubhouse -> intro or level
+    if (g.screen === 'intro') { g.keyDown('Enter'); g.keyUp('Enter') }
+    expect(g.screen).toBe('level')
+
+    const answer = (): void => {
+      // 1-4 pick an answer, Enter carries on.
+      const rv = g.riddle!
+      const key = String(rv.riddle.answer + 1)
+      g.keyDown(key); g.keyUp(key)
+      step(g, 0.1)
+      g.keyDown('Enter'); g.keyUp('Enter')
+      step(g, 0.1)
+      if (g.screen === 'clue') { g.keyDown('Enter'); g.keyUp('Enter'); step(g, 0.1) }
+    }
+
+    for (let levelNo = 1; levelNo <= 3; levelNo++) {
+      expect(g.run!.levelNo).toBe(levelNo)
+      // Clue words: walk to a scroll elf and swing.
+      for (let guard = 0; g.cluesFound() < 3 && guard < 60; guard++) {
+        if (g.screen === 'riddle') { answer(); continue }
+        if (g.run!.nets === 0) {
+          const rock = g.lvl!.level.features.find(f => f.type === 'netrock')!
+          walkTo(g, () => rock.x, 30)
+          hold(g, 'ArrowDown', 0.05); step(g, 1)
+          continue
+        }
+        const elf = g.lvl!.elves.find(e => e.kind === 'scroll' && e.state === 'run')
+        if (!elf) { step(g, 0.5); continue }
+        walkTo(g, () => { const e = g.lvl!.elves.find(x => x.id === elf.id); return e && e.state === 'run' ? e.x : null }, 120, 25)
+        if (g.screen === 'level') { hold(g, 'Space', 0.05); step(g, 0.8) }
+        if ((g.screen as string) === 'riddle') answer()
+      }
+      expect(g.cluesFound(), `level ${levelNo} clue words`).toBe(3)
+
+      // Dig: walk to each hiding group and drop a coin.
+      for (const grp of g.lvl!.level.groups.filter(gp => gp.hides)) {
+        if (g.run!.coins === 0) break
+        walkTo(g, () => grp.x, 25)
+        hold(g, 'ArrowDown', 0.05)
+        step(g, 1.4)
+      }
+      expect(g.run!.hasKey, `level ${levelNo} key`).toBe(true)
+
+      // Leave: walk to the exit and press up.
+      const exit = g.lvl!.level.features.find(f => f.type === 'keyhole' || f.type === 'fountain' || f.type === 'castledoor')!
+      walkTo(g, () => exit.x, 30)
+      hold(g, 'ArrowUp', 0.05)
+      step(g, 3)
+    }
+
+    expect(g.screen).toBe('castle')
+    for (let guard = 0; g.screen === 'castle' && guard < 300; guard++) {
+      const c = g.castle!
+      if (c.state === 'walk') {
+        const target = c.floor === CASTLE_FLOORS - 1 ? 1050 : c.ladders.filter(l => l.floor === c.floor && !l.trick).reduce((a, b) => Math.abs(a.x - c.x) <= Math.abs(b.x - c.x) ? a : b).x
+        const d = target - c.x
+        if (Math.abs(d) > 8) hold(g, d > 0 ? 'ArrowRight' : 'ArrowLeft', Math.min(0.6, Math.abs(d) / 300))
+        else hold(g, 'ArrowUp', 0.05)
+      }
+      step(g, 0.2)
+    }
+    expect(g.screen).toBe('throne')
+    for (let i = 0; i < 4 && g.screen === 'throne'; i++) { g.keyDown('Enter'); g.keyUp('Enter'); step(g, 0.3) }
+    expect(g.screen).toBe('rank')
+    g.keyDown('Enter'); g.keyUp('Enter')
+    expect(['clubhouse', 'crown']).toContain(g.screen)
+    expect(g.profile(2).total).toBe(6)
+  })
+})
+
+describe('a half-finished climb can be picked up from the keyboard', () => {
+  it('C on the clubhouse resumes, Enter starts fresh', () => {
+    const g = new Game(null, { seed: 'kbresume', fast: true })
+    g.keyDown('Enter'); g.keyUp('Enter')
+    g.keyDown('2'); g.keyUp('2')
+    g.keyDown('Enter'); g.keyUp('Enter')
+    if (g.screen === 'intro') { g.keyDown('Enter'); g.keyUp('Enter') }
+    expect(g.screen).toBe('level')
+    // Leave mid-climb with some progress, the way closing the app would.
+    step(g, 2)
+    g.run!.coins = 9
+    const saved = JSON.parse(JSON.stringify(g.toSave()))
+    const h = new Game(saved, { seed: 'kbresume', fast: true })
+    h.keyDown('Enter'); h.keyUp('Enter')
+    h.keyDown('2'); h.keyUp('2')
+    expect(h.screen).toBe('clubhouse')
+    expect(h.canResume()).toBe(true)
+    h.keyDown('c'); h.keyUp('c')
+    expect(h.screen).toBe('level')
+    expect(h.run!.coins).toBe(9)
+  })
+})

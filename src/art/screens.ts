@@ -579,7 +579,10 @@ function howto(ctx: Ctx, g: Game): void {
     text(ctx, body, 150, y + 40, { size: 21, color: P.ink, weight: 700 })
     howtoIcon(ctx, i, 1160, y + 24, t)
   })
-  text(ctx, 'Need more nets? Drop coins at the NETS rock. No nets and no coins? The rock helps you out.', W / 2, H - 36, { size: 20, align: 'center', color: P.white, weight: 800, outline: P.ink, outlineWidth: 5 })
+  text(ctx, 'Need more nets? Drop coins at the NETS rock. No nets and no coins? The rock helps you out.', W / 2, H - 52, { size: 20, align: 'center', color: P.white, weight: 800, outline: P.ink, outlineWidth: 5 })
+  // The keys, in the game itself. A child playing the installed app or the APK has no web page to
+  // look them up on, and nothing else on any screen says the game can be played without a mouse.
+  text(ctx, 'On a keyboard:  \u2190 \u2192 walk  \u00b7  Space net  \u00b7  \u2193 coin  \u00b7  \u2191 jump, climb, enter  \u00b7  1-4 answer  \u00b7  C continue a climb  \u00b7  Esc pause', W / 2, H - 22, { size: 18, align: 'center', color: P.cream, weight: 700, outline: P.ink, outlineWidth: 4 })
 }
 
 /** The little picture beside each how-to-play step, so the page is not six lines of text. */
