@@ -603,7 +603,16 @@ function howtoIcon(ctx: Ctx, i: number, x: number, y: number, t: number): void {
   ctx.save()
   // Scaled to 0.6, or the elf's hat and pom-pom poke out through the top of the card.
   if (i === 0) { ctx.save(); ctx.translate(x - 18, y + 36); ctx.scale(0.6, 0.6); drawElf(ctx, 0, 0, -1, 'run', t, 1, 'none'); ctx.restore(); ctx.save(); ctx.translate(x + 32, y + 14); ctx.rotate(0.5); drawNet(ctx, 0.45); ctx.restore() }
-  else if (i === 1) { roundRect(ctx, x - 40, y - 26, 80, 52, 8, P.scroll, P.ink, 3); for (let k = 0; k < 3; k++) line(ctx, x - 28, y - 12 + k * 13, x + 28, y - 12 + k * 13, P.scrollEdge, 3) }
+  else if (i === 1) {
+    // The elf's scroll, drawn the way the riddle screen draws it: a teal sheet between two rollers.
+    // As a plain rounded rectangle with three lines in it, this read as a blank note.
+    roundRect(ctx, x - 34, y - 24, 68, 48, 4, P.scroll, P.ink, 3)
+    for (let k = 0; k < 3; k++) line(ctx, x - 22, y - 11 + k * 12, x + 22, y - 11 + k * 12, P.scrollEdge, 3)
+    for (const side of [-1, 1]) {
+      roundRect(ctx, x + side * 34 - 5, y - 30, 10, 60, 5, P.cream, P.ink, 3)
+      for (const end of [-1, 1]) circle(ctx, x + side * 34, y + end * 26, 4, P.gold, P.ink, 2)
+    }
+  }
   else if (i === 2) { drawTreasure(ctx, 'kite', x, y - 4, 0.68) }
   else if (i === 3) { circle(ctx, x, y, 22, P.gold, P.ink, 3); circle(ctx, x, y, 12, P.goldDark, 'rgba(0,0,0,0)', 0) }
   else if (i === 4) { drawKey(ctx, x, y - 6, 1.6, true) }
