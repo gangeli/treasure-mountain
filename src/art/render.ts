@@ -112,8 +112,11 @@ function drawLevel(ctx: Ctx, g: Game): void {
         const grp = level.groups.find(gp => Math.abs(loopDelta(gp.x, e.x)) < 10)
         const item = grp && (run.searched.includes(grp.id) || (pending && pending.group.id === grp.id)) ? grp : null
         const rise = Math.min(1, (e.t - 0.85) / 0.45)
-        // High enough to clear the Super Solver's cap: at 90 the key came to rest on his head.
-        const y = GROUND_Y - 40 - rise * 140 + Math.sin(e.t * 6) * 4
+        // High enough that the *bottom* of what comes up clears the Super Solver's cap. This was
+        // tuned for the key, which is small; a treasure is drawn bigger and from a taller box, so
+        // a jack-in-the-box came up wearing the Super Solver's head. Every treasure is drawn inside
+        // y -56..33 of its origin (e2e/artbox.mjs), so one height clears all of them.
+        const y = GROUND_Y - 60 - rise * 165 + Math.sin(e.t * 6) * 4
         // Fades out at the end of the effect instead of blinking away.
         ctx.save(); ctx.globalAlpha = Math.min(1, (2.2 - e.t) / 0.3)
         if (item && item.hides === 'key') drawKey(ctx, x, y, 1.6, true)
