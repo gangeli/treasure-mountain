@@ -92,7 +92,14 @@ export default defineConfig({
     rollupOptions: {
       output: { format: 'iife', inlineDynamicImports: true, entryFileNames: 'game.js', assetFileNames: '[name][extname]' },
     },
-    minify: 'esbuild',
+    // terser squeezes ~8% more out of this bundle than esbuild, and the game is shipped as one
+    // file that phones download once, so the slower build is worth it.
+    minify: 'terser',
+    terserOptions: {
+      compress: { passes: 3, unsafe_arrows: true, unsafe_methods: true, booleans_as_integers: true, drop_console: true },
+      mangle: { toplevel: true },
+      format: { comments: false },
+    },
     reportCompressedSize: true,
   },
   test: {
