@@ -1,5 +1,5 @@
 import { P } from './palette'
-import { type Ctx, roundRect, circle, text, line, poly, vgrad, richText, wrap, star, rr, fillStroke } from './draw'
+import { type Ctx, roundRect, circle, ellipse, text, line, poly, vgrad, richText, wrap, star, rr, fillStroke } from './draw'
 import { W, H, PLAY_H } from '../game/layout'
 import type { Game } from '../game/game'
 import { CASTLE_FLOORS, CASTLE_FLOOR_Y, CASTLE_FLOOR_H } from '../game/game'
@@ -189,7 +189,7 @@ function clubhouse(ctx: Ctx, g: Game): void {
   roundRect(ctx, 1048, 128, 164, 442, 18, 'rgba(0,0,0,0)', P.ink, 3)
   text(ctx, 'to the mountain →', 1130, 92, { size: 20, align: 'center', color: P.cream, weight: 800 })
   // the Super Solver waiting by the door
-  drawPlayer(ctx, 940, 570, 1, 'idle', t, 0)
+  drawPlayer(ctx, 968, 570, 1, 'idle', t, 0)
   if (!g.profile().ascents && !g.canResume()) drawBubble(ctx, ['Welcome to the clubhouse, Super Solver!', "The Master of Mischief stole the crown. Let's climb the mountain!"], 640, 96, 'none', 21, 700)
 }
 
@@ -209,10 +209,12 @@ function poster(ctx: Ctx, x: number, y: number, g: Game, animTotal?: number): vo
   rows.forEach((th, i) => {
     const ry = y + 78 + i * 34
     const reached = total >= th
-    line(ctx, x - w / 2 + 70 + i * 5, ry + 16, x + w / 2 - 70 - i * 5, ry + 16, P.scrollEdge, 2)
+    // The poster is a trapezoid that widens downward, so its rules have to widen with it: they were
+    // narrowing, and crossed the panel edge they were meant to sit inside.
+    line(ctx, x - w / 2 + 76 - i * 5, ry + 16, x + w / 2 - 76 + i * 5, ry + 16, P.scrollEdge, 2)
     text(ctx, String(th), x - w / 2 + 110, ry, { size: 24, align: 'right', color: reached ? P.blueDark : P.inkSoft, weight: 900 })
     text(ctx, RANK_NAMES[7 - i], x - w / 2 + 130, ry, { size: 20, color: reached ? P.blueDark : P.inkSoft, weight: 800 })
-    if (reached) star(ctx, x + w / 2 - 110 - i * 5, ry, 11, P.yellow, P.ink, 2)
+    if (reached) star(ctx, x + w / 2 - 110 + i * 5, ry, 11, P.yellow, P.ink, 2)
   })
   const stars = starsForTotal(total)
   roundRect(ctx, x - w / 2 + 40, y + h - 112, w - 80, 34, 6, P.pink, P.ink, 3)
@@ -345,7 +347,12 @@ function castle(ctx: Ctx, g: Game): void {
   // holes with the Master's arm
   for (const h of c.holes) {
     const hy = CASTLE_FLOOR_Y(h.floor) - 60
-    circle(ctx, h.x, hy, 30, P.ink, P.rockDark, 4)
+    // A recess in the wall, not a flat black disc: a stone rim with a lit top edge and a dark
+    // opening, so it still reads as a hole when the Master's arm is not out.
+    circle(ctx, h.x, hy, 32, '#3a4c78', P.ink, 3)
+    ctx.save(); ctx.strokeStyle = '#6f84b8'; ctx.lineWidth = 3
+    ctx.beginPath(); ctx.arc(h.x, hy, 28, Math.PI * 1.05, Math.PI * 1.85); ctx.stroke(); ctx.restore()
+    circle(ctx, h.x, hy + 2, 23, '#16203a', 'rgba(0,0,0,0)', 0)
     if (h.active) { const k = Math.sin(((h.t % 3) - 2.1) / 0.9 * Math.PI); const len = Math.max(0, k) * 90; roundRect(ctx, h.x - 12, hy - 10, len + 12, 22, 10, P.purple, P.ink, 3); circle(ctx, h.x + len + 4, hy, 14, P.skin, P.ink, 3) }
   }
   // throne room door on the top floor
@@ -376,12 +383,43 @@ function throne(ctx: Ctx, g: Game): void {
   if (step < 5) drawMaster(ctx, 210, 300, t, step >= 3 ? 'angry' : 'smug', 0.85)
   else if (step === 5) { const k = Math.min(1, st / 1.8); drawMaster(ctx, 210 + k * 900, 300 - Math.sin(k * Math.PI) * 300 + k * 200, t, 'blown', 0.85 * (1 - k * 0.6)) }
   roundRect(ctx, 100, 80, 220, 230, 30, 'rgba(0,0,0,0)', P.rockLight, 8)
-  // pedestal fountain
-  roundRect(ctx, 560, 300, 160, 120, 20, P.green, P.ink, 3); ctx.fillStyle = P.greenDark; ctx.fillRect(560, 340, 160, 12)
-  circle(ctx, 640, 300, 70, P.cyan, P.ink, 3); ctx.save(); ctx.globalAlpha = 0.5; circle(ctx, 620, 280, 24, P.white, 'rgba(0,0,0,0)', 0); ctx.restore()
-  // slide back down (right side)
-  poly(ctx, [[1000, 300], [1200, 300], [1240, 420], [960, 420]], P.cyanDark, P.ink, 3); poly(ctx, [[1020, 300], [1180, 300], [1210, 420], [990, 420]], P.cyan, P.ink, 2)
-  text(ctx, 'SLIDE', 1100, 360, { size: 22, align: 'center', color: P.ink, weight: 900 })
+  // The fountain: a stone basin, a column, an upper bowl and a jet of water falling back into it.
+  // (It was a green box with a blue ball on top, which read as an unfinished shape.)
+  const fx = 640
+  roundRect(ctx, 566, 368, 148, 52, 14, P.rockLight, P.ink, 3)
+  ctx.fillStyle = P.rockDark; ctx.fillRect(572, 404, 136, 8)
+  ellipse(ctx, fx, 368, 76, 15, P.cyan, P.ink, 3)
+  ctx.save(); ctx.globalAlpha = 0.45; ellipse(ctx, fx - 22, 365, 22, 5, P.white, 'rgba(0,0,0,0)', 0); ctx.restore()
+  roundRect(ctx, fx - 15, 318, 30, 54, 8, P.rockLight, P.ink, 3)
+  ellipse(ctx, fx, 316, 48, 13, P.rockLight, P.ink, 3)
+  ellipse(ctx, fx, 314, 34, 7, P.cyan, P.ink, 2)
+  // Water: a welling jet above the bowl, drips off its rim, and ripples in the basin. (Drawn as
+  // arcs, the falling water read as a basket handle over a tub.)
+  const jet = 24 + Math.sin(t * 3) * 4
+  ctx.beginPath(); ctx.moveTo(fx - 7, 314); ctx.quadraticCurveTo(fx, 314 - jet * 1.5, fx + 7, 314); ctx.closePath()
+  fillStroke(ctx, P.cyan, P.ink, 2)
+  ctx.save(); ctx.strokeStyle = P.cyan; ctx.lineWidth = 4; ctx.lineCap = 'round'
+  for (const side of [-1, 1]) {
+    const drip = ((t * 60 + (side > 0 ? 20 : 0)) % 46)
+    ctx.beginPath(); ctx.moveTo(fx + side * 40, 322 + drip); ctx.lineTo(fx + side * 40, 330 + drip); ctx.stroke()
+  }
+  ctx.globalAlpha = 0.5; ctx.strokeStyle = P.white; ctx.lineWidth = 2
+  for (const r of [26, 46]) { ctx.beginPath(); ctx.ellipse(fx, 370, r, r * 0.2, 0, 0, Math.PI * 2); ctx.stroke() }
+  ctx.restore()
+  // The slide back down: a chute out through the wall, with a rail and legs under it.
+  roundRect(ctx, 958, 268, 46, 84, 14, '#1c2848', P.ink, 3)
+  ctx.beginPath()
+  ctx.moveTo(986, 300); ctx.bezierCurveTo(1080, 306, 1120, 372, 1268, 392)
+  ctx.lineTo(1268, 428); ctx.bezierCurveTo(1120, 408, 1080, 342, 986, 336)
+  ctx.closePath(); fillStroke(ctx, P.cyan, P.ink, 3)
+  ctx.save(); ctx.globalAlpha = 0.5; ctx.fillStyle = P.cyanDark
+  ctx.beginPath(); ctx.moveTo(986, 330); ctx.bezierCurveTo(1080, 336, 1120, 402, 1268, 422); ctx.lineTo(1268, 428)
+  ctx.bezierCurveTo(1120, 408, 1080, 342, 986, 336); ctx.closePath(); ctx.fill(); ctx.restore()
+  ctx.save(); ctx.strokeStyle = P.cyanDark; ctx.lineWidth = 7; ctx.lineCap = 'round'
+  ctx.beginPath(); ctx.moveTo(990, 288); ctx.bezierCurveTo(1084, 294, 1124, 360, 1268, 380); ctx.stroke(); ctx.restore()
+  for (const [lx, ly] of [[1096, 372], [1210, 404]]) { ctx.fillStyle = P.rockDark; ctx.fillRect(lx, ly, 10, 420 - ly); ctx.strokeStyle = P.ink; ctx.lineWidth = 2; ctx.strokeRect(lx, ly, 10, 420 - ly) }
+  roundRect(ctx, 1010, 246, 96, 30, 8, P.cream, P.ink, 3)
+  text(ctx, 'SLIDE', 1058, 261, { size: 18, align: 'center', color: P.ink, weight: 900 })
   // treasure chest
   const open = step >= 2
   roundRect(ctx, 330, 330, 200, 90, 12, P.pink, P.ink, 4)
