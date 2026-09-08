@@ -1,6 +1,6 @@
 import { Rng, hashString } from '../engine/rng'
 import type { Grade, Riddle, Tier } from '../content/types'
-import { pickRiddle } from '../content/registry'
+import { pickRiddle, recentEntry } from '../content/registry'
 import { generateLevel, treasuresForStars, starsForTotal, STAR_THRESHOLDS, groupLabel, type Group, type Feature } from './world'
 import { LOOP_W, wrapX, loopDelta, loopDist, W, PLAY_H } from './layout'
 import type { Screen, Profile, Player, Elf, Run, RiddleView, CastleState, LevelState, Events, Effect } from './types'
@@ -111,7 +111,7 @@ export class Game {
     return [1, 2, 3].includes(r.levelNo as number) && fin(r.seed) && fin(r.coins) && (r.coins as number) >= 0 &&
       fin(r.nets) && (r.nets as number) >= 0 && strArr(r.treasures) && !!r.clues && typeof r.clues === 'object' &&
       typeof r.hasKey === 'boolean' && Array.isArray(r.searched) && r.searched.every(fin) &&
-      typeof r.secretUsed === 'boolean' && fin(r.groundCoinsSpawned) && strArr(r.seen) && strArr(r.recentAreas) && fin(r.playerX)
+      typeof r.secretUsed === 'boolean' && fin(r.groundCoinsSpawned) && strArr(r.seen) && strArr(r.recent) && fin(r.playerX)
   }
 
   toSave(): SaveData {
@@ -176,7 +176,7 @@ export class Game {
     const seed = this.rng.int(1, 1e9)
     this.run = {
       levelNo: 1, seed, coins: START_COINS, nets: START_NETS, treasures: [], clues: {}, hasKey: false, searched: [], secretUsed: false,
-      groundCoinsSpawned: 0, seen: [], recentAreas: [], playerX: 130,
+      groundCoinsSpawned: 0, seen: [], recent: [], playerX: 130,
     }
     this.savedRunGrade = this.grade
     if (this.profile().ascents === 0 && this.firstRun) { this.goto('intro'); return }
@@ -415,10 +415,11 @@ export class Game {
   private openRiddle(elf: Elf): void {
     const run = this.run!
     const seen = new Set(run.seen)
-    const r = pickRiddle(this.grade, this.tierFor(run.levelNo), this.rng, seen, run.recentAreas)
+    const r = pickRiddle(this.grade, this.tierFor(run.levelNo), this.rng, seen, run.recent)
     run.seen.push(r.key)
     if (run.seen.length > 200) run.seen.shift()
-    run.recentAreas.push(r.family)
+    run.recent.push(recentEntry(r))
+    if (run.recent.length > 8) run.recent.shift()
     this.riddle = { riddle: r, selected: 0, wrong: [], triesLeft: this.grade <= 1 ? 3 : 2, phase: 'ask', t: 0, coinsWon: 0 }
     ;(this.riddle as any).elfId = elf.id
     this.sfx('scroll')

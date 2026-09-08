@@ -5,7 +5,7 @@ import { GRADES, TIERS, type Generator, type Riddle } from '../src/content/types
 import { rhymes } from '../src/content/generators/rhymes'
 import { sounds } from '../src/content/generators/sounds'
 import { FAMILIES, PROMPT_ONLY, classesOf, isCvc, noInitialBlend, endSoundOf, endKeySound, beginSoundOf } from '../src/content/data/phonics'
-import { pickRiddle, generatorsFor } from '../src/content/registry'
+import { pickRiddle, generatorsFor, recentEntry } from '../src/content/registry'
 import { standardChecks } from './helpers'
 
 describe('all registered generators', () => {
@@ -115,6 +115,68 @@ describe('sounds', () => {
     for (const tier of TIERS) for (let i = 0; i < 100; i++) {
       const r = sounds.make(0, tier, rng)
       for (const c of r.choices) expect(noInitialBlend(c.text ?? ''), `choice ${c.text}`).toBe(true)
+    }
+  })
+})
+
+describe('the picker varies what it asks', () => {
+  const FAM_AREA = new Map(GENERATORS.map(g => [g.id, g.area]))
+
+  it('stamps each riddle with its family\'s area', () => {
+    for (const grade of GRADES) {
+      const rng = new Rng(grade + 1)
+      const seen = new Set<string>()
+      for (let i = 0; i < 200; i++) {
+        const r = pickRiddle(grade, 2, rng, seen)
+        expect(r.area, `${r.family} at grade ${grade}`).toBe(FAM_AREA.get(r.family))
+      }
+    }
+  })
+
+  /** Plays climbs of 20 riddles and reports how often the same area or family repeats. */
+  function runs(useHistory: boolean): { area: number; family: number; areaPct: number } {
+    let worstArea = 0, worstFam = 0, three = 0, n = 0
+    for (const grade of GRADES) {
+      for (let s = 0; s < 60; s++) {
+        const rng = new Rng(s * 31 + grade)
+        const seen = new Set<string>(); const recent: string[] = []
+        let lastArea = '', lastFam = '', ar = 0, fr = 0
+        for (let i = 0; i < 20; i++) {
+          const r = pickRiddle(grade, ((i % 3) + 1) as 1 | 2 | 3, rng, seen, useHistory ? recent : [])
+          seen.add(r.key); recent.push(recentEntry(r))
+          ar = lastArea === r.area ? ar + 1 : 1; lastArea = r.area!
+          fr = lastFam === r.family ? fr + 1 : 1; lastFam = r.family
+          worstArea = Math.max(worstArea, ar); worstFam = Math.max(worstFam, fr)
+          if (ar >= 3) three++
+          n++
+        }
+      }
+    }
+    return { area: worstArea, family: worstFam, areaPct: 100 * three / n }
+  }
+
+  // The balancing used to read the history with the wrong keys, so every weight came out the same
+  // and a child could be asked ten reading riddles running. These numbers are what makes it work.
+  it('mixes the three areas better than picking blind', () => {
+    const off = runs(false), on = runs(true)
+    expect(on.areaPct).toBeLessThan(off.areaPct * 0.6)
+    expect(on.area).toBeLessThanOrEqual(6)
+    expect(on.family).toBeLessThanOrEqual(3)
+  })
+
+  it('keeps all three areas near a third of the riddles', () => {
+    for (const grade of GRADES) {
+      const count: Record<string, number> = { reading: 0, math: 0, thinking: 0 }
+      const rng = new Rng(grade * 5 + 2)
+      const seen = new Set<string>(); const recent: string[] = []
+      for (let i = 0; i < 600; i++) {
+        const r = pickRiddle(grade, 2, rng, seen, recent)
+        seen.add(r.key); recent.push(recentEntry(r)); count[r.area!]++
+      }
+      for (const a of ['reading', 'math', 'thinking']) {
+        expect(count[a] / 600, `grade ${grade} ${a}`).toBeGreaterThan(0.2)
+        expect(count[a] / 600, `grade ${grade} ${a}`).toBeLessThan(0.47)
+      }
     }
   })
 })

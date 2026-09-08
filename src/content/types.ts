@@ -71,14 +71,18 @@ export interface Riddle {
   tier: Tier
   /** Key used to avoid repeats within a session. */
   key: string
+  /** Which of the three areas the family belongs to. Stamped on by pickRiddle. */
+  area?: Area
 }
+
+export type Area = 'reading' | 'math' | 'thinking'
 
 export interface Generator {
   id: string
   /** Family name for reports. */
   name: string
   /** 'reading' | 'math' | 'thinking' */
-  area: 'reading' | 'math' | 'thinking'
+  area: Area
   /** Which grades this family is available for (K = 0). */
   grades: Grade[]
   /** Relative weight per grade (defaults to 1). */

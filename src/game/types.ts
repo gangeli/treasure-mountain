@@ -58,7 +58,8 @@ export interface Run {
   groundCoinsSpawned: number
   /** Riddle keys already seen this ascent. */
   seen: string[]
-  recentAreas: string[]
+  /** Area+family of the last few riddles, so the picker can vary what it asks. */
+  recent: string[]
   playerX: number
 }
 
