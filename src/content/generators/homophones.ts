@@ -13,6 +13,30 @@ function levels(grade: Grade, tier: Tier): number[] {
   return table[grade]![tier - 1]
 }
 
+/**
+ * Within a level the sets run from the pairs a child meets first (sea/see, two/too) to the ones
+ * they meet last (made/maid, toe/tow). Tier 1 stays in the first part of that run and tier 3 in the
+ * last, so two tiers drawing the same level are still not the same set of questions.
+ */
+function inTier(sets: HomophoneSet[], tier: Tier): HomophoneSet[] {
+  const byLevel = new Map<number, HomophoneSet[]>()
+  for (const s of sets) { if (!byLevel.has(s.level)) byLevel.set(s.level, []); byLevel.get(s.level)!.push(s) }
+  const out: HomophoneSet[] = []
+  for (const group of byLevel.values()) {
+    const m = group.length
+    const from = tier === 1 ? 0 : tier === 2 ? Math.floor(m * 0.3) : Math.floor(m * 0.55)
+    const to = tier === 1 ? Math.ceil(m * 0.6) : tier === 2 ? Math.ceil(m * 0.85) : m
+    out.push(...group.slice(from, to))
+  }
+  return out.length ? out : sets
+}
+
+/** 0 for the first pair in its level, 1 for the last: how far into the level this set sits. */
+function rankOf(set: HomophoneSet): number {
+  const group = HOMOPHONES.filter(s => s.level === set.level)
+  return group.length > 1 ? group.indexOf(set) / (group.length - 1) : 0
+}
+
 /** Every word that is a homophone of `word` anywhere in the data (a word may sit in two sets, e.g. two/too). */
 function soundAlikes(word: string): Set<string> {
   const out = new Set<string>([word])
@@ -39,7 +63,8 @@ export const homophones: Generator = {
   make(grade, tier, rng) {
     const n = choiceCount(grade)
     const lv = levels(grade, tier)
-    const set = rng.pick(HOMOPHONES.filter(s => lv.includes(s.level)))
+    const set = rng.pick(inTier(HOMOPHONES.filter(s => lv.includes(s.level)), tier))
+    const rank = rankOf(set) * 6
     const target = rng.pick(set.words)
     const others = set.words.filter(w => w !== target).map(w => w.word)
     const soundMode = rng.bool(grade === 2 ? 0.3 : 0.15)
@@ -55,7 +80,8 @@ export const homophones: Generator = {
       return riddle({
         family: 'homophones', skill: 'vocabulary: homophones', prompt, highlight: [target.word], choices, answer: idx,
         spoken: `Which word sounds just like ${target.word} but is spelled differently? ${choices.map(c => c.text).join(', ')}?`,
-        metric: set.level * 10 + answer.length - 2, grade, tier,
+        metric: set.level * 10 + answer.length - 2 + rank, grade, tier,
+        key: `homophones|sound|${target.word}|${answer}`,
       })
     }
     const decoys = [...rng.shuffle(others), ...fillers(set, target.word, rng)]
@@ -69,7 +95,7 @@ export const homophones: Generator = {
     return riddle({
       family: 'homophones', skill: 'vocabulary: homophones', prompt, choices, answer,
       spoken: `${spokenBlank(target.sentence)} Which word fills the blank? ${choices.map(c => c.text).join(', ')}?`,
-      metric: set.level * 10 + target.word.length, grade, tier,
+      metric: set.level * 10 + target.word.length + rank, grade, tier,
       key: `homophones|${target.word}|${target.sentence}`,
     })
   },
