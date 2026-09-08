@@ -42,6 +42,7 @@ jobs:
           node e2e/fileurl.mjs
           npx tsx e2e/audio.mjs
           node e2e/artbox.mjs
+          node e2e/flash.mjs
           npx tsx e2e/contrast.mjs
           npx tsx e2e/textfit.ts 30
           node e2e/fuzz.mjs 1500

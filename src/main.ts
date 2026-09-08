@@ -106,6 +106,23 @@ if (testMode) {
       return Math.max(0, performance.now() - t0 - baseline) / n
     },
     backingPixels: (): number => stage.canvas.width * stage.canvas.height,
+    /**
+     * The mean brightness of each of the next n frames, stepped at 1/60s (e2e/flash.mjs). A game
+     * for children must not flash: WCAG 2.3.1 draws the line at three flashes a second over a
+     * large part of the screen, and photosensitive epilepsy is commonest between ages 7 and 19.
+     */
+    luma(n: number): number[] {
+      const out: number[] = []
+      for (let i = 0; i < n; i++) {
+        game.update(1 / 60)
+        render(stage.begin(), game)
+        const d = stage.ctx.getImageData(0, 0, stage.canvas.width, stage.canvas.height).data
+        let sum = 0, count = 0
+        for (let p = 0; p < d.length; p += 4 * 37) { sum += 0.2126 * d[p] + 0.7152 * d[p + 1] + 0.0722 * d[p + 2]; count++ }
+        out.push(sum / count / 255)
+      }
+      return out
+    },
     show(name: string) {
       const g = game
       if (name.startsWith('sheet-')) { loop.stop(); drawSheet(stage.begin(), name, 0.3); return }
