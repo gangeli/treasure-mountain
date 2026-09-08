@@ -57,21 +57,34 @@ function serviceWorker(): Plugin {
       const version = 'tm-' + (hash >>> 0).toString(36)
       const sw = `// Treasure Mountain service worker (generated at build time)
 const VERSION = '${version}';
-const FILES = ${JSON.stringify(files.map(f => './' + f))};
+// './' as well as './index.html': a navigation asks for the directory, not the file, so without it
+// the precached page was never the one served and offline play leaned on the runtime cache instead.
+const FILES = ${JSON.stringify(['./', ...files.map(f => './' + f)])};
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== VERSION).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
+var save = function (req, res) {
+  if (res && res.ok) { var copy = res.clone(); caches.open(VERSION).then(function (c) { c.put(req, copy); }); }
+  return res;
+};
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
   if (url.origin !== location.origin) return;
-  e.respondWith(caches.match(e.request, { ignoreSearch: true }).then(hit => hit || fetch(e.request).then(res => {
-    if (res.ok) { const copy = res.clone(); caches.open(VERSION).then(c => c.put(e.request, copy)); }
-    return res;
-  }).catch(() => caches.match('./index.html'))));
+  // The page itself goes to the network first, falling back to the cache. It is the whole game in
+  // one file, so serving it from the cache first would pin a player to the build they installed
+  // until the browser got round to noticing a new worker - which it is in no hurry to do. The
+  // request is conditional, so a player on an unchanged build pays for a 304, not for the file.
+  if (e.request.mode === 'navigate') {
+    e.respondWith(fetch(e.request).then(res => save(e.request, res)).catch(() => caches.match(e.request, { ignoreSearch: true }).then(hit => hit || caches.match('./index.html'))));
+    return;
+  }
+  // Everything else - icons, the manifest - is content-addressed by the cache version and can come
+  // straight from the cache.
+  e.respondWith(caches.match(e.request, { ignoreSearch: true }).then(hit => hit || fetch(e.request).then(res => save(e.request, res))));
 });
 `
       writeFileSync(join(outDir, 'sw.js'), sw)
