@@ -37,6 +37,14 @@ window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferr
 window.addEventListener('appinstalled', () => { deferredInstall = null; game.installable = false })
 
 // Speech synthesis for the read-aloud button (and automatically for K-1 riddles).
+/**
+ * Stops whatever is being read. A riddle takes several seconds to read out and a child can answer
+ * in one, so without this the voice follows them back onto the mountain, still asking the question
+ * they have already answered - and keeps going after the app is put down.
+ */
+function stopSpeaking(): void {
+  try { window.speechSynthesis?.cancel() } catch { /* no speech available */ }
+}
 function speak(text: string): void {
   try {
     if (!('speechSynthesis' in window)) return
@@ -47,6 +55,8 @@ function speak(text: string): void {
   } catch { /* no speech available */ }
 }
 
+let lastScreen = game.screen
+let wasPaused = game.paused
 function update(dt: number): void {
   const { pointer, keys } = input.drain()
   for (const k of keys) { if (k.kind === 'down' && !k.repeat) game.keyDown(k.key); else if (k.kind === 'up') game.keyUp(k.key) }
@@ -57,7 +67,9 @@ function update(dt: number): void {
   game.events.sfx.length = 0
   audio.play(game.events.music)
   audio.setSound(game.settings.sound); audio.setMusic(game.settings.music)
+  const speaking = !!game.speak
   if (game.speak) { if (!testMode && (game.grade <= 1 || (game as any)._speakRequested)) speak(game.speak); game.speak = null; (game as any)._speakRequested = false }
+  if (game.screen !== lastScreen || game.paused !== wasPaused) { lastScreen = game.screen; wasPaused = game.paused; if (!speaking) stopSpeaking() }
   if ((game as any).installRequested) { (game as any).installRequested = false; if (deferredInstall) { deferredInstall.prompt(); deferredInstall = null } }
 }
 
@@ -70,7 +82,7 @@ loop.start()
 
 // Android back button / lifecycle hooks
 window.tmBack = () => game.back()
-window.tmPause = () => { if (game.screen === 'level' || game.screen === 'castle') { if (!game.paused) game.togglePause() } }
+window.tmPause = () => { stopSpeaking(); if (game.screen === 'level' || game.screen === 'castle') { if (!game.paused) game.togglePause() } }
 window.tmResume = () => { audio.unlock() }
 document.addEventListener('visibilitychange', () => { if (document.hidden) window.tmPause?.() })
 

@@ -9,6 +9,9 @@ import { SFX_NAMES, MUSIC_NAMES } from '../src/engine/audio.ts'
 const pw = await playwright()
 const { server, url } = await serve('dist')
 const { browser, page } = await launch(pw, { dpr: 1 })
+// Count the calls the read-aloud makes to the speech engine. Headless Chromium has no voices, so
+// this stands in for one; what matters is that the game stops the voice, not what it sounds like.
+await page.addInitScript(() => { window.__cancels = 0; Object.defineProperty(window, 'speechSynthesis', { value: { cancel: () => { window.__cancels++ }, speak: () => {} }, configurable: true }) })
 await page.goto(url + '?test=1')
 await page.waitForFunction(() => window.__tm && window.__tm.ready)
 
@@ -59,8 +62,7 @@ const result = await page.evaluate(async ([SFX, MUSIC]) => {
   return { sfx, music, mix }
 }, [SFX_NAMES, MUSIC_NAMES])
 
-await browser.close()
-server.close()
+
 
 if (result.error) { console.error(result.error); process.exit(1) }
 
@@ -88,5 +90,21 @@ const mixDb = (20 * Math.log10(mix.peak)).toFixed(1)
 if (mix.peak > 0.85) { console.log(`\nmix  music + 9 sounds  peak ${mix.peak.toFixed(3)} (${mixDb} dBFS)  FAIL too close to clipping`); failures++ }
 else console.log(`\nmix  music + 9 sounds  peak ${mix.peak.toFixed(3)} (${mixDb} dBFS)  ok, ${(0.85 / mix.peak).toFixed(1)}x headroom`)
 
+// A riddle takes several seconds to read and a child can answer in one: the voice must not follow
+// them back onto the mountain, or keep reading after the app is put down.
+await page.evaluate(() => window.__tm.show('riddle'))
+await page.waitForTimeout(150)
+const spoken = await page.evaluate(() => window.__cancels)
+await page.evaluate(() => window.__tm.show('level1'))
+await page.waitForTimeout(150)
+if (await page.evaluate(() => window.__cancels) <= spoken) { console.log('\nread-aloud  FAIL the voice was not stopped on leaving the riddle'); failures++ }
+else console.log('\nread-aloud  ok, the voice stops when the riddle screen is left')
+const backgrounded = await page.evaluate(() => window.__cancels)
+await page.evaluate(() => window.tmPause())
+await page.waitForTimeout(100)
+if (await page.evaluate(() => window.__cancels) <= backgrounded) { console.log('read-aloud  FAIL the voice was not stopped when the app was put down'); failures++ }
+else console.log('read-aloud  ok, the voice stops when the app is put down')
+
+await browser.close(); server.close()
 console.log(failures ? `\n${failures} audio problems` : '\nall sounds and music produce audio')
 process.exit(failures ? 1 : 0)
