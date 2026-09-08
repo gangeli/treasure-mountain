@@ -47,7 +47,11 @@ export function drawHud(ctx: Ctx, g: Game, buttons: Button[]): void {
   const msg = g.lvl?.message
   if (msg && msg.text.length && g.screen === 'level' && g.lvl) {
     const L = 7680; let d = g.lvl.player.x - g.lvl.camX; d = ((d % L) + L) % L; if (d > L - 400) d -= L
-    drawBubble(ctx, msg.text, Math.max(200, Math.min(W - 200, d)), 300 - g.lvl.player.y, 'down')
+    // While a POOF is lifting a key or a treasure out of the scenery, the bubble gets out of the
+    // way: at its usual height it cut the top off the tall prizes - the jack-in-the-box came up as
+    // a plain red box with its jack behind the message naming it.
+    const reveal = g.lvl.effects.some(e => e.kind === 'poof' && e.t > 0.35)
+    drawBubble(ctx, msg.text, Math.max(200, Math.min(W - 200, d)), (reveal ? 148 : 300) - g.lvl.player.y, 'down')
   }
 }
 

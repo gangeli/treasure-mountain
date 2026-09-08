@@ -1,5 +1,5 @@
 import { P } from './palette'
-import { type Ctx, text, circle, star } from './draw'
+import { type Ctx, text, circle, star, poly } from './draw'
 import { W, PLAY_H, GROUND_Y, LOOP_W, loopDelta } from '../game/layout'
 import type { Game } from '../game/game'
 import { drawBackdrop, drawFrame } from './backgrounds'
@@ -30,6 +30,17 @@ function drawRotateHint(ctx: Ctx): void {
   ctx.fillStyle = '#ffffff'; ctx.strokeStyle = P.ink; ctx.lineWidth = 6
   ctx.beginPath(); ctx.roundRect(-70, -120, 140, 240, 18); ctx.fill(); ctx.stroke()
   ctx.fillStyle = P.skyTop; ctx.fillRect(-56, -100, 112, 200)
+  ctx.restore()
+  // A curved arrow over the phone: the tilted phone alone says "something is wrong with how you
+  // are holding this", not which way to turn it.
+  ctx.save(); ctx.translate(W / 2, 300); ctx.lineCap = 'round'
+  for (const [col, wdt] of [[P.ink, 17], [P.yellow, 10]] as [string, number][]) {
+    ctx.strokeStyle = col; ctx.lineWidth = wdt
+    ctx.beginPath(); ctx.arc(0, 0, 190, -Math.PI * 0.22, -Math.PI * 0.78, true); ctx.stroke()
+  }
+  const th = -Math.PI * 0.78
+  ctx.translate(Math.cos(th) * 190, Math.sin(th) * 190); ctx.rotate(Math.atan2(-Math.cos(th), Math.sin(th)))
+  poly(ctx, [[22, 0], [-14, -17], [-14, 17]], P.yellow, P.ink, 4)
   ctx.restore()
   text(ctx, 'Turn your device sideways', W / 2, 500, { size: 44, align: 'center', color: P.yellow, weight: 900, outline: P.ink, outlineWidth: 8 })
   text(ctx, 'Treasure Mountain is a wide game', W / 2, 560, { size: 26, align: 'center', color: '#ffffff', weight: 700 })
