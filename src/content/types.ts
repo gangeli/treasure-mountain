@@ -46,7 +46,7 @@ export interface Choice {
 export interface Riddle {
   /** Generator family id, e.g. 'rhymes'. */
   family: string
-  /** Skill tag shown in the parent report, e.g. 'phonics: rhyming'. */
+  /** Skill tag, e.g. 'phonics: rhyming'; printed in the sample dumps and the difficulty report. */
   skill: string
   /** Lines of the prompt as displayed on the scroll (max ~5 lines of ~40 chars). */
   prompt: string[]
