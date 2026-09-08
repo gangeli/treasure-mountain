@@ -13,6 +13,10 @@ export function validateRiddle(r: Riddle, grade: number, gen: string): string[] 
   for (const line of r.prompt) if (line.length > 46) errs.push(`line too long (${line.length}): ${line}`)
   for (const c of r.choices) if (c.text && c.text.length > 26) errs.push(`choice too long: ${c.text}`)
   if (!r.spoken || r.spoken.length < 5) errs.push('spoken missing')
+  // What the voice actually says. A slash is read out as "slash" (3/4 -> "three slash four",
+  // km/h -> "K M slash H") and a blank line is read as "underscore underscore underscore".
+  if (r.spoken?.includes('/')) errs.push(`spoken has a slash: ${r.spoken}`)
+  if (r.spoken?.includes('_')) errs.push(`spoken has a blank: ${r.spoken}`)
   if (!r.key) errs.push('key missing')
   if (typeof r.metric !== 'number' || Number.isNaN(r.metric)) errs.push('metric missing')
   if (r.family !== gen) errs.push(`family ${r.family} != ${gen}`)
