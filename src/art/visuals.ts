@@ -84,9 +84,12 @@ function counters(ctx: Ctx, v: Extract<Visual, { kind: 'counters' }>, x: number,
     })
     return
   }
-  const perRow = n <= 5 ? n : n <= 10 ? 5 : n <= 12 ? 6 : 7
-  const rows = Math.ceil(n / perRow)
-  const cell = Math.min(w / perRow, h / rows, n <= 3 ? 130 : n <= 6 ? 110 : 90)
+  // Sibling pictures (the answer choices of "which group has the most?") lay out for the same
+  // number, so every item is drawn at the same size and only the count differs.
+  const layout = Math.max(n, v.scaleTo ?? 0)
+  const perRow = layout <= 5 ? layout : layout <= 10 ? 5 : layout <= 12 ? 6 : 7
+  const rows = Math.ceil(layout / perRow)
+  const cell = Math.min(w / perRow, h / rows, layout <= 3 ? 130 : layout <= 6 ? 110 : 90)
   const r = cell * 0.34
   const x0 = x + (w - perRow * cell) / 2 + cell / 2, y0 = y + (h - rows * cell) / 2 + cell / 2
   for (let i = 0; i < n; i++) {

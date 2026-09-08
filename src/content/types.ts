@@ -20,7 +20,11 @@ export type CoinName = 'penny' | 'nickel' | 'dime' | 'quarter'
  */
 export type Visual =
   /** `groups` = equal groups (a number) or explicit group sizes (an array, e.g. [3, 2] for 3 + 2). */
-  | { kind: 'counters'; item: CounterItem; count: number; groups?: number | number[]; crossed?: number }
+  /**
+   * `scaleTo` lays the items out as if there were that many, so a row of answer pictures shares one
+   * item size: without it "which group has the most?" draws one huge flower beside five tiny ones.
+   */
+  | { kind: 'counters'; item: CounterItem; count: number; groups?: number | number[]; crossed?: number; scaleTo?: number }
   | { kind: 'clock'; hour: number; minute: number }
   | { kind: 'coins'; coins: CoinName[] }
   | { kind: 'fraction'; shape: 'circle' | 'bar'; parts: number; shaded: number }

@@ -64,8 +64,10 @@ function pictures(tier: Tier, rng: Rng): ReturnType<typeof riddle> {
   const [i1, i2, i3] = rng.sample(COUNTER_ITEMS, 3)
   const same = rng.int(3, 6)
   const diff = rng.bool() ? same + rng.int(2, 3) : Math.max(1, same - rng.int(2, 3))
-  const odd: Choice = { visual: { kind: 'counters', item: i3, count: diff } }
-  const rest: Choice[] = [{ visual: { kind: 'counters', item: i1, count: same } }, { visual: { kind: 'counters', item: i2, count: same } }]
+  // One size for all three, or the odd one out could be spotted by how big its items are drawn.
+  const big = Math.max(diff, same)
+  const odd: Choice = { visual: { kind: 'counters', item: i3, count: diff, scaleTo: big } }
+  const rest: Choice[] = [{ visual: { kind: 'counters', item: i1, count: same, scaleTo: big } }, { visual: { kind: 'counters', item: i2, count: same, scaleTo: big } }]
   const { choices, answer } = shuffled(rng, odd, rest, 3)
   const prompt = rng.pick([['Which one shows a different number?'], ['Count each group.', 'Which group has a different number?']])
   const spoken = `Which one shows a different number? ${choices.map(c => (c.visual && c.visual.kind === 'counters' ? `${c.visual.count} ${c.visual.item}s` : '')).join(', ')}?`

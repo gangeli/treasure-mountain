@@ -124,8 +124,10 @@ export const compare: Generator = {
       const item: CounterItem = rng.pick(COUNTER_ITEMS)
       const most = tier === 1 && grade === 0 ? true : rng.bool(0.6)
       const target = most ? Math.max(...counts) : Math.min(...counts)
-      const answerC: Choice = { visual: { kind: 'counters', item, count: target } }
-      const decoys: Choice[] = counts.filter(c => c !== target).map(c => ({ visual: { kind: 'counters', item, count: c } }))
+      // Every group is drawn at the size of the biggest one, so "the most" is a count, not a scale.
+      const biggest = Math.max(...counts)
+      const answerC: Choice = { visual: { kind: 'counters', item, count: target, scaleTo: biggest } }
+      const decoys: Choice[] = counts.filter(c => c !== target).map(c => ({ visual: { kind: 'counters', item, count: c, scaleTo: biggest } }))
       const { choices, answer } = shuffled(rng, answerC, decoys, n)
       const word = most ? 'the most' : 'the fewest'
       const prompt = [`Which group has ${word} ${plural(item, 2)}?`]
