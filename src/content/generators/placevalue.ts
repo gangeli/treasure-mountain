@@ -62,10 +62,10 @@ export const placevalue: Generator = {
         const decoys = numDecoys(rng, d, n - 1, [...fracDigits.filter(x => x !== d), whole], 4, 0, 9).map(String)
         const { choices, answer } = shuffled(rng, String(d), decoys, n)
         const prompt = [`Which digit is in the ${DPLACE[pl]}`, `place of ${text}?`]
-        return mathRiddle({ family: 'placevalue', skill, prompt, choices, answer, spoken: `Which digit is in the ${DPLACE[pl]} place of ${text}? ${sayChoices(choices)}?`, metric: metricBase + 2, grade, tier }, `digit:${-pl},${d}`)
+        return mathRiddle({ family: 'placevalue', skill, prompt, choices, answer, spoken: `Which digit is in the ${DPLACE[pl]} place of ${text}? ${sayChoices(choices)}?`, metric: metricBase + 2, grade, tier }, `digitof:${text},${-pl}`)
       }
       if (mode === 'value') {
-        const pl = rng.int(1, places)
+        const pl = rng.pick(fracDigits.map((d, i) => d === 0 ? -1 : i + 1).filter(i => i > 0))
         const d = fracDigits[pl - 1]
         const val = (d / Math.pow(10, pl)).toFixed(pl)
         const decoys = [d / 10, d / 100, d / 1000, d, d * 10].map((v, i) => i === 3 || i === 4 ? String(v) : v.toFixed(i === 0 ? 1 : i === 1 ? 2 : 3)).filter(s => s !== val)
@@ -120,7 +120,7 @@ export const placevalue: Generator = {
     const ds = [...String(v)].map(Number)
 
     if (mode === 'compose') {
-      const partsText = ds.map((d, i) => `${d} ${PLACE[ds.length - 1 - i]}`).filter((_, i) => grade === 1 ? true : ds[i] > 0)
+      const partsText = ds.map((d, i) => `${d} ${d === 1 ? PLACE[ds.length - 1 - i].replace(/s$/, '') : PLACE[ds.length - 1 - i]}`).filter((_, i) => grade === 1 ? true : ds[i] > 0)
       const swapped = Number([...String(v)].reverse().join(''))
       const sum = ds.reduce((a, b) => a + b, 0)
       const decoys = numDecoys(rng, v, n - 1, [swapped, sum, ds[0] * Math.pow(10, digits - 1), v + 10, v - 10, v + 1], 3, 1).map(fmt)
@@ -142,7 +142,7 @@ export const placevalue: Generator = {
       const d = digitAt(v, place)
       const { choices, answer } = shuffled(rng, String(d), digitDecoys(rng, v, d, n + 2), n)
       const prompt = digits <= 4 ? [`Which digit is in the ${PLACE[place]}`, `place of ${fmt(v)}?`] : [`Which digit is in the`, `${PLACE[place]} place of ${fmt(v)}?`]
-      return mathRiddle({ family: 'placevalue', skill, prompt, choices, answer, spoken: `Which digit is in the ${PLACE[place]} place of ${fmt(v)}? ${sayChoices(choices)}?`, metric: metricBase + 2 + place, grade, tier }, `digit:${place},${d}`)
+      return mathRiddle({ family: 'placevalue', skill, prompt, choices, answer, spoken: `Which digit is in the ${PLACE[place]} place of ${fmt(v)}? ${sayChoices(choices)}?`, metric: metricBase + 2 + place, grade, tier }, `digitof:${v},${place}`)
     }
     if (mode === 'value') {
       const place = rng.int(1, digits - 1)
@@ -158,7 +158,10 @@ export const placevalue: Generator = {
       const place = rng.int(0, digits - 1)
       const d = digitAt(v, place)
       const perms = digitPerms(rng, v, n + 2, place, d)
-      const fill = numDecoys(rng, v, n, [], Math.pow(10, digits - 1), Math.pow(10, digits - 1)).filter(x => digitAt(x, place) !== d)
+      const fill: number[] = []
+      const lo = Math.pow(10, digits - 1), hi = Math.pow(10, digits) - 1
+      let tries = 0
+      while (fill.length < n + 2 && tries++ < 200) { const x = rng.int(lo, hi); if (x !== v && digitAt(x, place) !== d && !fill.includes(x)) fill.push(x) }
       const { choices, answer } = shuffled(rng, fmt(v), [...perms, ...fill].map(fmt), n)
       const prompt = [`Which number has a ${d} in the`, `${PLACE[place]} place?`]
       return mathRiddle({ family: 'placevalue', skill, prompt, choices, answer, spoken: `Which number has a ${d} in the ${PLACE[place]} place? ${sayChoices(choices)}?`, metric: metricBase + 3 + place, grade, tier }, `digit:${place},${d}`)
@@ -171,19 +174,28 @@ export const placevalue: Generator = {
       return mathRiddle({ family: 'placevalue', skill: 'math: expanded form', prompt, choices, answer, spoken: `${expanded(v).replace(/\+/g, 'plus')} equals what? ${sayChoices(choices)}?`, metric: metricBase + 5, grade, tier }, `num:${expanded(v).replace(/,/g, '')}`)
     }
     if (mode === 'expandedFrom') {
-      const ans = expanded(v)
+      // Keep the expanded form short enough for a choice: 4 digits, or 5 digits with two zeros.
+      let ev = v
+      if (digits > 4) {
+        const dd = [...String(distinctDigits(rng, 5))].map(Number)
+        for (const i of rng.sample([1, 2, 3, 4], 2)) dd[i] = 0
+        ev = Number(dd.join(''))
+      }
+      const eds = [...String(ev)].map(Number)
+      const ans = expanded(ev)
       const wrongs = new Set<string>()
       // Drop a zero from one term, add a zero to one term, or use bare digits.
-      const terms = ds.map((d, i) => d * Math.pow(10, ds.length - 1 - i)).filter(x => x > 0)
+      const terms = eds.map((d, i) => d * Math.pow(10, eds.length - 1 - i)).filter(x => x > 0)
       for (let i = 0; i < terms.length && wrongs.size < 6; i++) {
         if (terms[i] >= 10) wrongs.add(terms.map((t, j) => j === i ? t / 10 : t).map(fmtInt).join(' + '))
         wrongs.add(terms.map((t, j) => j === i ? t * 10 : t).map(fmtInt).join(' + '))
       }
-      wrongs.add(ds.filter(d => d > 0).join(' + '))
+      wrongs.add(eds.filter(d => d > 0).join(' + '))
+      wrongs.add(terms.map((t, j) => j === terms.length - 1 ? t * 10 : t).map(fmtInt).join(' + '))
       wrongs.delete(ans)
       const { choices, answer } = shuffled(rng, ans, rng.shuffle([...wrongs].filter(s => s.length <= 26)), n)
-      const prompt = [`Which shows ${fmt(v)} in expanded form?`]
-      return mathRiddle({ family: 'placevalue', skill: 'math: expanded form', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: metricBase + 6, grade, tier }, `num:${v}`)
+      const prompt = [`Which shows ${fmt(ev)} in expanded form?`]
+      return mathRiddle({ family: 'placevalue', skill: 'math: expanded form', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: metricBase + 6, grade, tier }, `num:${ev}`)
     }
     // round
     const place = grade === 3 ? (tier === 2 ? 1 : rng.pick([1, 2])) : (tier === 1 ? 3 : tier === 2 ? rng.pick([3, 4]) : rng.pick([4, 5, 6]))

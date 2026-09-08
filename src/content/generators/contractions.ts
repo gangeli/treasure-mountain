@@ -18,11 +18,12 @@ export function misspellings(short: string): string[] {
   const bare = short.replace("'", '')
   const pos = short.indexOf("'")
   const out = [bare]
-  for (let i = 1; i < bare.length; i++) {
-    if (i === pos) continue
-    out.push(bare.slice(0, i) + "'" + bare.slice(i))
+  // Apostrophe one step off (do'nt), at the end (dont'), then two steps off; most plausible first.
+  for (const i of [pos - 1, pos + 1, bare.length, pos - 2, pos + 2]) {
+    if (i < 1 || i > bare.length || i === pos) continue
+    const w = bare.slice(0, i) + "'" + bare.slice(i)
+    if (!out.includes(w)) out.push(w)
   }
-  out.push(bare + "'")
   return out
 }
 
@@ -39,7 +40,8 @@ export const contractions: Generator = {
     const c = rng.pick(pool)
     type Mode = 'expand' | 'contract' | 'spell'
     const modes: Mode[] = tier === 1 ? ['expand', 'contract'] : tier === 2 ? ['expand', 'contract', 'spell'] : ['contract', 'spell', 'spell', 'expand']
-    const mode = rng.pick(modes)
+    let mode = rng.pick(modes)
+    if (mode === 'spell' && misspellings(c.short).length < n - 1) mode = 'contract'
     const first = c.full.split(' ')[0].toLowerCase()
     const last = c.full.split(' ').slice(-1)[0].toLowerCase()
     // Related contractions: share the first word (I'm / I'll / I've) or the second (can't / don't / isn't).
@@ -50,7 +52,7 @@ export const contractions: Generator = {
       const mine = new Set(expansions(c))
       const decoys = ranked.map(x => x.full).filter(f => !mine.has(f.toLowerCase()))
       const { choices, answer } = shuffled(rng, c.full, decoys, n)
-      const prompt = rng.pick([[`${c.short} is short for ___.`], [`What two words make "${c.short}"?`], [`${c.short} means ___.`]])
+      const prompt = rng.pick([[`"${c.short}" is short for ___.`], [`What two words make "${c.short}"?`], [`"${c.short}" means ___.`]])
       return riddle({
         family: 'contractions', skill: 'grammar: contractions', prompt, highlight: [c.short], choices, answer,
         spoken: `${c.short} is short for which words? ${choices.map(c => c.text).join(', ')}?`,
@@ -67,7 +69,7 @@ export const contractions: Generator = {
         metric: c.level * 10 + c.full.length + 2, grade, tier,
       })
     }
-    const decoys = rng.shuffle(misspellings(c.short))
+    const decoys = misspellings(c.short)
     const { choices, answer } = shuffled(rng, c.short, decoys, n)
     const prompt = rng.pick([[`Which is the right way to write "${c.full}"?`], [`"${c.full}" as a contraction.`, 'Where does the apostrophe go?'], ['Which contraction is spelled correctly?', `It means "${c.full}".`]])
     return riddle({

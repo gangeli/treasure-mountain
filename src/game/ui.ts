@@ -40,9 +40,9 @@ export function uiButtons(g: Game): Button[] {
   }
   switch (g.screen) {
     case 'title':
-      b.push({ id: 'play', x: W / 2 - 170, y: 420, w: 340, h: 92, label: 'PLAY', big: true })
-      b.push({ id: 'howto', x: W / 2 - 320, y: 540, w: 280, h: 58, label: 'How to play' })
-      b.push({ id: 'about', x: W / 2 + 40, y: 540, w: 280, h: 58, label: 'About' })
+      b.push({ id: 'play', x: 200, y: 385, w: 340, h: 92, label: 'PLAY', big: true })
+      b.push({ id: 'howto', x: 100, y: 505, w: 260, h: 58, label: 'How to play' })
+      b.push({ id: 'about', x: 380, y: 505, w: 260, h: 58, label: 'About' })
       b.push({ id: 'sound', x: W - 150, y: 16, w: 60, h: 60, label: '', icon: g.settings.sound ? '♪' : '♪̸', toggled: g.settings.sound })
       b.push({ id: 'music', x: W - 80, y: 16, w: 60, h: 60, label: '', icon: '♫', toggled: g.settings.music })
       if (g.installable && !g.isApp) b.push({ id: 'install', x: 20, y: 16, w: 200, h: 56, label: 'Install app', icon: '⤓' })

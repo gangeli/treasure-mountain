@@ -787,8 +787,8 @@ export class Game {
     const floorTapped = Math.max(0, Math.min(CASTLE_FLOORS - 1, Math.round((PLAY_H - 40 - y) / CASTLE_FLOOR_H)))
     const ladder = c.ladders.filter(l => l.floor === c.floor).find(l => Math.abs(l.x - x) < 60)
     if (ladder && floorTapped >= c.floor) { c.targetX = ladder.x; (c as any).climbAt = ladder; return }
-    const door = c.floor === CASTLE_FLOORS - 1 && x > 1080
-    if (door) { c.targetX = 1150; (c as any).climbAt = null; return }
+    const door = c.floor === CASTLE_FLOORS - 1 && x > 960
+    if (door) { c.targetX = 1050; (c as any).climbAt = null; return }
     c.targetX = Math.max(60, Math.min(1220, x)); (c as any).climbAt = null
   }
 
@@ -802,10 +802,10 @@ export class Game {
     if (move !== 0) c.targetX = null
     switch (c.state) {
       case 'walk': {
-        if (c.targetX != null) { const d = c.targetX - c.x; if (Math.abs(d) < 6) { c.targetX = null; const l = (c as any).climbAt; if (l) { (c as any).climbAt = null; this.startClimb(l) } else if (c.floor === CASTLE_FLOORS - 1 && c.x > 1100) { c.state = 'door'; c.t = 0; this.sfx('gate') } } else move = Math.sign(d) }
+        if (c.targetX != null) { const d = c.targetX - c.x; if (Math.abs(d) < 6) { c.targetX = null; const l = (c as any).climbAt; if (l) { (c as any).climbAt = null; this.startClimb(l) } else if (c.floor === CASTLE_FLOORS - 1 && Math.abs(c.x - 1050) < 60) { c.state = 'door'; c.t = 0; this.sfx('gate') } } else move = Math.sign(d) }
         if (move !== 0) { c.facing = move > 0 ? 1 : -1; c.x = Math.max(60, Math.min(1220, c.x + move * WALK_SPEED * dt)) }
         if (up && c.floor < CASTLE_FLOORS - 1) { const l = c.ladders.find(l => l.floor === c.floor && Math.abs(l.x - c.x) < 40); if (l) this.startClimb(l) }
-        if (c.floor === CASTLE_FLOORS - 1 && c.x > 1100 && (up || this.held.has('Enter'))) { c.state = 'door'; c.t = 0; this.sfx('gate') }
+        if (c.floor === CASTLE_FLOORS - 1 && Math.abs(c.x - 1050) < 60 && (up || this.held.has('Enter'))) { c.state = 'door'; c.t = 0; this.sfx('gate') }
         // Holes: the Master's arm sweeps out periodically; if the player is right in front, they are knocked to the floor below.
         for (const h of c.holes) {
           h.t += dt

@@ -16,7 +16,9 @@ function singleFile(): Plugin {
       for (const [name, chunk] of Object.entries(bundle)) {
         if (chunk.type === 'chunk' && name.endsWith('.js')) {
           const re = new RegExp(`<script[^>]*src="[./]*${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"[^>]*></script>`)
-          src = src.replace(re, () => `<script>${chunk.code.replace(/<\/script/gi, '<\\/script')}</script>`)
+          // Drop the head script tag and append the code at the end of <body> so the DOM exists when it runs.
+          src = src.replace(re, '')
+          src = src.replace('</body>', () => `<script>${chunk.code.replace(/<\/script/gi, '<\\/script')}</script>\n</body>`)
           delete bundle[name]
         } else if (chunk.type === 'asset' && name.endsWith('.css')) {
           const re = new RegExp(`<link[^>]*href="[./]*${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"[^>]*>`)

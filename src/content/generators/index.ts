@@ -2,6 +2,8 @@ import type { Generator } from '../types'
 import { rhymes } from './rhymes'
 import { sounds } from './sounds'
 import { counting, addSub } from './counting'
+import { MATH } from './math'
+import { READING2 } from './reading2'
 
 /** Every puzzle family. Order matters only for reports. */
 export const GENERATORS: Generator[] = [
@@ -9,4 +11,6 @@ export const GENERATORS: Generator[] = [
   sounds,
   counting,
   addSub,
+  ...MATH,
+  ...READING2,
 ]

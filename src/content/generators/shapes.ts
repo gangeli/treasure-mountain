@@ -1,5 +1,5 @@
 import type { Generator, Choice, ShapeName } from '../types'
-import { shuffled, choiceCount, an, cap } from '../types'
+import { shuffled, choiceCount, an } from '../types'
 import { mathRiddle, sayChoices, numDecoys } from './mathutil'
 import type { Rng } from '../../engine/rng'
 
@@ -18,16 +18,17 @@ const LOOKS: Record<string, string[]> = {
 }
 
 function nameOrPick(rng: Rng, pool: ShapeName[], n: number, grade: number, tier: number, color: string, skill: string) {
+  const base = grade === 0 ? 4 : grade === 1 ? 12 : 22
   const name = rng.pick(pool)
   if (rng.bool()) {
     // Visual prompt, text choices.
     const { choices, answer } = shuffled(rng, name, rng.shuffle(pool.filter(s => s !== name)), n)
     const prompt = [rng.pick(['What is this shape called?', 'What shape is this?', 'Which word names this shape?'])]
-    return mathRiddle({ family: 'shapes', skill, prompt, visual: { kind: 'shape', name, color }, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: 4 + pool.indexOf(name) + tier, grade: grade as any, tier: tier as any }, '')
+    return mathRiddle({ family: 'shapes', skill, prompt, visual: { kind: 'shape', name, color }, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: base + pool.indexOf(name) + tier, grade: grade as any, tier: tier as any }, '')
   }
   const { choices, answer } = shuffled(rng, vis(name, color), rng.shuffle(pool.filter(s => s !== name)).map(s => vis(s, rng.pick(COLORS))), n)
   const prompt = [`Which shape is ${an(name)}?`]
-  return mathRiddle({ family: 'shapes', skill, prompt, choices, answer, spoken: `${prompt[0]} Look at the shapes and pick one.`, metric: 4 + pool.indexOf(name) + tier, grade: grade as any, tier: tier as any }, '')
+  return mathRiddle({ family: 'shapes', skill, prompt, choices, answer, spoken: `${prompt[0]} Look at the shapes and pick one.`, metric: base + pool.indexOf(name) + tier, grade: grade as any, tier: tier as any }, '')
 }
 
 /** Naming (K), sides and corners (1), solids (2), quadrilaterals and perimeter (3), angles and area (4), volume, coordinates and angle sums (5). */
@@ -95,8 +96,8 @@ export const shapes: Generator = {
       }
       if (mode === 'looks') {
         const { choices, answer } = shuffled(rng, solid, rng.shuffle(SOLIDS.filter(s => s !== solid)), n)
-        const prompt = [`Which solid is shaped like ${rng.pick(LOOKS[solid])}?`]
-        return mathRiddle({ family: 'shapes', skill: 'math: solid shapes', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: 26, grade, tier }, '')
+        const prompt = ['Which solid is shaped like', `${rng.pick(LOOKS[solid])}?`]
+        return mathRiddle({ family: 'shapes', skill: 'math: solid shapes', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 26, grade, tier }, '')
       }
       const s = rng.pick(['cube', 'pyramid'] as const)
       const f = FACES[s]

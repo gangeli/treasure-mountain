@@ -34,8 +34,9 @@ export const sayChoices = (choices: Choice[]): string => choices.map(c => c.text
 export function numDecoys(rng: Rng, answer: number, count: number, preferred: number[], spread: number, min = 0, max = Number.MAX_SAFE_INTEGER): number[] {
   const out: number[] = []
   const seen = new Set<number>([answer])
+  const wantInt = Number.isInteger(answer)
   for (const p of rng.shuffle(preferred)) {
-    if (!Number.isFinite(p) || seen.has(p) || p < min || p > max) continue
+    if (!Number.isFinite(p) || seen.has(p) || p < min || p > max || (wantInt && !Number.isInteger(p))) continue
     seen.add(p); out.push(p)
     if (out.length >= count) break
   }
@@ -93,16 +94,27 @@ export const clock24Text = (mins: number): string => {
 }
 export const hourWord = (h: number): string => String(((h + 11) % 12) + 1)
 
-/** Wraps text into lines of at most `width` characters (word boundaries). */
+/** Wraps text into lines of at most `width` characters, breaking at sentence ends when it can. */
 export function wrap(text: string, width = 46): string[] {
   const lines: string[] = []
   let cur = ''
-  for (const w of text.split(/\s+/).filter(Boolean)) {
-    if (cur.length === 0) cur = w
-    else if (cur.length + 1 + w.length <= width) cur += ' ' + w
-    else { lines.push(cur); cur = w }
+  const flush = () => { if (cur) lines.push(cur); cur = '' }
+  // Split after sentence punctuation that is followed by a space (so 5.17 or $2.50 never break).
+  const sentences = text.split(/(?<=[.?!])\s+/).map(s => s.trim()).filter(Boolean)
+  for (const s of sentences) {
+    if (s.length <= width) {
+      if (cur.length === 0) cur = s
+      else if (cur.length + 1 + s.length <= width) cur += ' ' + s
+      else { flush(); cur = s }
+      continue
+    }
+    for (const w of s.split(/\s+/).filter(Boolean)) {
+      if (cur.length === 0) cur = w
+      else if (cur.length + 1 + w.length <= width) cur += ' ' + w
+      else { flush(); cur = w }
+    }
   }
-  if (cur) lines.push(cur)
+  flush()
   return lines
 }
 

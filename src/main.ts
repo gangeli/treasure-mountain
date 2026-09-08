@@ -2,21 +2,120 @@ import { Stage } from './engine/stage'
 import { Loop } from './engine/loop'
 import { Input } from './engine/input'
 import { AudioEngine } from './engine/audio'
+import { loadSave, writeSave } from './engine/storage'
+import { Game } from './game/game'
+import { render } from './art/render'
+import type { Grade } from './content/types'
+
+declare global {
+  interface Window { __tm?: any; tmBack?: () => boolean; tmPause?: () => void; tmResume?: () => void; AndroidHost?: { isApp(): boolean } }
+}
+
+const params = new URLSearchParams(location.search)
+const testMode = params.has('test')
 
 const canvas = document.getElementById('game') as HTMLCanvasElement
 const stage = new Stage(canvas)
 const input = new Input(stage)
 const audio = new AudioEngine()
+const save = testMode ? null : loadSave()
+const game = new Game(save, testMode ? { seed: params.get('seed') ?? 'test', fast: params.has('fast') } : {})
+game.isApp = !!(window.AndroidHost && window.AndroidHost.isApp())
+game.onSave = data => { if (!testMode) writeSave(data) }
+audio.setSound(game.settings.sound)
+audio.setMusic(game.settings.music)
 input.onGesture = () => audio.unlock()
 document.getElementById('boot')?.remove()
-let t = 0
-const loop = new Loop(dt => { t += dt; input.drain() }, () => {
-  const ctx = stage.begin()
-  ctx.fillStyle = '#1b3a5c'; ctx.fillRect(0, 0, 1280, 720)
-  ctx.fillStyle = '#ffd76a'; ctx.font = '48px sans-serif'; ctx.textAlign = 'center'
-  ctx.fillText('Treasure Mountain ' + t.toFixed(1), 640, 360)
-})
+
+// Install prompt (PWA)
+let deferredInstall: any = null
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; game.installable = true })
+window.addEventListener('appinstalled', () => { deferredInstall = null; game.installable = false })
+
+// Speech synthesis for the read-aloud button (and automatically for K-1 riddles).
+function speak(text: string): void {
+  try {
+    if (!('speechSynthesis' in window)) return
+    window.speechSynthesis.cancel()
+    const u = new SpeechSynthesisUtterance(text)
+    u.rate = 0.92; u.pitch = 1.05; u.lang = 'en-US'
+    window.speechSynthesis.speak(u)
+  } catch { /* no speech available */ }
+}
+
+function update(dt: number): void {
+  const { pointer, keys } = input.drain()
+  for (const k of keys) { if (k.kind === 'down' && !k.repeat) game.keyDown(k.key); else if (k.kind === 'up') game.keyUp(k.key) }
+  for (const p of pointer) if (p.kind === 'down') game.tap(p.x, p.y)
+  game.update(dt)
+  // Side effects requested by the game
+  for (const s of game.events.sfx) audio.sfx(s)
+  game.events.sfx.length = 0
+  audio.play(game.events.music)
+  audio.setSound(game.settings.sound); audio.setMusic(game.settings.music)
+  if (game.speak) { if (!testMode && (game.grade <= 1 || (game as any)._speakRequested)) speak(game.speak); game.speak = null; (game as any)._speakRequested = false }
+  if ((game as any).installRequested) { (game as any).installRequested = false; if (deferredInstall) { deferredInstall.prompt(); deferredInstall = null } }
+}
+
+// The speaker button always speaks, even for older grades.
+const origPress = game.pressButton.bind(game)
+game.pressButton = (id: string) => { if (id === 'speak') (game as any)._speakRequested = true; origPress(id) }
+
+const loop = new Loop(update, () => render(stage.begin(), game))
 loop.start()
-if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+
+// Android back button / lifecycle hooks
+window.tmBack = () => game.back()
+window.tmPause = () => { if (game.screen === 'level' || game.screen === 'castle') { if (!game.paused) game.togglePause() } }
+window.tmResume = () => { audio.unlock() }
+document.addEventListener('visibilitychange', () => { if (document.hidden) window.tmPause?.() })
+
+// Service worker (web only)
+if ('serviceWorker' in navigator && location.protocol.startsWith('http') && !testMode) {
   window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}))
+}
+
+// Test hooks: screenshots and scripted play from Playwright.
+if (testMode) {
+  const shots = ['title', 'grade', 'clubhouse', 'intro', 'level1', 'level2', 'level3', 'riddle', 'riddle-visual', 'clue', 'castle', 'throne', 'rank', 'crown', 'howto', 'about', 'pause', 'level1-poof', 'level1-key']
+  window.__tm = {
+    ready: true,
+    game,
+    shots: () => shots,
+    show(name: string) {
+      const g = game
+      const setup = (grade: Grade = 2) => { g.profiles = {}; g.grade = grade; g.profile(grade); g.run = null; g.lvl = null; g.goto('clubhouse') }
+      const startLevel = (no: 1 | 2 | 3) => { setup(); g.pressButton('start'); if (g.screen === 'intro') g.advanceScene(); if (no > 1) g.startLevel(no, 777, false); g.lvl!.camX = g.lvl!.player.x - 500 }
+      switch (name) {
+        case 'title': g.goto('title'); break
+        case 'grade': g.profiles = { 0: { grade: 0, total: 7, prizes: ['kite'], ascents: 1, stats: {}, crown: false }, 3: { grade: 3, total: 120, prizes: ['robot'], ascents: 12, stats: {}, crown: false } } as any; g.goto('grade'); break
+        case 'clubhouse': setup(); g.profile().total = 31; g.profile().prizes = ['lamp', 'balloon', 'boxcar', 'kite', 'drum', 'robot']; g.profile().ascents = 5; break
+        case 'intro': setup(); g.pressButton('start'); if (g.screen !== 'intro') g.goto('intro'); break
+        case 'level1': startLevel(1); break
+        case 'level2': startLevel(2); break
+        case 'level3': startLevel(3); break
+        case 'level1-poof': startLevel(1); { const grp = g.lvl!.level.groups.find(x => x.hides === 'treasure')!; g.lvl!.player.x = grp.x; g.lvl!.camX = grp.x - 500; g.run!.coins = 5; g.dropCoin(); for (let i = 0; i < 40; i++) g.update(1 / 60) } break
+        case 'level1-key': startLevel(1); { g.run!.clues = { ...g.lvl!.level.clueWords }; const grp = g.lvl!.level.groups.find(x => x.hides === 'key')!; g.lvl!.player.x = grp.x; g.lvl!.camX = grp.x - 500; g.run!.coins = 5; g.dropCoin(); for (let i = 0; i < 40; i++) g.update(1 / 60) } break
+        case 'riddle': case 'riddle-visual': case 'clue': {
+          startLevel(1)
+          const elf = g.lvl!.elves.find(e => e.kind === 'scroll')!
+          elf.speed = 0; g.lvl!.player.x = elf.x - 80; g.lvl!.player.facing = 1
+          g.throwNet(); for (let i = 0; i < 40; i++) g.update(1 / 60)
+          if (name === 'riddle-visual') { const r = Game.riddleFor(0, 1, 'visual-shot'); let tries = 0; let rr = r; while (!rr.visual && tries++ < 50) rr = Game.riddleFor(0, 1, 'visual-shot' + tries); g.riddle!.riddle = rr }
+          if (name === 'clue') { g.selectChoice(g.riddle!.riddle.answer, true); g.riddleContinue() }
+          break
+        }
+        case 'castle': startLevel(3); g.profile().total = 130; (g as any).enterCastle(); break
+        case 'throne': startLevel(3); g.run!.treasures = ['lamp', 'balloon', 'kite']; (g as any).enterThrone(); g.sceneStep = 2; g.sceneT = 0.6; break
+        case 'rank': setup(); g.rankFrom = 20; g.rankTo = 26; g.goto('rank'); g.sceneT = 5; break
+        case 'crown': setup(4); g.goto('crown'); break
+        case 'howto': g.goto('howto'); break
+        case 'about': g.goto('about'); break
+        case 'pause': startLevel(2); g.togglePause(); break
+      }
+      game.update(1 / 60)
+      render(stage.begin(), game)
+    },
+    step(seconds: number) { const n = Math.round(seconds * 60); for (let i = 0; i < n; i++) update(1 / 60) },
+  }
 }

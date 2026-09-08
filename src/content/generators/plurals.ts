@@ -27,7 +27,8 @@ function verbLevels(grade: Grade, tier: Tier): number[] | null {
 /** Common wrong plural forms: explicit ones first, then generic child errors (-s, -es, apostrophe, unchanged). */
 export function nounWrongs(n: Noun): string[] {
   const s = n.singular
-  const cands = [...(n.wrong ?? []), s + 's', s + 'es', s + "'s", s.endsWith('y') ? s.slice(0, -1) + 'ies' : s + 'ies', s]
+  const cands = [...(n.wrong ?? []), s + 's', ...(s.endsWith('e') ? [] : [s + 'es']), s + "'s", s]
+  if (s.endsWith('y')) cands.push(s + 'es', s.slice(0, -1) + 'ies')
   const bad = new Set([n.plural, ...(n.alt ?? [])].map(w => w.toLowerCase()))
   const out: string[] = []
   for (const c of cands) if (!bad.has(c.toLowerCase()) && !out.includes(c)) out.push(c)
@@ -37,7 +38,11 @@ export function nounWrongs(n: Noun): string[] {
 /** Common wrong past-tense forms: explicit ones first, then over-regularised and wrong-tense forms. */
 export function verbWrongs(v: Verb): string[] {
   const b = v.base
-  const cands = [...(v.wrong ?? []), b + 'ed', b.endsWith('e') ? b + 'd' : b + 'ed', b.endsWith('y') ? b.slice(0, -1) + 'ied' : b + 'ed', v.past + 'ed', b, b.endsWith('e') ? b.slice(0, -1) + 'ing' : b + 'ing', b + 's']
+  const cands = [...(v.wrong ?? [])]
+  if (!b.endsWith('e')) cands.push(b + 'ed')
+  if (b.endsWith('y')) cands.push(b.slice(0, -1) + 'ied')
+  if (v.level >= 4) cands.push(v.past + 'ed')
+  cands.push(b, b.endsWith('e') ? b.slice(0, -1) + 'ing' : b + 'ing', b + 's')
   const bad = new Set([v.past, ...(v.alt ?? [])].map(w => w.toLowerCase()))
   const out: string[] = []
   for (const c of cands) if (!bad.has(c.toLowerCase()) && !out.includes(c)) out.push(c)

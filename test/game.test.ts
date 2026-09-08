@@ -34,7 +34,7 @@ export function playAscent(g: Game): void {
       g.selectChoice(rv.riddle.answer, true)
       expect(rv.phase).toBe('right')
       g.riddleContinue()
-      if (g.screen === 'clue') g.closeClue()
+      if ((g.screen as string) === 'clue') g.closeClue()
       expect(g.screen).toBe('level')
     }
     expect(g.cluesFound()).toBe(3)
@@ -61,7 +61,7 @@ export function playAscent(g: Game): void {
       if (c.floor < 3) {
         const l = c.ladders.find(l => l.floor === c.floor && !l.trick)!
         c.x = l.x; g.held.add('ArrowUp'); step(g, 0.05); g.held.delete('ArrowUp')
-      } else { c.x = 1150; g.held.add('ArrowUp'); step(g, 0.05); g.held.delete('ArrowUp') }
+      } else { c.x = 1050; g.held.add('ArrowUp'); step(g, 0.05); g.held.delete('ArrowUp') }
     }
     step(g, 0.5)
   }

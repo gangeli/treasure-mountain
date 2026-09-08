@@ -58,7 +58,7 @@ export const compare: Generator = {
       const answerC: Choice = { visual: { kind: 'counters', item, count: target } }
       const decoys: Choice[] = counts.filter(c => c !== target).map(c => ({ visual: { kind: 'counters', item, count: c } }))
       const { choices, answer } = shuffled(rng, answerC, decoys, n)
-      const word = most ? rng.pick(['the most', 'more']) : rng.pick(['the fewest', 'fewer'])
+      const word = most ? 'the most' : 'the fewest'
       const prompt = [`Which group has ${word} ${plural(item, 2)}?`]
       return mathRiddle({
         family: 'compare', skill: 'math: more and fewer', prompt, choices, answer,
@@ -93,8 +93,8 @@ export const compare: Generator = {
       const nums = closeNumbers(rng, n, lo, hi, share)
       const target = mode === 'biggest' ? Math.max(...nums) : Math.min(...nums)
       const { choices, answer } = shuffled(rng, fmt(target), nums.filter(v => v !== target).map(fmt), n)
-      const big = grade === 0 ? rng.pick(['the biggest', 'the most']) : rng.pick(['the biggest', 'the greatest', 'the largest'])
-      const small = grade === 0 ? rng.pick(['the smallest', 'the least']) : rng.pick(['the smallest', 'the least'])
+      const big = grade === 0 ? rng.pick(['the biggest', 'the largest']) : rng.pick(['the biggest', 'the greatest', 'the largest'])
+      const small = grade === 0 ? 'the smallest' : rng.pick(['the smallest', 'the least'])
       const prompt = [`Which number is ${mode === 'biggest' ? big : small}?`]
       return mathRiddle({ family: 'compare', skill: 'math: comparing numbers', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric, grade, tier }, mode === 'biggest' ? 'max' : 'min')
     }

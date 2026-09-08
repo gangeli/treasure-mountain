@@ -69,7 +69,7 @@ function numberSequence(rng: Rng, grade: number, tier: number): { rule: Rule; te
     let start: number
     if (rule.kind === 'mul') start = rule.m === 2 ? rng.int(1, tier === 3 ? 9 : 5) : rng.int(1, 3)
     else if (rule.kind === 'div') start = rng.int(3, 12) * 16
-    else start = rule.k < 0 ? rng.int(tier === 3 ? 100 : 40, tier === 3 ? 300 : 100) : rng.int(tier === 3 ? 100 : 1, tier === 3 ? 300 : 50)
+    else { const k = rule.kind === 'add' ? rule.k : 1; start = k < 0 ? rng.int(tier === 3 ? 100 : 40, tier === 3 ? 300 : 100) : rng.int(tier === 3 ? 100 : 1, tier === 3 ? 300 : 50) }
     terms = [start]
   } else if (grade === 4) {
     const opts: Rule[] = tier === 1 ? [{ kind: 'two', m: 2, k: 1 }, { kind: 'two', m: 2, k: -1 }, { kind: 'two', m: 2, k: 2 }]

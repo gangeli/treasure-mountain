@@ -20,11 +20,12 @@ function visualDecoys(rng: Rng, num: number, den: number, count: number, shape: 
   return out
 }
 /** Text fraction decoys with values different from num/den (not equivalent). */
-function textDecoys(rng: Rng, num: number, den: number, count: number, preferred: [number, number][], dens: number[]): string[] {
+function textDecoys(rng: Rng, num: number, den: number, count: number, preferred: [number, number][], dens: number[], proper = true): string[] {
   const out: string[] = []
   const seen = new Set<string>()
   const push = (a: number, b: number) => {
-    if (b <= 0 || a < 0 || a * den === num * b) return
+    if (b <= 0 || a <= 0 || a * den === num * b) return
+    if (proper && a >= b) return
     const t = fracStr(a, b)
     if (seen.has(t)) return
     seen.add(t); out.push(t)
@@ -119,7 +120,7 @@ export const fractions: Generator = {
       }
       if (mode === 'whole') {
         const den = rng.pick([2, 3, 4, 5, 6, 8])
-        const decoys = textDecoys(rng, den, den, n + 2, [[1, den], [den - 1, den], [den, den + 1], [den + 1, den]], [den, den + 1, den - 1].filter(d => d > 1))
+        const decoys = textDecoys(rng, den, den, n + 2, [[1, den], [den - 1, den], [den, den + 1], [den + 1, den]], [den, den + 1, den + 2, den * 2])
         const { choices, answer } = shuffled(rng, `${den}/${den}`, decoys.filter(d => d !== '1'), n)
         const prompt = ['Which fraction is equal to 1 whole?']
         return mathRiddle({ family: 'fractions', skill: 'math: fractions', prompt, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: 35, grade, tier }, `num:1`)
@@ -127,7 +128,7 @@ export const fractions: Generator = {
       // number line
       const den = mode === 'lineHalf' ? rng.pick([4, 6, 8]) : rng.pick([2, 3, 4, 5, 6, 8])
       const num = rng.int(1, den - 1)
-      const decoys = textDecoys(rng, num, den, n + 2, [[num + 1, den], [num - 1, den], [num, den + 1], [den - num, den], [num, den - 1]], [den])
+      const decoys = textDecoys(rng, num, den, n + 2, [[num + 1, den], [num - 1, den], [num, den + 1], [den - num, den], [num, den - 1]], [den, den + 1, den * 2])
       const { choices, answer } = shuffled(rng, fracStr(num, den), decoys, n)
       const prompt = ['What fraction is marked on the', 'number line?']
       return mathRiddle({ family: 'fractions', skill: 'math: fractions on a number line', prompt, visual: { kind: 'numberline', from: 0, to: 1, mark: num / den, step: 1 / den }, choices, answer, spoken: `What fraction is marked on the number line? ${sayChoices(choices)}?`, metric: 37 + den, grade, tier }, `num:${num}/${den}`)
@@ -179,7 +180,8 @@ export const fractions: Generator = {
     // grade 5
     const mode = rng.pick(tier === 1 ? ['addUnlike', 'ofNumber', 'subUnlike'] : tier === 2 ? ['addUnlike', 'subUnlike', 'ofNumber', 'mixedAdd'] : ['addUnlike', 'subUnlike', 'mixedAdd', 'mixedSub', 'ofNumber'])
     if (mode === 'ofNumber') {
-      const den = rng.pick(tier === 1 ? [2, 3, 4, 5] : [3, 4, 5, 6, 8, 10]), num = rng.int(1, den - 1)
+      const den = rng.pick(tier === 1 ? [2, 3, 4, 5] : [3, 4, 5, 6, 8, 10])
+      const num = rng.pick(Array.from({ length: den - 1 }, (_, i) => i + 1).filter(x => gcd(x, den) === 1))
       const whole = den * rng.int(tier === 1 ? 2 : 3, tier === 1 ? 6 : 12)
       const ans = whole * num / den
       const decoys = numDecoys(rng, ans, n - 1, [whole / den, whole * num, whole - ans, whole * den / num, ans + den, ans - den], Math.max(3, ans / 4), 1).map(String)
@@ -200,7 +202,7 @@ export const fractions: Generator = {
       if (!add && rn <= 0) return fractions.make(grade, tier, rng)
       if (add && rn >= L && tier === 1) return fractions.make(grade, tier, rng)
       const ans = fracStr(rn, L)
-      const decoys = textDecoys(rng, rn, L, n + 2, [[add ? a + b : a - b, d1 + d2], [add ? a + b : Math.abs(a - b), Math.max(d1, d2)], [rn + 1, L], [rn - 1, L], [add ? a + b : a - b, L]], [L, d1 + d2, L * 2]).filter(d => d !== ans)
+      const decoys = textDecoys(rng, rn, L, n + 2, [[add ? a + b : a - b, d1 + d2], [add ? a + b : Math.abs(a - b), Math.max(d1, d2)], [rn + 1, L], [rn - 1, L], [add ? a + b : a - b, L]], [L, d1 + d2, L * 2], rn < L).filter(d => d !== ans)
       const { choices, answer } = shuffled(rng, ans, decoys, n)
       const prompt = [`${a}/${d1} ${add ? '+' : '-'} ${b}/${d2} = ?`]
       return mathRiddle({ family: 'fractions', skill: add ? 'math: adding fractions' : 'math: subtracting fractions', prompt, choices, answer, spoken: `What is ${a} over ${d1} ${add ? 'plus' : 'minus'} ${b} over ${d2}? ${sayChoices(choices)}?`, metric: 65 + L + (rn > L ? 4 : 0), grade, tier }, `num:${a}/${d1}${add ? '+' : '-'}${b}/${d2}`)
@@ -219,7 +221,7 @@ export const fractions: Generator = {
     const ans = fracStr(rn, L)
     const mixed = (w: number, x: number, d: number) => `${w} ${x}/${d}`
     const wrongWhole = add ? (w1 + w2) * L + Math.abs(a * (L / d1) - b * (L / d2)) : (w1 - w2) * L + Math.abs(a * (L / d1) - b * (L / d2))
-    const decoys = textDecoys(rng, rn, L, n + 2, [[wrongWhole, L], [rn + L, L], [rn - L, L], [rn + 1, L], [rn - 1, L], [add ? (w1 + w2) * (d1 + d2) + a + b : 1, d1 + d2]], [L, L * 2]).filter(d => d !== ans)
+    const decoys = textDecoys(rng, rn, L, n + 2, [[wrongWhole, L], [rn + L, L], [rn - L, L], [rn + 1, L], [rn - 1, L], [add ? (w1 + w2) * (d1 + d2) + a + b : 1, d1 + d2]], [L, L * 2], false).filter(d => d !== ans)
     const { choices, answer } = shuffled(rng, ans, decoys, n)
     const prompt = [`${mixed(w1, a, d1)} ${add ? '+' : '-'} ${mixed(w2, b, d2)} = ?`]
     return mathRiddle({ family: 'fractions', skill: 'math: mixed numbers', prompt, choices, answer, spoken: `What is ${w1} and ${a} over ${d1} ${add ? 'plus' : 'minus'} ${w2} and ${b} over ${d2}? ${sayChoices(choices)}?`, metric: 70 + L + (add ? 0 : 4), grade, tier }, `num:${w1}+${a}/${d1}${add ? '+' : '-'}(${w2}+${b}/${d2})`)

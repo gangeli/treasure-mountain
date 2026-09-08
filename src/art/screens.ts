@@ -1,0 +1,424 @@
+import { P } from './palette'
+import { type Ctx, roundRect, circle, text, line, poly, vgrad, richText, wrap, star, rr, fillStroke } from './draw'
+import { W, H, PLAY_H } from '../game/layout'
+import type { Game } from '../game/game'
+import { CASTLE_FLOORS, CASTLE_FLOOR_Y, CASTLE_FLOOR_H } from '../game/game'
+import type { Button } from '../game/ui'
+import { SCROLL, riddleChoiceRects, gradeCardRects } from '../game/ui'
+import { drawPlayer, drawElf, drawMaster, drawCrown, drawKey } from './characters'
+import { drawHud, drawBubble, drawStars } from './hud'
+import { drawVisual } from './visuals'
+import { drawTreasure, scallop } from './features'
+import { drawFrame } from './backgrounds'
+import { drawLevelScene } from './render'
+import { leaf } from './backgrounds'
+import { gradeName, gradeShort, type Grade } from '../content/types'
+import { STAR_THRESHOLDS, RANK_NAMES, starsForTotal } from '../game/world'
+
+const DISPLAY = '"Fredoka","Nunito","Trebuchet MS",sans-serif'
+
+export function drawScreen(ctx: Ctx, g: Game, buttons: Button[]): void {
+  switch (g.screen) {
+    case 'title': title(ctx, g); break
+    case 'grade': gradeSelect(ctx, g); break
+    case 'clubhouse': clubhouse(ctx, g); break
+    case 'intro': intro(ctx, g); break
+    case 'riddle': riddle(ctx, g); drawHud(ctx, g, buttons.filter(b => !b.id.startsWith('choice'))); break
+    case 'clue': riddle(ctx, g, true); drawHud(ctx, g, buttons); break
+    case 'castle': castle(ctx, g); drawHud(ctx, g, buttons); break
+    case 'throne': throne(ctx, g); drawHud(ctx, g, []); break
+    case 'rank': rank(ctx, g); drawHud(ctx, g, []); break
+    case 'crown': crown(ctx, g); break
+    case 'howto': howto(ctx, g); break
+    case 'about': about(ctx, g); break
+  }
+}
+
+// ------------------------------------------------------------------ shared bits
+function sky(ctx: Ctx, top = '#5fb0ff', bottom = '#cfefff'): void { ctx.fillStyle = vgrad(ctx, 0, H, top, bottom); ctx.fillRect(0, 0, W, H) }
+
+/** The mountain as seen on the title screen: three terraces spiralling up to the castle. */
+export function drawMountain(ctx: Ctx, x: number, y: number, s: number, t: number): void {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s)
+  // rock body
+  ctx.beginPath(); ctx.moveTo(-300, 0); ctx.quadraticCurveTo(-260, -160, -170, -300); ctx.quadraticCurveTo(-90, -430, -20, -470); ctx.quadraticCurveTo(80, -430, 150, -300); ctx.quadraticCurveTo(250, -150, 300, 0); ctx.closePath()
+  fillStroke(ctx, P.rock, P.ink, 4)
+  ctx.save(); ctx.globalAlpha = 0.35; ctx.fillStyle = P.rockDark; ctx.beginPath(); ctx.moveTo(40, -420); ctx.quadraticCurveTo(140, -300, 300, 0); ctx.lineTo(120, 0); ctx.quadraticCurveTo(100, -200, 40, -420); ctx.closePath(); ctx.fill(); ctx.restore()
+  // three green terraces (paths) winding around
+  const terraces = [[-280, -30, 560, 60], [-200, -170, 400, 50], [-120, -300, 240, 42]]
+  terraces.forEach(([tx, ty, tw, th], i) => {
+    ctx.beginPath(); ctx.ellipse(tx + tw / 2, ty, tw / 2, th / 2, 0, 0, Math.PI * 2); ctx.closePath(); fillStroke(ctx, i === 2 ? P.greenLight : P.green, P.ink, 3)
+    ctx.fillStyle = P.greenDark; ctx.beginPath(); ctx.ellipse(tx + tw / 2, ty + th * 0.2, tw / 2 - 10, th * 0.2, 0, 0, Math.PI); ctx.fill()
+    // tiny trees on each terrace
+    for (let k = 0; k < 4 + (2 - i) * 2; k++) { const px = tx + 30 + (k / (4 + (2 - i) * 2)) * (tw - 60); const ph = 26 - i * 4; poly(ctx, [[px - 10, ty], [px, ty - ph], [px + 10, ty]], P.greenDark, P.ink, 2) }
+  })
+  // snow cap
+  ctx.beginPath(); ctx.moveTo(-90, -360); ctx.quadraticCurveTo(-20, -470, 80, -380); ctx.quadraticCurveTo(40, -350, 10, -370); ctx.quadraticCurveTo(-30, -340, -90, -360); ctx.closePath(); fillStroke(ctx, P.snow, P.ink, 3)
+  // castle on top
+  const cx = -10, cy = -400
+  roundRect(ctx, cx - 60, cy - 60, 120, 70, 6, P.rockLight, P.ink, 3)
+  for (const s2 of [-1, 1]) { roundRect(ctx, cx + s2 * 62 - 16, cy - 100, 32, 110, 4, P.rockLight, P.ink, 3); for (let k = 0; k < 3; k++) ctx.fillRect(cx + s2 * 62 - 14 + k * 11, cy - 110, 7, 10); poly(ctx, [[cx + s2 * 62 - 18, cy - 100], [cx + s2 * 62, cy - 140], [cx + s2 * 62 + 18, cy - 100]], P.blue, P.ink, 3) }
+  roundRect(ctx, cx - 14, cy - 40, 28, 50, 12, P.ink, P.ink, 0)
+  roundRect(ctx, cx - 40, cy - 46, 16, 20, 4, P.cyanPale, P.ink, 2); roundRect(ctx, cx + 24, cy - 46, 16, 20, 4, P.cyanPale, P.ink, 2)
+  line(ctx, cx, cy - 60, cx, cy - 100, P.ink, 3); poly(ctx, [[cx, cy - 100], [cx + 26, cy - 92], [cx, cy - 84]], P.red, P.ink, 2)
+  // clubhouse at the foot
+  roundRect(ctx, -250, -20, 70, 40, 4, P.wood, P.ink, 3); poly(ctx, [[-260, -20], [-215, -50], [-170, -20]], P.woodDark, P.ink, 3)
+  // winding path
+  ctx.strokeStyle = P.cream; ctx.lineWidth = 8; ctx.lineCap = 'round'
+  ctx.beginPath(); ctx.moveTo(-200, 0); ctx.quadraticCurveTo(-120, -60, 80, -40); ctx.quadraticCurveTo(220, -60, 120, -150); ctx.quadraticCurveTo(0, -200, -150, -170); ctx.quadraticCurveTo(-200, -250, -40, -290); ctx.quadraticCurveTo(70, -300, 30, -340); ctx.stroke()
+  ctx.strokeStyle = P.ink; ctx.lineWidth = 1.5; ctx.setLineDash([6, 8]); ctx.stroke(); ctx.setLineDash([])
+  // an elf peeking
+  drawElf(ctx, -150 + Math.sin(t) * 6, -170, 1, 'dance', t, 1, 'scroll')
+  ctx.restore()
+}
+
+// ------------------------------------------------------------------ title
+function title(ctx: Ctx, g: Game): void {
+  const t = g.time
+  sky(ctx)
+  // sun and clouds
+  circle(ctx, 1100, 110, 60, P.yellow, 'rgba(0,0,0,0)', 0)
+  ctx.save(); ctx.globalAlpha = 0.9; ctx.fillStyle = '#fff'; for (let i = 0; i < 5; i++) { const cx = ((i * 330 + t * 12) % (W + 300)) - 150, cy = 80 + (i % 3) * 60; ctx.beginPath(); ctx.arc(cx, cy, 34, 0, 7); ctx.arc(cx + 40, cy - 14, 44, 0, 7); ctx.arc(cx + 90, cy, 32, 0, 7); ctx.fill() } ctx.restore()
+  // ground
+  ctx.fillStyle = P.grass; ctx.fillRect(0, 600, W, H - 600); ctx.fillStyle = P.grassDark; ctx.fillRect(0, 600, W, 6)
+  drawMountain(ctx, 1040, 600, 0.8, t)
+  // stone-framed panel with the logo, like the original
+  roundRect(ctx, 60, 50, 620, 300, 26, P.rockDark, P.ink, 4)
+  roundRect(ctx, 82, 72, 576, 256, 18, P.scroll, P.scrollEdge, 4)
+  text(ctx, 'A Super Solvers Adventure', 370, 110, { size: 22, align: 'center', color: P.purpleDark, weight: 800, spacing: 1 })
+  ctx.save(); ctx.translate(370, 210); ctx.rotate(-0.03)
+  text(ctx, 'TREASURE', 0, -40, { size: 84, align: 'center', color: P.orange, weight: 900, font: DISPLAY, outline: P.ink, outlineWidth: 10, spacing: 2 })
+  text(ctx, 'TREASURE', 0, -46, { size: 84, align: 'center', color: P.yellow, weight: 900, font: DISPLAY, spacing: 2 })
+  text(ctx, 'MOUNTAIN!', 0, 44, { size: 84, align: 'center', color: P.redDark, weight: 900, font: DISPLAY, outline: P.ink, outlineWidth: 10, spacing: 2 })
+  text(ctx, 'MOUNTAIN!', 0, 38, { size: 84, align: 'center', color: P.red, weight: 900, font: DISPLAY, spacing: 2 })
+  ctx.restore()
+  text(ctx, 'Catch elves · Solve riddles · Find the treasure', 370, 298, { size: 22, align: 'center', color: P.blueDark, weight: 800 })
+  // the Super Solver strolling towards the mountain
+  drawPlayer(ctx, 730 + Math.sin(t * 0.5) * 20, 600, 1, 'walk', t, t * 120)
+  text(ctx, 'Grades K-5 · free · no ads · works offline', W / 2, H - 22, { size: 18, align: 'center', color: P.white, weight: 700, outline: P.grassDark, outlineWidth: 4 })
+}
+
+// ------------------------------------------------------------------ grade select
+function gradeSelect(ctx: Ctx, g: Game): void {
+  sky(ctx, '#3c7dd9', '#9fd0ff')
+  text(ctx, 'Who is climbing today?', W / 2, 90, { size: 54, align: 'center', color: P.yellow, weight: 900, font: DISPLAY, outline: P.ink, outlineWidth: 8 })
+  text(ctx, 'Pick your grade. Each grade keeps its own treasures and stars.', W / 2, 145, { size: 22, align: 'center', color: P.white, weight: 700 })
+  const cards = gradeCardRects()
+  const colors = [P.pink, P.orange, P.yellow, P.green, P.cyan, P.purple]
+  cards.forEach((c, i) => {
+    const prof = g.profiles[i]
+    roundRect(ctx, c.x, c.y + 6, c.w, c.h, 22, P.ink, P.ink, 0)
+    roundRect(ctx, c.x, c.y, c.w, c.h, 22, P.cream, P.ink, 4)
+    roundRect(ctx, c.x, c.y, c.w, 62, 22, colors[i], P.ink, 4); ctx.fillStyle = colors[i]; ctx.fillRect(c.x + 4, c.y + 40, c.w - 8, 24)
+    text(ctx, i === 0 ? 'K' : gradeShort(i as Grade), c.x + 50, c.y + 32, { size: 40, align: 'center', color: P.ink, weight: 900, font: DISPLAY })
+    text(ctx, gradeName(i as Grade), c.x + 96, c.y + 32, { size: 28, color: P.ink, weight: 900, font: DISPLAY })
+    const stars = prof ? starsForTotal(prof.total) : 0
+    drawStars(ctx, c.x + 36, c.y + 100, stars, 7, 13)
+    text(ctx, RANK_NAMES[stars], c.x + 24, c.y + 140, { size: 22, color: P.inkSoft, weight: 800 })
+    text(ctx, `${prof?.total ?? 0} treasures`, c.x + 24, c.y + 172, { size: 20, color: P.inkSoft, weight: 700 })
+    if (prof?.crown) drawCrown(ctx, c.x + c.w - 50, c.y + 150, 22)
+    else if (prof && prof.prizes.length) drawTreasure(ctx, prof.prizes[prof.prizes.length - 1], c.x + c.w - 50, c.y + 150, 0.8)
+  })
+}
+
+// ------------------------------------------------------------------ clubhouse
+function clubhouse(ctx: Ctx, g: Game): void {
+  const t = g.time
+  // wooden interior
+  ctx.fillStyle = '#c98a4b'; ctx.fillRect(0, 0, W, H)
+  ctx.strokeStyle = '#a86d33'; ctx.lineWidth = 3; for (let y = 0; y < H; y += 44) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke() }
+  ctx.fillStyle = '#7a4a1f'; ctx.fillRect(0, 500, W, H - 500); ctx.fillStyle = '#93602c'; for (let x = 0; x < W; x += 120) ctx.fillRect(x, 500, 110, 220)
+  // window with the mountain outside
+  roundRect(ctx, 60, 60, 300, 220, 14, P.skyTop, P.ink, 5)
+  ctx.save(); ctx.beginPath(); rr(ctx, 60, 60, 300, 220, 14); ctx.clip(); ctx.fillStyle = P.skyBottom; ctx.fillRect(60, 160, 300, 120); drawMountainSmall(ctx, 210, 280, 0.42, t); ctx.restore()
+  line(ctx, 210, 60, 210, 280, P.ink, 5); line(ctx, 60, 170, 360, 170, P.ink, 5)
+  // rank poster
+  poster(ctx, 640, 40, g)
+  // prize shelf
+  text(ctx, prizesLabel(g), 210, 318, { size: 20, align: 'center', color: P.cream, weight: 800 })
+  roundRect(ctx, 50, 400, 320, 16, 4, '#5c3a17', P.ink, 3)
+  roundRect(ctx, 50, 480, 320, 16, 4, '#5c3a17', P.ink, 3)
+  const prizes = g.profile().prizes.slice(-10)
+  prizes.forEach((p, i) => drawTreasure(ctx, p, 84 + (i % 5) * 63, (i < 5 ? 400 : 480) - 28, 0.75))
+  // doorway to the mountain
+  roundRect(ctx, 1030, 110, 200, 460, 26, P.woodDark, P.ink, 4)
+  ctx.save(); ctx.beginPath(); rr(ctx, 1048, 128, 164, 442, 18); ctx.clip(); ctx.fillStyle = vgrad(ctx, 128, 570, P.skyTop, P.skyBottom); ctx.fillRect(1048, 128, 164, 442); ctx.fillStyle = P.grass; ctx.fillRect(1048, 440, 164, 130); ctx.fillStyle = P.grassDark; ctx.fillRect(1048, 440, 164, 6); drawMountain(ctx, 1160, 440, 0.32, t); ctx.restore()
+  roundRect(ctx, 1048, 128, 164, 442, 18, 'rgba(0,0,0,0)', P.ink, 3)
+  text(ctx, 'to the mountain →', 1130, 92, { size: 20, align: 'center', color: P.cream, weight: 800 })
+  // the Super Solver waiting by the door
+  drawPlayer(ctx, 940, 570, 1, 'idle', t, 0)
+  if (!g.profile().ascents) drawBubble(ctx, ['Welcome to the clubhouse!', 'The Master of Mischief stole the crown.', "Let's climb Treasure Mountain!"], 640, 560, 'none', 24)
+}
+
+function drawMountainSmall(ctx: Ctx, x: number, y: number, s: number, t: number): void { drawMountain(ctx, x, y, s, t) }
+function prizesLabel(g: Game): string { const n = g.profile().prizes.length; return n === 0 ? 'My prizes (none yet)' : n === 1 ? 'My prize' : `My prizes (${n})` }
+
+/** The rank poster with the seven thresholds. */
+function poster(ctx: Ctx, x: number, y: number, g: Game, animTotal?: number): void {
+  const prof = g.profile()
+  const total = animTotal ?? prof.total
+  const w = 560, h = 450
+  // trapezoid poster
+  poly(ctx, [[x - w / 2 + 40, y], [x + w / 2 - 40, y], [x + w / 2, y + h], [x - w / 2, y + h]], P.cream, P.ink, 4)
+  poly(ctx, [[x - w / 2 + 60, y + 60], [x + w / 2 - 60, y + 60], [x + w / 2 - 20, y + h - 120], [x - w / 2 + 20, y + h - 120]], P.scroll, P.scrollEdge, 3)
+  text(ctx, gradeName(g.grade), x, y + 32, { size: 30, align: 'center', color: P.ink, weight: 900, font: DISPLAY })
+  const rows = [...STAR_THRESHOLDS].reverse()
+  rows.forEach((th, i) => {
+    const ry = y + 78 + i * 34
+    const reached = total >= th
+    line(ctx, x - w / 2 + 70 + i * 5, ry + 16, x + w / 2 - 70 - i * 5, ry + 16, P.scrollEdge, 2)
+    text(ctx, String(th), x - w / 2 + 110, ry, { size: 24, align: 'right', color: reached ? P.blueDark : P.inkSoft, weight: 900 })
+    text(ctx, RANK_NAMES[7 - i], x - w / 2 + 130, ry, { size: 20, color: reached ? P.blueDark : P.inkSoft, weight: 800 })
+    if (reached) star(ctx, x + w / 2 - 110 - i * 5, ry, 11, P.yellow, P.ink, 2)
+  })
+  const stars = starsForTotal(total)
+  roundRect(ctx, x - w / 2 + 40, y + h - 112, w - 80, 34, 6, P.pink, P.ink, 3)
+  text(ctx, RANK_NAMES[stars], x, y + h - 95, { size: 24, align: 'center', color: P.white, weight: 900 })
+  roundRect(ctx, x - w / 2 + 30, y + h - 70, w - 60, 40, 6, P.white, P.ink, 3)
+  text(ctx, `Total Treasures   ${total}`, x, y + h - 50, { size: 26, align: 'center', color: P.ink, weight: 900 })
+}
+
+// ------------------------------------------------------------------ intro
+function intro(ctx: Ctx, g: Game): void {
+  const t = g.time
+  sky(ctx)
+  ctx.fillStyle = P.grass; ctx.fillRect(0, 600, W, H - 600)
+  drawMountain(ctx, 1040, 600, 0.8, t)
+  roundRect(ctx, 60, 60, 640, 470, 26, P.rockDark, P.ink, 4)
+  roundRect(ctx, 82, 82, 596, 426, 18, P.scroll, P.scrollEdge, 4)
+  const lines = ['The Master of Mischief has stolen', 'the crown and hidden the treasures', 'all over Treasure Mountain!', '', 'The elves can help you. Catch them in', 'your net to get coins and clue words.', 'They will help you find treasures', 'and the keys.', '', 'As the treasure chest is filled, you will', 'earn your stars, win the crown, and', 'save Treasure Mountain!']
+  lines.forEach((l, i) => text(ctx, l, 110, 118 + i * 30, { size: 25, color: P.ink, weight: 800 }))
+  drawPlayer(ctx, 740 + Math.sin(t * 0.7) * 20, 600, 1, 'walk', t, t * 120)
+}
+
+// ------------------------------------------------------------------ riddle scroll
+function riddle(ctx: Ctx, g: Game, clueMode = false): void {
+  const rv = g.riddle!
+  const r = rv.riddle
+  const t = g.time
+  // backdrop: the level, dimmed
+  if (g.lvl) drawLevelScene(ctx, g)
+  ctx.fillStyle = 'rgba(8,20,40,0.55)'; ctx.fillRect(0, 0, W, PLAY_H)
+  // scroll paper
+  const S = SCROLL
+  roundRect(ctx, S.x, S.y + 8, S.w, S.h, 28, P.scrollEdge, P.ink, 0)
+  roundRect(ctx, S.x, S.y, S.w, S.h, 28, P.scroll, P.ink, 4)
+  // rolled ends
+  for (const side of [S.x + 14, S.x + S.w - 14]) { roundRect(ctx, side - 14, S.y - 10, 28, S.h + 20, 14, P.cream, P.ink, 3); ctx.fillStyle = P.yellowDark; ctx.fillRect(side - 8, S.y - 4, 16, 6); ctx.fillRect(side - 8, S.y + S.h - 2, 16, 6) }
+  // vines in the corners
+  for (const [vx, vy, rot] of [[S.x + 40, S.y + 18, 0.4], [S.x + S.w - 60, S.y + 18, 2.6], [S.x + 40, S.y + S.h - 20, -0.6]]) {
+    for (let k = 0; k < 4; k++) leaf(ctx, vx + Math.cos(rot) * k * 22, vy + Math.sin(rot) * k * 22, 10, rot + (k % 2 ? 0.9 : -0.9), k % 2 ? P.leafLight : P.leaf)
+  }
+  // the elf dancing at the right edge
+  drawElf(ctx, S.x + S.w - 110, S.y + S.h - 40, -1, rv.phase === 'reveal' ? 'run' : 'dance', t, ((rv as any).elfId ?? 0) % 3, 'none')
+  // prompt text (with visual)
+  const hasVisual = !!r.visual
+  const promptX = S.x + 60, promptY = S.y + 60
+  const longest = Math.max(...r.prompt.map(l => l.length))
+  const size = longest > 36 ? 30 : longest > 24 ? 34 : r.prompt.length <= 2 ? 46 : 38
+  const textW = hasVisual ? 560 : S.w - 260
+  let y = promptY
+  for (const line0 of r.prompt) {
+    const lines = wrap(ctx, line0, textW, size)
+    for (const l of lines) { richText(ctx, l, promptX, y, size, P.ink, r.highlight ?? [], P.redDark); y += size * 1.3 }
+  }
+  if (r.visual) drawVisual(ctx, r.visual, S.x + 640, S.y + 30, 440, 250)
+  // choices
+  const rects = riddleChoiceRects(r)
+  rects.forEach((rc, i) => {
+    const c = r.choices[i]
+    const wrong = rv.wrong.includes(i)
+    const isAnswer = i === r.answer
+    const showRight = (rv.phase === 'right' || rv.phase === 'reveal') && isAnswer
+    const selected = rv.selected === i && rv.phase === 'ask'
+    let fill = P.cream, edge: string = P.ink
+    if (wrong) { fill = '#d9d9d9'; edge = P.rockDark }
+    if (showRight) { fill = P.greenLight; edge = P.greenDark }
+    if (selected) edge = P.red
+    roundRect(ctx, rc.x, rc.y, rc.w, rc.h, 14, fill, edge, selected || showRight ? 5 : 3)
+    if (c.visual) drawVisual(ctx, c.visual, rc.x + 8, rc.y + 8, rc.w - 16, rc.h - 16)
+    else text(ctx, c.text ?? '', rc.x + 26, rc.y + rc.h / 2, { size: (c.text ?? '').length > 18 ? 26 : 32, color: wrong ? P.rockDark : P.ink, weight: 800 })
+    if (wrong) line(ctx, rc.x + 14, rc.y + rc.h / 2, rc.x + rc.w - 14, rc.y + rc.h / 2, P.red, 4)
+    if (showRight) { circle(ctx, rc.x + rc.w - 26, rc.y + rc.h / 2, 16, P.green, P.ink, 2.5); line(ctx, rc.x + rc.w - 34, rc.y + rc.h / 2, rc.x + rc.w - 28, rc.y + rc.h / 2 + 7, P.white, 4); line(ctx, rc.x + rc.w - 28, rc.y + rc.h / 2 + 7, rc.x + rc.w - 16, rc.y + rc.h / 2 - 8, P.white, 4) }
+    if (rv.phase === 'ask' && !wrong) { circle(ctx, rc.x - 24, rc.y + rc.h / 2, 14, P.scrollEdge, P.ink, 2); text(ctx, String(i + 1), rc.x - 24, rc.y + rc.h / 2 + 1, { size: 18, align: 'center', color: P.white, weight: 900 }) }
+  })
+  // feedback bubbles
+  if (clueMode || rv.phase === 'right') {
+    const lines = rv.clueWord ? ['Good job, Super Solver!', 'You have won a clue word', 'to help you find the key:'] : ['Good job, Super Solver!', 'You earned 2 coins.']
+    bigBubble(ctx, lines, rv.clueWord)
+  } else if (rv.phase === 'wrong') bigBubble(ctx, ['Oops, not that one.', rv.triesLeft > 0 ? `Try again! (${rv.triesLeft} ${rv.triesLeft === 1 ? 'try' : 'tries'} left)` : ''])
+  else if (rv.phase === 'reveal') bigBubble(ctx, ['The answer was:', '', 'The elf runs away. Catch another', 'elf to try a new riddle!'], r.choices[r.answer].text ?? '(picture)', 1)
+  drawFrame(ctx)
+}
+
+function bigBubble(ctx: Ctx, lines: string[], word?: string, wordLine = lines.length): void {
+  const w = 760, h = 260, x = W / 2 - w / 2, y = 90
+  ctx.save(); ctx.globalAlpha = 0.98
+  scallop(ctx, x + w / 2, y + h / 2, w / 2 - 30, h / 2 - 20, 16)
+  fillStroke(ctx, P.white, P.ink, 3)
+  ctx.restore()
+  const filtered = lines.filter((l, i) => l !== '' || i === wordLine - 1)
+  filtered.forEach((l, i) => text(ctx, l, W / 2, y + 62 + i * 40, { size: 30, align: 'center', color: P.ink, weight: 800 }))
+  if (word) text(ctx, word, W / 2, y + 62 + Math.min(wordLine, filtered.length) * 40 + (wordLine >= lines.length ? 6 : 0), { size: 40, align: 'center', color: P.redDark, weight: 900, font: DISPLAY })
+}
+
+// ------------------------------------------------------------------ castle
+function castle(ctx: Ctx, g: Game): void {
+  const c = g.castle!
+  const t = g.time
+  ctx.fillStyle = '#4a5f8e'; ctx.fillRect(0, 0, W, PLAY_H)
+  // stone wall
+  ctx.strokeStyle = '#33456d'; ctx.lineWidth = 2
+  for (let r = 0; r < 20; r++) for (let k = 0; k < 14; k++) { const sx = k * 100 + (r % 2) * 50 - 50, sy = r * 30; ctx.fillStyle = (r + k) % 3 === 0 ? '#54699a' : '#4a5f8e'; ctx.fillRect(sx, sy, 96, 26); ctx.strokeRect(sx, sy, 96, 26) }
+  // portraits of the Master of Mischief on the walls
+  for (let f = 1; f < CASTLE_FLOORS; f++) for (const px of (f === CASTLE_FLOORS - 1 ? [160, 640] : [160, 640, 1120])) { const py = CASTLE_FLOOR_Y(f) - 70; roundRect(ctx, px - 26, py - 30, 52, 60, 4, P.goldDark, P.ink, 3); roundRect(ctx, px - 20, py - 24, 40, 48, 2, P.purplePale, P.ink, 2); drawMaster(ctx, px, py + 24, t, 'smug', 0.22) }
+  // floors
+  for (let f = 0; f < CASTLE_FLOORS; f++) {
+    const fy = CASTLE_FLOOR_Y(f)
+    roundRect(ctx, -10, fy, W + 20, 18, 0, P.woodDark, P.ink, 3)
+    ctx.fillStyle = P.wood; for (let x = 0; x < W; x += 80) ctx.fillRect(x + 4, fy + 4, 72, 10)
+  }
+  // ladders
+  c.ladders.forEach((l, i) => {
+    const y0 = CASTLE_FLOOR_Y(l.floor), y1 = CASTLE_FLOOR_Y(l.floor + 1) + 18
+    const top = l.trick ? y0 - CASTLE_FLOOR_H * 0.62 : y1
+    for (const s of [-1, 1]) line(ctx, l.x + s * 22, y0, l.x + s * 22, top, P.ink, 8), line(ctx, l.x + s * 22, y0, l.x + s * 22, top, l.trick ? P.rockDark : P.wood, 4)
+    for (let ry = y0 - 16; ry > top + 6; ry -= 22) { line(ctx, l.x - 22, ry, l.x + 22, ry, P.ink, 6); line(ctx, l.x - 22, ry, l.x + 22, ry, l.trick ? P.rockDark : P.wood, 3) }
+    if (l.trick) { line(ctx, l.x - 26, top + 4, l.x - 8, top - 14, P.ink, 4); line(ctx, l.x + 26, top + 4, l.x + 10, top - 12, P.ink, 4) }
+    void i
+  })
+  // holes with the Master's arm
+  for (const h of c.holes) {
+    const hy = CASTLE_FLOOR_Y(h.floor) - 60
+    circle(ctx, h.x, hy, 30, P.ink, P.rockDark, 4)
+    if (h.active) { const k = Math.sin(((h.t % 3) - 2.1) / 0.9 * Math.PI); const len = Math.max(0, k) * 90; roundRect(ctx, h.x - 12, hy - 10, len + 12, 22, 10, P.purple, P.ink, 3); circle(ctx, h.x + len + 4, hy, 14, P.skin, P.ink, 3) }
+  }
+  // throne room door on the top floor
+  const dy = CASTLE_FLOOR_Y(CASTLE_FLOORS - 1)
+  roundRect(ctx, 1000, dy - 140, 100, 140, 40, P.ink, P.ink, 0)
+  roundRect(ctx, 1008, dy - 132, 84, 132, 34, c.state === 'door' ? P.yellow : '#7a5a2a', P.ink, 3)
+  drawKey(ctx, 1050, dy - 76, 1.2, true)
+  roundRect(ctx, 1012, dy - 124, 76, 24, 5, P.cream, P.ink, 2.5)
+  text(ctx, 'THRONE', 1050, dy - 112, { size: 13, align: 'center', color: P.purpleDark, weight: 900 })
+  // the Super Solver
+  const py = CASTLE_FLOOR_Y(c.floor) - (c.state === 'climb' || c.state === 'fall' ? c.y : 0)
+  drawPlayer(ctx, c.x, py, c.facing, c.state === 'climb' ? 'climb' : c.state === 'fall' ? 'fall' : c.state === 'hit' ? 'hit' : 'idle', c.t, 0)
+  if (c.floor === 0 && c.t < 4 && c.state === 'walk') drawBubble(ctx, ['Climb the ladders to the throne room!', 'Tap a ladder to climb it. Grey ladders are tricks!'], 640, 330, 'none')
+  drawFrame(ctx)
+}
+
+// ------------------------------------------------------------------ throne room cutscene
+function throne(ctx: Ctx, g: Game): void {
+  const t = g.time, step = g.sceneStep, st = g.sceneT
+  ctx.fillStyle = '#3d5081'; ctx.fillRect(0, 0, W, PLAY_H)
+  ctx.strokeStyle = '#2b3a63'; ctx.lineWidth = 2
+  for (let r = 0; r < 14; r++) for (let k = 0; k < 14; k++) { const sx = k * 100 + (r % 2) * 50 - 50, sy = r * 30; ctx.fillStyle = (r + k) % 3 === 0 ? '#4a5f96' : '#3d5081'; ctx.fillRect(sx, sy, 96, 26); ctx.strokeRect(sx, sy, 96, 26) }
+  // floor
+  ctx.fillStyle = P.woodDark; ctx.fillRect(0, 420, W, PLAY_H - 420); ctx.fillStyle = P.wood; for (let x = 0; x < W; x += 90) ctx.fillRect(x + 4, 426, 82, PLAY_H - 430)
+  // window with the Master of Mischief (until blown off)
+  roundRect(ctx, 100, 80, 220, 230, 30, P.ink, P.ink, 0)
+  ctx.fillStyle = step >= 5 ? P.skyTop : '#1c2848'; ctx.fillRect(112, 92, 196, 206)
+  if (step < 5) drawMaster(ctx, 210, 300, t, step >= 3 ? 'angry' : 'smug', 0.85)
+  else if (step === 5) { const k = Math.min(1, st / 1.8); drawMaster(ctx, 210 + k * 900, 300 - Math.sin(k * Math.PI) * 300 + k * 200, t, 'blown', 0.85 * (1 - k * 0.6)) }
+  roundRect(ctx, 100, 80, 220, 230, 30, 'rgba(0,0,0,0)', P.rockLight, 8)
+  // pedestal fountain
+  roundRect(ctx, 560, 300, 160, 120, 20, P.green, P.ink, 3); ctx.fillStyle = P.greenDark; ctx.fillRect(560, 340, 160, 12)
+  circle(ctx, 640, 300, 70, P.cyan, P.ink, 3); ctx.save(); ctx.globalAlpha = 0.5; circle(ctx, 620, 280, 24, P.white, 'rgba(0,0,0,0)', 0); ctx.restore()
+  // slide back down (right side)
+  poly(ctx, [[1000, 300], [1200, 300], [1240, 420], [960, 420]], P.cyanDark, P.ink, 3); poly(ctx, [[1020, 300], [1180, 300], [1210, 420], [990, 420]], P.cyan, P.ink, 2)
+  text(ctx, 'SLIDE', 1100, 360, { size: 22, align: 'center', color: P.ink, weight: 900 })
+  // treasure chest
+  const open = step >= 2
+  roundRect(ctx, 330, 330, 200, 90, 12, P.pink, P.ink, 4)
+  ctx.fillStyle = P.magenta; ctx.fillRect(340, 370, 180, 10)
+  if (open) { poly(ctx, [[330, 330], [530, 330], [520, 260], [340, 260]], P.pink, P.ink, 4); ctx.fillStyle = P.gold; ctx.fillRect(345, 322, 170, 10) }
+  else roundRect(ctx, 326, 300, 208, 40, 14, P.magenta, P.ink, 4)
+  roundRect(ctx, 420, 340, 20, 22, 4, P.gold, P.ink, 2.5)
+  // treasures flying into the chest during step 2, then a glow
+  const treasures = g.run?.treasures ?? []
+  if (step === 2) treasures.forEach((name, i) => { const k = Math.max(0, Math.min(1, (st - i * 0.15) / 1.2)); const x0 = 900, y0 = 300, x1 = 430, y1 = 300; drawTreasure(ctx, name, x0 + (x1 - x0) * k, y0 + (y1 - y0) * k - Math.sin(k * Math.PI) * 160, 1 - k * 0.3) })
+  if (step >= 2) { ctx.save(); ctx.globalAlpha = 0.6 + Math.sin(t * 6) * 0.2; for (let i = 0; i < 5; i++) star(ctx, 360 + i * 36, 290 - (i % 2) * 20, 9, P.yellow, 'rgba(0,0,0,0)', 0, 4); ctx.restore() }
+  // the Super Solver
+  const px = step === 0 ? 1100 - Math.min(1, st / 1.2) * 230 : 870
+  drawPlayer(ctx, px, 420, -1, step === 0 ? 'walk' : 'idle', t, step === 0 ? st * 300 : 0)
+  // prize
+  if (step >= 6) { roundRect(ctx, 740, 120, 300, 140, 20, P.cream, P.ink, 4); text(ctx, 'Your prize:', 890, 150, { size: 24, align: 'center', color: P.inkSoft, weight: 800 }); drawTreasure(ctx, g.prize, 890, 215, 1.4); text(ctx, g.prize, 890, 250, { size: 22, align: 'center', color: P.ink, weight: 900 }) }
+  // captions
+  const cap = ['The throne room!', 'Time to fill the treasure chest.', `${treasures.length} treasure${treasures.length === 1 ? '' : 's'} go into the chest!`, 'The Master of Mischief is not happy...', 'The magic of the mountain wakes up!', 'Off he goes!', 'You keep one treasure as a prize.'][step] ?? ''
+  if (cap) text(ctx, cap, W / 2, 40, { size: 34, align: 'center', color: P.yellow, weight: 900, outline: P.ink, outlineWidth: 6, font: DISPLAY })
+  drawFrame(ctx)
+}
+
+// ------------------------------------------------------------------ rank screen
+function rank(ctx: Ctx, g: Game): void {
+  ctx.fillStyle = '#6d7b93'; ctx.fillRect(0, 0, W, PLAY_H)
+  ctx.fillStyle = '#586478'; for (let x = 0; x < W; x += 40) for (let y = 0; y < PLAY_H; y += 40) if ((x / 40 + y / 40) % 2 === 0) ctx.fillRect(x, y, 40, 40)
+  const k = Math.min(1, g.sceneT / 1.5)
+  const shown = Math.round(g.rankFrom + (g.rankTo - g.rankFrom) * k)
+  poster(ctx, W / 2, 50, g, shown)
+  const gained = g.rankTo - g.rankFrom
+  text(ctx, `+${gained} treasures this climb!`, W / 2, PLAY_H - 40, { size: 30, align: 'center', color: P.yellow, weight: 900, outline: P.ink, outlineWidth: 6, font: DISPLAY })
+  if (starsForTotal(g.rankTo) > starsForTotal(g.rankFrom) && k >= 1) { ctx.save(); ctx.globalAlpha = 0.9; for (let i = 0; i < 12; i++) { const a = (i / 12) * Math.PI * 2 + g.time; star(ctx, W / 2 + Math.cos(a) * 380, 260 + Math.sin(a) * 200, 14, i % 2 ? P.yellow : P.white, P.ink, 2) } ctx.restore(); text(ctx, 'NEW STAR!', W / 2, 30, { size: 40, align: 'center', color: P.yellow, weight: 900, outline: P.ink, outlineWidth: 8, font: DISPLAY }) }
+  drawFrame(ctx)
+}
+
+// ------------------------------------------------------------------ crown ending
+function crown(ctx: Ctx, g: Game): void {
+  const t = g.time
+  sky(ctx, '#1b3a5c', '#5fb0ff')
+  for (let i = 0; i < 40; i++) { const k = ((t * 0.3 + i * 0.13) % 1); const x = (i * 331) % W, y = H - k * H; star(ctx, x, y, 6 + (i % 3) * 3, [P.yellow, P.pink, P.cyan, P.white][i % 4], 'rgba(0,0,0,0)', 0, 4) }
+  ctx.fillStyle = P.grass; ctx.fillRect(0, 600, W, H - 600)
+  drawMountain(ctx, 640, 600, 0.62, t)
+  const bob = Math.sin(t * 2) * 8
+  ctx.save(); ctx.globalAlpha = 0.45; circle(ctx, 640, 205 + bob, 100 + Math.sin(t * 3) * 8, P.yellow, 'rgba(0,0,0,0)', 0); ctx.restore()
+  drawCrown(ctx, 640, 235 + bob, 90)
+  text(ctx, 'You won back the crown!', W / 2, 56, { size: 54, align: 'center', color: P.yellow, weight: 900, outline: P.ink, outlineWidth: 10, font: DISPLAY })
+  text(ctx, `Treasure Mountain is saved, ${gradeName(g.grade)} Champion!`, W / 2, 110, { size: 26, align: 'center', color: P.white, weight: 800, outline: P.ink, outlineWidth: 5 })
+  drawPlayer(ctx, 300 + Math.sin(t) * 10, 600, 1, 'jump', t, 0)
+  for (let i = 0; i < 4; i++) drawElf(ctx, 900 + i * 80, 600, -1, 'dance', t + i, i % 3, 'none')
+}
+
+// ------------------------------------------------------------------ help & about
+function howto(ctx: Ctx, g: Game): void {
+  sky(ctx, '#3c7dd9', '#9fd0ff')
+  text(ctx, 'How to play', W / 2, 56, { size: 48, align: 'center', color: P.yellow, weight: 900, font: DISPLAY, outline: P.ink, outlineWidth: 8 })
+  const steps = [
+    ['1', 'Catch an elf.', 'Tap an elf (or press Space) to swing your net. Each throw uses one net.'],
+    ['2', 'Answer the riddle.', 'Elves with scrolls ask a riddle. A right answer wins a clue word and 2 coins.'],
+    ['3', 'Find the treasure.', 'Three clue words describe a group of things, like "two small trees".'],
+    ['4', 'Drop a coin.', 'Stand in front of things that match your clue words and tap COIN.'],
+    ['5', 'All three match: the KEY.', 'Two of three match: a TREASURE. Bring the key to the tree, fountain or door.'],
+    ['6', 'Climb to the castle.', 'Fill the chest at the top, send the Master of Mischief packing, earn stars!'],
+  ]
+  steps.forEach(([n, head, body], i) => {
+    const y = 110 + i * 92
+    circle(ctx, 90, y + 22, 26, P.yellow, P.ink, 3); text(ctx, n, 90, y + 23, { size: 28, align: 'center', color: P.ink, weight: 900 })
+    text(ctx, head, 140, y + 8, { size: 26, color: P.white, weight: 900 })
+    text(ctx, body, 140, y + 42, { size: 21, color: P.white, weight: 700 })
+  })
+  text(ctx, 'Need more nets? Drop coins at the NETS rock. No nets and no coins? The rock helps you out.', W / 2, H - 40, { size: 20, align: 'center', color: P.cream, weight: 700 })
+  void g
+}
+
+function about(ctx: Ctx, g: Game): void {
+  sky(ctx, '#3c7dd9', '#9fd0ff')
+  text(ctx, 'About', W / 2, 56, { size: 48, align: 'center', color: P.yellow, weight: 900, font: DISPLAY, outline: P.ink, outlineWidth: 8 })
+  const lines = [
+    'Treasure Mountain is a free, open-source remake of The Learning',
+    "Company's 1990 educational game Super Solvers: Treasure Mountain!",
+    '',
+    'Catch elves, solve riddles, find treasures with clue words, and win',
+    'back the crown from the Master of Mischief. Puzzles come in versions',
+    'for kindergarten through 5th grade, in reading, math, science and',
+    'thinking, and get harder as you earn stars.',
+    '',
+    'Everything is drawn and synthesised in code, so the whole game is a',
+    'few hundred kilobytes and works offline. Nothing leaves your device.',
+    '',
+    'Not affiliated with The Learning Company. MIT licensed.',
+  ]
+  lines.forEach((l, i) => text(ctx, l, W / 2, 120 + i * 34, { size: 22, align: 'center', color: P.white, weight: 700 }))
+  drawElf(ctx, 200, 640, 1, 'dance', g.time, 0, 'scroll'); drawElf(ctx, 1080, 640, -1, 'dance', g.time + 1, 2, 'balloon')
+}
+
+export { poster }

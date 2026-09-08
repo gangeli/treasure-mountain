@@ -1,0 +1,182 @@
+/**
+ * Real derived words with a prefix or suffix, a short meaning (<= 26 chars, it is shown as a choice)
+ * and wrong meanings of the same shape. level 3: un-, re-, -ful, -er, -ly; 4: pre-, dis-, non-, -less,
+ * -ness, -ment; 5: mis-, sub-, inter-, -able, -tion. `fake` (level 3 only) are non-words made with the
+ * wrong affix, used as decoys for the easiest tier.
+ */
+export interface Derived { word: string; base: string; affix: string; kind: 'prefix' | 'suffix'; meaning: string; decoys: string[]; level: 3 | 4 | 5; fake?: string[] }
+
+export const PREFIXES = ['un', 're', 'pre', 'dis', 'mis', 'non', 'sub', 'inter'] as const
+export const SUFFIXES = ['ful', 'less', 'ness', 'able', 'er', 'ly', 'tion', 'ment'] as const
+
+/** What each affix means (used for "what does pre- mean?" questions). */
+export const AFFIX_MEANING: Record<string, string> = {
+  un: 'not', re: 'again', pre: 'before', dis: 'not', mis: 'wrongly', non: 'not', sub: 'under', inter: 'between',
+  ful: 'full of', less: 'without', ness: 'the state of being', able: 'able to be', er: 'one who', ly: 'in a certain way', tion: 'the act of', ment: 'the result of',
+}
+
+const d = (word: string, base: string, affix: string, meaning: string, decoys: string[], level: 3 | 4 | 5, fake?: string[]): Derived =>
+  ({ word, base, affix, kind: (PREFIXES as readonly string[]).includes(affix) ? 'prefix' : 'suffix', meaning, decoys, level, fake })
+
+export const DERIVED: Derived[] = [
+  // level 3: un-
+  d('unhappy', 'happy', 'un', 'not happy', ['happy again', 'very happy', 'happy before'], 3, ['rehappy', 'prehappy', 'dishappy']),
+  d('unkind', 'kind', 'un', 'not kind', ['kind again', 'very kind', 'kind before'], 3, ['rekind', 'prekind', 'diskind']),
+  d('unlock', 'lock', 'un', 'to open a lock', ['to lock again', 'to lock before', 'to lock badly'], 3, ['prelock', 'dislock', 'mislock']),
+  d('untie', 'tie', 'un', 'to undo a knot', ['to tie again', 'to tie tightly', 'to tie before'], 3, ['distie', 'pretie', 'mistie']),
+  d('unfair', 'fair', 'un', 'not fair', ['fair again', 'very fair', 'fair before'], 3, ['refair', 'prefair', 'disfair']),
+  d('unsafe', 'safe', 'un', 'not safe', ['safe again', 'very safe', 'safe before'], 3, ['resafe', 'presafe', 'missafe']),
+  d('unable', 'able', 'un', 'not able', ['able again', 'very able', 'able before'], 3, ['reable', 'preable', 'misable']),
+  d('unlucky', 'lucky', 'un', 'not lucky', ['lucky again', 'very lucky', 'lucky before'], 3, ['relucky', 'prelucky', 'dislucky']),
+  d('unpack', 'pack', 'un', 'to take things out', ['to pack again', 'to pack before', 'to pack badly'], 3, ['dispack', 'mispack', 'nonpack']),
+  d('unwrap', 'wrap', 'un', 'to take off the wrapping', ['to wrap again', 'to wrap before', 'to wrap badly'], 3, ['diswrap', 'miswrap', 'nonwrap']),
+  d('unclear', 'clear', 'un', 'not clear', ['clear again', 'very clear', 'clear before'], 3, ['reclear', 'preclear', 'disclear']),
+  d('unusual', 'usual', 'un', 'not usual', ['usual again', 'very usual', 'usual before'], 3, ['reusual', 'preusual', 'disusual']),
+  // level 3: re-
+  d('redo', 'do', 're', 'to do again', ['to not do', 'to do before', 'to do wrongly'], 3, ['predo', 'disdo', 'nondo']),
+  d('rewrite', 'write', 're', 'to write again', ['to not write', 'to write before', 'to write wrongly'], 3, ['unwrite', 'diswrite', 'nonwrite']),
+  d('reread', 'read', 're', 'to read again', ['to not read', 'to read before', 'to read wrongly'], 3, ['disread', 'nonread', 'subread']),
+  d('refill', 'fill', 're', 'to fill again', ['to not fill', 'to fill before', 'to fill wrongly'], 3, ['unfill', 'disfill', 'misfill']),
+  d('rebuild', 'build', 're', 'to build again', ['to not build', 'to build before', 'to build wrongly'], 3, ['unbuild', 'disbuild', 'misbuild']),
+  d('replay', 'play', 're', 'to play again', ['to not play', 'to play before', 'to play wrongly'], 3, ['unplay', 'nonplay', 'subplay']),
+  d('reheat', 'heat', 're', 'to heat again', ['to not heat', 'to heat before', 'to heat wrongly'], 3, ['unheat', 'disheat', 'misheat']),
+  d('repaint', 'paint', 're', 'to paint again', ['to not paint', 'to paint before', 'to paint wrongly'], 3, ['unpaint', 'dispaint', 'mispaint']),
+  d('retell', 'tell', 're', 'to tell again', ['to not tell', 'to tell before', 'to tell wrongly'], 3, ['untell', 'distell', 'pretell']),
+  d('rename', 'name', 're', 'to give a new name', ['to not name', 'to name before', 'to name loudly'], 3, ['unname', 'disname', 'subname']),
+  d('reappear', 'appear', 're', 'to appear again', ['to not appear', 'to appear before', 'to appear wrongly'], 3, ['unappear', 'misappear', 'nonappear']),
+  d('rejoin', 'join', 're', 'to join again', ['to not join', 'to join before', 'to join wrongly'], 3, ['unjoin', 'disjoin', 'prejoin']),
+  // level 3: -ful
+  d('hopeful', 'hope', 'ful', 'full of hope', ['without hope', 'one who hopes', 'to hope again'], 3, ['hopeness', 'hopeable', 'hopement']),
+  d('careful', 'care', 'ful', 'full of care', ['without care', 'one who cares', 'to care again'], 3, ['careness', 'carement', 'careable']),
+  d('helpful', 'help', 'ful', 'full of help', ['without help', 'one who helps', 'to help again'], 3, ['helpness', 'helpable', 'helpment']),
+  d('playful', 'play', 'ful', 'full of play', ['without play', 'one who plays', 'to play again'], 3, ['playness', 'playment', 'playtion']),
+  d('joyful', 'joy', 'ful', 'full of joy', ['without joy', 'one who has joy', 'joy again'], 3, ['joyness', 'joyable', 'joyment']),
+  d('thankful', 'thank', 'ful', 'full of thanks', ['without thanks', 'one who thanks', 'to thank again'], 3, ['thankness', 'thankable', 'thankment']),
+  d('colorful', 'color', 'ful', 'full of color', ['without color', 'one who colors', 'to color again'], 3, ['colorness', 'colorment', 'colortion']),
+  d('cheerful', 'cheer', 'ful', 'full of cheer', ['without cheer', 'one who cheers', 'to cheer again'], 3, ['cheerness', 'cheerable', 'cheerment']),
+  d('peaceful', 'peace', 'ful', 'full of peace', ['without peace', 'one who makes peace', 'peace again'], 3, ['peaceness', 'peacement', 'peacetion']),
+  d('wonderful', 'wonder', 'ful', 'full of wonder', ['without wonder', 'one who wonders', 'to wonder again'], 3, ['wonderness', 'wonderable', 'wondertion']),
+  d('fearful', 'fear', 'ful', 'full of fear', ['without fear', 'one who fears', 'to fear again'], 3, ['fearness', 'fearable', 'fearment']),
+  d('painful', 'pain', 'ful', 'full of pain', ['without pain', 'one who feels pain', 'to hurt again'], 3, ['painness', 'painable', 'painment']),
+  // level 3: -er
+  d('teacher', 'teach', 'er', 'one who teaches', ['full of teaching', 'without teaching', 'to teach again'], 3, ['teachful', 'teachness', 'teachment']),
+  d('singer', 'sing', 'er', 'one who sings', ['full of songs', 'without songs', 'to sing again'], 3, ['singful', 'singness', 'singment']),
+  d('painter', 'paint', 'er', 'one who paints', ['full of paint', 'without paint', 'to paint again'], 3, ['paintful', 'paintness', 'paintment']),
+  d('farmer', 'farm', 'er', 'one who farms', ['full of farms', 'without a farm', 'to farm again'], 3, ['farmful', 'farmness', 'farmment']),
+  d('baker', 'bake', 'er', 'one who bakes', ['full of baking', 'without baking', 'to bake again'], 3, ['bakeful', 'bakeness', 'bakement']),
+  d('builder', 'build', 'er', 'one who builds', ['full of buildings', 'without buildings', 'to build again'], 3, ['buildful', 'buildness', 'buildment']),
+  d('helper', 'help', 'er', 'one who helps', ['full of help', 'without help', 'to help again'], 3, ['helpness', 'helpment', 'helpable']),
+  d('player', 'play', 'er', 'one who plays', ['full of play', 'without play', 'to play again'], 3, ['playness', 'playment', 'playtion']),
+  d('reader', 'read', 'er', 'one who reads', ['full of reading', 'without reading', 'to read again'], 3, ['readful', 'readness', 'readment']),
+  d('climber', 'climb', 'er', 'one who climbs', ['full of climbing', 'without climbing', 'to climb again'], 3, ['climbful', 'climbness', 'climbment']),
+  // level 3: -ly
+  d('quickly', 'quick', 'ly', 'in a quick way', ['not quick', 'one who is quick', 'full of quickness'], 3, ['quickful', 'quickment', 'quickable']),
+  d('slowly', 'slow', 'ly', 'in a slow way', ['not slow', 'one who is slow', 'full of slowness'], 3, ['slowful', 'slowment', 'slowable']),
+  d('quietly', 'quiet', 'ly', 'in a quiet way', ['not quiet', 'one who is quiet', 'full of quiet'], 3, ['quietful', 'quietment', 'quietable']),
+  d('bravely', 'brave', 'ly', 'in a brave way', ['not brave', 'one who is brave', 'full of bravery'], 3, ['braveful', 'bravement', 'braveable']),
+  d('softly', 'soft', 'ly', 'in a soft way', ['not soft', 'one who is soft', 'full of softness'], 3, ['softful', 'softment', 'softable']),
+  d('kindly', 'kind', 'ly', 'in a kind way', ['not kind', 'one who is kind', 'kind again'], 3, ['kindful', 'kindment', 'kindable']),
+  d('safely', 'safe', 'ly', 'in a safe way', ['not safe', 'one who is safe', 'safe again'], 3, ['safeful', 'safement', 'safeable']),
+  d('loudly', 'loud', 'ly', 'in a loud way', ['not loud', 'one who is loud', 'full of loudness'], 3, ['loudful', 'loudment', 'loudable']),
+  d('gladly', 'glad', 'ly', 'in a glad way', ['not glad', 'one who is glad', 'glad again'], 3, ['gladful', 'gladment', 'gladable']),
+  d('sadly', 'sad', 'ly', 'in a sad way', ['not sad', 'one who is sad', 'sad again'], 3, ['sadful', 'sadment', 'sadable']),
+  // level 4: pre-
+  d('preheat', 'heat', 'pre', 'to heat before', ['to heat again', 'to not heat', 'to heat wrongly'], 4),
+  d('preview', 'view', 'pre', 'to view before', ['to view again', 'to not view', 'to view wrongly'], 4),
+  d('prepay', 'pay', 'pre', 'to pay before', ['to pay again', 'to not pay', 'to pay wrongly'], 4),
+  d('preschool', 'school', 'pre', 'school that comes before', ['school again', 'not a school', 'a school under another'], 4),
+  d('pretest', 'test', 'pre', 'a test given before', ['a test given again', 'not a test', 'a test done wrongly'], 4),
+  d('precook', 'cook', 'pre', 'to cook before', ['to cook again', 'to not cook', 'to cook badly'], 4),
+  d('prewash', 'wash', 'pre', 'to wash before', ['to wash again', 'to not wash', 'to wash badly'], 4),
+  d('preorder', 'order', 'pre', 'to order before', ['to order again', 'to not order', 'to order wrongly'], 4),
+  // level 4: dis-
+  d('disagree', 'agree', 'dis', 'to not agree', ['to agree again', 'to agree before', 'to agree strongly'], 4),
+  d('dislike', 'like', 'dis', 'to not like', ['to like again', 'to like before', 'to like very much'], 4),
+  d('disappear', 'appear', 'dis', 'to stop being seen', ['to appear again', 'to appear before', 'to appear suddenly'], 4),
+  d('dishonest', 'honest', 'dis', 'not honest', ['honest again', 'very honest', 'honest before'], 4),
+  d('disobey', 'obey', 'dis', 'to not obey', ['to obey again', 'to obey before', 'to obey quickly'], 4),
+  d('disconnect', 'connect', 'dis', 'to undo a connection', ['to connect again', 'to connect before', 'to connect wrongly'], 4),
+  d('distrust', 'trust', 'dis', 'to not trust', ['to trust again', 'to trust before', 'to trust fully'], 4),
+  d('disloyal', 'loyal', 'dis', 'not loyal', ['loyal again', 'very loyal', 'loyal before'], 4),
+  // level 4: non-
+  d('nonfiction', 'fiction', 'non', 'not made-up writing', ['made-up writing', 'writing done again', 'writing done before'], 4),
+  d('nonstop', 'stop', 'non', 'without stopping', ['stopping again', 'stopping before', 'stopping often'], 4),
+  d('nonsense', 'sense', 'non', 'words that make no sense', ['words that make sense', 'sense again', 'sense before'], 4),
+  d('nonliving', 'living', 'non', 'not living', ['living again', 'living before', 'living under'], 4),
+  d('nonfat', 'fat', 'non', 'without fat', ['full of fat', 'fat again', 'fat before'], 4),
+  // level 4: -less
+  d('hopeless', 'hope', 'less', 'without hope', ['full of hope', 'one who hopes', 'to hope again'], 4),
+  d('careless', 'care', 'less', 'without care', ['full of care', 'one who cares', 'to care again'], 4),
+  d('fearless', 'fear', 'less', 'without fear', ['full of fear', 'one who fears', 'to fear again'], 4),
+  d('helpless', 'help', 'less', 'without help', ['full of help', 'one who helps', 'to help again'], 4),
+  d('harmless', 'harm', 'less', 'without harm', ['full of harm', 'one who harms', 'to harm again'], 4),
+  d('useless', 'use', 'less', 'without use', ['full of use', 'one who uses', 'to use again'], 4),
+  d('sleepless', 'sleep', 'less', 'without sleep', ['full of sleep', 'one who sleeps', 'to sleep again'], 4),
+  d('powerless', 'power', 'less', 'without power', ['full of power', 'one who has power', 'power again'], 4),
+  d('thoughtless', 'thought', 'less', 'without thought', ['full of thought', 'one who thinks', 'to think again'], 4),
+  d('endless', 'end', 'less', 'without an end', ['full of ends', 'one who ends', 'to end again'], 4),
+  // level 4: -ness
+  d('kindness', 'kind', 'ness', 'the state of being kind', ['not kind', 'in a kind way', 'one who is kind'], 4),
+  d('sadness', 'sad', 'ness', 'the state of being sad', ['not sad', 'in a sad way', 'one who is sad'], 4),
+  d('darkness', 'dark', 'ness', 'the state of being dark', ['not dark', 'in a dark way', 'one who is dark'], 4),
+  d('softness', 'soft', 'ness', 'the state of being soft', ['not soft', 'in a soft way', 'one who is soft'], 4),
+  d('weakness', 'weak', 'ness', 'the state of being weak', ['not weak', 'in a weak way', 'one who is weak'], 4),
+  d('illness', 'ill', 'ness', 'the state of being ill', ['not ill', 'in an ill way', 'one who is ill'], 4),
+  d('brightness', 'bright', 'ness', 'the state of being bright', ['not bright', 'in a bright way', 'one who is bright'], 4),
+  d('happiness', 'happy', 'ness', 'the state of being happy', ['not happy', 'in a happy way', 'one who is happy'], 4),
+  d('fairness', 'fair', 'ness', 'the state of being fair', ['not fair', 'in a fair way', 'one who is fair'], 4),
+  // level 4: -ment
+  d('movement', 'move', 'ment', 'the act of moving', ['not moving', 'one who moves', 'to move again'], 4),
+  d('payment', 'pay', 'ment', 'the act of paying', ['not paying', 'one who pays', 'to pay again'], 4),
+  d('enjoyment', 'enjoy', 'ment', 'the feeling of enjoying', ['not enjoying', 'one who enjoys', 'to enjoy again'], 4),
+  d('agreement', 'agree', 'ment', 'the act of agreeing', ['not agreeing', 'one who agrees', 'to agree again'], 4),
+  d('treatment', 'treat', 'ment', 'the act of treating', ['not treating', 'one who treats', 'to treat again'], 4),
+  d('excitement', 'excite', 'ment', 'a feeling of being excited', ['not excited', 'one who excites', 'to excite again'], 4),
+  d('improvement', 'improve', 'ment', 'the act of improving', ['not improving', 'one who improves', 'to improve again'], 4),
+  d('shipment', 'ship', 'ment', 'goods that are shipped', ['not shipping', 'one who ships', 'to ship again'], 4),
+  // level 5: mis-
+  d('misspell', 'spell', 'mis', 'to spell wrongly', ['to spell again', 'to spell before', 'to not spell'], 5),
+  d('misbehave', 'behave', 'mis', 'to behave badly', ['to behave again', 'to behave before', 'to behave well'], 5),
+  d('misplace', 'place', 'mis', 'to put in the wrong place', ['to place again', 'to place before', 'to place under'], 5),
+  d('misjudge', 'judge', 'mis', 'to judge wrongly', ['to judge again', 'to judge before', 'to not judge'], 5),
+  d('mislead', 'lead', 'mis', 'to lead the wrong way', ['to lead again', 'to lead before', 'to lead well'], 5),
+  d('misread', 'read', 'mis', 'to read wrongly', ['to read again', 'to read before', 'to not read'], 5),
+  d('miscount', 'count', 'mis', 'to count wrongly', ['to count again', 'to count before', 'to not count'], 5),
+  d('misunderstand', 'understand', 'mis', 'to understand wrongly', ['to understand again', 'to understand before', 'to fully understand'], 5),
+  d('mistreat', 'treat', 'mis', 'to treat badly', ['to treat again', 'to treat before', 'to treat well'], 5),
+  // level 5: sub-
+  d('submarine', 'marine', 'sub', 'a boat under the sea', ['a boat above the water', 'a boat between shores', 'a very large boat'], 5),
+  d('subway', 'way', 'sub', 'a train under the ground', ['a train between cities', 'a way to go back', 'a way above the ground'], 5),
+  d('subtitle', 'title', 'sub', 'a smaller title below', ['a title used again', 'a title given before', 'the main title'], 5),
+  d('subzero', 'zero', 'sub', 'below zero', ['above zero', 'zero again', 'between zero and one'], 5),
+  d('subsoil', 'soil', 'sub', 'soil under the top layer', ['the top layer of soil', 'soil that is used again', 'soil between rocks'], 5),
+  d('subheading', 'heading', 'sub', 'a smaller heading below', ['the main heading', 'a heading used again', 'a heading between pages'], 5),
+  // level 5: inter-
+  d('international', 'national', 'inter', 'between nations', ['within one nation', 'not national', 'a nation again'], 5),
+  d('interact', 'act', 'inter', 'to act with each other', ['to act again', 'to act before', 'to act alone'], 5),
+  d('interstate', 'state', 'inter', 'between states', ['within one state', 'under a state', 'a state again'], 5),
+  d('interview', 'view', 'inter', 'a talk between people', ['a look at something before', 'a second look', 'a look underneath'], 5),
+  d('interlock', 'lock', 'inter', 'to lock together', ['to lock again', 'to lock before', 'to not lock'], 5),
+  d('intercity', 'city', 'inter', 'between cities', ['within a city', 'under a city', 'a city again'], 5),
+  // level 5: -able
+  d('washable', 'wash', 'able', 'able to be washed', ['without washing', 'one who washes', 'to wash again'], 5),
+  d('breakable', 'break', 'able', 'able to be broken', ['without breaking', 'one who breaks', 'to break again'], 5),
+  d('readable', 'read', 'able', 'able to be read', ['without reading', 'one who reads', 'to read again'], 5),
+  d('enjoyable', 'enjoy', 'able', 'able to be enjoyed', ['without enjoying', 'one who enjoys', 'to enjoy again'], 5),
+  d('comfortable', 'comfort', 'able', 'giving comfort', ['without comfort', 'one who comforts', 'to comfort again'], 5),
+  d('reliable', 'rely', 'able', 'able to be relied on', ['without relying', 'one who relies', 'to rely again'], 5),
+  d('adjustable', 'adjust', 'able', 'able to be adjusted', ['without adjusting', 'one who adjusts', 'to adjust again'], 5),
+  d('reasonable', 'reason', 'able', 'showing good reason', ['without reason', 'one who reasons', 'to reason again'], 5),
+  d('movable', 'move', 'able', 'able to be moved', ['without moving', 'one who moves', 'to move again'], 5),
+  // level 5: -tion
+  d('invention', 'invent', 'tion', 'something that is invented', ['one who invents', 'to invent again', 'able to be invented'], 5),
+  d('celebration', 'celebrate', 'tion', 'the act of celebrating', ['one who celebrates', 'to celebrate again', 'able to be celebrated'], 5),
+  d('protection', 'protect', 'tion', 'the act of protecting', ['one who protects', 'to protect again', 'able to be protected'], 5),
+  d('collection', 'collect', 'tion', 'a set of collected things', ['one who collects', 'to collect again', 'able to be collected'], 5),
+  d('direction', 'direct', 'tion', 'the way something points', ['one who directs', 'to direct again', 'able to be directed'], 5),
+  d('education', 'educate', 'tion', 'the act of educating', ['one who educates', 'to educate again', 'able to be educated'], 5),
+  d('action', 'act', 'tion', 'the act of doing something', ['one who acts', 'to act again', 'able to be acted'], 5),
+  d('attraction', 'attract', 'tion', 'something that attracts', ['one who attracts', 'to attract again', 'able to be attracted'], 5),
+  d('decoration', 'decorate', 'tion', 'something used to decorate', ['one who decorates', 'to decorate again', 'able to be decorated'], 5),
+  d('suggestion', 'suggest', 'tion', 'an idea that is suggested', ['one who suggests', 'to suggest again', 'able to be suggested'], 5),
+]

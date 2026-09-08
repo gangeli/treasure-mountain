@@ -1,6 +1,6 @@
 import type { Generator, Choice, CoinName } from '../types'
 import { shuffled, choiceCount } from '../types'
-import { mathRiddle, sayChoices, numDecoys, cents, dollars, NAMES, twoNames } from './mathutil'
+import { mathRiddle, sayChoices, numDecoys, cents, dollars, twoNames } from './mathutil'
 import type { Rng } from '../../engine/rng'
 
 const VALUE: Record<CoinName, number> = { penny: 1, nickel: 5, dime: 10, quarter: 25 }
@@ -67,7 +67,7 @@ export const money: Generator = {
         return mathRiddle({ family: 'money', skill: 'math: counting coins', prompt, visual: { kind: 'coins', coins: cs }, choices, answer, spoken: `${prompt[0]} ${sayChoices(choices)}?`, metric: 12 + total / 4 + cs.length, grade, tier }, `num:${cs.map(c => VALUE[c]).join('+')}`)
       }
       if (mode === 'howMany') {
-        const coin = rng.pick(tier === 1 ? ['dime', 'quarter'] : ['dime', 'quarter', 'nickel'] as CoinName[])
+        const coin: CoinName = rng.pick(tier === 1 ? (['dime', 'quarter'] as CoinName[]) : (['dime', 'quarter', 'nickel'] as CoinName[]))
         const k = 100 / VALUE[coin]
         const decoys = numDecoys(rng, k, n - 1, [k + 1, k - 1, k * 2, k / 2, VALUE[coin]], 3, 1).map(String)
         const { choices, answer } = shuffled(rng, String(k), decoys, n)
@@ -147,16 +147,16 @@ export const money: Generator = {
         const prompt = mode === 'add3'
           ? [`${me} buys a ${item} for ${dollars(a)}, a ${item2}`, `for ${dollars(b)} and a snack for ${dollars(c)}.`, 'How much is that in all?']
           : rng.pick([[`${dollars(a)} + ${dollars(b)} = ?`], [`${me} has ${dollars(a)}. ${other} gives ${me}`, `${dollars(b)} more. How much does ${me} have?`], [`A ${item} costs ${dollars(a)} and a ${item2}`, `costs ${dollars(b)}. What is the total?`]])
-        return mathRiddle({ family: 'money', skill: 'math: adding money', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 60 + Math.log2(total / 25) * 2 + (c ? 4 : 0) + (step === 1 ? 3 : 0), grade, tier }, `num:${a}+${b}+${c}`)
+        return mathRiddle({ family: 'money', skill: 'math: adding money', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 60 + Math.log2(total / 25) * 2 + (c ? 4 : 0) + (step === 1 ? 3 : 0), grade, tier }, `num:(${a}+${b}+${c})/100`)
       }
       const a = r(300, 1999), b = r(100, a - 50)
       const diff = a - b
       const decoys = numDecoys(rng, diff, n - 1, [a + b, diff + 100, diff - 100, diff + 25, diff - 25, diff + 10, diff - 10], 50, 1).map(dollars)
       const { choices, answer } = shuffled(rng, dollars(diff), decoys, n)
       const prompt = mode === 'sub'
-        ? rng.pick([[`${dollars(a)} - ${dollars(b)} = ?`], [`A ${item} costs ${dollars(a)}. A ${item2} costs ${dollars(b)}.`, 'How much more does the ' + item + ' cost?']])
+        ? rng.pick([[`${dollars(a)} - ${dollars(b)} = ?`], [`A ${item} costs ${dollars(a)}.`, `A ${item2} costs ${dollars(b)}.`, 'How much more does the ' + item + ' cost?']])
         : [`${me} has ${dollars(a)} and spends ${dollars(b)}`, `on a ${item}. How much is left?`]
-      return mathRiddle({ family: 'money', skill: 'math: subtracting money', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 60 + Math.log2(a / 25) * 2 + (step === 1 ? 3 : 0), grade, tier }, `num:${a}-${b}`)
+      return mathRiddle({ family: 'money', skill: 'math: subtracting money', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 60 + Math.log2(a / 25) * 2 + (step === 1 ? 3 : 0), grade, tier }, `num:(${a}-${b})/100`)
     }
 
     // grade 5: multi-step
@@ -170,7 +170,7 @@ export const money: Generator = {
         const decoys = numDecoys(rng, cost, n - 1, [price + k, cost + price, cost - price, cost + 100, cost - 100], 50, 5).map(dollars)
         const { choices, answer } = shuffled(rng, dollars(cost), decoys, n)
         const prompt = [`${me} buys ${k} ${item}s at ${dollars(price)} each.`, 'How much does that cost?']
-        return mathRiddle({ family: 'money', skill: 'math: money problems', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 80 + k * 2, grade, tier }, `num:${k}*${price}`)
+        return mathRiddle({ family: 'money', skill: 'math: money problems', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 80 + k * 2, grade, tier }, `num:(${k}*${price})/100`)
       }
       const pay = Math.ceil(cost / 500) * 500 + (rng.bool() ? 500 : 0)
       const change = pay - cost
@@ -178,7 +178,7 @@ export const money: Generator = {
       const decoys = numDecoys(rng, change, n - 1, [cost, pay - price, change + price, change - price, change + 100, change - 100], 50, 5).map(dollars)
       const { choices, answer } = shuffled(rng, dollars(change), decoys, n)
       const prompt = [`${me} buys ${k} ${item}s at ${dollars(price)} each`, `and pays with ${dollars(pay)}.`, 'How much change does ' + me + ' get?']
-      return mathRiddle({ family: 'money', skill: 'math: money problems', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 86 + k * 2, grade, tier }, `num:${pay}-${k}*${price}`)
+      return mathRiddle({ family: 'money', skill: 'math: money problems', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 86 + k * 2, grade, tier }, `num:(${pay}-${k}*${price})/100`)
     }
     if (mode === 'twoKinds') {
       const k1 = rng.int(2, 5), p1 = rng.int(3, 60) * 5, k2 = rng.int(1, 4), p2 = rng.int(3, 60) * 5
@@ -186,7 +186,7 @@ export const money: Generator = {
       const decoys = numDecoys(rng, total, n - 1, [p1 + p2, k1 * p1 + p2, p1 + k2 * p2, total + 100, total - 100, (k1 + k2) * p1], 50, 5).map(dollars)
       const { choices, answer } = shuffled(rng, dollars(total), decoys, n)
       const prompt = [`${me} buys ${k1} ${item}s at ${dollars(p1)} each and`, `${k2} ${item2}${k2 > 1 ? 's' : ''} at ${dollars(p2)} each.`, 'How much does ' + me + ' spend?']
-      return mathRiddle({ family: 'money', skill: 'math: money problems', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 84 + k1 + k2, grade, tier }, `num:${k1}*${p1}+${k2}*${p2}`)
+      return mathRiddle({ family: 'money', skill: 'math: money problems', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 84 + k1 + k2, grade, tier }, `num:(${k1}*${p1}+${k2}*${p2})/100`)
     }
     if (mode === 'save') {
       const week = rng.int(4, 40) * 25, weeks = rng.int(3, 8)
@@ -194,7 +194,7 @@ export const money: Generator = {
       const decoys = numDecoys(rng, total, n - 1, [week + weeks, total + week, total - week, total + 100], 100, 25).map(dollars)
       const { choices, answer } = shuffled(rng, dollars(total), decoys, n)
       const prompt = [`${me} saves ${dollars(week)} every week.`, `How much is saved after ${weeks} weeks?`]
-      return mathRiddle({ family: 'money', skill: 'math: money problems', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 80 + weeks, grade, tier }, `num:${week}*${weeks}`)
+      return mathRiddle({ family: 'money', skill: 'math: money problems', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 80 + weeks, grade, tier }, `num:(${week}*${weeks})/100`)
     }
     if (mode === 'half') {
       const price = rng.int(3, 30) * 100 + rng.pick([0, 50])
@@ -202,7 +202,7 @@ export const money: Generator = {
       const decoys = numDecoys(rng, sale, n - 1, [price * 2, price - 50, sale + 100, sale - 100, sale + 50], 100, 25).map(dollars)
       const { choices, answer } = shuffled(rng, dollars(sale), decoys, n)
       const prompt = [`A ${item} costs ${dollars(price)}. Today it is`, 'half price. What is the sale price?']
-      return mathRiddle({ family: 'money', skill: 'math: money problems', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 82, grade, tier }, `num:${price}/2`)
+      return mathRiddle({ family: 'money', skill: 'math: money problems', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 82, grade, tier }, `num:(${price}/2)/100`)
     }
     if (mode === 'percent') {
       const price = rng.int(2, 30) * 100
@@ -211,7 +211,7 @@ export const money: Generator = {
       const decoys = numDecoys(rng, sale, n - 1, [price * pct / 100, price - pct, sale + 100, sale - 100, price + price * pct / 100], 100, 25).map(dollars)
       const { choices, answer } = shuffled(rng, dollars(sale), decoys, n)
       const prompt = [`A ${item} costs ${dollars(price)}. It is on sale`, `for ${pct}% off. What is the sale price?`]
-      return mathRiddle({ family: 'money', skill: 'math: money problems', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 90, grade, tier }, `num:${price}-${price}*${pct}/100`)
+      return mathRiddle({ family: 'money', skill: 'math: money problems', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 90, grade, tier }, `num:(${price}-${price}*${pct}/100)/100`)
     }
     // unit price
     const k = rng.pick([2, 3, 4, 5, 6, 8, 10]), unit = rng.int(2, 30) * 5
@@ -219,6 +219,6 @@ export const money: Generator = {
     const decoys = numDecoys(rng, unit, n - 1, [total, unit + 5, unit - 5, unit * 2, Math.round(total / (k - 1))], 20, 5).map(dollars)
     const { choices, answer } = shuffled(rng, dollars(unit), decoys, n)
     const prompt = [`${k} ${item}s cost ${dollars(total)} altogether.`, `How much does one ${item} cost?`]
-    return mathRiddle({ family: 'money', skill: 'math: money problems', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 88 + k, grade, tier }, `num:${total}/${k}`)
+    return mathRiddle({ family: 'money', skill: 'math: money problems', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric: 88 + k, grade, tier }, `num:(${total}/${k})/100`)
   },
 }

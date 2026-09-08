@@ -177,14 +177,14 @@ export const time: Generator = {
       const decoys = numDecoys(rng, add, n - 1, [add + 30, add - 30, add + 60, add - 60, raw12 !== add ? raw12 : add + 90, 720 - raw12], 30, 5).map(durText)
       const { choices, answer } = shuffled(rng, durText(add), decoys, n)
       const act = rng.pick(['School', 'The trip', 'The show', 'Camp', 'The game', 'Practice'])
-      const prompt = [`${act} starts at ${clock24Text(start)} and`, `ends at ${clock24Text(end)}. How long is it?`]
+      const prompt = [`${act} starts at ${clock24Text(start)} and`, `ends at ${clock24Text(end)} How long is it?`]
       return mathRiddle({ family: 'time', skill: 'math: elapsed time', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric, grade, tier }, `num:(${Math.floor(end / 60)}*60+${end % 60})-(${startH24}*60+${startM})`)
     }
-    const decoys = numDecoys(rng, end, n - 1, [end + 60, end - 60, end + 720, end - 720, end + 30, end - 30, end + 5, end - 5], 60, 0, 2879).map(clock24Text)
+    const decoys = numDecoys(rng, end, n + 2, [end + 60, end - 60, end + 720, end - 720, end + 30, end - 30, end + 5, end - 5], 60, 0, 2879).filter(d => d % 1440 !== end % 1440).map(clock24Text)
     const { choices, answer } = shuffled(rng, clock24Text(end), decoys, n)
     const prompt = mode === 'later'
-      ? [`It is ${clock24Text(start)}. What time will`, `it be in ${durText(add)}?`]
+      ? [`It is ${clock24Text(start)} What time will`, `it be in ${durText(add)}?`]
       : [`${name}'s ${rng.pick(['flight', 'train', 'bus', 'movie', 'game'])} starts at ${clock24Text(start)}`, `and lasts ${durText(add)}.`, 'When does it end?']
-    return mathRiddle({ family: 'time', skill: 'math: elapsed time', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric, grade, tier }, `num:${startH24}*60+${startM}+${add}`)
+    return mathRiddle({ family: 'time', skill: 'math: elapsed time', prompt, choices, answer, spoken: `${prompt.join(' ')} ${sayChoices(choices)}?`, metric, grade, tier }, `num:(${startH24}*60+${startM}+${add})%1440`)
   },
 }

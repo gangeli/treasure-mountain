@@ -21,7 +21,12 @@ export function serve(dir, port = 0) {
 }
 
 export async function launch(playwright, { width = 1280, height = 720, dpr = 1 } = {}) {
-  const browser = await playwright.chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined })
+  // Use the pre-installed Chromium when the bundled one is missing (CI installs its own).
+  const { existsSync } = await import('node:fs')
+  const candidates = [process.env.CHROMIUM_PATH, '/opt/pw-browsers/chromium', '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'].filter(Boolean)
+  let executablePath
+  try { playwright.chromium.executablePath(); if (!existsSync(playwright.chromium.executablePath())) executablePath = candidates.find(c => existsSync(c)) } catch { executablePath = candidates.find(c => existsSync(c)) }
+  const browser = await playwright.chromium.launch({ executablePath, args: ['--no-sandbox'] })
   const context = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: dpr, hasTouch: true })
   const page = await context.newPage()
   page.on('pageerror', e => { console.error('PAGE ERROR:', e.message); process.exitCode = 1 })
