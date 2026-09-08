@@ -126,8 +126,11 @@ function keyholeTree(ctx: Ctx, x: number, y: number, hasKey: boolean, progress: 
   fillStroke(ctx, P.brown)
   ctx.fillStyle = P.brownDark; ctx.fillRect(x + 14, y - trunkH + 10, 12, trunkH - 30); ctx.fillRect(x - 30, y - trunkH + 40, 6, trunkH - 100)
   // canopy top (partly above the play area)
-  ctx.beginPath(); ctx.ellipse(x, y - trunkH - 10, 190, 90, 0, 0, Math.PI * 2); ctx.closePath(); fillStroke(ctx, P.green)
-  ctx.save(); ctx.globalAlpha = 0.45; ctx.fillStyle = P.greenLight; ctx.beginPath(); ctx.ellipse(x - 50, y - trunkH - 30, 70, 30, -0.2, 0, Math.PI * 2); ctx.fill(); ctx.restore()
+  // A scalloped canopy rather than a flat ellipse, so it reads as leaves.
+  scallop(ctx, x, y - trunkH - 10, 168, 74, 11)
+  fillStroke(ctx, P.green)
+  ctx.save(); ctx.globalAlpha = 0.5; ctx.fillStyle = P.greenLight
+  scallop(ctx, x - 46, y - trunkH - 30, 78, 32, 6, 0.4); ctx.fill(); ctx.restore()
   // keyhole plate
   roundRect(ctx, x - 22, y - 120, 44, 56, 8, P.gold)
   ctx.fillStyle = P.ink; ctx.beginPath(); ctx.arc(x, y - 100, 8, 0, Math.PI * 2); ctx.fill(); ctx.fillRect(x - 4, y - 100, 8, 22)
