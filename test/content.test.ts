@@ -451,3 +451,35 @@ describe('the answer does not stand out by its length', () => {
     expect(overall, `across the whole game the gap is ${overall.toFixed(1)} points`).toBeLessThan(5)
   })
 })
+
+describe('the right answer is not in a favourite place', () => {
+  it('every position is equally likely, for every family', () => {
+    const bad: string[] = []
+    const overall = new Map<number, number[]>()
+    for (const gen of GENERATORS) {
+      const per = new Map<number, number[]>()
+      for (const grade of gen.grades) for (const tier of TIERS) {
+        const rng = new Rng(`pos-${gen.id}-${grade}-${tier}`)
+        for (let i = 0; i < 150; i++) {
+          const r = gen.make(grade, tier, rng)
+          const k = r.choices.length
+          if (!per.has(k)) per.set(k, new Array(k).fill(0))
+          if (!overall.has(k)) overall.set(k, new Array(k).fill(0))
+          per.get(k)![r.answer]++
+          overall.get(k)![r.answer]++
+        }
+      }
+      for (const [k, counts] of per) {
+        const total = counts.reduce((a, b) => a + b, 0)
+        if (total < 400) continue
+        const worst = Math.max(...counts.map(c => Math.abs(100 * c / total - 100 / k)))
+        if (worst > 6) bad.push(`${gen.id} with ${k} choices: ${counts.map(c => (100 * c / total).toFixed(0) + '%').join(' ')}`)
+      }
+    }
+    expect(bad.slice(0, 3)).toEqual([])
+    for (const [k, counts] of overall) {
+      const total = counts.reduce((a, b) => a + b, 0)
+      for (const c of counts) expect(Math.abs(100 * c / total - 100 / k), `${k} choices: ${counts.join('/')}`).toBeLessThan(2)
+    }
+  })
+})
