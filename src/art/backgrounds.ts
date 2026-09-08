@@ -157,8 +157,13 @@ function drawWall(ctx: Ctx, camX: number, th: Theme, no: LevelNo, t: number): vo
       // on its own. (Drawn to match the stone placed above, so it always has something to sit on.)
       if (r3 > 0.45) {
         const ex = x + 80 + r2 * 60, ey = top + 120 + r3 * 180, rx = 16 + r1 * 12, ry = 10 + r2 * 6
-        ctx.beginPath(); ctx.ellipse(ex, ey - ry * 0.55, rx * 0.92, ry * 0.5, r1 * 0.4, Math.PI, 0)
-        ctx.closePath(); ctx.fill()
+        // Clipped to the stone, so the snow is the top slice of it. Drawn free-hand the cap was
+        // tilted differently from the stone it sat on and its corner escaped past the outline,
+        // which read as a chip of white floating beside the rock.
+        ctx.save()
+        ctx.beginPath(); ctx.ellipse(ex, ey, rx, ry, r1, 0, Math.PI * 2); ctx.clip()
+        ctx.beginPath(); ctx.ellipse(ex, ey - ry * 1.35, rx * 1.5, ry, 0, 0, Math.PI * 2); ctx.fill()
+        ctx.restore()
       }
     }
   }
