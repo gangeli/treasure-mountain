@@ -239,7 +239,14 @@ function drawGround(ctx: Ctx, camX: number, th: Theme, no: LevelNo): void {
       // tuft that was already drawn there.
       if (r > 0.62) { ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.ellipse(x + r * 20, PLAY_H - 27, 7 + r * 6, 4, 0, Math.PI, 0); ctx.closePath(); ctx.fill() }
     }
-    if (no === 2 && r > 0.85) { ctx.fillStyle = th.groundDark; ctx.beginPath(); ctx.ellipse(x + 18, GROUND_Y + 30 + (r * 70) % 40, 16, 5, 0, 0, Math.PI * 2); ctx.fill() }
+    // Spilled mine gravel. This used to be one flat dark-green ellipse, which is the exact shape
+    // this game draws shadows with, so the mine floor looked like it had shadows cast by nothing.
+    if (no === 2 && r > 0.85) {
+      const gy = GROUND_Y + 30 + (r * 70) % 40
+      for (const [dx, dy, rad] of [[0, 0, 5], [11, 3, 3.5], [-9, 4, 3]]) {
+        circle(ctx, x + 18 + dx, gy + dy, rad, P.rockLight, P.rockDark, 1.5)
+      }
+    }
   }
 }
 
